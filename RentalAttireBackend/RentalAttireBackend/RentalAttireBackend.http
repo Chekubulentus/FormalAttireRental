@@ -1,0 +1,6 @@
+@RentalAttireBackend_HostAddress = http://localhost:5213
+
+GET {{RentalAttireBackend_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
