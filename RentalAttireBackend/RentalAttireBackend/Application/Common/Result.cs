@@ -6,7 +6,8 @@
         public bool IsSuccess { get; set; }
         public string SuccessMessage { get; set; } = string.Empty;
         public string ErrorMessage { get; set; } = string.Empty;
-        public Result<T> Success(T data) => new() { Data = data, IsSuccess = true };
-        public Result<T> Failure(T data) => new() { }
+        public static Result<T> Success(T data) => new() { Data = data, IsSuccess = true };
+        public static Result<T> Failure(string message) => new() { IsSuccess = false, ErrorMessage = message };
+        public static Result<T> SuccessWithMessage(string message) => new() { IsSuccess = true, SuccessMessage = message };
     }
 }

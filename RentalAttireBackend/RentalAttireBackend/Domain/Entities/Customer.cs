@@ -7,7 +7,7 @@ namespace RentalAttireBackend.Domain.Entities
     {
         public string CustomerCode { get; set; } = string.Empty;
         public int TotalRentals { get; set; }
-        public double TotalSpent { get; set; }
+        public double TotalSpent { get; set; }  
         public int PersonId { get; set; }
 
         //NavProp

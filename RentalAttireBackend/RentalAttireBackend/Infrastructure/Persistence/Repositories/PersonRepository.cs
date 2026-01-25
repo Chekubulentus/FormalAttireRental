@@ -14,28 +14,28 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
             _context = context;
         }
 
-        public async Task<int> CreatePersonAsync(Person person)
+        public async Task<int> CreatePersonAsync(Person person, CancellationToken cancellationToken)
         {
             await _context.People.AddAsync(person);
-            return await _context.SaveChangesAsync();
+            return await _context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task<List<Person>> GetAllPersonAsync()
+        public async Task<List<Person>> GetAllPersonAsync(CancellationToken cancellationToken)
         {
             return await _context.People
                 .AsNoTracking()
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
         }
 
-        public async Task<Person?> GetPersonByIdAsync(int id)
+        public async Task<Person?> GetPersonByIdAsync(int id, CancellationToken cancellationToken)
         {
-            return await _context.People.FindAsync(id);
+            return await _context.People.FindAsync(id, cancellationToken);
         }
 
-        public async Task<bool> UpdatePersonAsync(Person person)
+        public async Task<bool> UpdatePersonAsync(Person person, CancellationToken cancellationToken)
         {
             _context.People.Update(person);
-            return await _context.SaveChangesAsync() > 0;
+            return await _context.SaveChangesAsync(cancellationToken) > 0;
         }
     }
 }

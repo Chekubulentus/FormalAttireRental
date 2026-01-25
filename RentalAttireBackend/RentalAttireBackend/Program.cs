@@ -1,7 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using RentalAttireBackend.Application;
 using RentalAttireBackend.Application.Mapping;
+using RentalAttireBackend.Domain.Interfaces;
 using RentalAttireBackend.Infrastructure.Persistence.DataContext;
+using RentalAttireBackend.Infrastructure.Persistence.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +22,10 @@ builder.Services.AddDbContext<FormalAttireContext>(x => x.UseNpgsql(builder.Conf
 
 //MediatR
 builder.Services.AddMediatR(x => x.RegisterServicesFromAssembly(typeof(AssemblyMarker).Assembly));
+
+//Add Scopes
+builder.Services.AddScoped<IPersonRepository, PersonRepository>();
+builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 
 var app = builder.Build();
 

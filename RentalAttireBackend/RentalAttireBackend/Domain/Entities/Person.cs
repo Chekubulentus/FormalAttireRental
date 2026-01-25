@@ -8,7 +8,8 @@ namespace RentalAttireBackend.Domain.Entities
         public string LastName { get; set; } = string.Empty;
         public string FirstName { get; set; } = string.Empty;
         public string MiddleName { get; set; } = string.Empty;
-        public Gender Age { get; set; }
+        public int Age { get; set; }
+        public Gender Gender { get; set; } 
         public MaritalStatus MaritalStatus { get; set; }
         public string PhoneNumber { get; set; } = string.Empty;
         public string Street { get; set; } = string.Empty;
