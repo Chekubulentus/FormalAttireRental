@@ -16,10 +16,65 @@ namespace RentalAttireBackend.Infrastructure.Persistence.DataContext
         {
             base.OnModelCreating(modelBuilder);
 
+            #region Customer
             modelBuilder.Entity<Customer>(e =>
             {
+                e.HasKey(c => c.Id);
+                e.HasIndex(c => c.CustomerCode);
 
+                //Person Relationship
+                e.HasOne(c => c.Person)
+                .WithOne(p => p.Customer)
+                .HasForeignKey<Customer>(c => c.PersonId)
+                .OnDelete(DeleteBehavior.Restrict);
             });
+            #endregion
+
+            #region Employee
+            modelBuilder.Entity<Employee>(e =>
+            {
+                e.HasKey(e => e.Id);
+                e.HasIndex(e => e.EmployeeCode);
+
+                //Role Relationship
+                e.HasOne(e => e.Role)
+                .WithMany(r => r.Employees)
+                .HasForeignKey(e => e.RoleId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+                //Person Relationship
+                e.HasOne(e => e.Person)
+                .WithOne(e => e.Employee)
+                .HasForeignKey<Employee>(e => e.PersonId)
+                .OnDelete(DeleteBehavior.Restrict);
+            });
+            #endregion
+
+            #region Person
+            modelBuilder.Entity<Person>(e =>
+            {
+                e.HasKey(p => p.Id);
+            });
+            #endregion
+
+            #region User
+            modelBuilder.Entity<User>(e =>
+            {
+                e.HasKey(u => u.Id);
+                e.HasIndex(u => u.Email);
+
+
+                //Employee Relationship
+                e.HasMany(u => u.Employees)
+                .WithMany(e => e.Users);
+
+                //Customer Relationship
+                e.HasOne(u => u.Customer)
+                .WithOne(c => c.User)
+                .HasForeignKey<User>(u => u.CustomerId)
+                .OnDelete(DeleteBehavior.Restrict);
+            });
+            #endregion 
         }
     }
 }

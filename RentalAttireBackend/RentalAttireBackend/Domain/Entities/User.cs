@@ -12,7 +12,7 @@ namespace RentalAttireBackend.Domain.Entities
 
         //NavProp
         [JsonIgnore]
-        public Employee? Employee { get; set; } 
+        public List<Employee>? Employees { get; set; } 
         [JsonIgnore]
         public Customer? Customer { get; set; } 
     }

@@ -25,9 +25,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
+    <Folder Include="Application\Persons\Commands\" />
+    <Folder Include="Controllers\CustomerController\" />
+    <Folder Include="Controllers\ClothesManagerController\" />
+    <Folder Include="Controllers\CashierController\" />
     <Folder Include="Infrastructure\Persistence\Services\" />
-    <Folder Include="Infrastructure\Persistence\Repositories\" />
   </ItemGroup>
 
 </Project>
