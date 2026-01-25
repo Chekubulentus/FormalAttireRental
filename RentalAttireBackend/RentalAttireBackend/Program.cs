@@ -26,6 +26,7 @@ builder.Services.AddMediatR(x => x.RegisterServicesFromAssembly(typeof(AssemblyM
 //Add Scopes
 builder.Services.AddScoped<IPersonRepository, PersonRepository>();
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+builder.Services.AddScoped<ITransactionManager, TransactionManager>();
 
 var app = builder.Build();
 

@@ -4,10 +4,12 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace RentalAttireBackend.Migrations
 {
     /// <inheritdoc />
-    public partial class entityrelationshipsincontext : Migration
+    public partial class InitialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -189,6 +191,15 @@ namespace RentalAttireBackend.Migrations
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.InsertData(
+                table: "Roles",
+                columns: new[] { "Id", "ArchivedAt", "ArchivedBy", "CreatedAt", "CreatedBy", "EntityType", "IsActive", "IsDeleted", "RolePosition", "UpdatedAt", "UpdatedBy" },
+                values: new object[,]
+                {
+                    { 1, null, "", new DateTime(2025, 1, 25, 0, 0, 0, 0, DateTimeKind.Utc), "Papat", "Role", true, false, 0, null, "" },
+                    { 2, null, "", new DateTime(2025, 1, 25, 0, 0, 0, 0, DateTimeKind.Utc), "Papat", "Role", true, false, 1, null, "" }
                 });
 
             migrationBuilder.CreateIndex(

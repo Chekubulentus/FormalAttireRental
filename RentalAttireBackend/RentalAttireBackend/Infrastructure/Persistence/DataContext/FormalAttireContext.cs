@@ -74,7 +74,44 @@ namespace RentalAttireBackend.Infrastructure.Persistence.DataContext
                 .HasForeignKey<User>(u => u.CustomerId)
                 .OnDelete(DeleteBehavior.Restrict);
             });
-            #endregion 
+            #endregion
+
+            #region Role Initial Data
+            modelBuilder.Entity<Role>()
+                .HasData(new Role
+                {
+                    Id = 1,
+                    CreatedBy = "Papat",
+                    CreatedAt = DateTime.SpecifyKind(new DateTime(2025, 1, 25), DateTimeKind.Utc),
+                    IsActive = true,
+                    IsDeleted = false,
+                    EntityType = "Role",
+                    RolePosition = RolePosition.Administrator,
+                });
+            modelBuilder.Entity<Role>()
+                .HasData(new Role
+                {
+                    Id = 2,
+                    CreatedBy = "Papat",
+                    CreatedAt = DateTime.SpecifyKind(new DateTime(2025, 1, 25), DateTimeKind.Utc),
+                    IsActive = true,
+                    IsDeleted = false,
+                    EntityType = "Role",
+                    RolePosition = RolePosition.ClothesManager,
+                });
+            modelBuilder.Entity<Role>()
+                .HasData(new Role
+                {
+                    Id = 3,
+                    CreatedBy = "Papat",
+                    CreatedAt = DateTime.SpecifyKind(new DateTime(2025, 1, 25), DateTimeKind.Utc),
+                    IsActive = true,
+                    IsDeleted = false,
+                    EntityType = "Role",
+                    RolePosition = RolePosition.Cashier,
+                });
+
+            #endregion
         }
     }
 }

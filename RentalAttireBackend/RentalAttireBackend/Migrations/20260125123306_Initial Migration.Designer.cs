@@ -12,8 +12,8 @@ using RentalAttireBackend.Infrastructure.Persistence.DataContext;
 namespace RentalAttireBackend.Migrations
 {
     [DbContext(typeof(FormalAttireContext))]
-    [Migration("20260125090616_entity relationships in context")]
-    partial class entityrelationshipsincontext
+    [Migration("20260125123306_Initial Migration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -300,6 +300,32 @@ namespace RentalAttireBackend.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Roles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ArchivedBy = "",
+                            CreatedAt = new DateTime(2025, 1, 25, 0, 0, 0, 0, DateTimeKind.Utc),
+                            CreatedBy = "Papat",
+                            EntityType = "Role",
+                            IsActive = true,
+                            IsDeleted = false,
+                            RolePosition = 0,
+                            UpdatedBy = ""
+                        },
+                        new
+                        {
+                            Id = 2,
+                            ArchivedBy = "",
+                            CreatedAt = new DateTime(2025, 1, 25, 0, 0, 0, 0, DateTimeKind.Utc),
+                            CreatedBy = "Papat",
+                            EntityType = "Role",
+                            IsActive = true,
+                            IsDeleted = false,
+                            RolePosition = 1,
+                            UpdatedBy = ""
+                        });
                 });
 
             modelBuilder.Entity("RentalAttireBackend.Domain.Entities.User", b =>
