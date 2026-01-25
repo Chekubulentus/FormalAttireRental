@@ -13,8 +13,8 @@ namespace RentalAttireBackend.Domain.Entities
 
         //NavProp
         [JsonIgnore]
-        public Role Role { get; set; } = null!;
+        public Role? Role { get; set; } 
         [JsonIgnore]
-        public Person Person { get; set; } = null!;
+        public Person? Person { get; set; } 
     }
 }

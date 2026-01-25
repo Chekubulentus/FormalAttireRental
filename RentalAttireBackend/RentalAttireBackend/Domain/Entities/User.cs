@@ -12,8 +12,8 @@ namespace RentalAttireBackend.Domain.Entities
 
         //NavProp
         [JsonIgnore]
-        public Employee Employee { get; set; } = null!;
+        public Employee? Employee { get; set; } 
         [JsonIgnore]
-        public Customer Customer { get; set; } = null!;
+        public Customer? Customer { get; set; } 
     }
 }

@@ -9,7 +9,7 @@ namespace RentalAttireBackend.Domain.Entities
 
         //NavProp
         [JsonIgnore]
-        public List<Employee> Employees { get; set; } = new();
+        public List<Employee>? Employees { get; set; } 
     }
 
     public enum RolePosition

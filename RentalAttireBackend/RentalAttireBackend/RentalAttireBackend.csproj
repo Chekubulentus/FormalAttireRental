@@ -25,9 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Application\Common\" />
     <Folder Include="Controllers\" />
-    <Folder Include="Domain\Interfaces\" />
     <Folder Include="Infrastructure\Persistence\Services\" />
     <Folder Include="Infrastructure\Persistence\Repositories\" />
   </ItemGroup>
