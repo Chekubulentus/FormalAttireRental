@@ -54,6 +54,7 @@ namespace RentalAttireBackend.Infrastructure.Persistence.DataContext
             modelBuilder.Entity<Person>(e =>
             {
                 e.HasKey(p => p.Id);
+                e.Property(p => p.PhoneNumber).IsRequired().HasMaxLength(11);
             });
             #endregion
 

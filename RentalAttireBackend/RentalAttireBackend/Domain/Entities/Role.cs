@@ -14,8 +14,8 @@ namespace RentalAttireBackend.Domain.Entities
 
     public enum RolePosition
     {
-        Administrator = 0,
-        ClothesManager= 1,
-        Cashier = 2
+        Administrator = 1,
+        ClothesManager= 2,
+        Cashier = 3
     }
 }

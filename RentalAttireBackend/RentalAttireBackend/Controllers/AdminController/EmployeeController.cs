@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using RentalAttireBackend.Application.Employees.Commands.CreateEmployee;
 using RentalAttireBackend.Application.Employees.Queries.GetAllEmployees;
 
 namespace RentalAttireBackend.Controllers.AdminController
@@ -24,6 +25,13 @@ namespace RentalAttireBackend.Controllers.AdminController
             var result = await _mediator.Send(new GetAllEmployeesQuery());
 
             return result.IsSuccess ? Ok(result.Data) : NotFound(result.ErrorMessage);
+        }
+        [HttpPost]
+        public async Task<IActionResult> CreateEmployeeAsync(CreateEmployeeCommand command)
+        {
+            var result = await _mediator.Send(command);
+
+            return result.IsSuccess ? Ok(result.SuccessMessage) : BadRequest(result.ErrorMessage);
         }
     }
 }
