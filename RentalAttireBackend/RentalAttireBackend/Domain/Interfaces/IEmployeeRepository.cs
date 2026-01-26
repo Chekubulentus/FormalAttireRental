@@ -6,10 +6,13 @@ namespace RentalAttireBackend.Domain.Interfaces
     {
         #region Commands
         public Task<bool> CreateEmployeeAsync(Employee employee, CancellationToken cancellationToken);
+        public Task<bool> UpdateEmployeeAsync(Employee employee, CancellationToken cancellationToken);
         #endregion
 
         #region Queries
-
+        public Task<List<Employee>> GetAllEmployeesAsync(CancellationToken cancellationToken);
+        public Task<Employee?> GetEmployeeByIdAsync(int id, CancellationToken cancellationToken);
+        public Task<Employee?> GetEmployeeByEmployeeCodeAsync(string employeeCode, CancellationToken cancellationToken);
         #endregion
     }
 }

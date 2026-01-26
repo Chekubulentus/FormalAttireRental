@@ -12,6 +12,7 @@ namespace RentalAttireBackend.Domain.Interfaces
         #region Queries
         public Task<List<Person>> GetAllPersonAsync(CancellationToken cancellationToken);
         public Task<Person?> GetPersonByIdAsync(int id, CancellationToken cancellationToken);
+        public Task<List<Person>> GetPersonByLastName(string email, CancellationToken cancellationToken);
         #endregion
     }
 }

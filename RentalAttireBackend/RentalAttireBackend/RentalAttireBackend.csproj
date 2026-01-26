@@ -25,7 +25,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Application\Persons\Commands\" />
+    <Folder Include="Application\Employees\Commands\" />
+    <Folder Include="Application\Interfaces\" />
     <Folder Include="Controllers\CustomerController\" />
     <Folder Include="Controllers\ClothesManagerController\" />
     <Folder Include="Controllers\CashierController\" />

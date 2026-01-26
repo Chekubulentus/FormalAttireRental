@@ -17,13 +17,21 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
         public async Task<int> CreatePersonAsync(Person person, CancellationToken cancellationToken)
         {
             await _context.People.AddAsync(person);
-            return await _context.SaveChangesAsync(cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken);
+            return person.Id;
         }
 
         public async Task<List<Person>> GetAllPersonAsync(CancellationToken cancellationToken)
         {
             return await _context.People
                 .AsNoTracking()
+                .ToListAsync(cancellationToken);
+        }
+
+        public async Task<List<Person>> GetPersonByLastName(string email, CancellationToken cancellationToken)
+        {
+            return await _context.People
+                .Where(p => p.LastName.Contains(email))
                 .ToListAsync(cancellationToken);
         }
 

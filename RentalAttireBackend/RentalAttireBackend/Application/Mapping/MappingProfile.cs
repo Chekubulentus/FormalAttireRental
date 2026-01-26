@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using RentalAttireBackend.Application.Employees.DTOs;
 using RentalAttireBackend.Application.Persons.Commands.UpdatePerson;
 using RentalAttireBackend.Application.Persons.DTO;
 using RentalAttireBackend.Domain.Entities;
@@ -20,6 +21,13 @@ namespace RentalAttireBackend.Application.Mapping
                 opt => opt.MapFrom(src => Enum.Parse<Gender>(src.Gender, true)))
                 .ForMember(dest => dest.MaritalStatus,
                 opt => opt.MapFrom(src => Enum.Parse<MaritalStatus>(src.MaritalStatus, true)));
+
+            CreateMap<Employee, EmployeeDTO>()
+                .ForMember(dest => dest.RolePosition,
+                opt => opt.MapFrom(src => src.Role.RolePosition))
+                .ForMember(dest => dest.Person,
+                opt => opt.MapFrom(src => src.Person));
+
         }
     }
 }
