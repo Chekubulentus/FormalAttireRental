@@ -1,4 +1,4 @@
-﻿namespace RentalAttireBackend.Application.Common
+﻿namespace RentalAttireBackend.Application.Common.Models
 {
     public class Result<T>
     {

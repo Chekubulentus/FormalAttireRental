@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
-using RentalAttireBackend.Application.Common;
+using RentalAttireBackend.Application.Common.Models;
 using RentalAttireBackend.Application.Persons.DTO;
 using RentalAttireBackend.Domain.Entities;
 using RentalAttireBackend.Domain.Interfaces;

@@ -1,4 +1,5 @@
-﻿using RentalAttireBackend.Domain.Entities;
+﻿using RentalAttireBackend.Application.Common.Models;
+using RentalAttireBackend.Domain.Entities;
 
 namespace RentalAttireBackend.Domain.Interfaces
 {
@@ -13,6 +14,9 @@ namespace RentalAttireBackend.Domain.Interfaces
         public Task<List<Employee>> GetAllEmployeesAsync(CancellationToken cancellationToken);
         public Task<Employee?> GetEmployeeByIdAsync(int id, CancellationToken cancellationToken);
         public Task<Employee?> GetEmployeeByEmployeeCodeAsync(string employeeCode, CancellationToken cancellationToken);
+        public Task<PagedResult<Employee>> SearchEmployeeAsync(
+            string searchQuery, PaginationParams paginationParams, CancellationToken cancellationToken
+            );
         #endregion
     }
 }

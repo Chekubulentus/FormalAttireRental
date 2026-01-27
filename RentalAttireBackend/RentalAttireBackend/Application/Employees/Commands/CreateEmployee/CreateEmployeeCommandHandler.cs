@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Connections.Features;
-using RentalAttireBackend.Application.Common;
+using RentalAttireBackend.Application.Common.Models;
 using RentalAttireBackend.Application.Employees.DTOs;
 using RentalAttireBackend.Domain.Entities;
 using RentalAttireBackend.Domain.Interfaces;
