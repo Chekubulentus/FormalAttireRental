@@ -26,7 +26,7 @@ namespace RentalAttireBackend.Migrations
                     Age = table.Column<int>(type: "integer", nullable: false),
                     Gender = table.Column<int>(type: "integer", nullable: false),
                     MaritalStatus = table.Column<int>(type: "integer", nullable: false),
-                    PhoneNumber = table.Column<string>(type: "text", nullable: false),
+                    PhoneNumber = table.Column<string>(type: "character varying(11)", maxLength: 11, nullable: false),
                     Street = table.Column<string>(type: "text", nullable: false),
                     Barangay = table.Column<string>(type: "text", nullable: false),
                     City = table.Column<string>(type: "text", nullable: false),
@@ -198,8 +198,9 @@ namespace RentalAttireBackend.Migrations
                 columns: new[] { "Id", "ArchivedAt", "ArchivedBy", "CreatedAt", "CreatedBy", "EntityType", "IsActive", "IsDeleted", "RolePosition", "UpdatedAt", "UpdatedBy" },
                 values: new object[,]
                 {
-                    { 1, null, "", new DateTime(2025, 1, 25, 0, 0, 0, 0, DateTimeKind.Utc), "Papat", "Role", true, false, 0, null, "" },
-                    { 2, null, "", new DateTime(2025, 1, 25, 0, 0, 0, 0, DateTimeKind.Utc), "Papat", "Role", true, false, 1, null, "" }
+                    { 1, null, "", new DateTime(2025, 1, 25, 0, 0, 0, 0, DateTimeKind.Utc), "Papat", "Role", true, false, 1, null, "" },
+                    { 2, null, "", new DateTime(2025, 1, 25, 0, 0, 0, 0, DateTimeKind.Utc), "Papat", "Role", true, false, 2, null, "" },
+                    { 3, null, "", new DateTime(2025, 1, 25, 0, 0, 0, 0, DateTimeKind.Utc), "Papat", "Role", true, false, 3, null, "" }
                 });
 
             migrationBuilder.CreateIndex(

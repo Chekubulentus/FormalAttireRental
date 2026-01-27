@@ -12,8 +12,8 @@ using RentalAttireBackend.Infrastructure.Persistence.DataContext;
 namespace RentalAttireBackend.Migrations
 {
     [DbContext(typeof(FormalAttireContext))]
-    [Migration("20260126171901_adding new role")]
-    partial class addingnewrole
+    [Migration("20260126172858_Initial Migration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

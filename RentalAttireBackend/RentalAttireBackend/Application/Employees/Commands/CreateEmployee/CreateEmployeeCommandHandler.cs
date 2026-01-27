@@ -36,22 +36,31 @@ namespace RentalAttireBackend.Application.Employees.Commands.CreateEmployee
 
             try
             {
+                await _transaction.BeginTransactionAsync(cancellationToken);
                 var person = _mapper.Map<Person>(request.Person);
 
                 var createPerson = await _personRepo.CreatePersonAsync(person, cancellationToken);
 
                 if(createPerson == 0)
+                {
+                    await _transaction.RollbackTransactionAsync(cancellationToken);
                     return Result<bool>.Failure("Employee cannot be registered. Please try again.");
+                }
 
                 var employee = _mapper.Map<Employee>(request);
                 employee.Person = person;
                 employee.PersonId = createPerson;
+                employee.EntityType = "Employee";
 
                 var createEmployee = await _employeeRepo.CreateEmployeeAsync(employee, cancellationToken);
 
                 if (!createEmployee)
+                {
+                    await _transaction.RollbackTransactionAsync(cancellationToken);
                     return Result<bool>.Failure("Employee cannot be registered. Please try again.");
+                }
 
+                await _transaction.CommitTransacionAsync(cancellationToken);
                 return Result<bool>.SuccessWithMessage("Employee successfully registered!");
             }catch(Exception e)
             {
