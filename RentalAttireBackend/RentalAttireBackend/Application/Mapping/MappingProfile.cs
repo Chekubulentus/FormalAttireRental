@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using RentalAttireBackend.Application.Common.Models;
 using RentalAttireBackend.Application.Employees.Commands.CreateEmployee;
 using RentalAttireBackend.Application.Employees.DTOs;
 using RentalAttireBackend.Application.Persons.Commands.UpdatePerson;
@@ -44,6 +45,8 @@ namespace RentalAttireBackend.Application.Mapping
                 opt => opt.MapFrom(src => src.Role.RolePosition))
                 .ForMember(dest => dest.Person,
                 opt => opt.MapFrom(src => src.Person));
+
+            CreateMap(typeof(PagedResult<>), typeof(PagedResult<>));
             #endregion
 
             #region CreateEmployeeCommand->Employee

@@ -11,7 +11,7 @@ namespace RentalAttireBackend.Domain.Interfaces
         #endregion
 
         #region Queries
-        public Task<List<Employee>> GetAllEmployeesAsync(CancellationToken cancellationToken);
+        public Task<PagedResult<Employee>> GetAllEmployeesAsync(PaginationParams paginationParams ,CancellationToken cancellationToken);
         public Task<Employee?> GetEmployeeByIdAsync(int id, CancellationToken cancellationToken);
         public Task<Employee?> GetEmployeeByEmployeeCodeAsync(string employeeCode, CancellationToken cancellationToken);
         public Task<PagedResult<Employee>> SearchEmployeeAsync(

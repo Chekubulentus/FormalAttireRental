@@ -6,7 +6,7 @@ using RentalAttireBackend.Domain.Interfaces;
 
 namespace RentalAttireBackend.Application.Employees.Queries.GetAllEmployees
 {
-    public class GetAllEmployeesQueryHandler : IRequestHandler<GetAllEmployeesQuery, Result<List<EmployeeDTO>>>
+    public class GetAllEmployeesQueryHandler : IRequestHandler<GetAllEmployeesQuery, Result<PagedResult<EmployeeDTO>>>
     {
         private readonly IEmployeeRepository _employeeRepo;
         private readonly IMapper _mapper;
@@ -20,22 +20,25 @@ namespace RentalAttireBackend.Application.Employees.Queries.GetAllEmployees
             _employeeRepo = employeeRepo;
             _mapper = mapper;
         }
-        
-        public async Task<Result<List<EmployeeDTO>>> Handle(GetAllEmployeesQuery query, CancellationToken cancellationToken)
+
+        public async Task<Result<PagedResult<EmployeeDTO>>> Handle(GetAllEmployeesQuery request, CancellationToken cancellationToken)
         {
+            if (request is null)
+                return Result<PagedResult<EmployeeDTO>>.Failure("Invalid request. Please try again.");
             try
             {
-                var employees = await _employeeRepo.GetAllEmployeesAsync(cancellationToken);
+                var paginatedEmployees = await _employeeRepo
+                    .GetAllEmployeesAsync(request.PaginationParams, cancellationToken);
 
-                if (!employees.Any() || employees.Count() == 0)
-                    return Result<List<EmployeeDTO>>.Failure("No employees currently registered.");
+                if (!paginatedEmployees.Items.Any() || paginatedEmployees.Items.Count() == 0)
+                    return Result<PagedResult<EmployeeDTO>>.Failure("No employees currently registered.");
 
-                var employeeDto = _mapper.Map<List<EmployeeDTO>>(employees);
+                var paginatedEmployeesDto = _mapper.Map<PagedResult<EmployeeDTO>>(paginatedEmployees);
 
-                return Result<List<EmployeeDTO>>.Success(employeeDto);
+                return Result<PagedResult<EmployeeDTO>>.Success(paginatedEmployeesDto);
             }catch(Exception e)
             {
-                return Result<List<EmployeeDTO>>.Failure(e.Message);
+                return Result<PagedResult<EmployeeDTO>>.Failure(e.Message);
             }
         }
     }

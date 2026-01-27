@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using RentalAttireBackend.Application.Common.Models;
 using RentalAttireBackend.Application.Employees.Commands.CreateEmployee;
 using RentalAttireBackend.Application.Employees.Queries.GetAllEmployees;
 using RentalAttireBackend.Application.Employees.Queries.SearchEmployee;
@@ -21,9 +22,9 @@ namespace RentalAttireBackend.Controllers.AdminController
             _mediator = mediator;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAllEmployeesAsync()
+        public async Task<IActionResult> GetAllEmployeesAsync([FromQuery] PaginationParams paginationParams)
         {
-            var result = await _mediator.Send(new GetAllEmployeesQuery());
+            var result = await _mediator.Send(new GetAllEmployeesQuery { PaginationParams = paginationParams});
 
             return result.IsSuccess ? Ok(result.Data) : NotFound(result.ErrorMessage);
         }

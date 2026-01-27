@@ -23,14 +23,30 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
             return await _context.SaveChangesAsync(cancellationToken) > 0 ;
         }
 
-        public async Task<List<Employee>> GetAllEmployeesAsync(CancellationToken cancellationToken)
+        public async Task<PagedResult<Employee>> GetAllEmployeesAsync(
+            PaginationParams paginationParams,
+            CancellationToken cancellationToken
+            )
         {
-            return await _context.Employees
-                .AsNoTracking()
-                .Include(e => e.Role)
-                .Include(e => e.Person)
-                .OrderBy(e => e.Id)
-                .ToListAsync(cancellationToken);
+            var employees = _context.Employees
+            .AsNoTracking()
+            .Include(e => e.Role)
+            .Include(e => e.Person);
+
+            var totalCount = await employees.CountAsync();
+
+            var items = await employees
+                .Skip(paginationParams.Skip)
+                .Take(paginationParams.ItemsPerPage)
+                .ToListAsync();
+
+            return new PagedResult<Employee>
+            {
+                Items = items,
+                PageNumber = paginationParams.CurrentPage,
+                PageSize = paginationParams.ItemsPerPage,
+                TotalCount = totalCount
+            };
         }
 
         public async Task<Employee?> GetEmployeeByEmployeeCodeAsync(string employeeCode, CancellationToken cancellationToken)
