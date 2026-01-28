@@ -17,10 +17,11 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
         {
             _context = context;
         }
-        public async Task<bool> CreateEmployeeAsync(Employee employee, CancellationToken cancellationToken)
+        public async Task<int> CreateEmployeeAsync(Employee employee, CancellationToken cancellationToken)
         {
             await _context.Employees.AddAsync(employee);
-            return await _context.SaveChangesAsync(cancellationToken) > 0 ;
+            await _context.SaveChangesAsync(cancellationToken);
+            return employee.Id;
         }
 
         public async Task<PagedResult<Employee>> GetAllEmployeesAsync(
@@ -31,7 +32,8 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
             var employees = _context.Employees
             .AsNoTracking()
             .Include(e => e.Role)
-            .Include(e => e.Person);
+            .Include(e => e.Person)
+            .AsQueryable();
 
             var totalCount = await employees.CountAsync();
 

@@ -66,8 +66,9 @@ namespace RentalAttireBackend.Infrastructure.Persistence.DataContext
 
 
                 //Employee Relationship
-                e.HasMany(u => u.Employees)
-                .WithMany(e => e.Users);
+                e.HasOne(u => u.Employee)
+                .WithMany(e => e.Users)
+                .OnDelete(DeleteBehavior.Restrict);
 
                 //Customer Relationship
                 e.HasOne(u => u.Customer)

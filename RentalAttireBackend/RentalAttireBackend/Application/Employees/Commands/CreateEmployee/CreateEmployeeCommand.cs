@@ -6,5 +6,7 @@ namespace RentalAttireBackend.Application.Employees.Commands.CreateEmployee
 {
     public class CreateEmployeeCommand : EmployeeDTO, IRequest<Result<bool>>
     {
+        public string Email { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
     }
 }

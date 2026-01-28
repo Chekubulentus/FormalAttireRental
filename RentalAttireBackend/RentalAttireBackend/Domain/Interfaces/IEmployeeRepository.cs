@@ -6,7 +6,7 @@ namespace RentalAttireBackend.Domain.Interfaces
     public interface IEmployeeRepository
     {
         #region Commands
-        public Task<bool> CreateEmployeeAsync(Employee employee, CancellationToken cancellationToken);
+        public Task<int> CreateEmployeeAsync(Employee employee, CancellationToken cancellationToken);
         public Task<bool> UpdateEmployeeAsync(Employee employee, CancellationToken cancellationToken);
         #endregion
 

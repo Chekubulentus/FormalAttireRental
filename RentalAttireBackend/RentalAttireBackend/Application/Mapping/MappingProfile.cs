@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Infrastructure.Internal;
 using RentalAttireBackend.Application.Common.Models;
 using RentalAttireBackend.Application.Employees.Commands.CreateEmployee;
 using RentalAttireBackend.Application.Employees.DTOs;
 using RentalAttireBackend.Application.Persons.Commands.UpdatePerson;
 using RentalAttireBackend.Application.Persons.DTO;
+using RentalAttireBackend.Application.Users.DTO;
 using RentalAttireBackend.Domain.Entities;
 using System.Runtime.Serialization;
 
@@ -61,6 +63,9 @@ namespace RentalAttireBackend.Application.Mapping
                 opt => opt.Ignore());
             #endregion
 
+            #region User->UserDTO
+            CreateMap<User, UserDTO>();
+            #endregion
         }
     }
 }

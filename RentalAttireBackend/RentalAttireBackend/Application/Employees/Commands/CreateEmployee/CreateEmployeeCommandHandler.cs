@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Connections.Features;
+using RentalAttireBackend.Application.Common.Interfaces;
 using RentalAttireBackend.Application.Common.Models;
 using RentalAttireBackend.Application.Employees.DTOs;
 using RentalAttireBackend.Domain.Entities;
@@ -14,19 +15,25 @@ namespace RentalAttireBackend.Application.Employees.Commands.CreateEmployee
         private readonly IEmployeeRepository _employeeRepo;
         private readonly ITransactionManager _transaction;
         private readonly IPersonRepository _personRepo;
+        private readonly IUserRepository _userRepo;
+        private readonly IPasswordHasher _passwordHasher;
 
         public CreateEmployeeCommandHandler
             (
             IMapper mapper,
             IEmployeeRepository employeeRepo,
             ITransactionManager transaction,
-            IPersonRepository personRepo
+            IPersonRepository personRepo,
+            IUserRepository userRepo,
+            IPasswordHasher passwordHasher
             )
         {
             _mapper = mapper;
             _employeeRepo = employeeRepo;
             _transaction = transaction;
             _personRepo = personRepo;
+            _userRepo = userRepo;
+            _passwordHasher = passwordHasher;
         }
 
         public async Task<Result<bool>> Handle(CreateEmployeeCommand request, CancellationToken cancellationToken)
@@ -54,10 +61,25 @@ namespace RentalAttireBackend.Application.Employees.Commands.CreateEmployee
 
                 var createEmployee = await _employeeRepo.CreateEmployeeAsync(employee, cancellationToken);
 
-                if (!createEmployee)
+                if (createEmployee == 0)
                 {
                     await _transaction.RollbackTransactionAsync(cancellationToken);
                     return Result<bool>.Failure("Employee cannot be registered. Please try again.");
+                }
+
+                var newUser = new User
+                {
+                    Email = request.Email,
+                    HashedPassword = _passwordHasher.HashPassword(request.Password),
+                    EmployeeId = createEmployee
+                };
+
+                var createUser = await _userRepo.CreateUserAsync(newUser, cancellationToken);
+
+                if (!createUser)
+                {
+                    await _transaction.RollbackTransactionAsync(cancellationToken);
+                    return Result<bool>.Failure("User cannot be created. Please try again.");
                 }
 
                 await _transaction.CommitTransacionAsync(cancellationToken);
