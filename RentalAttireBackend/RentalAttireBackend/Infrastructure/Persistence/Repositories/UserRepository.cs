@@ -60,5 +60,10 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
             _context.Users.Update(user);
             return await _context.SaveChangesAsync() > 0;
         }
+
+        public async Task<bool> ValidateEmailDuplicationAsync(string email, CancellationToken cancellationToken)
+        {
+            return await _context.Users.AnyAsync(u => u.Email.Equals(email), cancellationToken);
+        }
     }
 }

@@ -41,10 +41,16 @@ namespace RentalAttireBackend.Application.Employees.Commands.CreateEmployee
             if (request is null || request.Person is null)
                 return Result<bool>.Failure("Invalid request. Please fill all the required fields.");
 
+            var emailDuplication = await _userRepo.ValidateEmailDuplicationAsync(request.Email, cancellationToken);
+
+            if (emailDuplication)
+                return Result<bool>.Failure("Email already exist. Please try again.");
+
             try
             {
                 await _transaction.BeginTransactionAsync(cancellationToken);
                 var person = _mapper.Map<Person>(request.Person);
+                person.EntityType = "Person";
 
                 var createPerson = await _personRepo.CreatePersonAsync(person, cancellationToken);
 
@@ -71,7 +77,8 @@ namespace RentalAttireBackend.Application.Employees.Commands.CreateEmployee
                 {
                     Email = request.Email,
                     HashedPassword = _passwordHasher.HashPassword(request.Password),
-                    EmployeeId = createEmployee
+                    EmployeeId = createEmployee,
+                    EntityType = "User"
                 };
 
                 var createUser = await _userRepo.CreateUserAsync(newUser, cancellationToken);

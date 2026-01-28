@@ -2,7 +2,7 @@
 
 namespace RentalAttireBackend.Infrastructure.Persistence.Services
 {
-    public class PassowrdHasher : IPasswordHasher
+    public class PasswordHasher : IPasswordHasher
     {
         public string HashPassword(string password)
         {

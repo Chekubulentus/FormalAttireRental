@@ -1,9 +1,12 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using RentalAttireBackend.Application;
+using RentalAttireBackend.Application.Common.Interfaces;
 using RentalAttireBackend.Application.Mapping;
 using RentalAttireBackend.Domain.Interfaces;
 using RentalAttireBackend.Infrastructure.Persistence.DataContext;
 using RentalAttireBackend.Infrastructure.Persistence.Repositories;
+using RentalAttireBackend.Infrastructure.Persistence.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,6 +31,7 @@ builder.Services.AddScoped<IPersonRepository, PersonRepository>();
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 builder.Services.AddScoped<ITransactionManager, TransactionManager>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 
 var app = builder.Build();
 
