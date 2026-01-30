@@ -17,6 +17,7 @@ namespace RentalAttireBackend.Application.Employees.Commands.CreateEmployee
         private readonly IPersonRepository _personRepo;
         private readonly IUserRepository _userRepo;
         private readonly IPasswordHasher _passwordHasher;
+        private readonly IJwtTokenGenerator _tokenGenerator;
 
         public CreateEmployeeCommandHandler
             (
@@ -25,7 +26,8 @@ namespace RentalAttireBackend.Application.Employees.Commands.CreateEmployee
             ITransactionManager transaction,
             IPersonRepository personRepo,
             IUserRepository userRepo,
-            IPasswordHasher passwordHasher
+            IPasswordHasher passwordHasher,
+            IJwtTokenGenerator tokenGenerator
             )
         {
             _mapper = mapper;
@@ -34,6 +36,7 @@ namespace RentalAttireBackend.Application.Employees.Commands.CreateEmployee
             _personRepo = personRepo;
             _userRepo = userRepo;
             _passwordHasher = passwordHasher;
+            _tokenGenerator = tokenGenerator;
         }
 
         public async Task<Result<bool>> Handle(CreateEmployeeCommand request, CancellationToken cancellationToken)
@@ -82,6 +85,14 @@ namespace RentalAttireBackend.Application.Employees.Commands.CreateEmployee
                 };
 
                 var createUser = await _userRepo.CreateUserAsync(newUser, cancellationToken);
+
+                var accessToken = _tokenGenerator.GenerateAccessToken(newUser);
+                var refreshToken = _tokenGenerator.GenerateRefreshToken();
+
+                newUser.RefreshToken = refreshToken;
+                newUser.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
+
+                await _userRepo.UpdateUserAsync(newUser, cancellationToken);
 
                 if (!createUser)
                 {

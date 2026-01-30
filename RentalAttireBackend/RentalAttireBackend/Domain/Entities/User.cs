@@ -9,6 +9,8 @@ namespace RentalAttireBackend.Domain.Entities
         public string HashedPassword { get; set; } = string.Empty;
         public int? EmployeeId { get; set; }
         public int? CustomerId { get; set; }
+        public string RefreshToken { get; set; } = string.Empty;
+        public DateTime? RefreshTokenExpiryTime { get; set; }
 
         //NavProp
         [JsonIgnore]
