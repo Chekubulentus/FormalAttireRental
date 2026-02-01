@@ -53,10 +53,11 @@ namespace RentalAttireBackend.Application.Employees.Commands.CreateEmployee
                 if (emailValidation)
                     return Result<bool>.Failure("Email already exist.");
 
-                var hashedPassword = _passwordHasher.HashPassword(request.Password);
                 var person = _mapper.Map<Person>(request.Person);
 
                 var personId = await _personRepo.CreatePersonAsync(person, cancellationToken);
+
+                var hashedPassword = _passwordHasher.HashPassword(request.Password);
 
                 var newUser = _mapper.Map<User>(request);
                 newUser.HashedPassword = hashedPassword;
