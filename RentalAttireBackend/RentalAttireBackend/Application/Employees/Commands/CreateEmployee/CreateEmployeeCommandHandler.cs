@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Connections.Features;
 using RentalAttireBackend.Application.Common.Interfaces;
 using RentalAttireBackend.Application.Common.Models;
 using RentalAttireBackend.Application.Employees.DTOs;
+using RentalAttireBackend.Application.Persons.DTO;
 using RentalAttireBackend.Domain.Entities;
 using RentalAttireBackend.Domain.Interfaces;
 
@@ -41,69 +42,44 @@ namespace RentalAttireBackend.Application.Employees.Commands.CreateEmployee
 
         public async Task<Result<bool>> Handle(CreateEmployeeCommand request, CancellationToken cancellationToken)
         {
-            if (request is null || request.Person is null)
-                return Result<bool>.Failure("Invalid request. Please fill all the required fields.");
-
-            var emailDuplication = await _userRepo.ValidateEmailDuplicationAsync(request.Email, cancellationToken);
-
-            if (emailDuplication)
-                return Result<bool>.Failure("Email already exist. Please try again.");
+            if (request is null)
+                return Result<bool>.Failure("Invalid request. Please try again");
 
             try
             {
                 await _transaction.BeginTransactionAsync(cancellationToken);
+                var emailValidation = await _userRepo.ValidateEmailDuplicationAsync(request.Email, cancellationToken);
+
+                if (emailValidation)
+                    return Result<bool>.Failure("Email already exist.");
+
+                var hashedPassword = _passwordHasher.HashPassword(request.Password);
                 var person = _mapper.Map<Person>(request.Person);
-                person.EntityType = "Person";
 
-                var createPerson = await _personRepo.CreatePersonAsync(person, cancellationToken);
+                var personId = await _personRepo.CreatePersonAsync(person, cancellationToken);
 
-                if(createPerson == 0)
-                {
-                    await _transaction.RollbackTransactionAsync(cancellationToken);
-                    return Result<bool>.Failure("Employee cannot be registered. Please try again.");
-                }
+                var newUser = _mapper.Map<User>(request);
+                newUser.HashedPassword = hashedPassword;
+                newUser.Person = person;
+
+                var createUser = await _userRepo.CreateUserAsync(newUser, cancellationToken);
+
+                if (!createUser)
+                    return Result<bool>.Failure("Account creation failed.");
 
                 var employee = _mapper.Map<Employee>(request);
-                employee.Person = person;
-                employee.PersonId = createPerson;
-                employee.EntityType = "Employee";
+                employee.User = newUser;
 
                 var createEmployee = await _employeeRepo.CreateEmployeeAsync(employee, cancellationToken);
 
                 if (createEmployee == 0)
-                {
-                    await _transaction.RollbackTransactionAsync(cancellationToken);
-                    return Result<bool>.Failure("Employee cannot be registered. Please try again.");
-                }
-
-                var newUser = new User
-                {
-                    Email = request.Email,
-                    HashedPassword = _passwordHasher.HashPassword(request.Password),
-                    EmployeeId = createEmployee,
-                    EntityType = "User"
-                };
-
-                var createUser = await _userRepo.CreateUserAsync(newUser, cancellationToken);
-
-                var accessToken = _tokenGenerator.GenerateAccessToken(newUser);
-                var refreshToken = _tokenGenerator.GenerateRefreshToken();
-
-                newUser.RefreshToken = refreshToken;
-                newUser.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
-
-                await _userRepo.UpdateUserAsync(newUser, cancellationToken);
-
-                if (!createUser)
-                {
-                    await _transaction.RollbackTransactionAsync(cancellationToken);
-                    return Result<bool>.Failure("User cannot be created. Please try again.");
-                }
+                    return Result<bool>.Failure("Employee cannot be created. Please try again");
 
                 await _transaction.CommitTransacionAsync(cancellationToken);
-                return Result<bool>.SuccessWithMessage("Employee successfully registered!");
+                return Result<bool>.SuccessWithMessage("Employee successfully created!");
             }catch(Exception e)
             {
+                await _transaction.RollbackTransactionAsync(cancellationToken);
                 return Result<bool>.Failure(e.Message);
             }
         }

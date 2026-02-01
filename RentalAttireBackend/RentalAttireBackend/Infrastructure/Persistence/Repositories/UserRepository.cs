@@ -53,10 +53,7 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
         public async Task<User?> GetUserByEmailAsync(string email, CancellationToken cancellationToken)
         {
             return await _context.Users
-                .Include(u => u.Employee)
-                .ThenInclude(e => e.Person)
-                .Include(u => u.Customer)
-                .ThenInclude(c => c.Person)
+                .Include(u => u.Person)
                 .FirstOrDefaultAsync(u => u.Email.Equals(email));
         }
 

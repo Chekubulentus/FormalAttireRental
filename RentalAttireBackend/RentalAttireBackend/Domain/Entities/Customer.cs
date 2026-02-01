@@ -12,11 +12,9 @@ namespace RentalAttireBackend.Domain.Entities
         public int TotalRentals { get; set; }
         [Column(TypeName = "decimal(18,2)")]
         public double TotalSpent { get; set; }  
-        public int PersonId { get; set; }
+        public int UserId { get; set; }
 
         //NavProp
-        [JsonIgnore]
-        public Person? Person { get; set; }
         [JsonIgnore]
         public User? User { get; set; }
     }

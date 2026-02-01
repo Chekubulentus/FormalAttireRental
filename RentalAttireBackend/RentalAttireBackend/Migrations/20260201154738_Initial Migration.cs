@@ -70,75 +70,6 @@ namespace RentalAttireBackend.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Customers",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    CustomerCode = table.Column<string>(type: "text", nullable: false),
-                    TotalRentals = table.Column<decimal>(type: "numeric(18,2)", nullable: false),
-                    TotalSpent = table.Column<double>(type: "numeric(18,2)", nullable: false),
-                    PersonId = table.Column<int>(type: "integer", nullable: false),
-                    CreatedBy = table.Column<string>(type: "text", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    UpdatedBy = table.Column<string>(type: "text", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    ArchivedBy = table.Column<string>(type: "text", nullable: false),
-                    ArchivedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
-                    EntityType = table.Column<string>(type: "text", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Customers", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Customers_People_PersonId",
-                        column: x => x.PersonId,
-                        principalTable: "People",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Employees",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    EmployeeCode = table.Column<string>(type: "text", nullable: false),
-                    Department = table.Column<string>(type: "text", nullable: false),
-                    Salary = table.Column<double>(type: "numeric(18,2)", nullable: false),
-                    RoleId = table.Column<int>(type: "integer", nullable: false),
-                    PersonId = table.Column<int>(type: "integer", nullable: false),
-                    CreatedBy = table.Column<string>(type: "text", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    UpdatedBy = table.Column<string>(type: "text", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    ArchivedBy = table.Column<string>(type: "text", nullable: false),
-                    ArchivedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
-                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
-                    EntityType = table.Column<string>(type: "text", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Employees", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Employees_People_PersonId",
-                        column: x => x.PersonId,
-                        principalTable: "People",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Employees_Roles_RoleId",
-                        column: x => x.RoleId,
-                        principalTable: "Roles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.SetNull);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
@@ -146,8 +77,9 @@ namespace RentalAttireBackend.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Email = table.Column<string>(type: "text", nullable: false),
                     HashedPassword = table.Column<string>(type: "text", nullable: false),
-                    EmployeeId = table.Column<int>(type: "integer", nullable: true),
-                    CustomerId = table.Column<int>(type: "integer", nullable: true),
+                    RefreshToken = table.Column<string>(type: "text", nullable: false),
+                    RefreshTokenExpiryTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    PersonId = table.Column<int>(type: "integer", nullable: false),
                     CreatedBy = table.Column<string>(type: "text", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     UpdatedBy = table.Column<string>(type: "text", nullable: false),
@@ -162,35 +94,80 @@ namespace RentalAttireBackend.Migrations
                 {
                     table.PrimaryKey("PK_Users", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Users_Customers_CustomerId",
-                        column: x => x.CustomerId,
-                        principalTable: "Customers",
+                        name: "FK_Users_People_PersonId",
+                        column: x => x.PersonId,
+                        principalTable: "People",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "EmployeeUser",
+                name: "Customers",
                 columns: table => new
                 {
-                    EmployeesId = table.Column<int>(type: "integer", nullable: false),
-                    UsersId = table.Column<int>(type: "integer", nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    CustomerCode = table.Column<string>(type: "text", nullable: false),
+                    TotalRentals = table.Column<decimal>(type: "numeric(18,2)", nullable: false),
+                    TotalSpent = table.Column<double>(type: "numeric(18,2)", nullable: false),
+                    UserId = table.Column<int>(type: "integer", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    UpdatedBy = table.Column<string>(type: "text", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    ArchivedBy = table.Column<string>(type: "text", nullable: false),
+                    ArchivedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    EntityType = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_EmployeeUser", x => new { x.EmployeesId, x.UsersId });
+                    table.PrimaryKey("PK_Customers", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_EmployeeUser_Employees_EmployeesId",
-                        column: x => x.EmployeesId,
-                        principalTable: "Employees",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_EmployeeUser_Users_UsersId",
-                        column: x => x.UsersId,
+                        name: "FK_Customers_Users_UserId",
+                        column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Employees",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    EmployeeCode = table.Column<string>(type: "text", nullable: false),
+                    Department = table.Column<string>(type: "text", nullable: false),
+                    Salary = table.Column<double>(type: "numeric(18,2)", nullable: false),
+                    RoleId = table.Column<int>(type: "integer", nullable: false),
+                    UserId = table.Column<int>(type: "integer", nullable: false),
+                    CreatedBy = table.Column<string>(type: "text", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    UpdatedBy = table.Column<string>(type: "text", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    ArchivedBy = table.Column<string>(type: "text", nullable: false),
+                    ArchivedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false),
+                    EntityType = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Employees", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Employees_Roles_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "Roles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
+                    table.ForeignKey(
+                        name: "FK_Employees_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.InsertData(
@@ -209,9 +186,9 @@ namespace RentalAttireBackend.Migrations
                 column: "CustomerCode");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Customers_PersonId",
+                name: "IX_Customers_UserId",
                 table: "Customers",
-                column: "PersonId",
+                column: "UserId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -220,50 +197,42 @@ namespace RentalAttireBackend.Migrations
                 column: "EmployeeCode");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Employees_PersonId",
-                table: "Employees",
-                column: "PersonId",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Employees_RoleId",
                 table: "Employees",
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_EmployeeUser_UsersId",
-                table: "EmployeeUser",
-                column: "UsersId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Users_CustomerId",
-                table: "Users",
-                column: "CustomerId",
+                name: "IX_Employees_UserId",
+                table: "Employees",
+                column: "UserId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_Email",
                 table: "Users",
                 column: "Email");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_PersonId",
+                table: "Users",
+                column: "PersonId",
+                unique: true);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "EmployeeUser");
+                name: "Customers");
 
             migrationBuilder.DropTable(
                 name: "Employees");
 
             migrationBuilder.DropTable(
-                name: "Users");
-
-            migrationBuilder.DropTable(
                 name: "Roles");
 
             migrationBuilder.DropTable(
-                name: "Customers");
+                name: "Users");
 
             migrationBuilder.DropTable(
                 name: "People");

@@ -32,7 +32,8 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
             var employees = _context.Employees
             .AsNoTracking()
             .Include(e => e.Role)
-            .Include(e => e.Person)
+            .Include(e => e.User)
+            .ThenInclude(u => u.Person)
             .AsQueryable();
 
             var totalCount = await employees.CountAsync();
@@ -70,11 +71,12 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
         {
             var query = _context.Employees
                 .Include(e => e.Role)
-                .Include(e => e.Person)
+                .Include(e => e.User)
+                .ThenInclude(u => u.Person)
                 .Where(e =>
                     e.EmployeeCode.ToLower().Contains(searchQuery.ToLower()) ||
                     e.Role.RolePosition.ToString().ToLower().Contains(searchQuery.ToLower()) ||
-                    e.Person.LastName.ToLower().Contains(searchQuery.ToLower())
+                    e.User.Person.LastName.ToLower().Contains(searchQuery.ToLower())
                 );
 
             var totalCount = await query.CountAsync();

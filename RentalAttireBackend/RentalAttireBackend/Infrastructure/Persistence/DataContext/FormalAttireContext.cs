@@ -22,10 +22,10 @@ namespace RentalAttireBackend.Infrastructure.Persistence.DataContext
                 e.HasKey(c => c.Id);
                 e.HasIndex(c => c.CustomerCode);
 
-                //Person Relationship
-                e.HasOne(c => c.Person)
-                .WithOne(p => p.Customer)
-                .HasForeignKey<Customer>(c => c.PersonId)
+                //User Relationship
+                e.HasOne(c => c.User)
+                .WithOne(u => u.Customer)
+                .HasForeignKey<Customer>(c => c.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
             });
             #endregion
@@ -42,10 +42,10 @@ namespace RentalAttireBackend.Infrastructure.Persistence.DataContext
                 .HasForeignKey(e => e.RoleId)
                 .OnDelete(DeleteBehavior.SetNull);
 
-                //Person Relationship
-                e.HasOne(e => e.Person)
-                .WithOne(e => e.Employee)
-                .HasForeignKey<Employee>(e => e.PersonId)
+                //User Relationship
+                e.HasOne(e => e.User)
+                .WithOne(u => u.Employee)
+                .HasForeignKey<Employee>(e => e.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
             });
             #endregion
@@ -65,15 +65,10 @@ namespace RentalAttireBackend.Infrastructure.Persistence.DataContext
                 e.HasIndex(u => u.Email);
 
 
-                //Employee Relationship
-                e.HasOne(u => u.Employee)
-                .WithMany(e => e.Users)
-                .OnDelete(DeleteBehavior.Restrict);
-
-                //Customer Relationship
-                e.HasOne(u => u.Customer)
-                .WithOne(c => c.User)
-                .HasForeignKey<User>(u => u.CustomerId)
+                //Person Relationship
+                e.HasOne(u => u.Person)
+                .WithOne(p => p.User)
+                .HasForeignKey<User>(u => u.PersonId)
                 .OnDelete(DeleteBehavior.Restrict);
             });
             #endregion

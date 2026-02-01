@@ -12,8 +12,8 @@ using RentalAttireBackend.Infrastructure.Persistence.DataContext;
 namespace RentalAttireBackend.Migrations
 {
     [DbContext(typeof(FormalAttireContext))]
-    [Migration("20260130105229_AddingRefreshTokenField")]
-    partial class AddingRefreshTokenField
+    [Migration("20260201154738_Initial Migration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -60,9 +60,6 @@ namespace RentalAttireBackend.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("PersonId")
-                        .HasColumnType("integer");
-
                     b.Property<decimal>("TotalRentals")
                         .HasColumnType("decimal(18,2)");
 
@@ -76,11 +73,14 @@ namespace RentalAttireBackend.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CustomerCode");
 
-                    b.HasIndex("PersonId")
+                    b.HasIndex("UserId")
                         .IsUnique();
 
                     b.ToTable("Customers");
@@ -125,9 +125,6 @@ namespace RentalAttireBackend.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("PersonId")
-                        .HasColumnType("integer");
-
                     b.Property<int>("RoleId")
                         .HasColumnType("integer");
 
@@ -141,14 +138,17 @@ namespace RentalAttireBackend.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
                     b.HasIndex("EmployeeCode");
 
-                    b.HasIndex("PersonId")
-                        .IsUnique();
-
                     b.HasIndex("RoleId");
+
+                    b.HasIndex("UserId")
+                        .IsUnique();
 
                     b.ToTable("Employees");
                 });
@@ -348,15 +348,9 @@ namespace RentalAttireBackend.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("CustomerId")
-                        .HasColumnType("integer");
-
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<int?>("EmployeeId")
-                        .HasColumnType("integer");
 
                     b.Property<string>("EntityType")
                         .HasColumnType("text");
@@ -370,6 +364,9 @@ namespace RentalAttireBackend.Migrations
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("boolean");
+
+                    b.Property<int>("PersonId")
+                        .HasColumnType("integer");
 
                     b.Property<string>("RefreshToken")
                         .IsRequired()
@@ -387,83 +384,70 @@ namespace RentalAttireBackend.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CustomerId")
-                        .IsUnique();
-
                     b.HasIndex("Email");
 
-                    b.HasIndex("EmployeeId");
+                    b.HasIndex("PersonId")
+                        .IsUnique();
 
                     b.ToTable("Users");
                 });
 
             modelBuilder.Entity("RentalAttireBackend.Domain.Entities.Customer", b =>
                 {
-                    b.HasOne("RentalAttireBackend.Domain.Entities.Person", "Person")
+                    b.HasOne("RentalAttireBackend.Domain.Entities.User", "User")
                         .WithOne("Customer")
-                        .HasForeignKey("RentalAttireBackend.Domain.Entities.Customer", "PersonId")
+                        .HasForeignKey("RentalAttireBackend.Domain.Entities.Customer", "UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Person");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("RentalAttireBackend.Domain.Entities.Employee", b =>
                 {
-                    b.HasOne("RentalAttireBackend.Domain.Entities.Person", "Person")
-                        .WithOne("Employee")
-                        .HasForeignKey("RentalAttireBackend.Domain.Entities.Employee", "PersonId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
                     b.HasOne("RentalAttireBackend.Domain.Entities.Role", "Role")
                         .WithMany("Employees")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.SetNull)
                         .IsRequired();
 
-                    b.Navigation("Person");
+                    b.HasOne("RentalAttireBackend.Domain.Entities.User", "User")
+                        .WithOne("Employee")
+                        .HasForeignKey("RentalAttireBackend.Domain.Entities.Employee", "UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("Role");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("RentalAttireBackend.Domain.Entities.User", b =>
                 {
-                    b.HasOne("RentalAttireBackend.Domain.Entities.Customer", "Customer")
+                    b.HasOne("RentalAttireBackend.Domain.Entities.Person", "Person")
                         .WithOne("User")
-                        .HasForeignKey("RentalAttireBackend.Domain.Entities.User", "CustomerId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("RentalAttireBackend.Domain.Entities.User", "PersonId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
-                    b.HasOne("RentalAttireBackend.Domain.Entities.Employee", "Employee")
-                        .WithMany("Users")
-                        .HasForeignKey("EmployeeId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.Navigation("Customer");
-
-                    b.Navigation("Employee");
-                });
-
-            modelBuilder.Entity("RentalAttireBackend.Domain.Entities.Customer", b =>
-                {
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("RentalAttireBackend.Domain.Entities.Employee", b =>
-                {
-                    b.Navigation("Users");
+                    b.Navigation("Person");
                 });
 
             modelBuilder.Entity("RentalAttireBackend.Domain.Entities.Person", b =>
                 {
-                    b.Navigation("Customer");
-
-                    b.Navigation("Employee");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("RentalAttireBackend.Domain.Entities.Role", b =>
                 {
                     b.Navigation("Employees");
+                });
+
+            modelBuilder.Entity("RentalAttireBackend.Domain.Entities.User", b =>
+                {
+                    b.Navigation("Customer");
+
+                    b.Navigation("Employee");
                 });
 #pragma warning restore 612, 618
         }

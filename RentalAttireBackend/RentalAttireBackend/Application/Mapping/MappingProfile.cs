@@ -46,7 +46,7 @@ namespace RentalAttireBackend.Application.Mapping
                 .ForMember(dest => dest.RolePosition,
                 opt => opt.MapFrom(src => src.Role.RolePosition))
                 .ForMember(dest => dest.Person,
-                opt => opt.MapFrom(src => src.Person));
+                opt => opt.MapFrom(src => src.User.Person));
 
             CreateMap(typeof(PagedResult<>), typeof(PagedResult<>));
             #endregion
@@ -55,12 +55,26 @@ namespace RentalAttireBackend.Application.Mapping
             CreateMap<CreateEmployeeCommand, Employee>()
                 .ForMember(dest => dest.RoleId,
                 opt => opt.MapFrom(src => Enum.Parse<RolePosition>(src.RolePosition, true)))
-                .ForMember(dest => dest.Person,
-                opt => opt.MapFrom(src => src.Person))
                 .ForMember(dest => dest.Id,
                 opt => opt.Ignore())
-                .ForMember(dest => dest.PersonId,
+                .ForPath(dest => dest.User.Email,
+                opt => opt.MapFrom(src => src.Email))
+                .ForPath(dest => dest.User.HashedPassword,
                 opt => opt.Ignore());
+            #endregion
+
+            #region CreateEmployeeCommand-User
+            CreateMap<CreateEmployeeCommand, User>()
+                .ForMember(dest => dest.Email,
+                opt => opt.MapFrom(src => src.Email))
+                .ForMember(dest => dest.HashedPassword,
+                opt => opt.Ignore())
+                .ForMember(dest => dest.RefreshToken,
+                opt => opt.Ignore())
+                .ForMember(dest => dest.RefreshTokenExpiryTime,
+                opt => opt.MapFrom(src => DateTime.UtcNow.AddDays(7)))
+                .ForMember(dest => dest.Person,
+                opt => opt.MapFrom(src => src.Person));
             #endregion
 
             #region User->UserDTO

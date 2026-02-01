@@ -20,9 +20,7 @@ namespace RentalAttireBackend.Domain.Entities
 
         //NavProp
         [JsonIgnore]
-        public Customer? Customer { get; set; }
-        [JsonIgnore]
-        public Employee? Employee { get; set; } 
+        public User? User { get; set; } 
     }
 
     public enum Gender
