@@ -33,15 +33,15 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
             .AsNoTracking()
             .Include(e => e.Role)
             .Include(e => e.User)
-            .ThenInclude(u => u.Person)
+                .ThenInclude(u => u.Person)
             .AsQueryable();
 
-            var totalCount = await employees.CountAsync();
+            var totalCount = await employees.CountAsync(cancellationToken);
 
             var items = await employees
                 .Skip(paginationParams.Skip)
                 .Take(paginationParams.ItemsPerPage)
-                .ToListAsync();
+                .ToListAsync(cancellationToken);
 
             return new PagedResult<Employee>
             {

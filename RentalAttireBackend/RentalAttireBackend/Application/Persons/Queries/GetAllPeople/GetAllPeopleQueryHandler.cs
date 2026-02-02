@@ -29,9 +29,9 @@ namespace RentalAttireBackend.Application.Persons.Queries.GetAllPeople
                 if (request is null)
                     return Result<List<PersonDTO>>.Failure("No person currently registered.");
 
-                var people = await _personRepo.GetAllPersonAsync(cancellationToken);
+                var people = await _personRepo.GetAllPersonAsync(request.paginationParams,cancellationToken);
 
-                if (!people.Any() || people.Count() == 0)
+                if (!people.Items.Any() || people.Items.Count() == 0)
                     return Result<List<PersonDTO>>.Failure("No person currently registered.");
 
                 var peopleDto = _mapper.Map<List<PersonDTO>>(people);

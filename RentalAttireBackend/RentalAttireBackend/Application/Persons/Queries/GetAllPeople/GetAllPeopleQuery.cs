@@ -6,5 +6,6 @@ namespace RentalAttireBackend.Application.Persons.Queries.GetAllPeople
 {
     public class GetAllPeopleQuery : IRequest<Result<List<PersonDTO>>>
     {
+        public PaginationParams paginationParams { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using RentalAttireBackend.Application.Common.Models;
 using RentalAttireBackend.Domain.Entities;
 using RentalAttireBackend.Domain.Interfaces;
 using RentalAttireBackend.Infrastructure.Persistence.DataContext;
@@ -21,11 +22,25 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
             return person.Id;
         }
 
-        public async Task<List<Person>> GetAllPersonAsync(CancellationToken cancellationToken)
+        public async Task<PagedResult<Person>> GetAllPersonAsync(PaginationParams paginationParams,CancellationToken cancellationToken)
         {
-            return await _context.People
-                .AsNoTracking()
+            var people = _context.People
+                .AsNoTracking();
+
+            var totalCount = await people.CountAsync(cancellationToken);
+
+            var paginatedItems = await people
+                .Skip(paginationParams.Skip)
+                .Take(paginationParams.ItemsPerPage)
                 .ToListAsync(cancellationToken);
+
+            return new PagedResult<Person>
+            {
+                Items = paginatedItems,
+                TotalCount = totalCount,
+                PageNumber = paginationParams.CurrentPage,
+                PageSize = paginationParams.ItemsPerPage,
+            };
         }
 
         public async Task<List<Person>> GetPersonByLastName(string email, CancellationToken cancellationToken)

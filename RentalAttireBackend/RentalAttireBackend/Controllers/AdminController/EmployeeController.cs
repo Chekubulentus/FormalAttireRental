@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using RentalAttireBackend.Application.Common.Models;
 using RentalAttireBackend.Application.Employees.Commands.CreateEmployee;
 using RentalAttireBackend.Application.Employees.Queries.GetAllEmployees;
+using RentalAttireBackend.Application.Employees.Queries.GetEmployeeById;
 using RentalAttireBackend.Application.Employees.Queries.SearchEmployee;
 
 namespace RentalAttireBackend.Controllers.AdminController
@@ -36,10 +37,17 @@ namespace RentalAttireBackend.Controllers.AdminController
             return result.IsSuccess ? Ok(result.SuccessMessage) : BadRequest(result.ErrorMessage);
         }
         [HttpGet("search-employee")]
-        public async Task<IActionResult> SearchEmployeeAsync([FromQuery]SearchEmployeeQuery query)
+        public async Task<IActionResult> SearchEmployeeAsync([FromBody]SearchEmployeeQuery query)
         {
             var result = await _mediator.Send(new SearchEmployeeQuery { SearchQuery = query.SearchQuery, 
                 PaginationParams = query.PaginationParams});
+
+            return result.IsSuccess ? Ok(result.Data) : NotFound(result.ErrorMessage);
+        }
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetEmployeeByIdAsync(int id)
+        {
+            var result = await _mediator.Send(new GetEmployeeByIdQuery { Id = id});
 
             return result.IsSuccess ? Ok(result.Data) : NotFound(result.ErrorMessage);
         }
