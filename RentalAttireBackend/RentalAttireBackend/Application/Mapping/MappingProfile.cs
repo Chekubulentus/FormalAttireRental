@@ -2,6 +2,7 @@
 using Npgsql.EntityFrameworkCore.PostgreSQL.Infrastructure.Internal;
 using RentalAttireBackend.Application.Common.Models;
 using RentalAttireBackend.Application.Employees.Commands.CreateEmployee;
+using RentalAttireBackend.Application.Employees.Commands.UpdateEmployee;
 using RentalAttireBackend.Application.Employees.DTOs;
 using RentalAttireBackend.Application.Persons.Commands.UpdatePerson;
 using RentalAttireBackend.Application.Persons.DTO;
@@ -21,6 +22,10 @@ namespace RentalAttireBackend.Application.Mapping
                 opt => opt.MapFrom(src => src.Gender.ToString()))
                 .ForMember(dest => dest.MaritalStatus,
                 opt => opt.MapFrom(src => src.MaritalStatus.ToString()));
+            #endregion
+
+            #region Person -> Person
+            CreateMap<Person, Person>();
             #endregion
 
             #region PersonDTO->Person
@@ -74,7 +79,25 @@ namespace RentalAttireBackend.Application.Mapping
                 .ForMember(dest => dest.RefreshTokenExpiryTime,
                 opt => opt.MapFrom(src => DateTime.UtcNow.AddDays(7)))
                 .ForMember(dest => dest.Person,
-                opt => opt.MapFrom(src => src.Person));
+                opt => opt.MapFrom(src => src.Person))
+                .ForMember(dest => dest.CreatedBy,
+                opt => opt.MapFrom(src => src.CreatedBy))
+                .ForMember(dest => dest.EntityType,
+                opt => opt.MapFrom(src => "Employee"));
+            #endregion
+
+            #region UpdateEmployeeCommand -> Employee
+            CreateMap<UpdateEmployeeCommand, Employee>()
+                .ForMember(dest => dest.Department,
+                opt => opt.MapFrom(src => src.Department))
+                .ForMember(dest => dest.Salary,
+                opt => opt.MapFrom(src => src.Salary))
+                .ForMember(dest => dest.RoleId,
+                opt => opt.MapFrom(src => Enum.Parse<RolePosition>(src.RolePosition, true)))
+                .ForMember(dest => dest.UpdatedBy,
+                opt => opt.MapFrom(src => src.UpdatedBy))
+                .ForMember(dest => dest.UpdatedAt,
+                opt => opt.MapFrom(src => DateTime.UtcNow));
             #endregion
 
             #region User->UserDTO

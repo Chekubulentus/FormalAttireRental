@@ -60,7 +60,10 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
 
         public async Task<Employee?> GetEmployeeByIdAsync(int id, CancellationToken cancellationToken)
         {
-            return await _context.Employees.FindAsync(id, cancellationToken);
+            return await _context.Employees
+                .Include(e => e.User)
+                    .ThenInclude(u => u.Person)
+                .FirstOrDefaultAsync(e => e.Id == id);
         }
 
         public async Task<PagedResult<Employee>> SearchEmployeeAsync
@@ -70,6 +73,7 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
             )
         {
             var query = _context.Employees
+                .AsNoTracking()
                 .Include(e => e.Role)
                 .Include(e => e.User)
                 .ThenInclude(u => u.Person)

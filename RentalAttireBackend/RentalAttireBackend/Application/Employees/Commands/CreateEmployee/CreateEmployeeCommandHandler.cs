@@ -70,6 +70,7 @@ namespace RentalAttireBackend.Application.Employees.Commands.CreateEmployee
 
                 var employee = _mapper.Map<Employee>(request);
                 employee.User = newUser;
+                employee.EntityType = "Employee";
 
                 var createEmployee = await _employeeRepo.CreateEmployeeAsync(employee, cancellationToken);
 

@@ -8,5 +8,6 @@ namespace RentalAttireBackend.Application.Employees.Commands.CreateEmployee
     {
         public string Email { get; set; } = string.Empty;
         public string Password { get; set; } = string.Empty;
+        public string CreatedBy { get; set; } = string.Empty;
     }
 }

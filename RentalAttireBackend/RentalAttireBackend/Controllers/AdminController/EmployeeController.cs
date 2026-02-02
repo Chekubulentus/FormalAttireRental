@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RentalAttireBackend.Application.Common.Models;
+using RentalAttireBackend.Application.Employees.Commands.ArchiveEmployee;
 using RentalAttireBackend.Application.Employees.Commands.CreateEmployee;
+using RentalAttireBackend.Application.Employees.Commands.UpdateEmployee;
 using RentalAttireBackend.Application.Employees.Queries.GetAllEmployees;
 using RentalAttireBackend.Application.Employees.Queries.GetEmployeeById;
 using RentalAttireBackend.Application.Employees.Queries.SearchEmployee;
@@ -50,6 +52,20 @@ namespace RentalAttireBackend.Controllers.AdminController
             var result = await _mediator.Send(new GetEmployeeByIdQuery { Id = id});
 
             return result.IsSuccess ? Ok(result.Data) : NotFound(result.ErrorMessage);
+        }
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> ArchiveEmployeeByIdAsync(int id)
+        {
+            var result = await _mediator.Send(new ArchiveEmployeeByIdCommand { Id = id });
+
+            return result.IsSuccess ? Ok(result.SuccessMessage) : BadRequest(result.ErrorMessage);
+        }
+        [HttpPut]
+        public async Task<IActionResult> UpdateEmployeeAsync(UpdateEmployeeCommand command)
+        {
+            var result = await _mediator.Send(command);
+
+            return result.IsSuccess ? Ok(result.SuccessMessage) : BadRequest(result.ErrorMessage);
         }
     }
 }
