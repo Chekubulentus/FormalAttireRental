@@ -97,7 +97,13 @@ namespace RentalAttireBackend.Application.Mapping
                 .ForMember(dest => dest.UpdatedBy,
                 opt => opt.MapFrom(src => src.UpdatedBy))
                 .ForMember(dest => dest.UpdatedAt,
-                opt => opt.MapFrom(src => DateTime.UtcNow));
+                opt => opt.MapFrom(src => DateTime.UtcNow))
+                .ForPath(dest => dest.User.Person.UpdatedBy,
+                opt => opt.MapFrom(src => src.UpdatedBy))
+                .ForPath(dest => dest.User.Person.UpdatedAt,
+                opt => opt.MapFrom(src => DateTime.UtcNow))
+                .ForPath(dest => dest.User.Person.EntityType,
+                opt => opt.MapFrom(src => "Person"));
             #endregion
 
             #region User->UserDTO

@@ -38,25 +38,11 @@ namespace RentalAttireBackend.Application.Employees.Commands.UpdateEmployee
                     return Result<bool>.Failure("Employee does not exist. Please try again.");
                 }
 
+                _mapper.Map(request, employee);
 
-                var updatedEmployee = _mapper.Map(request, employee);
+                _mapper.Map(request.Person, employee.User.Person);
 
-                var person = updatedEmployee.User.Person;
-
-                person.LastName = request.Person.LastName;
-                person.FirstName = request.Person.FirstName;
-                person.MiddleName = request.Person.MiddleName;
-                person.Age = request.Person.Age;
-                person.Gender = Enum.Parse<Gender>(request.Person.Gender, true);
-                person.MaritalStatus = Enum.Parse<MaritalStatus>(request.Person.MaritalStatus, true);
-                person.PhoneNumber = request.Person.PhoneNumber;
-                person.Street = request.Person.Street;
-                person.Barangay = request.Person.Barangay;
-                person.City = request.Person.City;
-                person.Province = request.Person.Province;
-                person.PostalCode = request.Person.PostalCode;
-
-                var updateEmployee = await _employeeRepo.UpdateEmployeeAsync(updatedEmployee, cancellationToken);
+                var updateEmployee = await _employeeRepo.UpdateEmployeeAsync(employee, cancellationToken);
 
                 if (!updateEmployee)
                 {
