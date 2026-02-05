@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Infrastructure.Internal;
+using RentalAttireBackend.Application.Common.Interfaces;
 using RentalAttireBackend.Application.Common.Models;
 using RentalAttireBackend.Application.Employees.Commands.CreateEmployee;
 using RentalAttireBackend.Application.Employees.Commands.UpdateEmployee;
@@ -16,6 +17,7 @@ namespace RentalAttireBackend.Application.Mapping
     {
         public MappingProfile()
         {
+
             #region Person->PersonDTO
             CreateMap<Person, PersonDTO>()
                 .ForMember(dest => dest.Gender,

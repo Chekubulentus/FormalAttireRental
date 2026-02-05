@@ -1,7 +1,9 @@
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using RentalAttireBackend.Application.Common.Models;
 using RentalAttireBackend.Application.Persons.Commands.UpdatePerson;
+using RentalAttireBackend.Application.Persons.Commands.UploadImagePerson;
 using RentalAttireBackend.Application.Persons.Queries.GetAllPeople;
 using RentalAttireBackend.Application.Persons.Queries.GetPeopleByLastName;
 using RentalAttireBackend.Application.Persons.Queries.GetPersonById;
@@ -21,9 +23,9 @@ namespace RentalAttireBackend.Controllers.AdminController
             _mediator = mediator;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAllPeopleAsync()
+        public async Task<IActionResult> GetAllPeopleAsync([FromBody]PaginationParams paginationParams)
         {
-            var result = await _mediator.Send(new GetAllPeopleQuery());
+            var result = await _mediator.Send(new GetAllPeopleQuery {PaginationParams = paginationParams });
 
             return result.IsSuccess ? Ok(result.Data) : NotFound(result.ErrorMessage);
         }
@@ -47,6 +49,13 @@ namespace RentalAttireBackend.Controllers.AdminController
             var result = await _mediator.Send(new GetPeopleByLastNameQuery { LastName = lastName });
 
             return result.IsSuccess ? Ok(result.Data) : NotFound(result.ErrorMessage);
+        }
+        [HttpPost("person/{personId}/profile-image")]
+        public async Task<IActionResult> UploadPersonProfileImage(int personId, [FromForm]IFormFile file)
+        {
+            var result = await _mediator.Send(new UploadImagePersonCommand { Image = file, Id = personId });
+
+            return result.IsSuccess ? Ok(result.SuccessMessage) : BadRequest(result.ErrorMessage);
         }
     }
 }

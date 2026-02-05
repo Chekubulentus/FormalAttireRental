@@ -4,6 +4,7 @@
     <TargetFramework>net10.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+	<EnableDefaultContentItems>true</EnableDefaultContentItems>
   </PropertyGroup>
 
   <ItemGroup>
@@ -33,7 +34,7 @@
     <Folder Include="Controllers\CustomerController\" />
     <Folder Include="Controllers\ClothesManagerController\" />
     <Folder Include="Controllers\CashierController\" />
-    <Folder Include="Infrastructure\Persistence\Services\" />
+    <Folder Include="wwwroot\" />
   </ItemGroup>
 
 </Project>

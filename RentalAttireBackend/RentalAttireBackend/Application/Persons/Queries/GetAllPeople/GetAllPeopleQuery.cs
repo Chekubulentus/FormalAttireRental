@@ -4,8 +4,8 @@ using RentalAttireBackend.Application.Persons.DTO;
 
 namespace RentalAttireBackend.Application.Persons.Queries.GetAllPeople
 {
-    public class GetAllPeopleQuery : IRequest<Result<List<PersonDTO>>>
+    public class GetAllPeopleQuery : IRequest<Result<PagedResult<PersonDTO>>>
     {
-        public PaginationParams paginationParams { get; set; }
+        public PaginationParams PaginationParams { get; set; } = null!;
     }
 }

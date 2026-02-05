@@ -17,5 +17,6 @@ namespace RentalAttireBackend.Application.Persons.DTO
         public string City { get; set; } = string.Empty;
         public string Province { get; set; } = string.Empty;
         public string PostalCode { get; set; } = string.Empty;
+        public string? ProfileImagePath { get; set; } 
     }
 }

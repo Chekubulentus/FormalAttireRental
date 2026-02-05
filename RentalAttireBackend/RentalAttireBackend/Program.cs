@@ -24,6 +24,9 @@ builder.Services.AddOpenApi();
 //Jwt Settings
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
 
+//Image Upload Settings
+builder.Services.Configure<ImageUploadSettings>(builder.Configuration.GetSection("ImageUploadSettings"));
+
 var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<JwtSettings>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -58,6 +61,9 @@ builder.Services.AddScoped<ITransactionManager, TransactionManager>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
+builder.Services.AddScoped<IFileUploadService, FileUploadService>();
+
+builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
@@ -66,6 +72,8 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
+
+app.UseStaticFiles();
 
 app.UseHttpsRedirection();
 
