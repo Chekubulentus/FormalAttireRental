@@ -34,44 +34,44 @@ namespace RentalAttireBackend.Application.Employees.Commands.UpdateEmployee
             try
             {
                 await _transaction.BeginTransactionAsync(cancellationToken);
-                var oldEmployee = await _employeeRepo.GetEmployeeByIdAsync(request.Id, cancellationToken);
+                var existingEmployee = await _employeeRepo.GetEmployeeByIdAsync(request.Id, cancellationToken);
 
-                if (oldEmployee is null)
+                if (existingEmployee is null)
                 {
                     await _transaction.RollbackTransactionAsync(cancellationToken);
                     return Result<bool>.Failure("Employee does not exist. Please try again.");
                 }
 
-                var oldEmployeeDetails = _mapper.Map<Employee>(oldEmployee);
-                var newEmployeeDetails = _mapper.Map<Employee>(request);
+                var oldEmployeeDetails = _mapper.Map<Employee>(existingEmployee);
+                var oldPersonDetails = _mapper.Map<Person>(existingEmployee.User.Person);
 
-                _mapper.Map(request, oldEmployee);
+                _mapper.Map(request, existingEmployee);
+                _mapper.Map(request.Person, existingEmployee.User.Person);
 
-                var oldPersonDetails = _mapper.Map<Person>(oldEmployee.User.Person);
-                var newPersonDetails = _mapper.Map<Person>(request.Person);
+                var newEmployeeDetails = _mapper.Map<Employee>(existingEmployee);
+                var newPersonDetails = _mapper.Map<Person>(existingEmployee.User.Person);
 
-                _mapper.Map(request.Person, oldEmployee.User.Person);
-
-                var logEmployee = await _auditLogService.UpdateAuditLogAsync(
+                var auditEmployee = await _auditLogService.UpdateAuditLogAsync(
                     oldEmployeeDetails,
                     newEmployeeDetails,
                     request.PerformedById,
-                    request.UpdatedBy);
+                    request.PerformedBy
+                    );
 
-                var logPerson = await _auditLogService.UpdateAuditLogAsync(
+                var auditPerson = await _auditLogService.UpdateAuditLogAsync(
                     oldPersonDetails,
                     newPersonDetails,
                     request.PerformedById,
-                    request.UpdatedBy
+                    request.PerformedBy
                     );
 
-                if (!logEmployee || !logPerson)
+                if(!auditEmployee || !auditPerson)
                 {
                     await _transaction.RollbackTransactionAsync(cancellationToken);
-                    return Result<bool>.Failure("No changes have been made. Please try again.");
+                    return Result<bool>.Failure("No changes have been made.");
                 }
 
-                var updateEmployee = await _employeeRepo.UpdateEmployeeAsync(oldEmployee, cancellationToken);
+                var updateEmployee = await _employeeRepo.UpdateEmployeeAsync(existingEmployee, cancellationToken);
 
                 if (!updateEmployee)
                 {

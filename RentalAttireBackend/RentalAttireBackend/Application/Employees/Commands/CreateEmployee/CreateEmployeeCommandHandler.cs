@@ -19,6 +19,7 @@ namespace RentalAttireBackend.Application.Employees.Commands.CreateEmployee
         private readonly IUserRepository _userRepo;
         private readonly IPasswordHasher _passwordHasher;
         private readonly IJwtTokenGenerator _tokenGenerator;
+        private readonly IAuditLogService _auditService;
 
         public CreateEmployeeCommandHandler
             (
@@ -28,7 +29,8 @@ namespace RentalAttireBackend.Application.Employees.Commands.CreateEmployee
             IPersonRepository personRepo,
             IUserRepository userRepo,
             IPasswordHasher passwordHasher,
-            IJwtTokenGenerator tokenGenerator
+            IJwtTokenGenerator tokenGenerator,
+            IAuditLogService auditService
             )
         {
             _mapper = mapper;
@@ -38,6 +40,7 @@ namespace RentalAttireBackend.Application.Employees.Commands.CreateEmployee
             _userRepo = userRepo;
             _passwordHasher = passwordHasher;
             _tokenGenerator = tokenGenerator;
+            _auditService = auditService;
         }
 
         public async Task<Result<bool>> Handle(CreateEmployeeCommand request, CancellationToken cancellationToken)
@@ -76,6 +79,14 @@ namespace RentalAttireBackend.Application.Employees.Commands.CreateEmployee
 
                 if (createEmployee == 0)
                     return Result<bool>.Failure("Employee cannot be created. Please try again");
+
+                var logEmployee = await _auditService.CreateAuditLogAsync(employee, request.CreatedById, request.CreatedBy);
+
+                if (!logEmployee)
+                {
+                    await _transaction.RollbackTransactionAsync(cancellationToken);
+                    return Result<bool>.Failure("Audit trail cannot be created. Please try again.");
+                }
 
                 await _transaction.CommitTransacionAsync(cancellationToken);
                 return Result<bool>.SuccessWithMessage("Employee successfully created!");

@@ -31,9 +31,7 @@ namespace RentalAttireBackend.Application.Mapping
                 .ForMember(dest => dest.Gender,
                 opt => opt.MapFrom(src => Enum.Parse<Gender>(src.Gender, true)))
                 .ForMember(dest => dest.MaritalStatus,
-                opt => opt.MapFrom(src => Enum.Parse<MaritalStatus>(src.MaritalStatus, true)))
-                .ForMember(dest => dest.Id,
-                opt => opt.Ignore());
+                opt => opt.MapFrom(src => Enum.Parse<MaritalStatus>(src.MaritalStatus, true)));
             #endregion
 
             #region UpdatePersonCommand->Person
@@ -93,11 +91,11 @@ namespace RentalAttireBackend.Application.Mapping
                 .ForMember(dest => dest.RoleId,
                 opt => opt.MapFrom(src => Enum.Parse<RolePosition>(src.RolePosition, true)))
                 .ForMember(dest => dest.UpdatedBy,
-                opt => opt.MapFrom(src => src.UpdatedBy))
+                opt => opt.MapFrom(src => src.PerformedBy))
                 .ForMember(dest => dest.UpdatedAt,
                 opt => opt.MapFrom(src => DateTime.UtcNow))
                 .ForPath(dest => dest.User.Person.UpdatedBy,
-                opt => opt.MapFrom(src => src.UpdatedBy))
+                opt => opt.MapFrom(src => src.PerformedBy))
                 .ForPath(dest => dest.User.Person.UpdatedAt,
                 opt => opt.MapFrom(src => DateTime.UtcNow))
                 .ForPath(dest => dest.User.Person.EntityType,

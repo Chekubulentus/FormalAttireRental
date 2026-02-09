@@ -119,13 +119,25 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Services
             var changes = new Dictionary<string, (object oldValues, object newValues)>();
             var properties = typeof(T).GetProperties();
 
+            var ignoredProperties = new HashSet<object>
+            {
+                "Id",
+                "UserId",
+                "CreatedBy",
+                "CreatedAt",
+                "UpdatedBy",
+                "UpdatedAt",
+                "ArchivedBy",
+                "ArchivedAt",
+                "EntityType",
+                "IsDeleted",
+                "IsActive",
+                "EntityType"
+            };
+
             foreach(var property in properties)
             {
-                if (property.Name.Contains("Id") || property.Name.Contains("CreatedBy") ||
-                    property.Name.Contains("CreatedAt") || property.Name.Contains("UpdatedBy") ||
-                    property.Name.Contains("UpdatedAt") || property.Name.Contains("ArchivedBy") ||
-                    property.Name.Contains("ArchivedAt") || property.Name.Contains("EntityType") ||
-                    property.Name.Contains("IsDeleted") || property.Name.Contains("IsActive"))
+                if (ignoredProperties.Contains(property))
                     continue;
 
                 var oldValues = property.GetValue(oldEntity);
