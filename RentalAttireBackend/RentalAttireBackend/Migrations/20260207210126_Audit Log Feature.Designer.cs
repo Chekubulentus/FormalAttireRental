@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using RentalAttireBackend.Infrastructure.Persistence.DataContext;
@@ -11,9 +12,11 @@ using RentalAttireBackend.Infrastructure.Persistence.DataContext;
 namespace RentalAttireBackend.Migrations
 {
     [DbContext(typeof(FormalAttireContext))]
-    partial class FormalAttireContextModelSnapshot : ModelSnapshot
+    [Migration("20260207210126_Audit Log Feature")]
+    partial class AuditLogFeature
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -41,7 +44,7 @@ namespace RentalAttireBackend.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("ChangedById")
+                    b.Property<int>("ChangedById")
                         .HasColumnType("integer");
 
                     b.Property<int>("EntityId")
@@ -57,6 +60,7 @@ namespace RentalAttireBackend.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("NewValues")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("OldValues")

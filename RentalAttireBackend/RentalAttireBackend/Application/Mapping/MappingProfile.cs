@@ -26,10 +26,6 @@ namespace RentalAttireBackend.Application.Mapping
                 opt => opt.MapFrom(src => src.MaritalStatus.ToString()));
             #endregion
 
-            #region Person -> Person
-            CreateMap<Person, Person>();
-            #endregion
-
             #region PersonDTO->Person
             CreateMap<PersonDTO, Person>()
                 .ForMember(dest => dest.Gender,

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using RentalAttireBackend.Application.Common.Interfaces;
 using RentalAttireBackend.Application.Common.Models;
 using RentalAttireBackend.Application.Employees.DTOs;
 using RentalAttireBackend.Domain.Interfaces;
@@ -10,15 +11,18 @@ namespace RentalAttireBackend.Application.Employees.Queries.GetAllEmployees
     {
         private readonly IEmployeeRepository _employeeRepo;
         private readonly IMapper _mapper;
+        private readonly IFileUploadService _fileUploadService;
 
         public GetAllEmployeesQueryHandler
             (
             IEmployeeRepository employeeRepo,
-            IMapper mapper
+            IMapper mapper,
+            IFileUploadService fileUploadService
             )
         {
             _employeeRepo = employeeRepo;
             _mapper = mapper;
+            _fileUploadService = fileUploadService;
         }
 
         public async Task<Result<PagedResult<EmployeeDTO>>> Handle(GetAllEmployeesQuery request, CancellationToken cancellationToken)
@@ -32,6 +36,16 @@ namespace RentalAttireBackend.Application.Employees.Queries.GetAllEmployees
 
                 if (!paginatedEmployees.Items.Any() || paginatedEmployees.Items.Count() == 0)
                     return Result<PagedResult<EmployeeDTO>>.Failure("No employees currently registered.");
+
+                foreach(var employee in paginatedEmployees.Items)
+                {
+                    var person = employee.User?.Person;
+
+                    if (person?.ProfileImagePath is null)
+                        continue;
+
+                    person.ProfileImagePath = _fileUploadService.GetFileUrl(person.ProfileImagePath);
+                }
 
                 var paginatedEmployeesDto = _mapper.Map<PagedResult<EmployeeDTO>>(paginatedEmployees);
 

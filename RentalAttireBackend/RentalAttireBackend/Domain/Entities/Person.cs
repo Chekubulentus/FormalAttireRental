@@ -19,6 +19,11 @@ namespace RentalAttireBackend.Domain.Entities
         public string PostalCode { get; set; } = string.Empty;
         public string? ProfileImagePath { get; set; }
 
+        public string FullName
+        {
+            get { return $"${LastName}, {FirstName}"; }
+        }
+
         //NavProp
         [JsonIgnore]
         public User? User { get; set; } 

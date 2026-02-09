@@ -11,6 +11,7 @@ namespace RentalAttireBackend.Infrastructure.Persistence.DataContext
         public DbSet<User> Users { get; set; }
         public DbSet<Person> People { get; set; }
         public DbSet<Role> Roles { get; set; }
+        public DbSet<AuditLog> AuditLogs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -108,6 +109,17 @@ namespace RentalAttireBackend.Infrastructure.Persistence.DataContext
                     RolePosition = RolePosition.Cashier,
                 });
 
+            #endregion
+
+            #region AuditLog
+            modelBuilder.Entity<AuditLog>(e =>
+            {
+                e.HasKey(a => a.Id);
+                e.Property(a => a.EntityType).IsRequired().HasMaxLength(255);
+                e.Property(a => a.ActionType).IsRequired();
+                e.Property(a => a.ChangedBy).IsRequired();
+                e.Property(a => a.ChangedAt).IsRequired();
+            });
             #endregion
         }
     }
