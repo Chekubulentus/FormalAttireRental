@@ -31,7 +31,9 @@ namespace RentalAttireBackend.Application.Mapping
                 .ForMember(dest => dest.Gender,
                 opt => opt.MapFrom(src => Enum.Parse<Gender>(src.Gender, true)))
                 .ForMember(dest => dest.MaritalStatus,
-                opt => opt.MapFrom(src => Enum.Parse<MaritalStatus>(src.MaritalStatus, true)));
+                opt => opt.MapFrom(src => Enum.Parse<MaritalStatus>(src.MaritalStatus, true)))
+                .ForMember(dest => dest.EntityType,
+                opt => opt.MapFrom(src => "Person"));
             #endregion
 
             #region UpdatePersonCommand->Person

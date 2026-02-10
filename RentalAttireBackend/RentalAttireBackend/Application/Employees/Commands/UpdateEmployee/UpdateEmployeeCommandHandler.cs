@@ -68,7 +68,7 @@ namespace RentalAttireBackend.Application.Employees.Commands.UpdateEmployee
                 if(!auditEmployee || !auditPerson)
                 {
                     await _transaction.RollbackTransactionAsync(cancellationToken);
-                    return Result<bool>.Failure("No changes have been made.");
+                    return Result<bool>.Failure("No changes have been made to the employee.");
                 }
 
                 var updateEmployee = await _employeeRepo.UpdateEmployeeAsync(existingEmployee, cancellationToken);
@@ -76,7 +76,7 @@ namespace RentalAttireBackend.Application.Employees.Commands.UpdateEmployee
                 if (!updateEmployee)
                 {
                     await _transaction.RollbackTransactionAsync(cancellationToken);
-                    return Result<bool>.Failure("Employee cannot be updated. Please try again.");
+                    return Result<bool>.Failure("Failed to update employee record. No changes were saved.");
                 }
 
                 await _transaction.CommitTransacionAsync(cancellationToken);

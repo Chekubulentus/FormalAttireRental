@@ -78,14 +78,14 @@ namespace RentalAttireBackend.Application.Employees.Commands.CreateEmployee
                 var createEmployee = await _employeeRepo.CreateEmployeeAsync(employee, cancellationToken);
 
                 if (createEmployee == 0)
-                    return Result<bool>.Failure("Employee cannot be created. Please try again");
+                    return Result<bool>.Failure("Failed to create employee record.");
 
                 var logEmployee = await _auditService.CreateAuditLogAsync(employee, request.CreatedById, request.CreatedBy);
 
                 if (!logEmployee)
                 {
                     await _transaction.RollbackTransactionAsync(cancellationToken);
-                    return Result<bool>.Failure("Audit trail cannot be created. Please try again.");
+                    return Result<bool>.Failure("Failed to record audit log for this action.");
                 }
 
                 await _transaction.CommitTransacionAsync(cancellationToken);

@@ -34,6 +34,7 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
             .Include(e => e.Role)
             .Include(e => e.User)
                 .ThenInclude(u => u.Person)
+            .Where(e => e.IsActive)
             .AsQueryable();
 
             var totalCount = await employees.CountAsync(cancellationToken);
@@ -55,7 +56,7 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
         public async Task<Employee?> GetEmployeeByEmployeeCodeAsync(string employeeCode, CancellationToken cancellationToken)
         {
             return await _context.Employees
-                .FirstOrDefaultAsync(e => e.EmployeeCode.Contains(employeeCode), cancellationToken);
+                .FirstOrDefaultAsync(e => e.EmployeeCode.Contains(employeeCode) && e.IsActive, cancellationToken);
         }
 
         public async Task<Employee?> GetEmployeeByIdAsync(int id, CancellationToken cancellationToken)
@@ -63,7 +64,7 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
             return await _context.Employees
                 .Include(e => e.User)
                     .ThenInclude(u => u.Person)
-                .FirstOrDefaultAsync(e => e.Id == id);
+                .FirstOrDefaultAsync(e => e.Id == id && e.IsActive, cancellationToken);
         }
 
         public async Task<PagedResult<Employee>> SearchEmployeeAsync
@@ -80,7 +81,8 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
                 .Where(e =>
                     e.EmployeeCode.ToLower().Contains(searchQuery.ToLower()) ||
                     e.Role.RolePosition.ToString().ToLower().Contains(searchQuery.ToLower()) ||
-                    e.User.Person.LastName.ToLower().Contains(searchQuery.ToLower())
+                    e.User.Person.LastName.ToLower().Contains(searchQuery.ToLower()) ||
+                    e.IsActive
                 );
 
             var totalCount = await query.CountAsync();

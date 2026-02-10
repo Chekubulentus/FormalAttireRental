@@ -27,17 +27,15 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Services
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<bool> ArchiveAuditLogAsync<T>(T oldEntity, T newEntity, int personId, string personName) where T : BaseEntity
+        public async Task<bool> ArchiveAuditLogAsync<T>(T entity, int personId, string personName) where T : BaseEntity
         {
             var newAuditLog = new AuditLog
             {
                 EntityType = typeof(T).Name,
-                EntityId = newEntity.Id,
+                EntityId = entity.Id,
                 ActionType = "Archived",
                 ChangedBy = personName,
                 ChangedById = personId,
-                OldValues = JsonSerializer.Serialize(oldEntity),
-                NewValues = JsonSerializer.Serialize(newEntity),
                 IpAddress = GetIpAddress()
             };
 
@@ -119,10 +117,9 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Services
             var changes = new Dictionary<string, (object oldValues, object newValues)>();
             var properties = typeof(T).GetProperties();
 
-            var ignoredProperties = new HashSet<object>
+            var ignoredProperties = new HashSet<string>
             {
                 "Id",
-                "UserId",
                 "CreatedBy",
                 "CreatedAt",
                 "UpdatedBy",
@@ -137,7 +134,7 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Services
 
             foreach(var property in properties)
             {
-                if (ignoredProperties.Contains(property))
+                if (ignoredProperties.Contains(property.Name))
                     continue;
 
                 var oldValues = property.GetValue(oldEntity);
