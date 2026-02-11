@@ -19,14 +19,14 @@ namespace RentalAttireBackend.Infrastructure.Authentication
         }
         public string GenerateAccessToken(User user)
         {
-
             var claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
                 new Claim("userId", user.Id.ToString()),
                 new Claim("firstName", user.Person.FirstName),
-                new Claim("lastName", user.Person.LastName)
+                new Claim("lastName", user.Person.LastName),
+                new Claim(ClaimTypes.Role, user.Employee.Role.RolePosition.ToString())
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.SecretKey));

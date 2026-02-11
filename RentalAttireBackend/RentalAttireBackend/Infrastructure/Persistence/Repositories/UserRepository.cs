@@ -54,6 +54,8 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
         {
             return await _context.Users
                 .Include(u => u.Person)
+                .Include(u => u.Employee)
+                    .ThenInclude(e => e.Role)
                 .FirstOrDefaultAsync(u => u.Email.Equals(email));
         }
 

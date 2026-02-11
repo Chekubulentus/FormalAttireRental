@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RentalAttireBackend.Application.Common.Models;
@@ -13,6 +14,7 @@ namespace RentalAttireBackend.Controllers.AdminController
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Administrator")]
     public class EmployeeController : ControllerBase
     {
         private readonly IMediator _mediator;

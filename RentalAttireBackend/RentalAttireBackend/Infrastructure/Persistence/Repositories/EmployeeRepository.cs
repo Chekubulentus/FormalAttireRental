@@ -35,6 +35,7 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
             .Include(e => e.User)
                 .ThenInclude(u => u.Person)
             .Where(e => e.IsActive)
+            .OrderBy(e => e.Id)
             .AsQueryable();
 
             var totalCount = await employees.CountAsync(cancellationToken);
@@ -83,7 +84,8 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
                     e.Role.RolePosition.ToString().ToLower().Contains(searchQuery.ToLower()) ||
                     e.User.Person.LastName.ToLower().Contains(searchQuery.ToLower()) ||
                     e.IsActive
-                );
+                )
+                .OrderBy(e => e.Id);
 
             var totalCount = await query.CountAsync();
 
