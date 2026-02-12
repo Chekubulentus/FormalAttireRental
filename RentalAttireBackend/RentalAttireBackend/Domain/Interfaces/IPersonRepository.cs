@@ -14,6 +14,7 @@ namespace RentalAttireBackend.Domain.Interfaces
         public Task<PagedResult<Person>> GetAllPersonAsync(PaginationParams paginationParams,CancellationToken cancellationToken);
         public Task<Person?> GetPersonByIdAsync(int id, CancellationToken cancellationToken);
         public Task<List<Person>> GetPersonByLastName(string email, CancellationToken cancellationToken);
+        public Task<List<Person>> GetAllArchivedPersonAsync(CancellationToken cancellationToken);
         #endregion
     }
 }

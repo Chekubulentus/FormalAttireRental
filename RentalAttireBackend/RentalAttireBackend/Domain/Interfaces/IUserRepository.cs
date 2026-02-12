@@ -14,6 +14,7 @@ namespace RentalAttireBackend.Domain.Interfaces
         public Task<PagedResult<User>> GetAllUsersAsync(PaginationParams paginationParams, CancellationToken cancellationToken);
         public Task<User?> GetUserByEmailAsync(string email, CancellationToken cancellationToken);
         public Task<bool> ValidateEmailDuplicationAsync(string email, CancellationToken cancellationToken);
+        public Task<List<User>> GetAllArchivedUsers(CancellationToken cancellationToken);
         #endregion
     }
 }

@@ -17,6 +17,7 @@ namespace RentalAttireBackend.Domain.Interfaces
         public Task<PagedResult<Employee>> SearchEmployeeAsync(
             string searchQuery, PaginationParams paginationParams, CancellationToken cancellationToken
             );
+        public Task<List<Employee>> GetAllArchivedEmployeesAsync(CancellationToken cancellationToken);
         #endregion
     }
 }

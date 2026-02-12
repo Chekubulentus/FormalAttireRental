@@ -9,6 +9,7 @@ using RentalAttireBackend.Application.Persons.Commands.UpdatePerson;
 using RentalAttireBackend.Application.Persons.DTO;
 using RentalAttireBackend.Application.Users.DTO;
 using RentalAttireBackend.Domain.Entities;
+using System.CodeDom;
 using System.Runtime.Serialization;
 
 namespace RentalAttireBackend.Application.Mapping
@@ -52,6 +53,39 @@ namespace RentalAttireBackend.Application.Mapping
                 opt => opt.MapFrom(src => src.User.Person));
 
             CreateMap(typeof(PagedResult<>), typeof(PagedResult<>));
+            #endregion
+
+            #region Disposables
+            CreateMap<User, ArchivedEntityDto>()
+                .ForMember(dest => dest.EntityType,
+                opt => opt.MapFrom(src => src.EntityType))
+                .ForMember(dest => dest.EntityId,
+                opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.ArchivedAt,
+                opt => opt.MapFrom(src => src.ArchivedAt))
+                .ForMember(dest => dest.ArchivedBy,
+                opt => opt.MapFrom(src => src.ArchivedBy));
+
+            CreateMap<Employee, ArchivedEntityDto>()
+                .ForMember(dest => dest.EntityType,
+                opt => opt.MapFrom(src => src.EntityType))
+                .ForMember(dest => dest.EntityId,
+                opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.ArchivedAt,
+                opt => opt.MapFrom(src => src.ArchivedAt))
+                .ForMember(dest => dest.ArchivedBy,
+                opt => opt.MapFrom(src => src.ArchivedBy));
+
+            CreateMap<Person, ArchivedEntityDto>()
+                .ForMember(dest => dest.EntityType,
+                opt => opt.MapFrom(src => src.EntityType))
+                .ForMember(dest => dest.EntityId,
+                opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.ArchivedAt,
+                opt => opt.MapFrom(src => src.ArchivedAt))
+                .ForMember(dest => dest.ArchivedBy,
+                opt => opt.MapFrom(src => src.ArchivedBy));
+
             #endregion
 
             #region CreateEmployeeCommand->Employee

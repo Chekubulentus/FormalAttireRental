@@ -60,5 +60,13 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
             _context.People.Update(person);
             return await _context.SaveChangesAsync(cancellationToken) > 0;
         }
+
+        public async Task<List<Person>> GetAllArchivedPersonAsync(CancellationToken cancellationToken)
+        {
+            return await _context.People
+                .AsNoTracking()
+                .Where(p => !p.IsActive)
+                .ToListAsync(cancellationToken);
+        }
     }
 }

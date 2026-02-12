@@ -24,6 +24,14 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
             return await _context.SaveChangesAsync() > 0;
         }
 
+        public async Task<List<User>> GetAllArchivedUsers(CancellationToken cancellationToken)
+        {
+            return await _context.Users
+                .AsNoTracking()
+                .Where(u => !u.IsActive)
+                .ToListAsync(cancellationToken);
+        }
+
         public async Task<PagedResult<User>> GetAllUsersAsync
             (
             PaginationParams paginationParams,

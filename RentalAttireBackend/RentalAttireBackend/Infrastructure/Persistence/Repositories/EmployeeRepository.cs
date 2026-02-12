@@ -24,6 +24,14 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
             return employee.Id;
         }
 
+        public async Task<List<Employee>> GetAllArchivedEmployeesAsync(CancellationToken cancellationToken)
+        {
+            return await _context.Employees
+                .AsNoTracking()
+                .Where(e => !e.IsActive)
+                .ToListAsync(cancellationToken);
+        }
+
         public async Task<PagedResult<Employee>> GetAllEmployeesAsync(
             PaginationParams paginationParams,
             CancellationToken cancellationToken

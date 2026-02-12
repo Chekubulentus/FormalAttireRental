@@ -2,6 +2,7 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RentalAttireBackend.Application.Common.Models;
+using RentalAttireBackend.Application.Disposables.GetAllArchivedEntities;
 using RentalAttireBackend.Application.Persons.Commands.UpdatePerson;
 using RentalAttireBackend.Application.Persons.Commands.UploadImagePerson;
 using RentalAttireBackend.Application.Persons.Queries.GetAllPeople;
@@ -56,6 +57,15 @@ namespace RentalAttireBackend.Controllers.AdminController
             var result = await _mediator.Send(new UploadImagePersonCommand { Image = file, Id = personId });
 
             return result.IsSuccess ? Ok(result.SuccessMessage) : BadRequest(result.ErrorMessage);
+        }
+        [HttpGet("person/disposables")]
+        public async Task<IActionResult> GetAllArchivedEntitiesAsync(int currentPage, int itemsPerPage)
+        {
+            var paginationParams = new PaginationParams { CurrentPage = currentPage, ItemsPerPage = itemsPerPage };
+
+            var result = await _mediator.Send(new GetAllArchivedEntitiesQuery { PaginationParams = paginationParams });
+
+            return result.IsSuccess ? Ok(result.Data) : BadRequest(result.ErrorMessage);
         }
     }
 }
