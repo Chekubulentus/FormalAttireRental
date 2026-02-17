@@ -6,5 +6,12 @@ export const routes: Routes = [
         loadComponent: () => {
             return import('./features/log-in/log-in/log-in.component').then(m => m.LogInComponent);
         }
+    },
+    {
+        path: 'log-in',
+        loadComponent: () => {
+            return import('./features/log-in/log-in/log-in.component')
+            .then(m => m.LogInComponent);
+        }
     }
 ];

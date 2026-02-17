@@ -1,4 +1,5 @@
-import { UserDTO } from "../../features/users/domain/entities/user-dto";
+import { UserDTO } from "../../data/models/user-dto";
+
 
 export class AuthenticationResult {
     accessToken : string = '';

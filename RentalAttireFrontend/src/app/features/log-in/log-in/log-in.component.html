@@ -142,9 +142,6 @@
           <span class="field-msg" *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.hasError('required')">
             Password is required.
           </span>
-          <span class="field-msg" *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.hasError('minlength')">
-            Minimum 6 characters.
-          </span>
         </div>
 
         <!-- Options Row -->

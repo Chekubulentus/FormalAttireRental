@@ -1,7 +1,13 @@
 import { CommonModule, NgIf } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormGroup,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { Router } from '@angular/router';
+import { AuthService } from '../../../core/services/auth-service/auth.service';
 
 @Component({
   selector: 'app-log-in',
@@ -12,24 +18,27 @@ import { Router } from '@angular/router';
 })
 export class LogInComponent {
   loginForm!: FormGroup;
+  email: string = '';
+  password: string = '';
 
   // UI State
   emailFocused = false;
   passwordFocused = false;
   showPassword = false;
   isLoading = false;
-  loginError = '';
+  loginError : string | undefined;
 
   constructor(
     private fb: FormBuilder,
     private router: Router,
+    private authService: AuthService,
     // private authService: AuthService  // Uncomment when AuthService is ready
   ) {}
 
   ngOnInit(): void {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
+      password: ['', [Validators.required]],
       rememberMe: [false],
     });
   }
@@ -61,17 +70,21 @@ export class LogInComponent {
     //   }
     // });
 
-    // ── Simulated login (remove once AuthService is wired up) ────────────────
-    setTimeout(() => {
-      this.isLoading = false;
-
-      if (email === 'admin@elegance.com' && password === 'password') {
-        this.router.navigate(['/dashboard']);
-      } else {
-        this.loginError = 'Invalid email or password. Please try again.';
-      }
-    }, 1800);
-    // ─────────────────────────────────────────────────────────────────────────
+    const result = this.authService
+      .login(email, password)
+      .then((result) => {
+        if (!result.isSuccess) {
+          this.loginError = result.errorMessage;
+        }
+        console.log(`${JSON.stringify(result)}`);
+        console.log(result);
+      })
+      .catch((err) => {
+        console.log(`${err.error?.errorMessage}`);
+      })
+      .finally(() => {
+        this.isLoading = false;
+      });
   }
 
   /** Convenience getters for template validation */
