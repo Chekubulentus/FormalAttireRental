@@ -1,0 +1,192 @@
+<div class="login-wrapper">
+
+  <!-- LEFT PANEL: Visual / Branding -->
+  <div class="visual-panel">
+
+    <div class="visual-top">
+      <div class="brand">
+        <div class="brand-logo">
+          <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="1" y="1" width="38" height="38" rx="2" stroke="#1a1a1a" stroke-width="1.2"/>
+            <path d="M20 10 C20 10 20 14 20 14 L9 26 Q8 27 9 28 L31 28 Q32 27 31 26 Z"
+                  stroke="#1a1a1a" stroke-width="1.2" fill="none" stroke-linejoin="round"/>
+            <circle cx="20" cy="9" r="1.5" fill="#1a1a1a"/>
+            <line x1="20" y1="7.5" x2="20" y2="5" stroke="#1a1a1a" stroke-width="1.2"/>
+            <path d="M18 5 Q20 3.5 22 5" stroke="#1a1a1a" stroke-width="1.2" fill="none"/>
+          </svg>
+        </div>
+        <span class="brand-name">ÉLÉGANCE</span>
+      </div>
+    </div>
+
+    <div class="visual-center">
+      <div class="visual-text">
+        <p class="visual-eyebrow">Formal Attire Rental</p>
+        <h1 class="visual-headline">
+          Dressed<br/>
+          for every<br/>
+          <em>occasion.</em>
+        </h1>
+        <p class="visual-body">
+          Premium suits, gowns, and formalwear<br/>
+          delivered to your door.
+        </p>
+      </div>
+
+      <div class="silhouette-group">
+        <div class="silhouette suit">
+          <svg viewBox="0 0 80 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="25" y="0" width="30" height="28" rx="3" fill="#e8e4df"/>
+            <path d="M25 8 L10 28 L10 100 L70 100 L70 28 L55 8" stroke="#d4cfc9" stroke-width="1" fill="#f0ece8"/>
+            <path d="M25 8 L40 24 L55 8" stroke="#c8c2bb" stroke-width="1" fill="none"/>
+            <line x1="40" y1="24" x2="40" y2="100" stroke="#c8c2bb" stroke-width="0.8"/>
+            <rect x="10" y="100" width="60" height="55" rx="2" fill="#e8e4df"/>
+          </svg>
+        </div>
+        <div class="silhouette dress">
+          <svg viewBox="0 0 80 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="40" cy="22" rx="16" ry="22" fill="#e8e4df" stroke="#d4cfc9" stroke-width="1"/>
+            <path d="M24 38 Q16 60 8 155 L72 155 Q60 60 56 38 Z" fill="#f0ece8" stroke="#d4cfc9" stroke-width="1"/>
+            <path d="M24 38 Q32 48 40 48 Q48 48 56 38" stroke="#c8c2bb" stroke-width="1" fill="none"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="visual-bottom">
+      <p class="visual-tagline">Est. 2010 &nbsp;·&nbsp; Nationwide Delivery</p>
+    </div>
+
+    <div class="grid-decoration">
+      <div class="grid-line h" style="top: 33%"></div>
+      <div class="grid-line h" style="top: 66%"></div>
+      <div class="grid-line v" style="left: 33%"></div>
+      <div class="grid-line v" style="left: 66%"></div>
+    </div>
+
+  </div>
+
+  <!-- RIGHT PANEL: Login Form -->
+  <div class="form-panel">
+    <div class="form-container">
+
+      <div class="form-header">
+        <h2 class="form-title">Sign in</h2>
+        <p class="form-subtitle">Enter your credentials to access your account</p>
+      </div>
+
+      <form class="login-form" (ngSubmit)="onLogin()" [formGroup]="loginForm" novalidate>
+
+        <!-- Email -->
+        <div class="field"
+             [class.field--focused]="emailFocused"
+             [class.field--error]="loginForm.get('email')?.touched && loginForm.get('email')?.invalid">
+          <label for="email" class="field-label">Email address</label>
+          <div class="field-input-wrap">
+            <svg class="field-icon" viewBox="0 0 20 20" fill="none">
+              <path d="M2.5 5.5h15v10a1 1 0 01-1 1h-13a1 1 0 01-1-1v-10z" stroke="currentColor" stroke-width="1.2"/>
+              <path d="M2.5 5.5l7.5 6 7.5-6" stroke="currentColor" stroke-width="1.2"/>
+            </svg>
+            <input
+              id="email"
+              type="email"
+              formControlName="email"
+              class="field-input"
+              placeholder="you@example.com"
+              autocomplete="email"
+              (focus)="emailFocused = true"
+              (blur)="emailFocused = false"
+            />
+          </div>
+          <span class="field-msg" *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.hasError('required')">
+            Email is required.
+          </span>
+          <span class="field-msg" *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.hasError('email')">
+            Please enter a valid email.
+          </span>
+        </div>
+
+        <!-- Password -->
+        <div class="field"
+             [class.field--focused]="passwordFocused"
+             [class.field--error]="loginForm.get('password')?.touched && loginForm.get('password')?.invalid">
+          <label for="password" class="field-label">Password</label>
+          <div class="field-input-wrap">
+            <svg class="field-icon" viewBox="0 0 20 20" fill="none">
+              <rect x="3.5" y="9" width="13" height="9.5" rx="1.5" stroke="currentColor" stroke-width="1.2"/>
+              <path d="M7 9V6.5a3 3 0 016 0V9" stroke="currentColor" stroke-width="1.2"/>
+              <circle cx="10" cy="13.5" r="1.2" fill="currentColor"/>
+            </svg>
+            <input
+              id="password"
+              [type]="showPassword ? 'text' : 'password'"
+              formControlName="password"
+              class="field-input"
+              placeholder="••••••••"
+              autocomplete="current-password"
+              (focus)="passwordFocused = true"
+              (blur)="passwordFocused = false"
+            />
+            <button type="button" class="toggle-btn" (click)="togglePassword()">
+              <svg *ngIf="!showPassword" viewBox="0 0 20 20" fill="none">
+                <path d="M1 10s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6z" stroke="currentColor" stroke-width="1.2"/>
+                <circle cx="10" cy="10" r="2.5" stroke="currentColor" stroke-width="1.2"/>
+              </svg>
+              <svg *ngIf="showPassword" viewBox="0 0 20 20" fill="none">
+                <path d="M3 3l14 14M8.5 8.6a2.5 2.5 0 003.4 3.4" stroke="currentColor" stroke-width="1.2"/>
+                <path d="M6.2 6.3C3.8 7.6 2 10 2 10s3.5 6 8 6c1.5 0 2.9-.5 4-.3" stroke="currentColor" stroke-width="1.2"/>
+                <path d="M10 4c4.5 0 8 6 8 6s-.9 1.5-2.3 3" stroke="currentColor" stroke-width="1.2"/>
+              </svg>
+            </button>
+          </div>
+          <span class="field-msg" *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.hasError('required')">
+            Password is required.
+          </span>
+          <span class="field-msg" *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.hasError('minlength')">
+            Minimum 6 characters.
+          </span>
+        </div>
+
+        <!-- Options Row -->
+        <div class="options-row">
+          <label class="checkbox-label">
+            <input type="checkbox" formControlName="rememberMe" class="checkbox-input"/>
+            <span class="checkbox-box"></span>
+            <span class="checkbox-text">Remember me</span>
+          </label>
+          <a href="#" class="link-forgot">Forgot password?</a>
+        </div>
+
+        <!-- Error Banner -->
+        <div class="error-banner" *ngIf="loginError">
+          <svg viewBox="0 0 20 20" fill="none" width="16" height="16">
+            <circle cx="10" cy="10" r="8.5" stroke="currentColor" stroke-width="1.2"/>
+            <line x1="10" y1="6.5" x2="10" y2="10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            <circle cx="10" cy="13" r="0.8" fill="currentColor"/>
+          </svg>
+          {{ loginError }}
+        </div>
+
+        <!-- Submit -->
+        <button type="submit" class="btn-submit" [disabled]="isLoading">
+          <span *ngIf="!isLoading">Sign in</span>
+          <span class="loader" *ngIf="isLoading">
+            <span></span><span></span><span></span>
+          </span>
+        </button>
+
+      </form>
+
+      <div class="divider"><span>Don't have an account?</span></div>
+
+      <a href="#" class="btn-register">Create an account</a>
+
+      <p class="terms-note">
+        By continuing, you agree to our
+        <a href="#">Terms</a> and <a href="#">Privacy Policy</a>.
+      </p>
+
+    </div>
+  </div>
+
+</div>
