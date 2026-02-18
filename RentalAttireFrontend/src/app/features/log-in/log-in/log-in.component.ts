@@ -32,7 +32,6 @@ export class LogInComponent {
     private fb: FormBuilder,
     private router: Router,
     private authService: AuthService,
-    // private authService: AuthService  // Uncomment when AuthService is ready
   ) {}
 
   ngOnInit(): void {
@@ -43,12 +42,12 @@ export class LogInComponent {
     });
   }
 
-  /** Toggle password visibility */
+
   togglePassword(): void {
     this.showPassword = !this.showPassword;
   }
 
-  /** Handle login form submission */
+
   onLogin(): void {
     if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();
@@ -60,24 +59,13 @@ export class LogInComponent {
 
     const { email, password, rememberMe } = this.loginForm.value;
 
-    // ── Replace this block with your real AuthService call ──────────────────
-    // Example:
-    // this.authService.login({ email, password, rememberMe }).subscribe({
-    //   next: () => this.router.navigate(['/dashboard']),
-    //   error: (err) => {
-    //     this.loginError = err.message || 'Invalid credentials. Please try again.';
-    //     this.isLoading  = false;
-    //   }
-    // });
-
     const result = this.authService
       .login(email, password)
       .then((result) => {
         if (!result.isSuccess) {
           this.loginError = result.errorMessage;
         }
-        console.log(`${JSON.stringify(result)}`);
-        console.log(result);
+        console.log(`Logged in successfully.`);
       })
       .catch((err) => {
         console.log(`${err.error?.errorMessage}`);
@@ -87,7 +75,6 @@ export class LogInComponent {
       });
   }
 
-  /** Convenience getters for template validation */
   get emailCtrl() {
     return this.loginForm.get('email');
   }

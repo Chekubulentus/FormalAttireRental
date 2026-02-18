@@ -6,7 +6,7 @@ import { RefreshTokenKey } from '../../../../environments/refresh-token-key';
 import { AuthenticationResult } from '../../../shared/models/authentication-result';
 import { Result } from '../../../shared/models/result';
 import { BaseApiUrl } from '../../../../environments/base-api-url';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -59,10 +59,19 @@ export class AuthService {
       );
       return response;
     } catch (err: any) {
-      console.log('Full error object:', err);
       console.log('Error body:', err?.error);
       const message = err?.error;
       return Result.failure(message);
     }
+  }
+
+  refreshToken() : Observable<Result<AuthenticationResult>> {
+    const accessToken = this.getAccessToken();
+    const refreshToken = this.getRefreshToken();
+    
+    return this.httpClient.post<Result<AuthenticationResult>>(`${this.baseUrl}/refresh`, {
+      accessToken: accessToken,
+      refreshToken: refreshToken
+    });
   }
 }
