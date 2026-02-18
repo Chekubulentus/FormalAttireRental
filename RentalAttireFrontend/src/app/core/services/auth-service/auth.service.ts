@@ -7,6 +7,7 @@ import { AuthenticationResult } from '../../../shared/models/authentication-resu
 import { Result } from '../../../shared/models/result';
 import { BaseApiUrl } from '../../../../environments/base-api-url';
 import { firstValueFrom, Observable } from 'rxjs';
+import { CurrentUser } from '../../../../environments/current-user';
 
 @Injectable({
   providedIn: 'root',
@@ -34,9 +35,14 @@ export class AuthService {
     return localStorage.getItem(this.refreshTokenKey);
   }
 
-  saveTokens(access: string, refresh: string) {
-    localStorage.setItem(this.accessTokenKey, access);
-    localStorage.setItem(this.refreshTokenKey, refresh);
+  saveTokens(
+    access: string | null | undefined,
+    refresh: string | null | undefined,
+  ) {
+    if (access && refresh) {
+      localStorage.setItem(this.accessTokenKey, access);
+      localStorage.setItem(this.refreshTokenKey, refresh);
+    }
   }
 
   removeTokens() {
@@ -44,7 +50,9 @@ export class AuthService {
     localStorage.removeItem(this.refreshTokenKey);
   }
 
-  getCurrentUser() {}
+  getCurrentUser() {
+    return localStorage.getItem(CurrentUser);
+  }
 
   async login(
     email: string,
@@ -57,6 +65,7 @@ export class AuthService {
           password: password,
         }),
       );
+      localStorage.setItem(CurrentUser, JSON.stringify(response.data?.user));
       return response;
     } catch (err: any) {
       console.log('Error body:', err?.error);
@@ -65,13 +74,16 @@ export class AuthService {
     }
   }
 
-  refreshToken() : Observable<Result<AuthenticationResult>> {
+  refreshToken(): Observable<Result<AuthenticationResult>> {
     const accessToken = this.getAccessToken();
     const refreshToken = this.getRefreshToken();
-    
-    return this.httpClient.post<Result<AuthenticationResult>>(`${this.baseUrl}/refresh`, {
-      accessToken: accessToken,
-      refreshToken: refreshToken
-    });
+
+    return this.httpClient.post<Result<AuthenticationResult>>(
+      `${this.baseUrl}/refresh`,
+      {
+        accessToken: accessToken,
+        refreshToken: refreshToken,
+      },
+    );
   }
 }

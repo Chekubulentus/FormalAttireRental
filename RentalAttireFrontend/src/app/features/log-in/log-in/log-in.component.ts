@@ -62,9 +62,13 @@ export class LogInComponent {
     const result = this.authService
       .login(email, password)
       .then((result) => {
+        console.log(JSON.stringify(result));
         if (!result.isSuccess) {
           this.loginError = result.errorMessage;
+          return;
         }
+        this.authService.saveTokens(result.data?.accessToken, result.data?.refreshToken);
+        this.router.navigateByUrl('/admin');
         console.log(`Logged in successfully.`);
       })
       .catch((err) => {

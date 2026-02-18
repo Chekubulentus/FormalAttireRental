@@ -26,7 +26,7 @@ namespace RentalAttireBackend.Controllers.AuthenticationController
         {
             var result = await _mediator.Send(command);
 
-            return result.IsSuccess ? Ok(result.Data) : BadRequest(result.ErrorMessage);
+            return result.IsSuccess ? Ok(result) : BadRequest(result.ErrorMessage);
         }
         [HttpPost("refresh")]
         public async Task<IActionResult> RefreshTokenAsync(RefreshTokenCommand command)

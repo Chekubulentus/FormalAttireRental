@@ -1,0 +1,119 @@
+<div class="dashboard">
+
+  <!-- Header -->
+  <header class="dashboard-header">
+    <div class="header-left">
+      <p class="page-eyebrow">Good morning</p>
+      <h1 class="page-title">Dashboard</h1>
+    </div>
+    <div class="header-right">
+      <div class="date-chip">
+        <svg viewBox="0 0 20 20" fill="none">
+          <rect x="2.5" y="3.5" width="15" height="14" rx="1.5" stroke="currentColor" stroke-width="1.2"/>
+          <line x1="2.5" y1="8" x2="17.5" y2="8" stroke="currentColor" stroke-width="1.2"/>
+          <line x1="7" y1="1.5" x2="7" y2="5.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+          <line x1="13" y1="1.5" x2="13" y2="5.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+        </svg>
+        <span>{{ today | date:'MMMM d, yyyy' }}</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Stat Cards -->
+  <section class="stats-grid">
+    <div class="stat-card" *ngFor="let stat of stats; let i = index" [style.animation-delay]="i * 0.07 + 's'">
+      <div class="stat-icon-wrap" [style.background]="stat.iconBg" [style.border-color]="stat.borderColor">
+        <span [innerHTML]="stat.icon"></span>
+      </div>
+      <div class="stat-body">
+        <p class="stat-label">{{ stat.label }}</p>
+        <h2 class="stat-value">{{ stat.value }}</h2>
+        <p class="stat-change" [class.positive]="stat.positive" [class.negative]="!stat.positive">
+          {{ stat.positive ? '▲' : '▼' }}&nbsp;{{ stat.change }} this month
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Bottom Grid -->
+  <section class="bottom-grid">
+
+    <!-- Recent Rentals -->
+    <div class="panel">
+      <div class="panel-header">
+        <div>
+          <h3 class="panel-title">Recent Rentals</h3>
+          <p class="panel-sub">Latest transaction activity</p>
+        </div>
+        <a class="panel-link" routerLink="/admin/rentals">View all →</a>
+      </div>
+
+      <div class="table-head">
+        <span>Customer</span>
+        <span>Item</span>
+        <span>Return Date</span>
+        <span>Status</span>
+      </div>
+
+      <div class="table-row" *ngFor="let rental of recentRentals">
+        <span class="customer-cell">
+          <span class="mini-avatar">{{ rental.customer[0] }}</span>
+          {{ rental.customer }}
+        </span>
+        <span class="item-cell">{{ rental.item }}</span>
+        <span class="date-cell">{{ rental.returnDate }}</span>
+        <span class="status-badge" [class]="rental.status.toLowerCase()">{{ rental.status }}</span>
+      </div>
+    </div>
+
+    <!-- Quick Panel -->
+    <div class="panel side-panel">
+
+      <!-- Inventory Status -->
+      <div class="panel-header">
+        <div>
+          <h3 class="panel-title">Inventory Status</h3>
+          <p class="panel-sub">Current stock overview</p>
+        </div>
+      </div>
+
+      <div class="inventory-list">
+        <div class="inventory-row" *ngFor="let item of inventoryStatus">
+          <div class="inv-label">
+            <span class="inv-dot" [style.background]="item.color"></span>
+            {{ item.label }}
+          </div>
+          <div class="inv-bar-wrap">
+            <div class="inv-bar" [style.width.%]="item.percent" [style.background]="item.color"></div>
+          </div>
+          <span class="inv-count">{{ item.count }}</span>
+        </div>
+      </div>
+
+      <div class="panel-rule"></div>
+
+      <!-- Upcoming Returns -->
+      <div class="panel-header">
+        <div>
+          <h3 class="panel-title">Upcoming Returns</h3>
+          <p class="panel-sub">Next 7 days</p>
+        </div>
+      </div>
+
+      <div class="upcoming-list">
+        <div class="upcoming-item" *ngFor="let r of upcomingReturns">
+          <div class="upcoming-left">
+            <span class="mini-avatar">{{ r.customer[0] }}</span>
+            <div class="upcoming-text">
+              <p class="up-name">{{ r.customer }}</p>
+              <p class="up-item">{{ r.item }}</p>
+            </div>
+          </div>
+          <span class="up-date" [class.overdue]="r.overdue">{{ r.date }}</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</div>
