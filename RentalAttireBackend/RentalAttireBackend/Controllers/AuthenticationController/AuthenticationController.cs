@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RentalAttireBackend.Application.Authentication.Commands.Login;
+using RentalAttireBackend.Application.Authentication.Commands.RefreshToken;
 using RentalAttireBackend.Application.Common.Interfaces;
 using RentalAttireBackend.Domain.Entities;
 
@@ -27,26 +28,12 @@ namespace RentalAttireBackend.Controllers.AuthenticationController
 
             return result.IsSuccess ? Ok(result.Data) : BadRequest(result.ErrorMessage);
         }
-
-        [HttpGet("test-token")]
-        [AllowAnonymous]
-        public IActionResult TestToken()
+        [HttpPost("refresh")]
+        public async Task<IActionResult> RefreshTokenAsync(RefreshTokenCommand command)
         {
-            // Create a dummy user for testing
-            var testUser = new User
-            {
-                Id = 1,
-                Email = "test@example.com",
-                Person = new Person { FirstName = "Test", LastName = "User" },
-                Employee = new Employee
-                {
-                    Role = new Role { RolePosition = Enum.Parse<RolePosition>("Administrator") }
-                }
-            };
+            var result = await _mediator.Send(command);
 
-            var token = _jwtTokenGenerator.GenerateAccessToken(testUser);
-
-            return Ok(new { token });
+            return result.IsSuccess ? Ok(result.Data) : BadRequest(result.ErrorMessage);
         }
     }
 }
