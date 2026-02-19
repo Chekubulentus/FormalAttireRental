@@ -1,7 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap');
 
-// --- Tokens (light theme) ---
-$bg:         #f9f7f5;
 $surface:    #ffffff;
 $border:     #e4ddd6;
 $gold:       #a07840;
@@ -14,8 +12,9 @@ $error:      #c0392b;
 
 :host {
   display: block;
-  height: 100vh;
   flex-shrink: 0;
+  height: 100vh;
+  /* No position sticky needed — the wrapper handles containment */
 }
 
 .sidebar {
@@ -32,9 +31,7 @@ $error:      #c0392b;
   &::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
+    top: 0; left: 0; right: 0;
     height: 1px;
     background: linear-gradient(90deg, transparent, rgba(160, 120, 64, 0.35), transparent);
   }
@@ -48,9 +45,7 @@ $error:      #c0392b;
       gap: 0;
     }
 
-    .collapse-btn {
-      display: none;
-    }
+    .collapse-btn { display: none; }
 
     .nav-item {
       justify-content: center;
@@ -68,14 +63,13 @@ $error:      #c0392b;
   }
 }
 
-// ---- Logo ----
 .sidebar-logo {
   display: flex;
   align-items: center;
   gap: 0.85rem;
   padding: 1.75rem 1.5rem 1.5rem;
   border-bottom: 1px solid $border;
-  position: relative;
+  flex-shrink: 0;
 }
 
 .logo-mark {
@@ -86,10 +80,7 @@ $error:      #c0392b;
   align-items: center;
   justify-content: center;
 
-  svg {
-    width: 34px;
-    height: 34px;
-  }
+  svg { width: 34px; height: 34px; }
 }
 
 .logo-text {
@@ -138,10 +129,7 @@ $error:      #c0392b;
     width: 13px;
     height: 13px;
     transition: transform 0.3s ease;
-
-    &.rotated {
-      transform: rotate(180deg);
-    }
+    &.rotated { transform: rotate(180deg); }
   }
 
   &:hover {
@@ -151,7 +139,6 @@ $error:      #c0392b;
   }
 }
 
-// ---- Nav ----
 .sidebar-nav {
   flex: 1;
   padding: 1.25rem 0;
@@ -200,9 +187,7 @@ $error:      #c0392b;
     background: $gold-dim;
     border-color: $gold-border;
 
-    .nav-icon svg {
-      stroke: $gold;
-    }
+    .nav-icon svg { stroke: $gold; }
   }
 }
 
@@ -227,7 +212,6 @@ $error:      #c0392b;
   letter-spacing: 0.01em;
 }
 
-// ---- Footer ----
 .sidebar-footer {
   display: flex;
   align-items: center;
@@ -235,6 +219,7 @@ $error:      #c0392b;
   gap: 0.75rem;
   padding: 1.25rem 1.5rem;
   border-top: 1px solid $border;
+  flex-shrink: 0;
 }
 
 .user-block {
@@ -261,10 +246,7 @@ $error:      #c0392b;
   border: 1px solid rgba(160, 120, 64, 0.25);
 }
 
-.user-meta {
-  overflow: hidden;
-  flex: 1;
-}
+.user-meta { overflow: hidden; flex: 1; }
 
 .user-name {
   font-family: 'DM Sans', sans-serif;
@@ -301,10 +283,7 @@ $error:      #c0392b;
   transition: all 0.2s ease;
   flex-shrink: 0;
 
-  svg {
-    width: 14px;
-    height: 14px;
-  }
+  svg { width: 14px; height: 14px; }
 
   &:hover {
     color: $error;
