@@ -21,7 +21,7 @@ namespace RentalAttireBackend.Domain.Entities
 
         public string FullName
         {
-            get { return $"${LastName}, {FirstName}"; }
+            get { return $"{LastName}, {FirstName}"; }
         }
 
         //NavProp

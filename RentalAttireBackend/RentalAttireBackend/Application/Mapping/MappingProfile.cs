@@ -141,6 +141,18 @@ namespace RentalAttireBackend.Application.Mapping
             #region User->UserDTO
             CreateMap<User, UserDTO>();
             #endregion
+
+            #region UserViewModel
+            CreateMap<User, UserViewModel>()
+                .ForMember(dest => dest.EmployeeCode,
+                opt => opt.MapFrom(src => src.Employee.EmployeeCode))
+                .ForMember(dest => dest.RolePosition,
+                opt => opt.MapFrom(src => src.Employee.Role.RolePosition.ToString()))
+                .ForMember(dest => dest.Department,
+                opt => opt.MapFrom(src => src.Employee.Department))
+                .ForMember(dest => dest.FullName,
+                opt => opt.MapFrom(src => src.Person.FullName));
+            #endregion
         }
     }
 }

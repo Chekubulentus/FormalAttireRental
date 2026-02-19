@@ -31,6 +31,7 @@
 
   <ItemGroup>
     <Folder Include="Application\Interfaces\" />
+    <Folder Include="Application\Users\Commands\" />
     <Folder Include="Controllers\CustomerController\" />
     <Folder Include="Controllers\ClothesManagerController\" />
     <Folder Include="Controllers\CashierController\" />

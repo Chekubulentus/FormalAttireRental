@@ -13,6 +13,7 @@ namespace RentalAttireBackend.Domain.Interfaces
         #region Queries
         public Task<PagedResult<User>> GetAllUsersAsync(PaginationParams paginationParams, CancellationToken cancellationToken);
         public Task<User?> GetUserByEmailAsync(string email, CancellationToken cancellationToken);
+        public Task<User?> GetUserModelViewByIdAsync(int id, CancellationToken cancellationToken);
         public Task<bool> ValidateEmailDuplicationAsync(string email, CancellationToken cancellationToken);
         public Task<List<User>> GetAllArchivedUsers(CancellationToken cancellationToken);
         #endregion
