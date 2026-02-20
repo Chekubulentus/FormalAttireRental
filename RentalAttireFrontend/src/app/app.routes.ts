@@ -34,6 +34,13 @@ export const routes: Routes = [
                 path: '',
                 redirectTo: 'admin-dashboard',
                 pathMatch: 'full'
+            },
+            {
+                path: 'user-layout',
+                loadChildren: () => {
+                    return import('./features/admin/users/user.routes')
+                    .then(m => m.USER_ROUTES);
+                }
             }
         ]
     },

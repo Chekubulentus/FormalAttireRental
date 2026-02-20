@@ -62,7 +62,6 @@ export class LogInComponent {
     const result = this.authService
       .login(email, password)
       .then((result) => {
-        console.log(JSON.stringify(result));
         if (!result.isSuccess) {
           this.loginError = result.errorMessage;
           return;

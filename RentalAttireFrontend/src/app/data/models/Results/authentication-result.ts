@@ -1,4 +1,4 @@
-import { UserDTO } from "./user-dto";
+import { UserDTO } from "../DTOs/Users/user-dto";
 
 
 export class AuthenticationResult {

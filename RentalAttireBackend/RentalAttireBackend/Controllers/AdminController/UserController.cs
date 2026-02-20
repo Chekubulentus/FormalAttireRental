@@ -22,7 +22,7 @@ namespace RentalAttireBackend.Controllers.AdminController
         {
             var result = await _mediator.Send(new GetUserViewModelByIdQuery { Id = id });
 
-            return result.IsSuccess ? Ok(result.Data) : NotFound(result.ErrorMessage);
+            return result.IsSuccess ? Ok(result) : NotFound(result.ErrorMessage);
         }
     }
 }

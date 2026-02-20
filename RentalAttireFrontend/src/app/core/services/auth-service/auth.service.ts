@@ -3,11 +3,12 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { AccessTokenKey } from '../../../../environments/access-token-key';
 import { RefreshTokenKey } from '../../../../environments/refresh-token-key';
-import { AuthenticationResult } from '../../../data/models/authentication-result';
-import { Result } from '../../../data/models/result';
+import { AuthenticationResult } from '../../../data/models/Results/authentication-result';
+import { Result } from '../../../data/models/Results/result';
 import { BaseApiUrl } from '../../../../environments/base-api-url';
 import { firstValueFrom, Observable } from 'rxjs';
 import { CurrentUser } from '../../../../environments/current-user';
+import { UserViewModel } from '../../../data/models/DTOs/Users/user-view-model';
 
 @Injectable({
   providedIn: 'root',
@@ -48,6 +49,7 @@ export class AuthService {
   removeTokens() {
     localStorage.removeItem(this.accessTokenKey);
     localStorage.removeItem(this.refreshTokenKey);
+    localStorage.removeItem(CurrentUser);
   }
 
   getCurrentUser() {
@@ -85,5 +87,20 @@ export class AuthService {
         refreshToken: refreshToken,
       },
     );
+  }
+
+  async getUserViewModelByIdAsync(id: number): Promise<Result<UserViewModel>> {
+    try {
+      const result = await firstValueFrom(
+        this.httpClient.get<Result<UserViewModel>>(
+          `${this.baseUrl}/user-view-model/${id}`,
+        ),
+      );
+      return result;
+    } catch (err: any) {
+      const message = err.error;
+      console.log(message);
+      return Result.failure(message);
+    }
   }
 }
