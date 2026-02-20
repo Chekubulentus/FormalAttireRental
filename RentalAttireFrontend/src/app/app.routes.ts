@@ -17,32 +17,9 @@ export const routes: Routes = [
     },
     {
         path: 'admin',
-        loadComponent: () => {
-            return import ('./features/admin/layout/admin-layout/admin-layout.component')
-            .then(m => m.AdminLayoutComponent);
-        },
         canActivate: [authGuard],
-        children: [
-            {
-                path: 'admin-dashboard',
-                loadComponent: () => {
-                    return import('./features/admin/dashboard/admin-dashboard/admin-dashboard.component')
-                    .then(m => m.AdminDashboardComponent);
-                }
-            },
-            {
-                path: '',
-                redirectTo: 'admin-dashboard',
-                pathMatch: 'full'
-            },
-            {
-                path: 'user-layout',
-                loadChildren: () => {
-                    return import('./features/admin/users/user.routes')
-                    .then(m => m.USER_ROUTES);
-                }
-            }
-        ]
+        loadChildren: () => 
+            import('./features/admin/admin.routes').then(m => m.ADMIN_ROUTES)
     },
     {
         path: '',

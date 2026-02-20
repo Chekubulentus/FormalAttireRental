@@ -1,1 +1,47 @@
-<p>user-layout works!</p>
+<div class="user-layout">
+
+  <!-- Header -->
+  <header class="page-header">
+    <div class="header-left">
+      <p class="page-eyebrow">System</p>
+      <h1 class="page-title">Users</h1>
+    </div>
+    <div class="header-right">
+      <div class="date-chip">
+        <svg viewBox="0 0 20 20" fill="none">
+          <rect x="2.5" y="3.5" width="15" height="14" rx="1.5" stroke="currentColor" stroke-width="1.2"/>
+          <line x1="2.5" y1="8" x2="17.5" y2="8" stroke="currentColor" stroke-width="1.2"/>
+          <line x1="7" y1="1.5" x2="7" y2="5.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+          <line x1="13" y1="1.5" x2="13" y2="5.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+        </svg>
+        <span>{{ today | date:'MMMM d, yyyy' }}</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Sub Nav Tabs -->
+  <nav class="sub-nav">
+    <a class="sub-nav-item" routerLink="employees" routerLinkActive="active">
+      <svg viewBox="0 0 20 20" fill="none">
+        <circle cx="10" cy="6" r="3.5" stroke="currentColor" stroke-width="1.3"/>
+        <path d="M3 17c0-3.5 3.1-6 7-6s7 2.5 7 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+      </svg>
+      Employees
+    </a>
+    <a class="sub-nav-item" routerLink="accounts" routerLinkActive="active">
+      <svg viewBox="0 0 20 20" fill="none">
+        <circle cx="10" cy="6" r="3.5" stroke="currentColor" stroke-width="1.3"/>
+        <path d="M3 17c0-3.5 3.1-6 7-6s7 2.5 7 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+        <circle cx="15.5" cy="5.5" r="2.5" stroke="currentColor" stroke-width="1.3"/>
+        <path d="M15.5 3v1M15.5 8v1M13 5.5h1M17 5.5h1" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/>
+      </svg>
+      Accounts
+    </a>
+  </nav>
+
+  <!-- Router Outlet -->
+  <div class="sub-content">
+    <router-outlet></router-outlet>
+  </div>
+
+</div>

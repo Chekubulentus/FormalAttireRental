@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../../../core/services/auth-service/auth.service';
-import { Router, RouterLinkActive, UrlSegment } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive, UrlSegment } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { UserViewModel } from '../../../../data/models/DTOs/Users/user-view-model';
@@ -11,7 +11,12 @@ import { Result } from '../../../../data/models/Results/result';
 @Component({
   selector: 'app-admin-sidebar',
   standalone: true,
-  imports: [CommonModule, RouterLinkActive, FormsModule],
+  imports: [
+    CommonModule, 
+    RouterLinkActive, 
+    FormsModule,
+    RouterLink,
+  ],
   templateUrl: './admin-sidebar.component.html',
   styleUrl: './admin-sidebar.component.scss',
 })

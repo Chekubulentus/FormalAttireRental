@@ -1,0 +1,130 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap');
+
+$surface:     #ffffff;
+$bg:          #f9f7f5;
+$border:      #e4ddd6;
+$gold:        #a07840;
+$gold-dim:    rgba(160, 120, 64, 0.08);
+$gold-border: rgba(160, 120, 64, 0.2);
+$text:        #1a1917;
+$text-muted:  #9e9590;
+$text-soft:   #6b6560;
+
+:host {
+  display: block;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.user-layout {
+  animation: pageIn 0.5s ease both;
+}
+
+@keyframes pageIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+// ---- Header ----
+.page-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.75rem;
+  border-bottom: 1px solid $border;
+}
+
+.page-eyebrow {
+  font-size: 0.68rem;
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: $gold;
+  margin: 0 0 0.4rem;
+}
+
+.page-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 2rem;
+  font-weight: 400;
+  color: $text;
+  margin: 0;
+  letter-spacing: -0.01em;
+  line-height: 1;
+}
+
+.date-chip {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.9rem;
+  background: $surface;
+  border: 1px solid $border;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  font-weight: 300;
+  color: $text-muted;
+
+  svg {
+    width: 14px;
+    height: 14px;
+    color: $gold;
+    opacity: 0.8;
+    flex-shrink: 0;
+  }
+}
+
+// ---- Sub Nav ----
+.sub-nav {
+  display: flex;
+  gap: 0.35rem;
+  margin-bottom: 1.75rem;
+  border-bottom: 1px solid $border;
+  padding-bottom: 0;
+}
+
+.sub-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.6rem 1rem;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 400;
+  color: $text-muted;
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: all 0.18s ease;
+  border-radius: 6px 6px 0 0;
+
+  svg {
+    width: 15px;
+    height: 15px;
+    flex-shrink: 0;
+    transition: stroke 0.18s ease;
+  }
+
+  &:hover {
+    color: $text-soft;
+    background: $bg;
+  }
+
+  &.active {
+    color: $gold;
+    border-bottom-color: $gold;
+    font-weight: 500;
+
+    svg { stroke: $gold; }
+  }
+}
+
+// ---- Sub Content ----
+.sub-content {
+  animation: fadeIn 0.3s ease both;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
