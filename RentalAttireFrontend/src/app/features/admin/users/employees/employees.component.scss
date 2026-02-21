@@ -48,12 +48,7 @@ $red:         #c0392b;
 
   &:focus-within { border-color: $gold-border; }
 
-  svg {
-    width: 15px;
-    height: 15px;
-    color: $text-muted;
-    flex-shrink: 0;
-  }
+  svg { width: 15px; height: 15px; color: $text-muted; flex-shrink: 0; }
 }
 
 .search-input {
@@ -87,7 +82,6 @@ $red:         #c0392b;
   letter-spacing: 0.02em;
 
   svg { width: 15px; height: 15px; }
-
   &:hover { background: #333; transform: translateY(-1px); }
 }
 
@@ -99,10 +93,16 @@ $red:         #c0392b;
   overflow: hidden;
 }
 
-.table-head {
+// 6 columns: Employee | Code | Position | Department | Salary | Actions
+.table-head,
+.table-row {
   display: grid;
-  grid-template-columns: 2.5fr 1.5fr 1.5fr 1.2fr 0.5fr;
+  grid-template-columns: 2.2fr 1fr 1.4fr 1.4fr 1.1fr 0.5fr;
   gap: 0.5rem;
+  align-items: center;
+}
+
+.table-head {
   padding: 0.85rem 1.25rem;
   background: $bg;
   border-bottom: 1px solid $border;
@@ -114,12 +114,8 @@ $red:         #c0392b;
 }
 
 .table-row {
-  display: grid;
-  grid-template-columns: 2.5fr 1.5fr 1.5fr 1.2fr 0.5fr;
-  gap: 0.5rem;
   padding: 0.9rem 1.25rem;
   border-bottom: 1px solid #f0ece8;
-  align-items: center;
   animation: rowIn 0.3s ease both;
   transition: background 0.15s;
 
@@ -142,17 +138,8 @@ $red:         #c0392b;
   gap: 0.75rem;
   color: $text-muted;
 
-  svg {
-    width: 32px;
-    height: 32px;
-    opacity: 0.4;
-  }
-
-  p {
-    font-size: 0.82rem;
-    font-weight: 300;
-    margin: 0;
-  }
+  svg { width: 32px; height: 32px; opacity: 0.4; }
+  p { font-size: 0.82rem; font-weight: 300; margin: 0; }
 }
 
 .spinner {
@@ -164,9 +151,7 @@ $red:         #c0392b;
   animation: spin 0.7s linear infinite;
 }
 
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
+@keyframes spin { to { transform: rotate(360deg); } }
 
 // ---- Employee Cell ----
 .employee-cell {
@@ -175,11 +160,7 @@ $red:         #c0392b;
   gap: 0.75rem;
 }
 
-.avatar-wrap {
-  flex-shrink: 0;
-  width: 34px;
-  height: 34px;
-}
+.avatar-wrap { flex-shrink: 0; width: 34px; height: 34px; }
 
 .avatar-img {
   width: 34px;
@@ -215,15 +196,26 @@ $red:         #c0392b;
   text-overflow: ellipsis;
 }
 
-.emp-code {
-  font-size: 0.68rem;
-  font-weight: 400;
-  color: $gold;
+.emp-email {
+  font-size: 0.7rem;
+  font-weight: 300;
+  color: $text-muted;
   margin: 0;
-  letter-spacing: 0.04em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-// ---- Cells ----
+// ---- Employee Code Column ----
+.emp-code-cell {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: $gold;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+// ---- Other Cells ----
 .cell-text {
   font-size: 0.8rem;
   font-weight: 400;
@@ -265,17 +257,8 @@ $red:         #c0392b;
 
   svg { width: 14px; height: 14px; }
 
-  &:hover {
-    background: $bg;
-    color: $text;
-    border-color: darken($border, 8%);
-  }
-
-  &.danger:hover {
-    color: $red;
-    border-color: rgba(192, 57, 43, 0.25);
-    background: rgba(192, 57, 43, 0.06);
-  }
+  &:hover { background: $bg; color: $text; border-color: darken($border, 8%); }
+  &.danger:hover { color: $red; border-color: rgba(192, 57, 43, 0.25); background: rgba(192, 57, 43, 0.06); }
 }
 
 // ---- Footer ----
@@ -291,4 +274,75 @@ $red:         #c0392b;
   font-weight: 300;
   color: $text-muted;
   margin: 0;
+}
+
+// ---- Pagination ----
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 0 0;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.pagination-info {
+  font-size: 0.72rem;
+  font-weight: 300;
+  color: $text-muted;
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.page-btn {
+  min-width: 30px;
+  height: 30px;
+  padding: 0 0.5rem;
+  border-radius: 7px;
+  border: 1px solid $border;
+  background: $surface;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 400;
+  color: $text-soft;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.18s ease;
+
+  svg { width: 13px; height: 13px; }
+
+  &:hover:not(:disabled) {
+    background: $bg;
+    border-color: darken($border, 8%);
+    color: $text;
+  }
+
+  &.active {
+    background: $text;
+    border-color: $text;
+    color: #fff;
+    font-weight: 500;
+  }
+
+  &.nav {
+    color: $text-muted;
+  }
+
+  &:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+}
+
+.page-ellipsis {
+  font-size: 0.78rem;
+  color: $text-muted;
+  padding: 0 0.25rem;
+  user-select: none;
 }
