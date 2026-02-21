@@ -20,7 +20,7 @@ namespace RentalAttireBackend.Application.Persons.DTO
         public string? ProfileImagePath { get; set; }
         public string FullName
         {
-            get { return $"${LastName}, ${FirstName}"; }
+            get { return $"{LastName}, {FirstName}"; }
         }
     }
 }

@@ -24,23 +24,63 @@
       <span>Employee</span>
       <span>Position</span>
       <span>Department</span>
-      <span>Date Hired</span>
-      <span>Status</span>
+      <span>Salary</span>
       <span></span>
     </div>
 
-    <div class="table-row" *ngFor="let emp of employees; let i = index" [style.animation-delay]="i * 0.05 + 's'">
+    <!-- Loading State -->
+    <div class="table-empty" *ngIf="isLoading">
+      <div class="spinner"></div>
+      <p>Loading employees...</p>
+    </div>
+
+    <!-- Empty State -->
+    <div class="table-empty" *ngIf="!isLoading && (!employeeDtos || employeeDtos.length === 0)">
+      <svg viewBox="0 0 24 24" fill="none">
+        <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" stroke="currentColor" stroke-width="1.3"/>
+        <circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="1.3"/>
+      </svg>
+      <p>No employees found</p>
+    </div>
+
+    <!-- Rows -->
+    <div class="table-row"
+         *ngFor="let emp of employeeDtos; let i = index"
+         [style.animation-delay]="i * 0.05 + 's'">
+
+      <!-- Employee Cell -->
       <div class="employee-cell">
-        <div class="avatar" [style.background]="emp.avatarColor">{{ emp.name[0] }}</div>
+        <div class="avatar-wrap">
+          <img
+            *ngIf="emp.person.profileImagePath"
+            [src]="emp.person.profileImagePath"
+            [alt]="emp.person.fullName"
+            class="avatar-img"
+            (error)="onImgError($event, emp)"
+          />
+          <div
+            *ngIf="!emp.person.profileImagePath"
+            class="avatar"
+            [style.background]="getAvatarColor(emp.id)">
+            {{ emp.person.firstName[0] }}{{ emp.person.lastName[0] }}
+          </div>
+        </div>
         <div class="employee-info">
-          <p class="emp-name">{{ emp.name }}</p>
-          <p class="emp-email">{{ emp.email }}</p>
+          <p class="emp-name">{{ emp.person.fullName }}</p>
+          <p class="emp-code">{{ emp.employeeCode }}</p>
         </div>
       </div>
-      <span class="cell-text">{{ emp.position }}</span>
+
+      <!-- Position -->
+      <span class="cell-text">{{ emp.rolePosition }}</span>
+
+      <!-- Department -->
       <span class="cell-muted">{{ emp.department }}</span>
-      <span class="cell-muted">{{ emp.dateHired }}</span>
-      <span class="status-badge" [class]="emp.status.toLowerCase()">{{ emp.status }}</span>
+
+      <!-- Salary -->
+      <span class="cell-text salary">{{ emp.salary | currency:'PHP':'symbol':'1.2-2' }}</span>
+
+      <!-- Actions -->
       <div class="actions">
         <button class="action-btn" title="Edit">
           <svg viewBox="0 0 20 20" fill="none">
@@ -56,12 +96,13 @@
           </svg>
         </button>
       </div>
+
     </div>
   </div>
 
   <!-- Footer -->
-  <div class="table-footer">
-    <p class="table-count">Showing {{ employees.length }} employees</p>
+  <div class="table-footer" *ngIf="employeeDtos && employeeDtos.length > 0">
+    <p class="table-count">Showing {{ employeeDtos.length }} employees</p>
   </div>
 
 </div>

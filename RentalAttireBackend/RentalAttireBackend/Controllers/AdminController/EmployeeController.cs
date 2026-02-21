@@ -27,11 +27,17 @@ namespace RentalAttireBackend.Controllers.AdminController
             _mediator = mediator;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAllEmployeesAsync([FromQuery] PaginationParams paginationParams)
+        public async Task<IActionResult> GetAllEmployeesAsync(int currentPage, int itemsPerPage)
         {
+            var paginationParams = new PaginationParams
+            {
+                CurrentPage = currentPage,
+                ItemsPerPage = itemsPerPage
+            };
+
             var result = await _mediator.Send(new GetAllEmployeesQuery { PaginationParams = paginationParams});
 
-            return result.IsSuccess ? Ok(result.Data) : NotFound(result.ErrorMessage);
+            return result.IsSuccess ? Ok(result) : NotFound(result.ErrorMessage);
         }
         [HttpPost]
         public async Task<IActionResult> CreateEmployeeAsync(CreateEmployeeCommand command)

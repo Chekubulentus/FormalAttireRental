@@ -22,7 +22,7 @@ namespace RentalAttireBackend.Infrastructure.Authentication
             var claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-                new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                new Claim(ClaimTypes.Email, user.Email),
                 new Claim("userId", user.Id.ToString()),
                 new Claim("firstName", user.Person.FirstName),
                 new Claim("lastName", user.Person.LastName),

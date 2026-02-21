@@ -5,6 +5,7 @@ using RentalAttireBackend.Application.Common.Models;
 using RentalAttireBackend.Application.Users.DTO;
 using RentalAttireBackend.Domain.Interfaces;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace RentalAttireBackend.Application.Authentication.Commands.RefreshToken
 {
@@ -27,7 +28,7 @@ namespace RentalAttireBackend.Application.Authentication.Commands.RefreshToken
         public async Task<Result<AuthenticationResult>> Handle(RefreshTokenCommand request, CancellationToken cancellationToken)
         {
             var principal = _tokenGenerator.GetPrincipalFromExpiredToken(request.AccessToken);
-            var userEmail = principal.Claims.First(x => x.Type == JwtRegisteredClaimNames.Email).Value;
+            var userEmail = principal.Claims.First(x => x.Type == ClaimTypes.Email).Value;
 
             var user = await _userRepo.GetUserByEmailAsync(userEmail, cancellationToken);
 

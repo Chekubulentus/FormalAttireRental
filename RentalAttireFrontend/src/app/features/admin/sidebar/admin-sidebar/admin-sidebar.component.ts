@@ -43,11 +43,9 @@ export class AdminSidebarComponent implements OnInit{
     .then(
       res => {
         if(!res.isSuccess){
-          console.log("pukign;kalsjdqlwke");
+          return;
         }
-        console.log(res);
         this.currentUser = res.data;
-        console.log(this.currentUser);
       }
     ).catch(
       err => {

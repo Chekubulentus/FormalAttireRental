@@ -23,7 +23,6 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
       if (error.status === 401) {
         return authService.refreshToken().pipe(
           switchMap((response: any) => {
-
             // Save tokens
             authService.saveTokens(
               response.data.accessToken,
