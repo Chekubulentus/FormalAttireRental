@@ -34,6 +34,23 @@ export class EmployeesComponent implements OnInit {
     this.getAllEmployees();
   }
 
+  searchEmployees() {
+    if(!this.searchQuery.trim())
+      this.getAllEmployees();
+
+    this.employeeService.searchEmployeeAsync(this.searchQuery, this.currentPage, this.itemsPerPage)
+    .then(res => {
+      if(!res.isSuccess)
+        return;
+      this.employeeDtos = res.data?.items ?? [];
+      this.currentPage = 1;
+      this.totalCount = res.data?.totalCount ?? 1;
+      this.totalPages = res.data?.totalPages ?? 1;
+    }).catch(err => {
+      console.log(err.error);
+    });
+  }
+
   getAllEmployees(): void {
     this.isLoading = true;
     this.employeeService

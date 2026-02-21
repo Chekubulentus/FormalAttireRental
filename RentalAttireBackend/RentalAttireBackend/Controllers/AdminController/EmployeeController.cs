@@ -47,12 +47,21 @@ namespace RentalAttireBackend.Controllers.AdminController
             return result.IsSuccess ? Ok(result.SuccessMessage) : BadRequest(result.ErrorMessage);
         }
         [HttpGet("search-employee")]
-        public async Task<IActionResult> SearchEmployeeAsync([FromBody]SearchEmployeeQuery query)
+        public async Task<IActionResult> SearchEmployeeAsync(
+            string searchQuery,
+            int currentPage,
+            int itemsPerPage
+            )
         {
-            var result = await _mediator.Send(new SearchEmployeeQuery { SearchQuery = query.SearchQuery, 
-                PaginationParams = query.PaginationParams});
+            var paginationParams = new PaginationParams
+            {
+                CurrentPage = currentPage,
+                ItemsPerPage = itemsPerPage
+            };
+            var result = await _mediator.Send(new SearchEmployeeQuery { SearchQuery = searchQuery, 
+                PaginationParams = paginationParams});
 
-            return result.IsSuccess ? Ok(result.Data) : NotFound(result.ErrorMessage);
+            return result.IsSuccess ? Ok(result) : NotFound(result.ErrorMessage);
         }
         [HttpGet("{id}")]
         public async Task<IActionResult> GetEmployeeByIdAsync(int id)

@@ -24,10 +24,29 @@ export class EmployeeService {
           `${this.employeeUrl}?currentPage=${currentPage}&itemsPerPage=${itemsPerPage}`,
         ),
       );
-      return result
+      return result;
     } catch (err: any) {
       const message = err.error;
-      console.log(message)
+      console.log(message);
+      return Result.failure(message);
+    }
+  }
+
+  async searchEmployeeAsync(
+    searchQuery: string,
+    currentPage: number,
+    itemsPerPage: number,
+  ): Promise<Result<PagedResult<EmployeeDTO>>> {
+    try {
+      const result = await firstValueFrom(
+        this.httpClient.get<Result<PagedResult<EmployeeDTO>>>(
+          `${this.employeeUrl}/search-employee?searchQuery=${searchQuery}&currentPage=${currentPage}&itemsPerPage=${itemsPerPage}`,
+        ),
+      );
+      return result;
+    } catch (error: any) {
+      const message = error.error;
+      console.log(message);
       return Result.failure(message);
     }
   }
