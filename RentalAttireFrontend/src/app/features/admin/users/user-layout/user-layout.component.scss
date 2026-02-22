@@ -11,11 +11,20 @@ $text-muted:  #9e9590;
 $text-soft:   #6b6560;
 
 :host {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
   font-family: 'DM Sans', sans-serif;
 }
 
 .user-layout {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  // Padding lives HERE, not in admin-layout
+  padding: 2.5rem 2.75rem 0;
   animation: pageIn 0.5s ease both;
 }
 
@@ -32,6 +41,7 @@ $text-soft:   #6b6560;
   margin-bottom: 1.5rem;
   padding-bottom: 1.75rem;
   border-bottom: 1px solid $border;
+  flex-shrink: 0;
 }
 
 .page-eyebrow {
@@ -81,6 +91,7 @@ $text-soft:   #6b6560;
   margin-bottom: 1.75rem;
   border-bottom: 1px solid $border;
   padding-bottom: 0;
+  flex-shrink: 0;
 }
 
 .sub-nav-item {
@@ -105,23 +116,30 @@ $text-soft:   #6b6560;
     transition: stroke 0.18s ease;
   }
 
-  &:hover {
-    color: $text-soft;
-    background: $bg;
-  }
+  &:hover { color: $text-soft; background: $bg; }
 
   &.active {
     color: $gold;
     border-bottom-color: $gold;
     font-weight: 500;
-
     svg { stroke: $gold; }
   }
 }
 
 // ---- Sub Content ----
+// Scrolling happens here — this is NOT a stacking context issue
+// because its parent (.user-layout) is a flex item inside a CSS grid cell
 .sub-content {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  // Bottom padding so content doesn't touch the edge when scrolled
+  padding-bottom: 2.5rem;
   animation: fadeIn 0.3s ease both;
+
+  &::-webkit-scrollbar       { width: 4px; }
+  &::-webkit-scrollbar-track { background: transparent; }
+  &::-webkit-scrollbar-thumb { background: rgba(26,25,23,0.12); border-radius: 99px; }
 }
 
 @keyframes fadeIn {

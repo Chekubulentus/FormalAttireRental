@@ -4,12 +4,10 @@ $surface:     #ffffff;
 $bg:          #f9f7f5;
 $border:      #e4ddd6;
 $gold:        #a07840;
-$gold-dim:    rgba(160, 120, 64, 0.08);
 $gold-border: rgba(160, 120, 64, 0.2);
 $text:        #1a1917;
 $text-muted:  #9e9590;
 $text-soft:   #6b6560;
-$green:       #2d8a55;
 $red:         #c0392b;
 
 :host {
@@ -47,7 +45,6 @@ $red:         #c0392b;
   transition: border-color 0.2s;
 
   &:focus-within { border-color: $gold-border; }
-
   svg { width: 15px; height: 15px; color: $text-muted; flex-shrink: 0; }
 }
 
@@ -61,7 +58,6 @@ $red:         #c0392b;
   font-weight: 300;
   color: $text;
   padding: 0.7rem 0;
-
   &::placeholder { color: $text-muted; }
 }
 
@@ -93,7 +89,6 @@ $red:         #c0392b;
   overflow: hidden;
 }
 
-// 6 columns: Employee | Code | Position | Department | Salary | Actions
 .table-head,
 .table-row {
   display: grid;
@@ -128,7 +123,6 @@ $red:         #c0392b;
   to   { opacity: 1; transform: translateX(0); }
 }
 
-// ---- Empty / Loading ----
 .table-empty {
   display: flex;
   flex-direction: column;
@@ -139,7 +133,7 @@ $red:         #c0392b;
   color: $text-muted;
 
   svg { width: 32px; height: 32px; opacity: 0.4; }
-  p { font-size: 0.82rem; font-weight: 300; margin: 0; }
+  p   { font-size: 0.82rem; font-weight: 300; margin: 0; }
 }
 
 .spinner {
@@ -153,26 +147,18 @@ $red:         #c0392b;
 
 @keyframes spin { to { transform: rotate(360deg); } }
 
-// ---- Employee Cell ----
-.employee-cell {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.avatar-wrap { flex-shrink: 0; width: 34px; height: 34px; }
+.employee-cell { display: flex; align-items: center; gap: 0.75rem; }
+.avatar-wrap   { flex-shrink: 0; width: 34px; height: 34px; }
 
 .avatar-img {
-  width: 34px;
-  height: 34px;
+  width: 34px; height: 34px;
   border-radius: 50%;
   object-fit: cover;
   border: 1px solid $border;
 }
 
 .avatar {
-  width: 34px;
-  height: 34px;
+  width: 34px; height: 34px;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -180,61 +166,32 @@ $red:         #c0392b;
   font-size: 0.7rem;
   font-weight: 500;
   color: #fff;
-  border: 1px solid rgba(160, 120, 64, 0.2);
   letter-spacing: 0.02em;
 }
 
 .employee-info { flex: 1; min-width: 0; }
 
 .emp-name {
-  font-size: 0.82rem;
-  font-weight: 500;
-  color: $text;
+  font-size: 0.82rem; font-weight: 500; color: $text;
   margin: 0 0 0.1rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 
 .emp-email {
-  font-size: 0.7rem;
-  font-weight: 300;
-  color: $text-muted;
+  font-size: 0.7rem; font-weight: 300; color: $text-muted;
   margin: 0;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 
-// ---- Employee Code Column ----
 .emp-code-cell {
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: $gold;
-  letter-spacing: 0.04em;
-  white-space: nowrap;
+  font-size: 0.75rem; font-weight: 500; color: $gold;
+  letter-spacing: 0.04em; white-space: nowrap;
 }
 
-// ---- Other Cells ----
-.cell-text {
-  font-size: 0.8rem;
-  font-weight: 400;
-  color: $text-soft;
-}
+.cell-text  { font-size: 0.8rem;  font-weight: 400; color: $text-soft; }
+.cell-muted { font-size: 0.78rem; font-weight: 300; color: $text-muted; }
+.salary     { font-family: 'DM Serif Display', serif; font-size: 0.84rem; color: $text; }
 
-.cell-muted {
-  font-size: 0.78rem;
-  font-weight: 300;
-  color: $text-muted;
-}
-
-.salary {
-  font-family: 'DM Serif Display', serif;
-  font-size: 0.84rem;
-  color: $text;
-}
-
-// ---- Actions ----
 .actions {
   display: flex;
   align-items: center;
@@ -243,37 +200,18 @@ $red:         #c0392b;
 }
 
 .action-btn {
-  width: 28px;
-  height: 28px;
+  width: 28px; height: 28px;
   border-radius: 7px;
   border: 1px solid $border;
   background: transparent;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: flex; align-items: center; justify-content: center;
   cursor: pointer;
   color: $text-muted;
   transition: all 0.18s ease;
 
   svg { width: 14px; height: 14px; }
-
   &:hover { background: $bg; color: $text; border-color: darken($border, 8%); }
-  &.danger:hover { color: $red; border-color: rgba(192, 57, 43, 0.25); background: rgba(192, 57, 43, 0.06); }
-}
-
-// ---- Footer ----
-.table-footer {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  padding: 1rem 0 0;
-}
-
-.table-count {
-  font-size: 0.72rem;
-  font-weight: 300;
-  color: $text-muted;
-  margin: 0;
+  &.danger:hover { color: $red; border-color: rgba(192,57,43,0.25); background: rgba(192,57,43,0.06); }
 }
 
 // ---- Pagination ----
@@ -287,62 +225,56 @@ $red:         #c0392b;
 }
 
 .pagination-info {
-  font-size: 0.72rem;
-  font-weight: 300;
-  color: $text-muted;
+  font-size: 0.72rem; font-weight: 300; color: $text-muted;
 }
 
 .pagination-controls {
-  display: flex;
-  align-items: center;
-  gap: 0.25rem;
+  display: flex; align-items: center; gap: 0.25rem;
 }
 
 .page-btn {
-  min-width: 30px;
-  height: 30px;
+  min-width: 30px; height: 30px;
   padding: 0 0.5rem;
   border-radius: 7px;
   border: 1px solid $border;
   background: $surface;
   font-family: 'DM Sans', sans-serif;
-  font-size: 0.78rem;
-  font-weight: 400;
+  font-size: 0.78rem; font-weight: 400;
   color: $text-soft;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: flex; align-items: center; justify-content: center;
   transition: all 0.18s ease;
 
   svg { width: 13px; height: 13px; }
-
-  &:hover:not(:disabled) {
-    background: $bg;
-    border-color: darken($border, 8%);
-    color: $text;
-  }
-
-  &.active {
-    background: $text;
-    border-color: $text;
-    color: #fff;
-    font-weight: 500;
-  }
-
-  &.nav {
-    color: $text-muted;
-  }
-
-  &:disabled {
-    opacity: 0.35;
-    cursor: not-allowed;
-  }
+  &:hover:not(:disabled) { background: $bg; border-color: darken($border, 8%); color: $text; }
+  &.active { background: $text; border-color: $text; color: #fff; font-weight: 500; }
+  &.nav { color: $text-muted; }
+  &:disabled { opacity: 0.35; cursor: not-allowed; }
 }
 
 .page-ellipsis {
-  font-size: 0.78rem;
-  color: $text-muted;
-  padding: 0 0.25rem;
-  user-select: none;
+  font-size: 0.78rem; color: $text-muted;
+  padding: 0 0.25rem; user-select: none;
+}
+
+// ---- Modal Overlay ----
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(26, 25, 23, 0.55);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2147483647;
+  padding: 1.5rem;
+  box-sizing: border-box;
+  animation: fadeIn 0.2s ease both;
+  border-radius: 1rem;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }

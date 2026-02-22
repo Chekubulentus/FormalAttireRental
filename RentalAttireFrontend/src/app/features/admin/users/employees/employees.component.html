@@ -7,9 +7,11 @@
         <circle cx="9" cy="9" r="5.5" stroke="currentColor" stroke-width="1.3"/>
         <line x1="13.5" y1="13.5" x2="17" y2="17" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
       </svg>
-      <input type="text" class="search-input" placeholder="Search employees..." [(ngModel)]="searchQuery" (ngModelChange)="searchEmployees()"/>
+      <input type="text" class="search-input" placeholder="Search employees..."
+        [(ngModel)]="searchQuery"
+        (ngModelChange)="searchEmployees()"/>
     </div>
-    <button class="btn-add">
+    <button class="btn-add" (click)="showModal = true">
       <svg viewBox="0 0 20 20" fill="none">
         <line x1="10" y1="4" x2="10" y2="16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
         <line x1="4" y1="10" x2="16" y2="10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
@@ -46,7 +48,7 @@
 
     <!-- Rows -->
     <div class="table-row"
-         *ngFor="let emp of filteredEmployees; let i = index"
+         *ngFor="let emp of employeeDtos; let i = index"
          [style.animation-delay]="i * 0.05 + 's'">
 
       <!-- Employee Cell -->
@@ -105,7 +107,7 @@
   </div>
 
   <!-- Pagination -->
-  <div class="pagination" *ngIf="totalPages > 1 || filteredEmployees.length > 0">
+  <div class="pagination" *ngIf="totalPages > 1 || employeeDtos.length > 0">
     <div class="pagination-info">
       Showing {{ rangeStart }}–{{ rangeEnd }} of {{ totalCount }} employees
     </div>
@@ -140,4 +142,13 @@
     </div>
   </div>
 
+</div>
+
+<!-- Modal Overlay — works correctly now that admin-layout uses CSS Grid -->
+<div class="modal-overlay" *ngIf="showModal" (click)="onOverlayClick($event)">
+  <app-add-employee
+    *ngIf="showModal"
+    (closed)="showModal = false"
+    (submitted)="onEmployeeSubmitted($event)">
+  </app-add-employee>
 </div>
