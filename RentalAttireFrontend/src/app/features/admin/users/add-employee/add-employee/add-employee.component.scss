@@ -294,3 +294,19 @@ select.field-input {
 }
 
 @keyframes spin { to { transform: rotate(360deg); } }
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(26, 25, 23, 0.55);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2147483647;
+  padding: 1.5rem;
+  box-sizing: border-box;
+  animation: fadeIn 0.2s ease both;
+  border-radius: 1rem;
+}

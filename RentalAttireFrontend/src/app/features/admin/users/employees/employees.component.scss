@@ -17,6 +17,7 @@ $red:         #c0392b;
 
 .employees {
   animation: slideUp 0.35s ease both;
+  overflow-y: auto;
 }
 
 @keyframes slideUp {

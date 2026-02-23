@@ -21,7 +21,7 @@ export class EmployeesComponent implements OnInit {
   showAccountModal = false;
 
   currentPage  = 1;
-  itemsPerPage = 8;
+  itemsPerPage = 6;
   totalCount   = 0;
   totalPages   = 1;
 

@@ -1,183 +1,44 @@
-<!-- Backdrop -->
-<div class="modal-backdrop" (click)="onBackdropClick($event)">
-  <div class="modal" role="dialog" aria-modal="true">
+<div class="modal-card" (click)="$event.stopPropagation()">
 
-    <!-- Header -->
-    <div class="modal-header">
-      <div class="modal-title">
-        <span class="modal-eyebrow">System · Users</span>
-        <h2>Add Employee</h2>
-      </div>
-      <button class="close-btn" (click)="close()" aria-label="Close">
-        <svg viewBox="0 0 20 20" fill="none">
-          <line x1="4" y1="4" x2="16" y2="16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-          <line x1="16" y1="4" x2="4" y2="16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-        </svg>
-      </button>
+  <!-- Header -->
+  <div class="modal-header">
+    <div>
+      <span class="eyebrow">System · Users</span>
+      <h2>Account Setup</h2>
     </div>
-
-    <!-- Body -->
-    <div class="modal-body">
-
-      <!-- Section: Personal Information -->
-      <div class="form-section">
-        <div class="section-label">
-          <span class="section-dot"></span>
-          Personal Information
-        </div>
-
-        <!-- Profile Image -->
-        <div class="field-row full">
-          <label class="field-label">Profile Photo <span class="optional">optional</span></label>
-          <div class="image-upload" (click)="triggerFileInput()" [class.has-image]="imagePreview">
-            <input #fileInput type="file" accept="image/*" (change)="onImageSelected($event)" hidden/>
-            <img *ngIf="imagePreview" [src]="imagePreview" class="image-preview" alt="Preview"/>
-            <div *ngIf="!imagePreview" class="image-placeholder">
-              <svg viewBox="0 0 24 24" fill="none">
-                <circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.3"/>
-                <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
-              </svg>
-              <span>Upload photo</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="field-row cols-3">
-          <div class="field">
-            <label class="field-label">Last Name <span class="required">*</span></label>
-            <input class="field-input" type="text" placeholder="e.g. Santos" [(ngModel)]="form.person.lastName"/>
-          </div>
-          <div class="field">
-            <label class="field-label">First Name <span class="required">*</span></label>
-            <input class="field-input" type="text" placeholder="e.g. Maria" [(ngModel)]="form.person.firstName"/>
-          </div>
-          <div class="field">
-            <label class="field-label">Middle Name <span class="optional">optional</span></label>
-            <input class="field-input" type="text" placeholder="e.g. Cruz" [(ngModel)]="form.person.middleName"/>
-          </div>
-        </div>
-
-        <div class="field-row cols-3">
-          <div class="field">
-            <label class="field-label">Age <span class="required">*</span></label>
-            <input class="field-input" type="number" placeholder="22" [(ngModel)]="form.person.age" min="1"/>
-          </div>
-          <div class="field">
-            <label class="field-label">Gender <span class="required">*</span></label>
-            <select class="field-input" [(ngModel)]="form.person.gender">
-              <option value="" disabled selected>Select</option>
-              <option value="Male">Male</option>
-              <option value="Female">Female</option>
-            </select>
-          </div>
-          <div class="field">
-            <label class="field-label">Marital Status <span class="required">*</span></label>
-            <select class="field-input" [(ngModel)]="form.person.maritalStatus">
-              <option value="" disabled selected>Select</option>
-              <option value="Single">Single</option>
-              <option value="Married">Married</option>
-              <option value="Widowed">Widowed</option>
-              <option value="Separated">Separated</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="field-row cols-2">
-          <div class="field">
-            <label class="field-label">Phone Number <span class="required">*</span></label>
-            <input class="field-input" type="tel" placeholder="09XXXXXXXXX" [(ngModel)]="form.person.phoneNumber"/>
-          </div>
-        </div>
-      </div>
-
-      <div class="section-divider"></div>
-
-      <!-- Section: Address -->
-      <div class="form-section">
-        <div class="section-label">
-          <span class="section-dot"></span>
-          Address
-        </div>
-
-        <div class="field-row cols-2">
-          <div class="field">
-            <label class="field-label">Street <span class="required">*</span></label>
-            <input class="field-input" type="text" placeholder="e.g. Gumamela St." [(ngModel)]="form.person.street"/>
-          </div>
-          <div class="field">
-            <label class="field-label">Barangay <span class="required">*</span></label>
-            <input class="field-input" type="text" placeholder="e.g. Batasan Hills" [(ngModel)]="form.person.baranggay"/>
-          </div>
-        </div>
-
-        <div class="field-row cols-3">
-          <div class="field">
-            <label class="field-label">City <span class="required">*</span></label>
-            <input class="field-input" type="text" placeholder="e.g. Quezon City" [(ngModel)]="form.person.city"/>
-          </div>
-          <div class="field">
-            <label class="field-label">Province <span class="required">*</span></label>
-            <input class="field-input" type="text" placeholder="e.g. Nueva Ecija" [(ngModel)]="form.person.province"/>
-          </div>
-          <div class="field">
-            <label class="field-label">Postal Code <span class="required">*</span></label>
-            <input class="field-input" type="text" placeholder="1128" [(ngModel)]="form.person.postalCode"/>
-          </div>
-        </div>
-      </div>
-
-      <div class="section-divider"></div>
-
-      <!-- Section: Employment Details -->
-      <div class="form-section">
-        <div class="section-label">
-          <span class="section-dot"></span>
-          Employment Details
-        </div>
-
-        <div class="field-row cols-2">
-          <div class="field">
-            <label class="field-label">Employee Code <span class="required">*</span></label>
-            <input class="field-input" type="text" placeholder="e.g. EMP-0001" [(ngModel)]="form.employeeCode"/>
-          </div>
-          <div class="field">
-            <label class="field-label">Department <span class="required">*</span></label>
-            <input class="field-input" type="text" placeholder="e.g. IT Department" [(ngModel)]="form.department"/>
-          </div>
-        </div>
-
-        <div class="field-row cols-2">
-          <div class="field">
-            <label class="field-label">Role / Position <span class="required">*</span></label>
-            <input class="field-input" type="text" placeholder="e.g. Administrator" [(ngModel)]="form.rolePosition"/>
-          </div>
-          <div class="field">
-            <label class="field-label">Salary <span class="required">*</span></label>
-            <div class="input-prefix-wrap">
-              <span class="input-prefix">₱</span>
-              <input class="field-input prefixed" type="number" placeholder="25,000" [(ngModel)]="form.salary" min="0"/>
-            </div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- Footer -->
-    <div class="modal-footer">
-      <button class="btn-cancel" (click)="close()">Cancel</button>
-      <button class="btn-submit" (click)="submit()" [disabled]="isSubmitting">
-        <span *ngIf="!isSubmitting">Continue to Account Setup</span>
-        <span *ngIf="isSubmitting" class="btn-loading">
-          <span class="btn-spinner"></span>
-          Saving...
-        </span>
-        <svg *ngIf="!isSubmitting" viewBox="0 0 16 16" fill="none">
-          <polyline points="4 8 12 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-          <polyline points="8 4 12 8 8 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </button>
-    </div>
-
+    <button class="close-btn" (click)="closeForm.emit()">
+      <svg viewBox="0 0 20 20" fill="none">
+        <line x1="4" y1="4" x2="16" y2="16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="16" y1="4" x2="4"  y2="16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </button>
   </div>
+
+  <!-- Body -->
+  <div class="modal-body">
+    <div class="section-label"><span class="dot"></span>User Credentials</div>
+
+    <div class="field">
+      <label class="field-label">Email <span class="required">*</span></label>
+      <input type="email" class="field-input" placeholder="e.g. admin@gmail.com"/>
+    </div>
+
+    <div class="field">
+      <label class="field-label">Password <span class="required">*</span></label>
+      <input type="password" class="field-input" placeholder="••••••••"/>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="modal-footer">
+    <button class="btn-cancel" (click)="closeForm.emit()">Back</button>
+    <button class="btn-submit">
+      Create Account
+      <svg viewBox="0 0 16 16" fill="none">
+        <polyline points="4 8 12 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        <polyline points="8 4 12 8 8 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+  </div>
+
 </div>

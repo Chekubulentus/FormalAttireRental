@@ -35,7 +35,7 @@ $red:         #c0392b;
   align-items: flex-end;
   justify-content: space-between;
   margin-bottom: 2.25rem;
-  padding-bottom: 1.75rem;
+  padding: 1.75rem;
   border-bottom: 1px solid $border;
 }
 
@@ -87,6 +87,7 @@ $red:         #c0392b;
   grid-template-columns: repeat(4, 1fr);
   gap: 1rem;
   margin-bottom: 1.5rem;
+  padding: 1.75rem;
 
   @media (max-width: 1100px) { grid-template-columns: repeat(2, 1fr); }
   @media (max-width: 600px)  { grid-template-columns: 1fr; }
@@ -166,6 +167,7 @@ $red:         #c0392b;
   display: grid;
   grid-template-columns: 1fr 340px;
   gap: 1rem;
+  padding: 1.75rem;
 
   @media (max-width: 1000px) { grid-template-columns: 1fr; }
 }

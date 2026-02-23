@@ -14,7 +14,7 @@
 
 .main-content {
   height: 100vh;
-  overflow: hidden;     // no scrolling here — no stacking context
+  overflow-y: auto;     // no scrolling here — no stacking context
   background: #f9f7f5;
   min-width: 0;
   display: flex;

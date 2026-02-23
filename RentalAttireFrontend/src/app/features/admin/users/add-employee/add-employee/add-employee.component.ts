@@ -2,19 +2,19 @@ import { CommonModule } from '@angular/common';
 import { Component, ElementRef, EventEmitter, Output, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { EmployeeDTO } from '../../../../../data/models/DTOs/Employees/employee-dto';
+import { AddUserComponent } from "../../add-user/add-user/add-user.component";
 
 @Component({
   selector: 'app-add-employee',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, AddUserComponent],
   templateUrl: './add-employee.component.html',
   styleUrl: './add-employee.component.scss',
 })
 export class AddEmployeeComponent {
   @Output() closed    = new EventEmitter<void>();
   @Output() submitted = new EventEmitter<EmployeeDTO>();
-
-  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
+  showUserModal : boolean = false;
 
   isSubmitting = false;
   imagePreview: string | null = null;
@@ -45,28 +45,21 @@ export class AddEmployeeComponent {
     },
   };
 
-  triggerFileInput(): void {
-    this.fileInput.nativeElement.click();
-  }
-
-  onImageSelected(event: Event): void {
-    const file = (event.target as HTMLInputElement).files?.[0];
-    if (!file) return;
-    this.selectedFile = file;
-    const reader = new FileReader();
-    reader.onload = () => (this.imagePreview = reader.result as string);
-    reader.readAsDataURL(file);
-  }
-
   close(): void {
     this.closed.emit();
   }
 
   submit(): void {
-    if (!this.isValid()) return;
+    if (!this.isValid()) console.log('Invalid Isvalid');
     this.isSubmitting = true;
     this.submitted.emit(this.form);
     this.isSubmitting = false;
+  }
+
+
+  //JUST FOR EASIER USE OF OPENING ADDUSERCOMPONENT
+  openUserForm() {
+    this.showUserModal = true;
   }
 
   private isValid(): boolean {
@@ -78,5 +71,9 @@ export class AddEmployeeComponent {
       this.form.employeeCode && this.form.department &&
       this.form.rolePosition && this.form.salary
     );
+  }
+
+  closeUserFormModal() {
+    this.showUserModal = false;
   }
 }
