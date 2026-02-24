@@ -10,6 +10,6 @@ namespace RentalAttireBackend.Application.Employees.DTOs
         public string Department { get; set; } = string.Empty;
         public double Salary { get; set; }
         public string RolePosition { get; set; } = string.Empty;
-        public PersonDTO Person { get; set; } = null!;
+        public PersonDTO Person { get; set; } = new();
     }
 }

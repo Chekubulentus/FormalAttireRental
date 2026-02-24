@@ -145,7 +145,7 @@
 </div>
 
 <!-- Modal Overlay — works correctly now that admin-layout uses CSS Grid -->
-<div class="modal-overlay" *ngIf="showModal" (click)="onOverlayClick($event)">
+<div class="modal-overlay" *ngIf="showModal">
   <app-add-employee
     *ngIf="showModal"
     (closed)="showModal = false"

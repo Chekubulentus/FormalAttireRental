@@ -58,7 +58,7 @@ namespace RentalAttireBackend.Application.Employees.Commands.CreateEmployee
 
                 var person = _mapper.Map<Person>(request.Person);
 
-                var personId = await _personRepo.CreatePersonAsync(person, cancellationToken);
+            //  var personId = await _personRepo.CreatePersonAsync(person, cancellationToken);
 
                 var hashedPassword = _passwordHasher.HashPassword(request.Password);
 
@@ -66,10 +66,10 @@ namespace RentalAttireBackend.Application.Employees.Commands.CreateEmployee
                 newUser.HashedPassword = hashedPassword;
                 newUser.Person = person;
 
-                var createUser = await _userRepo.CreateUserAsync(newUser, cancellationToken);
+              //  var createUser = await _userRepo.CreateUserAsync(newUser, cancellationToken);
 
-                if (!createUser)
-                    return Result<bool>.Failure("Account creation failed.");
+                //if (!createUser)
+                  //  return Result<bool>.Failure("Account creation failed.");
 
                 var employee = _mapper.Map<Employee>(request);
                 employee.User = newUser;

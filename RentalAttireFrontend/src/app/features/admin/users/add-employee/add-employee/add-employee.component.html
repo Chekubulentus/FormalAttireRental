@@ -1,11 +1,20 @@
+<!--
+  AddEmployeeComponent
+  ─────────────────────────────────────────────────────────────
+  This is the first step of the two-step "Add Employee" flow.
+  Step 1 → this form (personal info, address, employment)
+  Step 2 → AddUserComponent (email + password), shown on top
+-->
+
 <div class="modal-card">
 
-  <!-- Header -->
+  <!-- ── Header ──────────────────────────────────────────── -->
   <div class="modal-header">
     <div>
       <span class="eyebrow">System · Users</span>
       <h2>Add Employee</h2>
     </div>
+    <!-- Emits (closed) to AdminLayoutComponent via modalService -->
     <button class="close-btn" (click)="close()">
       <svg viewBox="0 0 20 20" fill="none">
         <line x1="4" y1="4" x2="16" y2="16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
@@ -14,41 +23,60 @@
     </button>
   </div>
 
-  <!-- Body -->
+  <!-- ── Body (scrollable) ───────────────────────────────── -->
   <div class="modal-body">
 
+    <!-- Section 1: Personal Information -->
     <section class="form-section">
       <div class="section-label"><span class="dot"></span>Personal Information</div>
 
+      <!-- Row: Last Name / First Name / Middle Name -->
       <div class="field-row cols-3">
-        <div class="field">
+
+        <div class="field" [class.invalid]="hasError('lastName')">
           <label class="field-label">Last Name <span class="required">*</span></label>
-          <input class="field-input" type="text" placeholder="e.g. Santos" [(ngModel)]="form.person.lastName"/>
+          <input class="field-input" type="text" placeholder="e.g. Santos"
+            [(ngModel)]="form.person.lastName"/>
+          <span class="error-msg" *ngIf="hasError('lastName')">{{ errorMsg('lastName') }}</span>
         </div>
-        <div class="field">
+
+        <div class="field" [class.invalid]="hasError('firstName')">
           <label class="field-label">First Name <span class="required">*</span></label>
-          <input class="field-input" type="text" placeholder="e.g. Maria" [(ngModel)]="form.person.firstName"/>
+          <input class="field-input" type="text" placeholder="e.g. Maria"
+            [(ngModel)]="form.person.firstName"/>
+          <span class="error-msg" *ngIf="hasError('firstName')">{{ errorMsg('firstName') }}</span>
         </div>
+
+        <!-- Middle name is optional — no validation -->
         <div class="field">
           <label class="field-label">Middle Name <span class="optional">optional</span></label>
-          <input class="field-input" type="text" placeholder="e.g. Cruz" [(ngModel)]="form.person.middleName"/>
+          <input class="field-input" type="text" placeholder="e.g. Cruz"
+            [(ngModel)]="form.person.middleName"/>
         </div>
+
       </div>
 
+      <!-- Row: Age / Gender / Marital Status -->
       <div class="field-row cols-3">
-        <div class="field">
+
+        <div class="field" [class.invalid]="hasError('age')">
           <label class="field-label">Age <span class="required">*</span></label>
-          <input class="field-input" type="number" placeholder="e.g. 25" [(ngModel)]="form.person.age" min="1"/>
+          <input class="field-input" type="number" placeholder="e.g. 25" min="1"
+            [(ngModel)]="form.person.age"/>
+          <span class="error-msg" *ngIf="hasError('age')">{{ errorMsg('age') }}</span>
         </div>
-        <div class="field">
+
+        <div class="field" [class.invalid]="hasError('gender')">
           <label class="field-label">Gender <span class="required">*</span></label>
           <select class="field-input" [(ngModel)]="form.person.gender">
             <option value="" disabled>Select</option>
             <option value="Male">Male</option>
             <option value="Female">Female</option>
           </select>
+          <span class="error-msg" *ngIf="hasError('gender')">{{ errorMsg('gender') }}</span>
         </div>
-        <div class="field">
+
+        <div class="field" [class.invalid]="hasError('maritalStatus')">
           <label class="field-label">Marital Status <span class="required">*</span></label>
           <select class="field-input" [(ngModel)]="form.person.maritalStatus">
             <option value="" disabled>Select</option>
@@ -57,86 +85,143 @@
             <option value="Widowed">Widowed</option>
             <option value="Separated">Separated</option>
           </select>
+          <span class="error-msg" *ngIf="hasError('maritalStatus')">{{ errorMsg('maritalStatus') }}</span>
         </div>
+
       </div>
 
+      <!-- Row: Phone Number (half width) -->
       <div class="field-row cols-2">
-        <div class="field">
+
+        <div class="field" [class.invalid]="hasError('phoneNumber')">
           <label class="field-label">Phone Number <span class="required">*</span></label>
-          <input class="field-input" type="tel" placeholder="09XXXXXXXXX" [(ngModel)]="form.person.phoneNumber"/>
+          <input class="field-input" type="tel" placeholder="09XXXXXXXXX"
+            [(ngModel)]="form.person.phoneNumber"/>
+          <span class="error-msg" *ngIf="hasError('phoneNumber')">{{ errorMsg('phoneNumber') }}</span>
         </div>
+
       </div>
     </section>
 
     <div class="divider"></div>
 
+    <!-- Section 2: Address -->
     <section class="form-section">
       <div class="section-label"><span class="dot"></span>Address</div>
 
+      <!-- Row: Street / Barangay -->
       <div class="field-row cols-2">
-        <div class="field">
+
+        <div class="field" [class.invalid]="hasError('street')">
           <label class="field-label">Street <span class="required">*</span></label>
-          <input class="field-input" type="text" placeholder="e.g. Gumamela St." [(ngModel)]="form.person.street"/>
+          <input class="field-input" type="text" placeholder="e.g. Gumamela St."
+            [(ngModel)]="form.person.street"/>
+          <span class="error-msg" *ngIf="hasError('street')">{{ errorMsg('street') }}</span>
         </div>
-        <div class="field">
+
+        <div class="field" [class.invalid]="hasError('barangay')">
           <label class="field-label">Barangay <span class="required">*</span></label>
-          <input class="field-input" type="text" placeholder="e.g. Batasan Hills" [(ngModel)]="form.person.baranggay"/>
+          <input class="field-input" type="text" placeholder="e.g. Batasan Hills"
+            [(ngModel)]="form.person.barangay"/>
+          <span class="error-msg" *ngIf="hasError('barangay')">{{ errorMsg('barangay') }}</span>
         </div>
+
       </div>
 
+      <!-- Row: City / Province / Postal Code -->
       <div class="field-row cols-3">
-        <div class="field">
+
+        <div class="field" [class.invalid]="hasError('city')">
           <label class="field-label">City <span class="required">*</span></label>
-          <input class="field-input" type="text" placeholder="e.g. Quezon City" [(ngModel)]="form.person.city"/>
+          <input class="field-input" type="text" placeholder="e.g. Quezon City"
+            [(ngModel)]="form.person.city"/>
+          <span class="error-msg" *ngIf="hasError('city')">{{ errorMsg('city') }}</span>
         </div>
-        <div class="field">
+
+        <div class="field" [class.invalid]="hasError('province')">
           <label class="field-label">Province <span class="required">*</span></label>
-          <input class="field-input" type="text" placeholder="e.g. Nueva Ecija" [(ngModel)]="form.person.province"/>
+          <input class="field-input" type="text" placeholder="e.g. Nueva Ecija"
+            [(ngModel)]="form.person.province"/>
+          <span class="error-msg" *ngIf="hasError('province')">{{ errorMsg('province') }}</span>
         </div>
-        <div class="field">
+
+        <div class="field" [class.invalid]="hasError('postalCode')">
           <label class="field-label">Postal Code <span class="required">*</span></label>
-          <input class="field-input" type="text" placeholder="1128" [(ngModel)]="form.person.postalCode"/>
+          <input class="field-input" type="text" placeholder="1128"
+            [(ngModel)]="form.person.postalCode"/>
+          <span class="error-msg" *ngIf="hasError('postalCode')">{{ errorMsg('postalCode') }}</span>
         </div>
+
       </div>
     </section>
 
     <div class="divider"></div>
 
+    <!-- Section 3: Employment Details -->
     <section class="form-section">
       <div class="section-label"><span class="dot"></span>Employment Details</div>
 
+      <!-- Row: Employee Code / Department -->
       <div class="field-row cols-2">
-        <div class="field">
+
+        <div class="field" [class.invalid]="hasError('employeeCode')">
           <label class="field-label">Employee Code <span class="required">*</span></label>
-          <input class="field-input" type="text" placeholder="e.g. EMP-0001" [(ngModel)]="form.employeeCode"/>
+          <input class="field-input" type="text" placeholder="e.g. EMP-0001"
+            [(ngModel)]="form.employeeCode"/>
+          <span class="error-msg" *ngIf="hasError('employeeCode')">{{ errorMsg('employeeCode') }}</span>
         </div>
-        <div class="field">
+
+        <div class="field" [class.invalid]="hasError('department')">
           <label class="field-label">Department <span class="required">*</span></label>
-          <input class="field-input" type="text" placeholder="e.g. IT Department" [(ngModel)]="form.department"/>
+          <select class="field-input" [(ngModel)]="form.department">
+            <option value="" disabled>Select department</option>
+            <option *ngFor="let d of departments" [value]="d">{{ d }}</option>
+          </select>
+          <span class="error-msg" *ngIf="hasError('department')">{{ errorMsg('department') }}</span>
         </div>
+
       </div>
 
+      <!-- Row: Role / Salary -->
       <div class="field-row cols-2">
-        <div class="field">
+
+        <div class="field" [class.invalid]="hasError('rolePosition')">
           <label class="field-label">Role / Position <span class="required">*</span></label>
-          <input class="field-input" type="text" placeholder="e.g. Administrator" [(ngModel)]="form.rolePosition"/>
+          <select class="field-input" [(ngModel)]="form.rolePosition">
+            <option value="" disabled>Select role</option>
+            <option *ngFor="let r of roles" [value]="r">{{ r }}</option>
+          </select>
+          <span class="error-msg" *ngIf="hasError('rolePosition')">{{ errorMsg('rolePosition') }}</span>
         </div>
-        <div class="field">
+
+        <!-- Salary uses a prefix-wrap so the ₱ symbol sits inside the input -->
+        <div class="field" [class.invalid]="hasError('salary')">
           <label class="field-label">Salary <span class="required">*</span></label>
           <div class="prefix-wrap">
             <span class="prefix">₱</span>
-            <input class="field-input prefixed" type="number" placeholder="25000" [(ngModel)]="form.salary" min="0"/>
+            <input class="field-input prefixed" type="number" placeholder="25000" min="0"
+              [(ngModel)]="form.salary"/>
           </div>
+          <span class="error-msg" *ngIf="hasError('salary')">{{ errorMsg('salary') }}</span>
         </div>
+
       </div>
     </section>
 
-  </div>
+  </div><!-- end .modal-body -->
 
-  <!-- Footer -->
+  <!-- ── Footer ──────────────────────────────────────────── -->
   <div class="modal-footer">
+
+    <!-- Summary error — only visible after first submit attempt and there are still errors -->
+    <span class="footer-error" *ngIf="touched && !isValid">
+      Please fill in all required fields.
+    </span>
+
     <button class="btn-cancel" (click)="close()">Cancel</button>
-    <button class="btn-submit" (click)="openUserForm()" [disabled]="isSubmitting">
+
+    <!-- submit() sets touched=true, validates, then opens AddUser if valid -->
+    <button class="btn-submit" (click)="submit()" [disabled]="isSubmitting">
       <ng-container *ngIf="!isSubmitting">
         Continue to Account Setup
         <svg viewBox="0 0 16 16" fill="none">
@@ -148,13 +233,22 @@
         <span class="btn-spinner"></span> Saving...
       </ng-container>
     </button>
+
   </div>
 
-</div>
+</div><!-- end .modal-card -->
 
+
+<!--
+  AddUser Overlay
+  ─────────────────────────────────────────────────────────────
+  Shown on top of this card when showUserModal = true.
+  stopPropagation prevents clicks here from bubbling up
+  to AdminLayoutComponent's overlay and closing everything.
+-->
 <div class="modal-overlay" *ngIf="showUserModal" (click)="$event.stopPropagation()">
   <app-add-user
-  (closeForm)="showUserModal = false"
-  [newEmployee]="form"
-  ></app-add-user>
+    (closeForm)="closeUserFormModal($event)"
+    [newEmployee]="form">
+  </app-add-user>
 </div>

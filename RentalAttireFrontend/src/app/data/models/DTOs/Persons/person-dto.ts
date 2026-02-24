@@ -8,7 +8,7 @@ export class PersonDTO {
     maritalStatus: string = '';
     phoneNumber: string = '';
     street: string = '';
-    baranggay: string = '';
+    barangay: string = '';
     city: string = '';
     province: string = '';
     postalCode: string = '';

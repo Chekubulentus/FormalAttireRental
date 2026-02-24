@@ -5,6 +5,7 @@ import { Result } from '../../../../data/models/Results/result';
 import { PagedResult } from '../../../../data/models/Results/pagedResult';
 import { firstValueFrom } from 'rxjs';
 import { EmployeeDTO } from '../../../../data/models/DTOs/Employees/employee-dto';
+import { CreateEmployeeCommand } from '../../../../data/models/DTOs/Employees/create-employee';
 
 @Injectable({
   providedIn: 'root',
@@ -50,4 +51,19 @@ export class EmployeeService {
       return Result.failure(message);
     }
   }
+
+  async createEmployeeAsync(
+    employee : CreateEmployeeCommand
+  ) : Promise<Result<boolean>> {
+    try {
+      const result = await firstValueFrom(
+        this.httpClient.post<Promise<Result<boolean>>>(`${this.employeeUrl}`, employee)
+      );
+
+      return result;
+    }catch(err: any) {
+      return Result.failure(err.error);
+    }
+  }
+
 }

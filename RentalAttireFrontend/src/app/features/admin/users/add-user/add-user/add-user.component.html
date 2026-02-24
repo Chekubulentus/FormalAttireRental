@@ -20,19 +20,19 @@
 
     <div class="field">
       <label class="field-label">Email <span class="required">*</span></label>
-      <input type="email" class="field-input" placeholder="e.g. admin@gmail.com"/>
+      <input type="email" class="field-input" placeholder="e.g. admin@gmail.com" [(ngModel)]="email">
     </div>
 
     <div class="field">
       <label class="field-label">Password <span class="required">*</span></label>
-      <input type="password" class="field-input" placeholder="••••••••"/>
+      <input type="password" class="field-input" placeholder="••••••••" [(ngModel)]="password">
     </div>
   </div>
 
   <!-- Footer -->
   <div class="modal-footer">
     <button class="btn-cancel" (click)="closeForm.emit()">Back</button>
-    <button class="btn-submit">
+    <button class="btn-submit" (click)="createEmployee()">
       Create Account
       <svg viewBox="0 0 16 16" fill="none">
         <polyline points="4 8 12 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
