@@ -4,11 +4,18 @@ import { FormsModule } from '@angular/forms';
 import { EmployeeService } from '../employee-service/employee.service';
 import { EmployeeDTO } from '../../../../data/models/DTOs/Employees/employee-dto';
 import { AddEmployeeComponent } from '../add-employee/add-employee/add-employee.component';
+import { EditEmployeeComponent } from '../edit-employee/edit-employee.component';
 
 @Component({
   selector: 'app-employees',
   standalone: true,
-  imports: [CommonModule, FormsModule, CurrencyPipe, AddEmployeeComponent],
+  imports: [
+    CommonModule, 
+    FormsModule, 
+    CurrencyPipe, 
+    AddEmployeeComponent,
+    EditEmployeeComponent
+  ],
   templateUrl: './employees.component.html',
   styleUrl: './employees.component.scss',
 })
@@ -16,6 +23,7 @@ export class EmployeesComponent implements OnInit {
   searchQuery  = '';
   isLoading    = false;
   showModal    = false;
+  employeeToEdit : EmployeeDTO | null = null;
 
   pendingEmployee: EmployeeDTO | null = null;
   showAccountModal = false;
@@ -140,5 +148,13 @@ export class EmployeesComponent implements OnInit {
   onImgError(event: Event, emp: EmployeeDTO): void {
     (event.target as HTMLImageElement).style.display = 'none';
     emp.person.profileImagePath = '';
+  }
+
+  openEditEmployeeForm(employee: EmployeeDTO) {
+    this.employeeToEdit = employee;
+  } 
+
+  closeEditForm() {
+    this.employeeToEdit = null;
   }
 }

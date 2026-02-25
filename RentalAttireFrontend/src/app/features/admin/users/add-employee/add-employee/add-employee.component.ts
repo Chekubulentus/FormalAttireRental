@@ -12,7 +12,6 @@ import { AddUserComponent } from '../../add-user/add-user/add-user.component';
   styleUrl: './add-employee.component.scss',
 })
 export class AddEmployeeComponent {
-
   // ============================================================
   // Outputs — events emitted to the parent (AdminLayoutComponent)
   // ============================================================
@@ -22,7 +21,6 @@ export class AddEmployeeComponent {
 
   // Tells the parent the form was fully completed
   @Output() submitted = new EventEmitter<EmployeeDTO>();
-
 
   // ============================================================
   // State
@@ -37,7 +35,6 @@ export class AddEmployeeComponent {
   // Starts false — flips to true when the user clicks "Continue"
   // Error messages only show after the first submit attempt
   touched = false;
-
 
   // ============================================================
   // Dropdown Options
@@ -61,36 +58,34 @@ export class AddEmployeeComponent {
     'Staff',
   ];
 
-
   // ============================================================
   // Form Data — bound to the template via [(ngModel)]
   // ============================================================
 
   form: EmployeeDTO = {
     id: 0,
-    employeeCode: '',
-    department: '',
-    salary: null as any,      // null so the input starts empty, not "0"
-    rolePosition: '',
+    employeeCode: 'EMP-SAMPLE',
+    department: 'Sample Departmen',
+    salary: 1, // null so the input starts empty, not "0"
+    rolePosition: 'Cashier',
     person: {
       id: 0,
-      lastName: '',
-      firstName: '',
-      middleName: '',
-      age: null as any,       // null so the input starts empty, not "0"
-      gender: '',
-      maritalStatus: '',
-      phoneNumber: '',
-      street: '',
-      barangay: '',
-      city: '',
-      province: '',
-      postalCode: '',
-      profileImagePath: '',
+      lastName: 'samp',
+      firstName: 'samp',
+      middleName: 'samp',
+      age: 18, // null so the input starts empty, not "0"
+      gender: 'Male',
+      maritalStatus: 'Single',
+      phoneNumber: '09111111111',
+      street: 'sample',
+      barangay: 'sample',
+      city: 'sample',
+      province: 'sample',
+      postalCode: 'sample',
+      profileImagePath: 'sample',
       fullName: '',
     },
   };
-
 
   // ============================================================
   // Validation
@@ -105,32 +100,32 @@ export class AddEmployeeComponent {
     const e: Record<string, string> = {};
 
     // Personal Information
-    if (!p.lastName?.trim())    e['lastName']      = 'Last name is required.';
-    if (!p.firstName?.trim())   e['firstName']     = 'First name is required.';
-    if (!p.age || p.age < 1)    e['age']           = 'Enter a valid age.';
-    if (p.age > 100)            e['age']           = 'Age cannot exceed 100.';
-    if (!p.gender)              e['gender']        = 'Select a gender.';
-    if (!p.maritalStatus)       e['maritalStatus'] = 'Select marital status.';
+    if (!p.lastName?.trim()) e['lastName'] = 'Last name is required.';
+    if (!p.firstName?.trim()) e['firstName'] = 'First name is required.';
+    if (!p.age || p.age < 1) e['age'] = 'Enter a valid age.';
+    if (p.age > 100) e['age'] = 'Age cannot exceed 100.';
+    if (!p.gender) e['gender'] = 'Select a gender.';
+    if (!p.maritalStatus) e['maritalStatus'] = 'Select marital status.';
 
     // Phone — required + format check (must be 09XXXXXXXXX)
-    if (!p.phoneNumber?.trim())
-      e['phoneNumber'] = 'Phone number is required.';
+    if (!p.phoneNumber?.trim()) e['phoneNumber'] = 'Phone number is required.';
     else if (!/^09\d{9}$/.test(p.phoneNumber.trim()))
       e['phoneNumber'] = 'Must be 11 digits starting with 09.';
 
     // Address
-    if (!p.street?.trim())      e['street']     = 'Street is required.';
-    if (!p.barangay?.trim())    e['barangay']   = 'Barangay is required.';
-    if (!p.city?.trim())        e['city']       = 'City is required.';
-    if (!p.province?.trim())    e['province']   = 'Province is required.';
-    if (!p.postalCode?.trim())  e['postalCode'] = 'Postal code is required.';
+    if (!p.street?.trim()) e['street'] = 'Street is required.';
+    if (!p.barangay?.trim()) e['barangay'] = 'Barangay is required.';
+    if (!p.city?.trim()) e['city'] = 'City is required.';
+    if (!p.province?.trim()) e['province'] = 'Province is required.';
+    if (!p.postalCode?.trim()) e['postalCode'] = 'Postal code is required.';
 
     // Employment Details
-    if (!this.form.employeeCode?.trim()) e['employeeCode']  = 'Employee code is required.';
-    if (!this.form.department)           e['department']    = 'Select a department.';
-    if (!this.form.rolePosition)         e['rolePosition']  = 'Select a role.';
+    if (!this.form.employeeCode?.trim())
+      e['employeeCode'] = 'Employee code is required.';
+    if (!this.form.department) e['department'] = 'Select a department.';
+    if (!this.form.rolePosition) e['rolePosition'] = 'Select a role.';
     if (!this.form.salary || this.form.salary <= 0)
-                                         e['salary']        = 'Enter a valid salary.';
+      e['salary'] = 'Enter a valid salary.';
 
     return e;
   }
@@ -151,7 +146,6 @@ export class AddEmployeeComponent {
   errorMsg(field: string): string {
     return this.touched ? (this.errors[field] ?? '') : '';
   }
-
 
   // ============================================================
   // Actions

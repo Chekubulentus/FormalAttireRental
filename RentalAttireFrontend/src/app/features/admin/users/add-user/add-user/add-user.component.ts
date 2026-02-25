@@ -79,6 +79,6 @@ export class AddUserComponent implements OnInit {
   }
 
   closed() {
-    this.closeForm.emit();
+    this.closeForm.emit(false);
   }
 }

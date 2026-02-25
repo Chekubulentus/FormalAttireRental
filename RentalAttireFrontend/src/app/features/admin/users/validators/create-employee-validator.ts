@@ -1,6 +1,8 @@
-import { combineAll } from "rxjs";
 import { CreateEmployeeCommand } from "../../../../data/models/DTOs/Employees/create-employee";
+import { Injectable } from "@angular/core";
 
+
+@Injectable({ providedIn: 'root' })
 export class CreateEmployeeValidator {
     validate(command: CreateEmployeeCommand): string[] {
         const errors: string[] = [];
