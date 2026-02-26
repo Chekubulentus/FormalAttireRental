@@ -5,6 +5,7 @@ import { EmployeeService } from '../employee-service/employee.service';
 import { EmployeeDTO } from '../../../../data/models/DTOs/Employees/employee-dto';
 import { AddEmployeeComponent } from '../add-employee/add-employee/add-employee.component';
 import { EditEmployeeComponent } from '../edit-employee/edit-employee.component';
+import { AppToastrService } from '../../../../core/services/toastr-service/app-toastr.service';
 
 @Component({
   selector: 'app-employees',
@@ -40,10 +41,14 @@ export class EmployeesComponent implements OnInit {
     '#c0697a', '#6b8e6b', '#a0522d', '#5a7a9e',
   ];
 
-  constructor(private employeeService: EmployeeService) {}
+  constructor(
+    private employeeService: EmployeeService,
+    private toastr: AppToastrService
+  ) {}
 
   ngOnInit(): void {
     this.getAllEmployees();
+    this.toastr.success('My baby ica the beatifulest, prettiest, gorgeousest, omisimizest');
   }
 
   searchEmployees(): void {
@@ -108,11 +113,12 @@ export class EmployeesComponent implements OnInit {
   }
 
   onEmployeeSubmitted(employee: EmployeeDTO): void {
-    this.pendingEmployee = employee;
-    this.showModal = false;
-    this.showAccountModal = true;
-    this.employeeToEdit = null;
-    this.getAllEmployees();
+    console.log('onEmployeeSubmitted fired', employee);
+    const index = this.employeeDtos.findIndex(e => e.id === employee.id);
+    if(index !== -1) this.employeeDtos[index] == employee;
+
+    this.closeEditForm();
+    this.toastr.success('Employee successfully updated.');
   }
 
   get rangeStart(): number {

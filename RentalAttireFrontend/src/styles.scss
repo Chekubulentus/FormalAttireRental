@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap');
 
 
 *, *::before, *::after {
@@ -16,4 +17,91 @@ app-add-employee {
   position: fixed;
   inset: 0;
   z-index: 2147483647;
+}
+
+// styles.scss
+#toast-container > div {
+  font-family: 'DM Sans', sans-serif !important;
+  background-color: #ffffff !important;
+  border-radius: 12px !important;
+  box-shadow: 0 8px 32px rgba(26, 25, 23, 0.12),
+              0 2px 8px  rgba(26, 25, 23, 0.06) !important;
+  border: 1px solid #e4ddd6 !important;
+  padding: 0.9rem 1rem 0.9rem 1rem !important;
+  opacity: 1 !important;
+  min-width: 280px !important;
+  max-width: 380px !important;
+  background-image: none !important; // removes default icons
+}
+
+// Title
+#toast-container > div .toast-title {
+  font-family: 'DM Sans', sans-serif !important;
+  font-size: 0.82rem !important;
+  font-weight: 500 !important;
+  color: #1a1917 !important;
+  margin-bottom: 0.15rem !important;
+}
+
+// Message
+#toast-container > div .toast-message {
+  font-family: 'DM Sans', sans-serif !important;
+  font-size: 0.75rem !important;
+  font-weight: 300 !important;
+  color: #6b6560 !important;
+}
+
+// Close button
+#toast-container > div .toast-close-button {
+  color: #9e9590 !important;
+  font-size: 1rem !important;
+  font-weight: 300 !important;
+  top: 0.1rem !important;
+  right: 0.1rem !important;
+
+  &:hover { color: #1a1917 !important; }
+}
+
+// Progress bar
+#toast-container > div .toast-progress {
+  height: 2.5px !important;
+  border-radius: 0 0 12px 12px !important;
+}
+
+// ── Success — green left border ──
+#toast-container > .toast-success {
+  border-left: 3px solid #27ae60 !important;
+
+  .toast-title   { color: #27ae60 !important; }
+  .toast-progress { background: #27ae60 !important; }
+}
+
+// ── Error — red left border ──
+#toast-container > .toast-error {
+  border-left: 3px solid #c0392b !important;
+
+  .toast-title   { color: #c0392b !important; }
+  .toast-progress { background: #c0392b !important; }
+}
+
+// ── Warning — gold left border (matches app gold) ──
+#toast-container > .toast-warning {
+  border-left: 3px solid #a07840 !important;
+
+  .toast-title   { color: #a07840 !important; }
+  .toast-progress { background: #a07840 !important; }
+}
+
+// ── Info — blue left border ──
+#toast-container > .toast-info {
+  border-left: 3px solid #4a90a4 !important;
+
+  .toast-title   { color: #4a90a4 !important; }
+  .toast-progress { background: #4a90a4 !important; }
+}
+
+// Hover effect
+#toast-container > div:hover {
+  box-shadow: 0 12px 40px rgba(26, 25, 23, 0.15) !important;
+  cursor: pointer;
 }

@@ -186,7 +186,7 @@ export class EditEmployeeComponent implements OnInit {
         } else {
           console.log(res.successMessage);
           console.log(`Employee Payload After: ${employeePayload}`);
-          this.updated.emit(employeePayload);
+          this.updated.emit(this.form);
         }
       })
       .catch((err) => {
