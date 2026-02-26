@@ -111,6 +111,8 @@ export class EmployeesComponent implements OnInit {
     this.pendingEmployee = employee;
     this.showModal = false;
     this.showAccountModal = true;
+    this.employeeToEdit = null;
+    this.getAllEmployees();
   }
 
   get rangeStart(): number {

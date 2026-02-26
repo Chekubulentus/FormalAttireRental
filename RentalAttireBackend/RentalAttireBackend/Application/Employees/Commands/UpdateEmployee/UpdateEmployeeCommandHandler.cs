@@ -42,8 +42,8 @@ namespace RentalAttireBackend.Application.Employees.Commands.UpdateEmployee
                     return Result<bool>.Failure("Employee does not exist. Please try again.");
                 }
 
-                var oldEmployeeDetails = _mapper.Map<Employee>(existingEmployee);
-                var oldPersonDetails = _mapper.Map<Person>(existingEmployee.User.Person);
+                var oldEmployeeDetails = await _employeeRepo.GetEmployeByIdNoTrackingAsync(request.Id, cancellationToken);
+                var oldPersonDetails = oldEmployeeDetails?.User.Person;
 
                 _mapper.Map(request, existingEmployee);
                 _mapper.Map(request.Person, existingEmployee.User.Person);

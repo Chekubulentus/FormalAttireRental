@@ -2,6 +2,11 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { EmployeeDTO } from '../../../../data/models/DTOs/Employees/employee-dto';
+import { EmployeeService } from '../employee-service/employee.service';
+import { UserService } from '../../../../core/services/user-service/user.service';
+import { UserDTO } from '../../../../data/models/DTOs/Users/user-dto';
+import { UserViewModel } from '../../../../data/models/DTOs/Users/user-view-model';
+import { UpdateEmployeeCommand } from '../../../../data/models/DTOs/Employees/update-employee';
 
 @Component({
   selector: 'app-edit-employee',
@@ -11,7 +16,6 @@ import { EmployeeDTO } from '../../../../data/models/DTOs/Employees/employee-dto
   styleUrl: './edit-employee.component.scss',
 })
 export class EditEmployeeComponent implements OnInit {
-
   // ============================================================
   // Inputs & Outputs
   // ============================================================
@@ -25,7 +29,6 @@ export class EditEmployeeComponent implements OnInit {
   // Tells the parent that the employee was successfully updated
   @Output() updated = new EventEmitter<EmployeeDTO>();
 
-
   // ============================================================
   // State
   // ============================================================
@@ -35,7 +38,6 @@ export class EditEmployeeComponent implements OnInit {
 
   // Flips to true on first save attempt — shows validation errors
   touched = false;
-
 
   // ============================================================
   // Dropdown Options
@@ -59,6 +61,13 @@ export class EditEmployeeComponent implements OnInit {
     'Staff',
   ];
 
+  currentUser: UserViewModel | undefined;
+  updateErrorMessage: string | undefined;
+
+  constructor(
+    private employeeService: EmployeeService,
+    private userService: UserService,
+  ) {}
 
   // ============================================================
   // Form — a copy of the input so edits don't affect the parent
@@ -74,8 +83,21 @@ export class EditEmployeeComponent implements OnInit {
       ...this.employee,
       person: { ...this.employee.person },
     };
+
+    this.getCurrentUser();
   }
 
+  getCurrentUser() {
+    const user = this.userService
+      .getCurrentUserViewModel()
+      .then((res) => {
+        if (!res.isSuccess) return;
+        this.currentUser = res.data;
+      })
+      .catch((err) => {
+        console.log(`Getting current user error: ${err.error}`);
+      });
+  }
 
   // ============================================================
   // Validation — same pattern as AddEmployeeComponent
@@ -86,32 +108,32 @@ export class EditEmployeeComponent implements OnInit {
     const e: Record<string, string> = {};
 
     // Personal Information
-    if (!p.lastName?.trim())    e['lastName']      = 'Last name is required.';
-    if (!p.firstName?.trim())   e['firstName']     = 'First name is required.';
-    if (!p.age || p.age < 1)    e['age']           = 'Enter a valid age.';
-    if (p.age > 100)            e['age']           = 'Age cannot exceed 100.';
-    if (!p.gender)              e['gender']        = 'Select a gender.';
-    if (!p.maritalStatus)       e['maritalStatus'] = 'Select marital status.';
+    if (!p.lastName?.trim()) e['lastName'] = 'Last name is required.';
+    if (!p.firstName?.trim()) e['firstName'] = 'First name is required.';
+    if (!p.age || p.age < 1) e['age'] = 'Enter a valid age.';
+    if (p.age > 100) e['age'] = 'Age cannot exceed 100.';
+    if (!p.gender) e['gender'] = 'Select a gender.';
+    if (!p.maritalStatus) e['maritalStatus'] = 'Select marital status.';
 
     // Phone — required + format check (must be 09XXXXXXXXX)
-    if (!p.phoneNumber?.trim())
-      e['phoneNumber'] = 'Phone number is required.';
+    if (!p.phoneNumber?.trim()) e['phoneNumber'] = 'Phone number is required.';
     else if (!/^09\d{9}$/.test(p.phoneNumber.trim()))
       e['phoneNumber'] = 'Must be 11 digits starting with 09.';
 
     // Address
-    if (!p.street?.trim())      e['street']     = 'Street is required.';
-    if (!p.barangay?.trim())    e['barangay']   = 'Barangay is required.';
-    if (!p.city?.trim())        e['city']       = 'City is required.';
-    if (!p.province?.trim())    e['province']   = 'Province is required.';
-    if (!p.postalCode?.trim())  e['postalCode'] = 'Postal code is required.';
+    if (!p.street?.trim()) e['street'] = 'Street is required.';
+    if (!p.barangay?.trim()) e['barangay'] = 'Barangay is required.';
+    if (!p.city?.trim()) e['city'] = 'City is required.';
+    if (!p.province?.trim()) e['province'] = 'Province is required.';
+    if (!p.postalCode?.trim()) e['postalCode'] = 'Postal code is required.';
 
     // Employment Details
-    if (!this.form.employeeCode?.trim()) e['employeeCode'] = 'Employee code is required.';
-    if (!this.form.department)           e['department']   = 'Select a department.';
-    if (!this.form.rolePosition)         e['rolePosition'] = 'Select a role.';
+    if (!this.form.employeeCode?.trim())
+      e['employeeCode'] = 'Employee code is required.';
+    if (!this.form.department) e['department'] = 'Select a department.';
+    if (!this.form.rolePosition) e['rolePosition'] = 'Select a role.';
     if (!this.form.salary || this.form.salary <= 0)
-                                         e['salary']       = 'Enter a valid salary.';
+      e['salary'] = 'Enter a valid salary.';
     return e;
   }
 
@@ -126,7 +148,6 @@ export class EditEmployeeComponent implements OnInit {
   errorMsg(field: string): string {
     return this.touched ? (this.errors[field] ?? '') : '';
   }
-
 
   // ============================================================
   // Actions
@@ -144,7 +165,32 @@ export class EditEmployeeComponent implements OnInit {
 
     // TODO: call your EmployeeService.updateEmployeeAsync(this.form) here
     // For now we just emit the updated form back to the parent
-    this.updated.emit(this.form);
-    this.close();
+    const employeePayload: UpdateEmployeeCommand = {
+      performedBy: this.currentUser?.fullName ?? '',
+      performedById: this.currentUser?.id ?? 0,
+      id: this.form.id,
+      employeeCode: this.form.employeeCode,
+      department: this.form.department,
+      salary: this.form.salary,
+      rolePosition: this.form.rolePosition,
+      person: this.form.person,
+    };
+    console.log(`Employee Payload Before: ${JSON.stringify(employeePayload)}`);
+
+    const result = this.employeeService
+      .updateEmployeeAsync(employeePayload)
+      .then((res) => {
+        if (!res.isSuccess) {
+          this.updateErrorMessage = res.errorMessage;
+          return;
+        } else {
+          console.log(res.successMessage);
+          console.log(`Employee Payload After: ${employeePayload}`);
+          this.updated.emit(employeePayload);
+        }
+      })
+      .catch((err) => {
+        console.log(`Error: ${err}`);
+      });
   }
 }

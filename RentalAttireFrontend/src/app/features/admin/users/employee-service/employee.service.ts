@@ -6,6 +6,7 @@ import { PagedResult } from '../../../../data/models/Results/pagedResult';
 import { firstValueFrom } from 'rxjs';
 import { EmployeeDTO } from '../../../../data/models/DTOs/Employees/employee-dto';
 import { CreateEmployeeCommand } from '../../../../data/models/DTOs/Employees/create-employee';
+import { UpdateEmployeeCommand } from '../../../../data/models/DTOs/Employees/update-employee';
 
 @Injectable({
   providedIn: 'root',
@@ -66,4 +67,17 @@ export class EmployeeService {
     }
   }
 
+  async updateEmployeeAsync(
+    employee: UpdateEmployeeCommand
+  ) : Promise<Result<boolean>> {
+    try {
+      const result = await firstValueFrom(
+        this.httpClient.put<Promise<Result<boolean>>>(`${this.employeeUrl}`, employee)
+      );
+      return result;
+    }catch(err: any) {
+      return Result.failure(err.error);
+    }
+  }
+  
 }

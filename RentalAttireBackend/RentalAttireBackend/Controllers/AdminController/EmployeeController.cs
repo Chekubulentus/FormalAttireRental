@@ -82,7 +82,7 @@ namespace RentalAttireBackend.Controllers.AdminController
         {
             var result = await _mediator.Send(command);
 
-            return result.IsSuccess ? Ok(result.SuccessMessage) : BadRequest(result.ErrorMessage);
+            return result.IsSuccess ? Ok(result) : BadRequest(result.ErrorMessage);
         }
     }
 }

@@ -62,6 +62,15 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
             };
         }
 
+        public async Task<Employee?> GetEmployeByIdNoTrackingAsync(int id, CancellationToken cancellationToken)
+        {
+            return await _context.Employees
+                .AsNoTracking()
+                .Include(e => e.User)
+                    .ThenInclude(u => u.Person)
+                .FirstOrDefaultAsync(e => e.Id == id);
+        }
+
         public async Task<Employee?> GetEmployeeByEmployeeCodeAsync(string employeeCode, CancellationToken cancellationToken)
         {
             return await _context.Employees
