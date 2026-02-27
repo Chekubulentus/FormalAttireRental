@@ -75,7 +75,7 @@ namespace RentalAttireBackend.Controllers.AdminController
         {
             var result = await _mediator.Send(new ArchiveEmployeeByIdCommand { Id = id });
 
-            return result.IsSuccess ? Ok(result.SuccessMessage) : BadRequest(result.ErrorMessage);
+            return result.IsSuccess ? Ok(result) : BadRequest(result.ErrorMessage);
         }
         [HttpPut]
         public async Task<IActionResult> UpdateEmployeeAsync(UpdateEmployeeCommand command)

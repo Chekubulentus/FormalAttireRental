@@ -97,9 +97,11 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
                 .Include(e => e.User)
                 .ThenInclude(u => u.Person)
                 .Where(e =>
+                    (
                     e.EmployeeCode.ToLower().Contains(searchQuery.ToLower()) ||
                     e.User.Person.LastName.ToLower().Contains(searchQuery.ToLower()) ||
-                    e.User.Person.FirstName.ToLower().Contains(searchQuery.ToLower()) &&
+                    e.User.Person.FirstName.ToLower().Contains(searchQuery.ToLower()) 
+                    ) &&
                     e.IsActive
                 )
                 .OrderBy(e => e.Id);

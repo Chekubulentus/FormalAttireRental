@@ -1,6 +1,8 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Identity;
 using RentalAttireBackend.Application.Common.Interfaces;
 using RentalAttireBackend.Application.Common.Models;
+using RentalAttireBackend.Application.Employees.Queries.GetEmployeeById;
 using RentalAttireBackend.Domain.Interfaces;
 
 namespace RentalAttireBackend.Application.Employees.Commands.ArchiveEmployee
@@ -10,16 +12,22 @@ namespace RentalAttireBackend.Application.Employees.Commands.ArchiveEmployee
         private readonly IEmployeeRepository _employeeRepo;
         private readonly ITransactionManager _transaction;
         private readonly IAuditLogService _auditService;
+        private readonly IPersonRepository _personRepo;
+        private readonly IUserRepository _userRepo;
         public ArchiveEmployeeByIdCommandHandler
             (
             IEmployeeRepository employeeRepo,
             ITransactionManager transaction,
-            IAuditLogService auditService
+            IAuditLogService auditService,
+            IPersonRepository personRepo,
+            IUserRepository userRepo
             )
         {
             _employeeRepo = employeeRepo;
             _transaction = transaction;
             _auditService = auditService;
+            _userRepo = userRepo;
+            _personRepo = personRepo;
         }
         public async Task<Result<bool>> Handle(ArchiveEmployeeByIdCommand command, CancellationToken cancellationToken)
         {
@@ -28,6 +36,8 @@ namespace RentalAttireBackend.Application.Employees.Commands.ArchiveEmployee
             try
             {
                 await _transaction.BeginTransactionAsync(cancellationToken);
+
+                #region Employee Archive Process
                 var employee = await _employeeRepo.GetEmployeeByIdAsync(command.Id, cancellationToken);
 
                 if (employee is null)
@@ -37,6 +47,8 @@ namespace RentalAttireBackend.Application.Employees.Commands.ArchiveEmployee
                 }
 
                 employee.IsActive = false;
+                employee.User.IsActive = false;
+                employee.User.Person.IsActive = false;
 
                 var archiveEmployee = await _employeeRepo.UpdateEmployeeAsync(employee, cancellationToken);
 
@@ -50,6 +62,7 @@ namespace RentalAttireBackend.Application.Employees.Commands.ArchiveEmployee
                     employee, 
                     command.PerformedById, 
                     command.PerformedBy);
+                #endregion
 
                 if (!archiveAudit)
                 {
@@ -57,6 +70,7 @@ namespace RentalAttireBackend.Application.Employees.Commands.ArchiveEmployee
                     return Result<bool>.Failure("Failed to record audit log for this action. No changes were saved.");
                 }
 
+                await _transaction.CommitTransacionAsync(cancellationToken);
                 return Result<bool>.SuccessWithMessage("Employee successfully archived!");
             }catch(Exception e)
             {

@@ -7,6 +7,7 @@ import { firstValueFrom } from 'rxjs';
 import { EmployeeDTO } from '../../../../data/models/DTOs/Employees/employee-dto';
 import { CreateEmployeeCommand } from '../../../../data/models/DTOs/Employees/create-employee';
 import { UpdateEmployeeCommand } from '../../../../data/models/DTOs/Employees/update-employee';
+import { ArchiveEmployeeCommand } from '../../../../data/models/DTOs/Employees/archive-employee';
 
 @Injectable({
   providedIn: 'root',
@@ -54,30 +55,51 @@ export class EmployeeService {
   }
 
   async createEmployeeAsync(
-    employee : CreateEmployeeCommand
-  ) : Promise<Result<boolean>> {
+    employee: CreateEmployeeCommand,
+  ): Promise<Result<boolean>> {
     try {
       const result = await firstValueFrom(
-        this.httpClient.post<Promise<Result<boolean>>>(`${this.employeeUrl}`, employee)
+        this.httpClient.post<Promise<Result<boolean>>>(
+          `${this.employeeUrl}`,
+          employee,
+        ),
       );
 
       return result;
-    }catch(err: any) {
+    } catch (err: any) {
       return Result.failure(err.error);
     }
   }
 
   async updateEmployeeAsync(
-    employee: UpdateEmployeeCommand
-  ) : Promise<Result<boolean>> {
+    employee: UpdateEmployeeCommand,
+  ): Promise<Result<boolean>> {
     try {
       const result = await firstValueFrom(
-        this.httpClient.put<Promise<Result<boolean>>>(`${this.employeeUrl}`, employee)
+        this.httpClient.put<Promise<Result<boolean>>>(
+          `${this.employeeUrl}`,
+          employee,
+        ),
       );
       return result;
-    }catch(err: any) {
+    } catch (err: any) {
       return Result.failure(err.error);
     }
   }
-  
+
+  async archiveEmployee(
+    command: ArchiveEmployeeCommand,
+  ): Promise<Result<boolean>> {
+    try {
+      const result = await firstValueFrom(
+        this.httpClient.patch<Result<boolean>>(
+          `${this.employeeUrl}/${command.id}`,
+          {},
+        ),
+      );
+      return result;
+    } catch (err: any) {
+      return Result.failure(err.error);
+    }
+  }
 }

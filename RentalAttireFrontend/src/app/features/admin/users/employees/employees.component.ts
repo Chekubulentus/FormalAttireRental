@@ -6,6 +6,9 @@ import { EmployeeDTO } from '../../../../data/models/DTOs/Employees/employee-dto
 import { AddEmployeeComponent } from '../add-employee/add-employee/add-employee.component';
 import { EditEmployeeComponent } from '../edit-employee/edit-employee.component';
 import { AppToastrService } from '../../../../core/services/toastr-service/app-toastr.service';
+import { ArchiveEmployeeCommand } from '../../../../data/models/DTOs/Employees/archive-employee';
+import { UserService } from '../../../../core/services/user-service/user.service';
+import { UserViewModel } from '../../../../data/models/DTOs/Users/user-view-model';
 
 @Component({
   selector: 'app-employees',
@@ -25,6 +28,7 @@ export class EmployeesComponent implements OnInit {
   isLoading    = false;
   showModal    = false;
   employeeToEdit : EmployeeDTO | null = null;
+  currentUser: UserViewModel | undefined = new UserViewModel();
 
   pendingEmployee: EmployeeDTO | null = null;
   showAccountModal = false;
@@ -43,10 +47,12 @@ export class EmployeesComponent implements OnInit {
 
   constructor(
     private employeeService: EmployeeService,
-    private toastr: AppToastrService
+    private toastr: AppToastrService,
+    private userService: UserService
   ) {}
 
   ngOnInit(): void {
+    this.getCurrentUser();
     this.getAllEmployees();
     this.toastr.success('My baby ica the beatifulest, prettiest, gorgeousest, omisimizest');
   }
@@ -165,4 +171,39 @@ export class EmployeesComponent implements OnInit {
   closeEditForm() {
     this.employeeToEdit = null;
   }
+
+  archiveEmployee(id: number) {
+    if(!id || id === 0)
+      return;
+
+    const payload : ArchiveEmployeeCommand = {
+      id: id,
+      performedBy: this.currentUser?.fullName ?? '',
+      performedById: this.currentUser?.id ?? 0
+    };
+
+    this.employeeService.archiveEmployee(payload)
+    .then(res => {
+      if(!res.isSuccess)
+        return;
+      this.toastr.success(res.successMessage ?? '');
+      this.searchQuery = '';
+      this.getAllEmployees();
+    }).catch(err => {
+      this.toastr.error(err.error);
+    });
+  }
+
+  getCurrentUser(){
+    this.userService.getCurrentUserViewModel()
+    .then(res => {
+      if(!res.isSuccess)
+        return;
+      this.currentUser = res.data ?? undefined;
+    }).catch(err => {
+      this.toastr.error(err.error);
+    })
+  }
+
+
 }

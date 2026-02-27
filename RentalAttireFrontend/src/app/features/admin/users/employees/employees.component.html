@@ -93,7 +93,7 @@
             <path d="M14.5 2.5l3 3L6 17H3v-3L14.5 2.5z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>
           </svg>
         </button>
-        <button class="action-btn danger" title="Remove">
+        <button class="action-btn danger" title="Remove" (click)="archiveEmployee(emp.id)">
           <svg viewBox="0 0 20 20" fill="none">
             <polyline points="3 5 4.5 5 17 5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
             <path d="M16 5l-.9 11a2 2 0 01-2 1.9H6.9A2 2 0 014.9 16L4 5" stroke="currentColor" stroke-width="1.3"/>
