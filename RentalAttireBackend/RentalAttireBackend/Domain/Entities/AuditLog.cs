@@ -4,7 +4,8 @@
     {
         public int Id { get; set; }
         public string EntityType { get; set; } = string.Empty;
-        public int EntityId { get; set; } //identifier ng entity created, updated, or archived
+        public int EntityId { get; set; } //identifier of the created, updated, or archived
+        public string EntityName { get; set; } = string.Empty;
         public string ActionType { get; set; } = string.Empty; //Values: Create, Update, Archived
         public string ChangedBy { get; set; } = string.Empty;
         public int? ChangedById { get; set; }

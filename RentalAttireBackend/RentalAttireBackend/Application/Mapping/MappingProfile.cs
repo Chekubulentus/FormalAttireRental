@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Infrastructure.Internal;
+using RentalAttireBackend.Application.AuditLogs.DTOs;
 using RentalAttireBackend.Application.Common.Interfaces;
 using RentalAttireBackend.Application.Common.Models;
 using RentalAttireBackend.Application.Employees.Commands.CreateEmployee;
@@ -152,6 +153,10 @@ namespace RentalAttireBackend.Application.Mapping
                 opt => opt.MapFrom(src => src.Employee.Department))
                 .ForMember(dest => dest.FullName,
                 opt => opt.MapFrom(src => src.Person.FullName));
+            #endregion
+
+            #region AuditLog -> AuditLogDTO
+            CreateMap<AuditLog, AuditLogDTO>();
             #endregion
         }
     }

@@ -18,6 +18,12 @@ export const ADMIN_ROUTES: Routes = [
         loadChildren: () =>
           import('./users/user.routes')
           .then(m => m.USER_ROUTES)
+      },
+      {
+        path: 'logs',
+        loadComponent: () => {
+          return import('./logs/logs/logs.component').then(m => m.LogsComponent);
+        },
       }
     ]
   }

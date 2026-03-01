@@ -15,19 +15,21 @@ namespace RentalAttireBackend.Application.Authentication.Commands.Login
         private readonly IPasswordHasher _passwordHasher;
         private readonly IJwtTokenGenerator _tokenGenerator;
         private readonly IMapper _mapper;
-
+        private readonly IAuditLogService _auditService;
         public LoginCommandHandler
             (
             IUserRepository userRepo,
             IPasswordHasher passwordHasher,
             IJwtTokenGenerator tokenGenerator,
-            IMapper mapper
+            IMapper mapper,
+            IAuditLogService auditService
             )
         {
             _userRepo = userRepo;
             _passwordHasher = passwordHasher;
             _tokenGenerator = tokenGenerator;
             _mapper = mapper;
+            _auditService = auditService;
         }
         public async Task<Result<AuthenticationResult>> Handle(LoginCommand command, CancellationToken cancellationToken)
         {
@@ -52,9 +54,14 @@ namespace RentalAttireBackend.Application.Authentication.Commands.Login
                 user.RefreshToken = refreshToken;
                 user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
 
+                var loginAuditLog = await _auditService.LoginAuditLogAsync(user);
+
+                if (!loginAuditLog)
+                    return Result<AuthenticationResult>.Failure("Audit trail failed. Please try again."); 
+
                 await _userRepo.UpdateUserAsync(user, cancellationToken);
 
-                return Result<AuthenticationResult>.Success(new AuthenticationResult
+                return Result<AuthenticationResult>.Success(new AuthenticationResult    
                 {
                     AccessToken = accessToken,
                     RefreshToken = refreshToken,

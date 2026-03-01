@@ -34,7 +34,7 @@ export class EmployeesComponent implements OnInit {
   showAccountModal = false;
 
   currentPage  = 1;
-  itemsPerPage = 6;
+  itemsPerPage = 3;
   totalCount   = 0;
   totalPages   = 1;
 
@@ -142,6 +142,7 @@ export class EmployeesComponent implements OnInit {
     const pages: number[] = [];
     const range: number[] = [];
 
+    //i = 3; i <= 5
     for (let i = Math.max(2, current - delta); i <= Math.min(total - 1, current + delta); i++) {
       range.push(i);
     }

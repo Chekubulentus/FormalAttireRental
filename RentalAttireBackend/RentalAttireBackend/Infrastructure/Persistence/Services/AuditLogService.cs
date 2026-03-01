@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Google.Apis.Util;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic;
 using RentalAttireBackend.Application.Common.Interfaces;
 using RentalAttireBackend.Application.Common.Models;
 using RentalAttireBackend.Domain.Common;
@@ -61,24 +62,47 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Services
             return await _context.SaveChangesAsync() > 0;
         }
 
-        public async Task<PagedResult<AuditLog>> GetAllAuditLogsAsync(PaginationParams paginationParams)
+        public async Task<PagedResult<AuditLog>> GetAllAuditLogsAsync(
+            string actionType,
+            string? searchQuery,
+            int currentPage,
+            int itemsPerPage,
+            DateTime? dateFrom,
+            DateTime? dateTo,
+            CancellationToken cancellationToken
+            )
         {
+            var loweredSearch = searchQuery?.ToLower() ?? "";
+
             var auditLogs = _context.AuditLogs
-                .AsQueryable();
+                .OrderByDescending(al => al.Id)
+                .AsNoTracking()
+                .Where(al =>
+                (string.IsNullOrEmpty(searchQuery) ||
+                al.ChangedBy.ToLower().Contains(loweredSearch) ||
+                al.EntityName.ToLower().Contains(loweredSearch))
+                &&
+                (!dateFrom.HasValue || al.ChangedAt >= dateFrom)
+                &&
+                (!dateTo.HasValue || al.ChangedAt <= dateTo)
+                && 
+                (string.IsNullOrEmpty(actionType) || al.ActionType.ToLower().Equals(actionType.ToLower()))
+                ).AsQueryable();
 
             var totalCount = await auditLogs.CountAsync();
+            var skippedItems = (currentPage - 1) * itemsPerPage;
 
             var items = await auditLogs
-                .Skip(paginationParams.Skip)
-                .Take(paginationParams.ItemsPerPage)
-                .ToListAsync();
+                .Skip(skippedItems)
+                .Take(itemsPerPage)
+                .ToListAsync(cancellationToken);
 
             return new PagedResult<AuditLog>
             {
                 Items = items,
                 TotalCount = totalCount,
-                PageNumber = paginationParams.CurrentPage,
-                PageSize = paginationParams.ItemsPerPage,
+                PageNumber = currentPage,
+                PageSize = itemsPerPage
             };
         }
 
