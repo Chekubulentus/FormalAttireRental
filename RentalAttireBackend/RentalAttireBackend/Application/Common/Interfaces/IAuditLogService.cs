@@ -1,4 +1,5 @@
-﻿using RentalAttireBackend.Application.Common.Models;
+﻿using RentalAttireBackend.Application.AuditLogs.DTOs;
+using RentalAttireBackend.Application.Common.Models;
 using RentalAttireBackend.Domain.Common;
 using RentalAttireBackend.Domain.Entities;
 
@@ -9,7 +10,7 @@ namespace RentalAttireBackend.Application.Common.Interfaces
         public Task<bool> CreateAuditLogAsync<T>(T entity, int personId, string personName) where T : BaseEntity;
         public Task<bool> UpdateAuditLogAsync<T>(T oldEntity, T newEntity, int personId, string personName) where T : BaseEntity;
         public Task<bool> ArchiveAuditLogAsync<T>(T entity, int personId, string personName) where T : BaseEntity;
-        public Task<PagedResult<AuditLog>> GetAllAuditLogsAsync(
+        public Task<AuditLogResponse> GetAllAuditLogsAsync(
             string actionType,
             string? searchQuery,
             int currentPage,

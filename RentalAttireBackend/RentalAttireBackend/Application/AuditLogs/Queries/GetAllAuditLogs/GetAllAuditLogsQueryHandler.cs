@@ -6,7 +6,7 @@ using RentalAttireBackend.Application.Common.Models;
 
 namespace RentalAttireBackend.Application.AuditLogs.Queries.GetAllAuditLogs
 {
-    public class GetAllAuditLogsQueryHandler : IRequestHandler<GetAllAuditLogsQuery, Result<PagedResult<AuditLogDTO>>>
+    public class GetAllAuditLogsQueryHandler : IRequestHandler<GetAllAuditLogsQuery, Result<AuditLogResponse>>
     {
         private readonly IAuditLogService _auditService;
         private readonly IMapper _mapper;
@@ -19,13 +19,13 @@ namespace RentalAttireBackend.Application.AuditLogs.Queries.GetAllAuditLogs
             _auditService = auditService;
             _mapper = mapper;
         }
-        public async Task<Result<PagedResult<AuditLogDTO>>> Handle(GetAllAuditLogsQuery request, CancellationToken cancellationToken)
+        public async Task<Result<AuditLogResponse>> Handle(GetAllAuditLogsQuery request, CancellationToken cancellationToken)
         {
             if (request is null || (request.CurrentPage == 0 && request.ItemsPerPage == 0))
-                return Result<PagedResult<AuditLogDTO>>.Failure("Invalid request. Please try again.");
+                return Result<AuditLogResponse>.Failure("Invalid request. Please try again.");
             try
             {
-                var auditLogs = await _auditService.GetAllAuditLogsAsync(
+                var auditResponse = await _auditService.GetAllAuditLogsAsync(
                     request.ActionType,
                     request.SearchQuery,
                     request.CurrentPage,
@@ -35,15 +35,13 @@ namespace RentalAttireBackend.Application.AuditLogs.Queries.GetAllAuditLogs
                     cancellationToken
                     );
 
-                if (!auditLogs.Items.Any() || auditLogs.Items.Count() == 0)
-                    return Result<PagedResult<AuditLogDTO>>.Failure("No audit log records exists.");
+                if (!auditResponse.Logs.Any() || auditResponse.Logs.Count() == 0)
+                    return Result<AuditLogResponse>.Failure("Empty audit logs.");
 
-                var auditLogsDto = _mapper.Map<PagedResult<AuditLogDTO>>(auditLogs);
-
-                return Result<PagedResult<AuditLogDTO>>.Success(auditLogsDto);
+                return Result<AuditLogResponse>.Success(auditResponse);
             }catch(Exception e)
             {
-                return Result<PagedResult<AuditLogDTO>>.Failure(e.Message);
+                return Result<AuditLogResponse>.Failure(e.Message);
             }
         }
     }

@@ -4,7 +4,7 @@ using RentalAttireBackend.Application.Common.Models;
 
 namespace RentalAttireBackend.Application.AuditLogs.Queries.GetAllAuditLogs
 {
-    public class GetAllAuditLogsQuery : IRequest<Result<PagedResult<AuditLogDTO>>>
+    public class GetAllAuditLogsQuery : IRequest<Result<AuditLogResponse>>
     {
         public string ActionType { get; set; } = string.Empty;
         public string? SearchQuery { get; set; }

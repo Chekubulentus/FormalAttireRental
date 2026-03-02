@@ -2,6 +2,7 @@
 using Google.Apis.Util;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;
+using RentalAttireBackend.Application.AuditLogs.DTOs;
 using RentalAttireBackend.Application.Common.Interfaces;
 using RentalAttireBackend.Application.Common.Models;
 using RentalAttireBackend.Domain.Common;
@@ -62,8 +63,8 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Services
             return await _context.SaveChangesAsync() > 0;
         }
 
-        public async Task<PagedResult<AuditLog>> GetAllAuditLogsAsync(
-            string actionType,
+        public async Task<AuditLogResponse> GetAllAuditLogsAsync(
+            string? actionType,
             string? searchQuery,
             int currentPage,
             int itemsPerPage,
@@ -72,37 +73,49 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Services
             CancellationToken cancellationToken
             )
         {
-            var loweredSearch = searchQuery?.ToLower() ?? "";
+            var searchQueryValidator = string.IsNullOrEmpty(searchQuery);
+            var actionTypeValidator = string.IsNullOrEmpty(actionType);
 
             var auditLogs = _context.AuditLogs
                 .OrderByDescending(al => al.Id)
                 .AsNoTracking()
                 .Where(al =>
-                (string.IsNullOrEmpty(searchQuery) ||
-                al.ChangedBy.ToLower().Contains(loweredSearch) ||
-                al.EntityName.ToLower().Contains(loweredSearch))
+                (searchQueryValidator ||
+                al.ChangedBy.ToLower().Contains(searchQuery.ToLower()) ||
+                al.EntityName.ToLower().Contains(searchQuery.ToLower()))
+                &&
+                (actionTypeValidator || al.ActionType.ToLower().Equals(actionType.ToLower()))
                 &&
                 (!dateFrom.HasValue || al.ChangedAt >= dateFrom)
                 &&
                 (!dateTo.HasValue || al.ChangedAt <= dateTo)
-                && 
-                (string.IsNullOrEmpty(actionType) || al.ActionType.ToLower().Equals(actionType.ToLower()))
-                ).AsQueryable();
+                );
 
             var totalCount = await auditLogs.CountAsync();
-            var skippedItems = (currentPage - 1) * itemsPerPage;
+            var loginCount = await auditLogs.CountAsync(al => al.ActionType.ToLower().Equals("login"));
+            var createCount = await auditLogs.CountAsync(al => al.ActionType.ToLower().Equals("create"));
+            var updateCount = await auditLogs.CountAsync(al => al.ActionType.ToLower().Equals("update"));
+            var archiveCount = await auditLogs.CountAsync(al => al.ActionType.ToLower().Equals("archived"));
+
+            int skippedItemsCount = (currentPage - 1) * itemsPerPage;
 
             var items = await auditLogs
-                .Skip(skippedItems)
+                .Skip(skippedItemsCount)
                 .Take(itemsPerPage)
                 .ToListAsync(cancellationToken);
 
-            return new PagedResult<AuditLog>
+            var itemDtos = _mapper.Map<List<AuditLogDTO>>(items);
+
+            return new AuditLogResponse
             {
-                Items = items,
+                Logs = itemDtos,
+                CurrentPage = currentPage,
+                ItemsPerPage = itemsPerPage,
                 TotalCount = totalCount,
-                PageNumber = currentPage,
-                PageSize = itemsPerPage
+                LoginCount = loginCount,
+                CreateCount = createCount,
+                UpdateCount = updateCount,
+                ArchiveCount = archiveCount
             };
         }
 

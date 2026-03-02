@@ -20,7 +20,7 @@ namespace RentalAttireBackend.Controllers.AdminController
         }
         [HttpGet]
         public async Task<IActionResult> GetAllAuditLogsAsync(
-            string actionType,
+            string? actionType,
             string? searchQuery,
             int currentPage,
             int itemsPerPage,
