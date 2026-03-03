@@ -29,12 +29,17 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Services
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<bool> ArchiveAuditLogAsync<T>(T entity, int personId, string personName) where T : BaseEntity
+        public async Task<bool> ArchiveAuditLogAsync<T>(
+            T entity, 
+            int personId, 
+            string personName, 
+            string updatedName) where T : BaseEntity
         {
             var newAuditLog = new AuditLog
             {
                 EntityType = typeof(T).Name,
                 EntityId = entity.Id,
+                EntityName = updatedName,
                 ActionType = "Archived",
                 ChangedBy = personName,
                 ChangedById = personId,

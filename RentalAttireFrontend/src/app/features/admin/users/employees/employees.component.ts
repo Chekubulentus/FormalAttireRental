@@ -9,17 +9,19 @@ import { AppToastrService } from '../../../../core/services/toastr-service/app-t
 import { ArchiveEmployeeCommand } from '../../../../data/models/DTOs/Employees/archive-employee';
 import { UserService } from '../../../../core/services/user-service/user.service';
 import { UserViewModel } from '../../../../data/models/DTOs/Users/user-view-model';
+import { ArchiveConfirmationComponent } from "../../../../shared/components/archive-confirmation/archive-confirmation/archive-confirmation.component";
 
 @Component({
   selector: 'app-employees',
   standalone: true,
   imports: [
-    CommonModule, 
-    FormsModule, 
-    CurrencyPipe, 
+    CommonModule,
+    FormsModule,
+    CurrencyPipe,
     AddEmployeeComponent,
-    EditEmployeeComponent
-  ],
+    EditEmployeeComponent,
+    ArchiveConfirmationComponent
+],
   templateUrl: './employees.component.html',
   styleUrl: './employees.component.scss',
 })
@@ -28,13 +30,15 @@ export class EmployeesComponent implements OnInit {
   isLoading    = false;
   showModal    = false;
   employeeToEdit : EmployeeDTO | null = null;
-  currentUser: UserViewModel | undefined = new UserViewModel();
+  currentUser: UserViewModel | undefined;
+  isArchiving: boolean = false;
+  employeeToArchive: EmployeeDTO | undefined;
 
   pendingEmployee: EmployeeDTO | null = null;
   showAccountModal = false;
 
   currentPage  = 1;
-  itemsPerPage = 3;
+  itemsPerPage = 10;
   totalCount   = 0;
   totalPages   = 1;
 
@@ -189,18 +193,25 @@ export class EmployeesComponent implements OnInit {
         return;
       this.toastr.success(res.successMessage ?? '');
       this.searchQuery = '';
+      this.employeeToArchive = undefined;
       this.getAllEmployees();
     }).catch(err => {
       this.toastr.error(err.error);
     });
   }
 
+  openArchiveConfirmation(employee : EmployeeDTO){
+    this.employeeToArchive = employee;
+  }
+
   getCurrentUser(){
+    this.isLoading = true;
     this.userService.getCurrentUserViewModel()
     .then(res => {
       if(!res.isSuccess)
         return;
       this.currentUser = res.data ?? undefined;
+      this.isLoading = false;
     }).catch(err => {
       this.toastr.error(err.error);
     })

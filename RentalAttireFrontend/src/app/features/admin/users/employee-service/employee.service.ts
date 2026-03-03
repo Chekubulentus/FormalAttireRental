@@ -93,8 +93,8 @@ export class EmployeeService {
     try {
       const result = await firstValueFrom(
         this.httpClient.patch<Result<boolean>>(
-          `${this.employeeUrl}/${command.id}`,
-          {},
+          `${this.employeeUrl}`,
+          command,
         ),
       );
       return result;

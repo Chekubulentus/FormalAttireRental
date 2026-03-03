@@ -70,10 +70,10 @@ namespace RentalAttireBackend.Controllers.AdminController
 
             return result.IsSuccess ? Ok(result.Data) : NotFound(result.ErrorMessage);
         }
-        [HttpPatch("{id}")]
-        public async Task<IActionResult> ArchiveEmployeeByIdAsync(int id)
+        [HttpPatch]
+        public async Task<IActionResult> ArchiveEmployeeByIdAsync(ArchiveEmployeeByIdCommand command)
         {
-            var result = await _mediator.Send(new ArchiveEmployeeByIdCommand { Id = id });
+            var result = await _mediator.Send(command);
 
             return result.IsSuccess ? Ok(result) : BadRequest(result.ErrorMessage);
         }

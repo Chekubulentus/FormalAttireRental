@@ -9,6 +9,7 @@ import { UserService } from '../../../../../core/services/user-service/user.serv
 import { EmptyError } from 'rxjs';
 import { createUrlTreeFromSnapshot } from '@angular/router';
 import { CreateEmployeeValidator } from '../../validators/create-employee-validator';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-add-user',
@@ -32,6 +33,7 @@ export class AddUserComponent implements OnInit {
     private employeeService: EmployeeService,
     private userService: UserService,
     private createEmployeeValidator: CreateEmployeeValidator,
+    private toastr : ToastrService
   ) {}
 
   ngOnInit(): void {
@@ -60,7 +62,7 @@ export class AddUserComponent implements OnInit {
         if (!res.isSuccess) {
           return;
         } else {
-          console.log(res.successMessage);
+          this.toastr.success(res.successMessage);
           this.closeForm.emit(true);
         }
       })

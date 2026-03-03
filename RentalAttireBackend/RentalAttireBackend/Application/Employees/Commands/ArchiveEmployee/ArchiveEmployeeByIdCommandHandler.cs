@@ -61,7 +61,9 @@ namespace RentalAttireBackend.Application.Employees.Commands.ArchiveEmployee
                 var archiveAudit = await _auditService.ArchiveAuditLogAsync(
                     employee, 
                     command.PerformedById, 
-                    command.PerformedBy);
+                    command.PerformedBy,
+                    employee.User.Person.FullName
+                    );
                 #endregion
 
                 if (!archiveAudit)

@@ -18,7 +18,7 @@ namespace RentalAttireBackend.Application.Common.Interfaces
             int personId, 
             string personName, 
             string personUpdated) where T : BaseEntity;
-        public Task<bool> ArchiveAuditLogAsync<T>(T entity, int personId, string personName) where T : BaseEntity;
+        public Task<bool> ArchiveAuditLogAsync<T>(T entity, int personId, string personName, string updatedName) where T : BaseEntity;
         public Task<AuditLogResponse> GetAllAuditLogsAsync(
             string actionType,
             string? searchQuery,
