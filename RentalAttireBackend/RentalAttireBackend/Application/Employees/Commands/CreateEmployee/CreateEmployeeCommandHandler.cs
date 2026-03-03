@@ -80,7 +80,12 @@ namespace RentalAttireBackend.Application.Employees.Commands.CreateEmployee
                 if (createEmployee == 0)
                     return Result<bool>.Failure("Failed to create employee record.");
 
-                var logEmployee = await _auditService.CreateAuditLogAsync(employee, request.CreatedById, request.CreatedBy);
+                var logEmployee = await _auditService.CreateAuditLogAsync
+                    (employee, 
+                    request.CreatedById, 
+                    request.CreatedBy,
+                    person.FullName
+                    );
 
                 if (!logEmployee)
                 {

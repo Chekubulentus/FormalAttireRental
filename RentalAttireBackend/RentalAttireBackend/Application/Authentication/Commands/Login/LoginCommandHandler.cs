@@ -54,7 +54,7 @@ namespace RentalAttireBackend.Application.Authentication.Commands.Login
                 user.RefreshToken = refreshToken;
                 user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
 
-                var loginAuditLog = await _auditService.LoginAuditLogAsync(user);
+                var loginAuditLog = await _auditService.LoginAuditLogAsync(user, user.Person.FullName, user.Id);
 
                 if (!loginAuditLog)
                     return Result<AuthenticationResult>.Failure("Audit trail failed. Please try again."); 

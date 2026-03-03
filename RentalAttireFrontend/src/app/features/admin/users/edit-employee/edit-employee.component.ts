@@ -175,7 +175,6 @@ export class EditEmployeeComponent implements OnInit {
       rolePosition: this.form.rolePosition,
       person: this.form.person,
     };
-    console.log(`Employee Payload Before: ${JSON.stringify(employeePayload)}`);
 
     const result = this.employeeService
       .updateEmployeeAsync(employeePayload)

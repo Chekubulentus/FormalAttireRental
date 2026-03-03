@@ -45,12 +45,18 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Services
             return await _context.SaveChangesAsync() > 0;
         }
 
-        public async Task<bool> CreateAuditLogAsync<T>(T entity, int personId, string personName) where T : BaseEntity
+        public async Task<bool> CreateAuditLogAsync<T>(
+            T entity,
+            int personId, 
+            string personName,
+            string entityCreated
+            ) where T : BaseEntity
         {
             var newAuditLog = new AuditLog
             {
                 EntityType = typeof(T).Name,
                 EntityId = entity.Id,
+                EntityName = entityCreated,
                 ActionType = "Create",
                 ChangedBy = personName,
                 ChangedById = personId,
@@ -119,7 +125,13 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Services
             };
         }
 
-        public async Task<bool> UpdateAuditLogAsync<T>(T oldEntity, T newEntity, int personId, string personName) where T : BaseEntity
+        public async Task<bool> UpdateAuditLogAsync<T>(
+            T oldEntity, 
+            T newEntity, 
+            int personId, 
+            string personName,
+            string personUpdated
+            ) where T : BaseEntity
         {
             var changes = GetChanges(oldEntity, newEntity);
 
@@ -130,6 +142,7 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Services
             {
                 EntityType = typeof(T).Name,
                 EntityId = newEntity.Id,
+                EntityName = personUpdated,
                 ActionType = "Update",
                 ChangedBy = personName,
                 ChangedById = personId,
@@ -226,15 +239,15 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Services
             return await _context.SaveChangesAsync() > 0;
         }
 
-        public async Task<bool> LoginAuditLogAsync<T>(T entity) where T : BaseEntity
+        public async Task<bool> LoginAuditLogAsync<T>(T entity, string name, int id) where T : BaseEntity
         {
             var auditLog = new AuditLog
             {
                 EntityType = typeof(T).Name,
                 EntityId = entity.Id,
                 ActionType = "Login",
-                ChangedBy = string.Empty,
-                ChangedById = null,
+                ChangedBy = name,
+                ChangedById = id,
                 OldValues = null,
                 NewValues = null,
                 IpAddress = GetIpAddress()

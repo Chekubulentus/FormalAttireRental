@@ -31,7 +31,7 @@ export class AddUserComponent implements OnInit {
   constructor(
     private employeeService: EmployeeService,
     private userService: UserService,
-    private createEmployeeValidator: CreateEmployeeValidator
+    private createEmployeeValidator: CreateEmployeeValidator,
   ) {}
 
   ngOnInit(): void {
@@ -51,31 +51,35 @@ export class AddUserComponent implements OnInit {
       password: this.password,
       createdBy: this.currentUser?.fullName ?? '',
       createdById: this.currentUser?.id ?? 0,
-      person: employee.person
+      person: employee.person,
     };
 
-    const result = this.employeeService.createEmployeeAsync(employeePayload)
-    .then(res => {
-      if(!res.isSuccess) {
-        return;
-      }else {
-        console.log(res.successMessage);
-        this.closeForm.emit(true);
-      }
-    })
-    .catch(err => {
-      console.log(err.error);
-    });
+    const result = this.employeeService
+      .createEmployeeAsync(employeePayload)
+      .then((res) => {
+        if (!res.isSuccess) {
+          return;
+        } else {
+          console.log(res.successMessage);
+          this.closeForm.emit(true);
+        }
+      })
+      .catch((err) => {
+        console.log(err.error);
+      });
   }
 
-  async getCurrentUser(): Promise<UserViewModel> {
-    const result = await this.userService.getCurrentUserViewModel();
-
-    if (!result.isSuccess || result.data == null) {
-      return new UserViewModel();
-    }
-
-    return result.data;
+  getCurrentUser() {
+    const user = this.userService
+      .getCurrentUserViewModel()
+      .then((res) => {
+        if (!res.isSuccess) return;
+        this.currentUser = res.data;
+        console.log(`Current User Fetched: ${JSON.stringify(this.currentUser)}`);
+      })
+      .catch((err) => {
+        console.log(`Getting current user error: ${err.error}`);
+      });
   }
 
   closed() {

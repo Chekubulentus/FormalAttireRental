@@ -55,14 +55,16 @@ namespace RentalAttireBackend.Application.Employees.Commands.UpdateEmployee
                     oldEmployeeDetails,
                     newEmployeeDetails,
                     request.PerformedById,
-                    request.PerformedBy
+                    request.PerformedBy,
+                    existingEmployee.User.Person.FullName
                     );
 
                 var auditPerson = await _auditLogService.UpdateAuditLogAsync(
                     oldPersonDetails,
                     newPersonDetails,
                     request.PerformedById,
-                    request.PerformedBy
+                    request.PerformedBy,
+                    existingEmployee.User.Person.FullName
                     );
 
                 if(!auditEmployee || !auditPerson)
