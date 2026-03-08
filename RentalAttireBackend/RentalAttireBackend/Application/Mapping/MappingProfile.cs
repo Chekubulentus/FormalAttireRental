@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Infrastructure.Internal;
 using RentalAttireBackend.Application.AuditLogs.DTOs;
+using RentalAttireBackend.Application.Categories.DTOs;
+using RentalAttireBackend.Application.Clothes.Commands.CreateClothe;
+using RentalAttireBackend.Application.Clothes.DTOs;
 using RentalAttireBackend.Application.Common.Interfaces;
 using RentalAttireBackend.Application.Common.Models;
 using RentalAttireBackend.Application.Employees.Commands.CreateEmployee;
@@ -121,22 +124,16 @@ namespace RentalAttireBackend.Application.Mapping
 
             #region UpdateEmployeeCommand -> Employee
             CreateMap<UpdateEmployeeCommand, Employee>()
-                .ForMember(dest => dest.Department,
-                opt => opt.MapFrom(src => src.Department))
-                .ForMember(dest => dest.Salary,
-                opt => opt.MapFrom(src => src.Salary))
                 .ForMember(dest => dest.RoleId,
                 opt => opt.MapFrom(src => Enum.Parse<RolePosition>(src.RolePosition, true)))
                 .ForMember(dest => dest.UpdatedBy,
                 opt => opt.MapFrom(src => src.PerformedBy))
                 .ForMember(dest => dest.UpdatedAt,
-                opt => opt.MapFrom(src => DateTime.UtcNow))
+                opt => opt.MapFrom(src => DateTime.UtcNow.AddHours(8)))
                 .ForPath(dest => dest.User.Person.UpdatedBy,
                 opt => opt.MapFrom(src => src.PerformedBy))
                 .ForPath(dest => dest.User.Person.UpdatedAt,
-                opt => opt.MapFrom(src => DateTime.UtcNow))
-                .ForPath(dest => dest.User.Person.EntityType,
-                opt => opt.MapFrom(src => "Person"));
+                opt => opt.MapFrom(src => DateTime.UtcNow));
             #endregion
 
             #region User->UserDTO
@@ -157,6 +154,40 @@ namespace RentalAttireBackend.Application.Mapping
 
             #region AuditLog -> AuditLogDTO
             CreateMap<AuditLog, AuditLogDTO>();
+            #endregion
+
+            #region Employee -> Employee
+            CreateMap<Employee, Employee>();
+            #endregion
+
+            #region Clothe -> ClotheDTO
+            CreateMap<Clothe, ClotheDTO>()
+                .ForMember(dest => dest.CategoryName,
+                opt => opt.MapFrom(src => src.Category.CategoryName))
+                .ForMember(dest => dest.ClotheGender,
+                opt => opt.MapFrom(src => src.Gender.ToString()))
+                .ForMember(dest => dest.Condition,
+                opt => opt.MapFrom(src => src.Condition.ToString()))
+                .ForMember(dest => dest.ProfileImagePath,
+                opt => opt.Ignore());
+            #endregion
+
+            #region CreateClotheCommand -> Clothe
+            CreateMap<CreateClotheCommand, Clothe>()
+                .ForMember(c => c.CategoryId,
+                opt => opt.Ignore())
+                .ForMember(dest => dest.Gender,
+                opt => opt.MapFrom(src => Enum.Parse<ClotheGender>(src.ClotheGender, true)))
+                .ForMember(dest => dest.Condition,
+                opt => opt.MapFrom(src => Enum.Parse<Condition>(src.Condition, true)))
+                .ForMember(dest => dest.ProfileImagePath,
+                opt => opt.Ignore())
+                .ForMember(dest => dest.IsAvailable,
+                opt => opt.Ignore());
+            #endregion
+
+            #region Category -> CategoryDTO 
+            CreateMap<Category, CategoryDTO>();
             #endregion
         }
     }

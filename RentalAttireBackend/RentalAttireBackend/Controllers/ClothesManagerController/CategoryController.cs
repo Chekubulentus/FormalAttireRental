@@ -1,0 +1,42 @@
+﻿using MediatR;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.HttpLogging;
+using Microsoft.AspNetCore.Mvc;
+using RentalAttireBackend.Application.Categories.Queries.GetAllCategories;
+using RentalAttireBackend.Application.Categories.Queries.GetCategoryById;
+using RentalAttireBackend.Application.Common.Models;
+
+namespace RentalAttireBackend.Controllers.ClothesManagerController
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class CategoryController : ControllerBase
+    {
+        private readonly IMediator _mediator;
+
+        public CategoryController(IMediator mediator)
+        {
+            _mediator = mediator;
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetAllCategoriesAsync(int currentPage, int itemsPerPage)
+        {
+            var paginationParams = new PaginationParams
+            {
+                CurrentPage = currentPage,
+                ItemsPerPage = itemsPerPage
+            };
+
+            var result = await _mediator.Send(new GetAllCategoriesQuery { PaginationParams = paginationParams });
+
+            return result.IsSuccess ? Ok(result) : BadRequest(result.ErrorMessage);
+        }
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetCategoryByIdAsync(int id)
+        {
+            var result = await _mediator.Send(new GetCategoryByIdQuery { Id = id });
+
+            return result.IsSuccess ? Ok(result) : BadRequest(result.ErrorMessage);
+        }
+    }
+}

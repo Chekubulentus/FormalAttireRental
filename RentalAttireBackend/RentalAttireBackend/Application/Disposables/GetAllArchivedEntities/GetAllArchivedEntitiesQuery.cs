@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using RentalAttireBackend.Application.Categories.DTOs;
 using RentalAttireBackend.Application.Common.Models;
 
 namespace RentalAttireBackend.Application.Disposables.GetAllArchivedEntities

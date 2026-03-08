@@ -12,6 +12,10 @@ namespace RentalAttireBackend.Infrastructure.Persistence.DataContext
         public DbSet<Person> People { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<AuditLog> AuditLogs { get; set; }
+        public DbSet<Clothe> Clothes { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<Rental> Rentals { get; set; }
+        public DbSet<RentalItem> RentalItems { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -111,6 +115,48 @@ namespace RentalAttireBackend.Infrastructure.Persistence.DataContext
 
             #endregion
 
+            #region Category Initial Data 
+            modelBuilder.Entity<Category>()
+                .HasData(new Category
+                {
+                    Id = 1,
+                    CategoryCode = "C-0001",
+                    CategoryName = "Gown",
+                    Description = "Used for formal parties.",
+                    IsActive = true,
+                    IsDeleted = false,
+                    EntityType = "Category",
+                    CreatedBy = "Papat",
+                    CreatedAt = DateTime.SpecifyKind(new DateTime(2025, 1, 25), DateTimeKind.Utc)
+                });
+            modelBuilder.Entity<Category>()
+                .HasData(new Category
+                {
+                    Id = 2,
+                    CategoryCode = "C-0002",
+                    CategoryName = "Tuxedo",
+                    Description = "Used for formal parties.",
+                    IsActive = true,
+                    IsDeleted = false,
+                    EntityType = "Category",
+                    CreatedBy = "Papat",
+                    CreatedAt = DateTime.SpecifyKind(new DateTime(2025, 1, 25), DateTimeKind.Utc)
+                });
+            modelBuilder.Entity<Category>()
+                .HasData(new Category
+                {
+                    Id = 3,
+                    CategoryCode = "C-0003",
+                    CategoryName = "Barong",
+                    Description = "Used for  being dead.",
+                    IsActive = true,
+                    IsDeleted = false,
+                    EntityType = "Category",
+                    CreatedBy = "Papat",
+                    CreatedAt = DateTime.SpecifyKind(new DateTime(2025, 1, 25), DateTimeKind.Utc)
+                });
+            #endregion
+
             #region AuditLog
             modelBuilder.Entity<AuditLog>(e =>
             {
@@ -119,6 +165,42 @@ namespace RentalAttireBackend.Infrastructure.Persistence.DataContext
                 e.Property(a => a.ActionType).IsRequired();
                 e.Property(a => a.ChangedBy).IsRequired();
                 e.Property(a => a.ChangedAt).IsRequired();
+            });
+            #endregion
+
+            #region Clothes
+            modelBuilder.Entity<Clothe>(e =>
+            {
+                e.HasKey(c => c.Id);
+                e.HasIndex(c => c.ClotheCode);
+
+                e.HasOne(c => c.Category)
+                .WithMany(c => c.Clothes)
+                .HasForeignKey(c => c.CategoryId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+                e.HasMany(c => c.RentalItems)
+                .WithOne(ri => ri.Clothe)
+                .HasForeignKey(ri => ri.ClotheId)
+                .OnDelete(DeleteBehavior.Restrict);
+            });
+            #endregion
+
+            #region Rental  
+            modelBuilder.Entity<Rental>(e =>
+            {
+                e.HasKey(r => r.Id);
+                e.HasIndex(r => r.RentalCode);
+
+                e.HasMany(r => r.RentalItems)
+                .WithOne(ri => ri.Rental)
+                .HasForeignKey(ri => ri.RentalId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+                e.HasOne(r => r.Customer)
+                .WithMany(c => c.Rentals)
+                .HasForeignKey(r => r.CustomerId)
+                .OnDelete(DeleteBehavior.Restrict);
             });
             #endregion
         }

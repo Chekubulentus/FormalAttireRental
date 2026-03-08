@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using RentalAttireBackend.Infrastructure.Persistence.DataContext;
@@ -11,9 +12,11 @@ using RentalAttireBackend.Infrastructure.Persistence.DataContext;
 namespace RentalAttireBackend.Migrations
 {
     [DbContext(typeof(FormalAttireContext))]
-    partial class FormalAttireContextModelSnapshot : ModelSnapshot
+    [Migration("20260306232626_adding payment method to rental table")]
+    partial class addingpaymentmethodtorentaltable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -123,51 +126,7 @@ namespace RentalAttireBackend.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            ArchivedBy = "",
-                            CategoryCode = "C-0001",
-                            CategoryName = "Gown",
-                            CreatedAt = new DateTime(2025, 1, 25, 0, 0, 0, 0, DateTimeKind.Utc),
-                            CreatedBy = "Papat",
-                            Description = "Used for formal parties.",
-                            EntityType = "Category",
-                            IsActive = true,
-                            IsDeleted = false,
-                            UpdatedBy = ""
-                        },
-                        new
-                        {
-                            Id = 2,
-                            ArchivedBy = "",
-                            CategoryCode = "C-0002",
-                            CategoryName = "Tuxedo",
-                            CreatedAt = new DateTime(2025, 1, 25, 0, 0, 0, 0, DateTimeKind.Utc),
-                            CreatedBy = "Papat",
-                            Description = "Used for formal parties.",
-                            EntityType = "Category",
-                            IsActive = true,
-                            IsDeleted = false,
-                            UpdatedBy = ""
-                        },
-                        new
-                        {
-                            Id = 3,
-                            ArchivedBy = "",
-                            CategoryCode = "C-0003",
-                            CategoryName = "Barong",
-                            CreatedAt = new DateTime(2025, 1, 25, 0, 0, 0, 0, DateTimeKind.Utc),
-                            CreatedBy = "Papat",
-                            Description = "Used for  being dead.",
-                            EntityType = "Category",
-                            IsActive = true,
-                            IsDeleted = false,
-                            UpdatedBy = ""
-                        });
+                    b.ToTable("Category");
                 });
 
             modelBuilder.Entity("RentalAttireBackend.Domain.Entities.Clothe", b =>

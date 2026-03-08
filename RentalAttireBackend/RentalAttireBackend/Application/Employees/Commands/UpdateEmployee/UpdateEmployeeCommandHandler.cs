@@ -48,12 +48,9 @@ namespace RentalAttireBackend.Application.Employees.Commands.UpdateEmployee
                 _mapper.Map(request, existingEmployee);
                 _mapper.Map(request.Person, existingEmployee.User.Person);
 
-                var newEmployeeDetails = _mapper.Map<Employee>(existingEmployee);
-                var newPersonDetails = _mapper.Map<Person>(existingEmployee.User.Person);
-
                 var auditEmployee = await _auditLogService.UpdateAuditLogAsync(
                     oldEmployeeDetails,
-                    newEmployeeDetails,
+                    existingEmployee,
                     request.PerformedById,
                     request.PerformedBy,
                     existingEmployee.User.Person.FullName
@@ -61,7 +58,7 @@ namespace RentalAttireBackend.Application.Employees.Commands.UpdateEmployee
 
                 var auditPerson = await _auditLogService.UpdateAuditLogAsync(
                     oldPersonDetails,
-                    newPersonDetails,
+                    existingEmployee.User.Person,
                     request.PerformedById,
                     request.PerformedBy,
                     existingEmployee.User.Person.FullName
