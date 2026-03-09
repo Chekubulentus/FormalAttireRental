@@ -16,6 +16,6 @@
         public int DepositAmount { get; set; }
         public int RentalDurationDays { get; set; }
         public string Condition { get; set; } = string.Empty;
-        public string ProfileImagePath { get; set; } = string.Empty;
+        public string? ProfileImagePath { get; set; } = string.Empty;
     }
 }

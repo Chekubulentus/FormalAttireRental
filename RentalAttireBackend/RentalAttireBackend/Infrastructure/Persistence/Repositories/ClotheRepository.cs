@@ -17,10 +17,11 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
             _context = context;
         }
 
-        public async Task<bool> CreateClotheAsync(Clothe clothe, CancellationToken cancellationToken)
+        public async Task<int> CreateClotheAsync(Clothe clothe, CancellationToken cancellationToken)
         {
             await _context.Clothes.AddAsync(clothe);
-            return await _context.SaveChangesAsync() > 0;
+            await _context.SaveChangesAsync();
+            return clothe.Id;
         }
 
         public async Task<PagedResult<Clothe>> GetAllClothesAsync(PaginationParams paginationParams, CancellationToken cancellationToken)

@@ -8,7 +8,7 @@ namespace RentalAttireBackend.Domain.Entities
         public int Id { get; set; }
         public string RentalCode { get; set; } = string.Empty;
         public int CustomerId { get; set; }
-        public DateTime RentalDate { get; set; }
+        public DateTime RentalDate { get; set; } // Also pick-up date
         public DateTime ReturnDate { get; set; }
         public int TotalAmount { get; set; }
         public int DepositAmount { get; set; }

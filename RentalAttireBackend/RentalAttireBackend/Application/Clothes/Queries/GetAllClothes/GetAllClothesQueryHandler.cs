@@ -22,6 +22,7 @@ namespace RentalAttireBackend.Application.Clothes.Queries.GetAllClothes
         {
             _clotheRepo = clotheRepo;
             _mapper = mapper;
+            _fileUploadService = fileUploadService;
         }
 
         public async Task<Result<PagedResult<ClotheDTO>>> Handle(GetAllClothesQuery request, CancellationToken cancellationToken)
@@ -34,7 +35,7 @@ namespace RentalAttireBackend.Application.Clothes.Queries.GetAllClothes
             if (!clothes.Items.Any() || clothes.Items.Count() == 0)
                 return Result<PagedResult<ClotheDTO>>.Failure("No clothes currently registered.");
 
-            var clothesDto = _mapper.Map<PagedResult<ClotheDTO>>(clothes.Items);
+            var clothesDto = _mapper.Map<PagedResult<ClotheDTO>>(clothes);
 
             foreach(var clothe in clothesDto.Items)
             {

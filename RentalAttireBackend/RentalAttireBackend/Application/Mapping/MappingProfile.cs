@@ -169,7 +169,7 @@ namespace RentalAttireBackend.Application.Mapping
                 .ForMember(dest => dest.Condition,
                 opt => opt.MapFrom(src => src.Condition.ToString()))
                 .ForMember(dest => dest.ProfileImagePath,
-                opt => opt.Ignore());
+                opt => opt.MapFrom(src => src.ProfileImagePath));
             #endregion
 
             #region CreateClotheCommand -> Clothe
@@ -183,7 +183,11 @@ namespace RentalAttireBackend.Application.Mapping
                 .ForMember(dest => dest.ProfileImagePath,
                 opt => opt.Ignore())
                 .ForMember(dest => dest.IsAvailable,
-                opt => opt.Ignore());
+                opt => opt.Ignore())
+                .ForMember(dest => dest.EntityType,
+                opt => opt.MapFrom(src => "Clothe"))
+                .ForMember(dest => dest.CreatedBy,
+                opt => opt.MapFrom(src => src.PerformedBy));
             #endregion
 
             #region Category -> CategoryDTO 

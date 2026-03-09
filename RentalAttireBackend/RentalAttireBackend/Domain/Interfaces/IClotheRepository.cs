@@ -23,7 +23,7 @@ namespace RentalAttireBackend.Domain.Interfaces
         #endregion
 
         #region Commands
-        public Task<bool> CreateClotheAsync(
+        public Task<int> CreateClotheAsync(
             Clothe clothe, 
             CancellationToken cancellationToken
             );

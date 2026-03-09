@@ -1,4 +1,5 @@
 ﻿using RentalAttireBackend.Domain.Common;
+using System.Text.Json.Serialization;
 
 namespace RentalAttireBackend.Domain.Entities
 {
@@ -9,6 +10,7 @@ namespace RentalAttireBackend.Domain.Entities
         public string Description { get; set; } = string.Empty;
 
         //NavProp
-        public List<Clothe> Clothes { get; set; } = new();
+        [JsonIgnore]
+        public List<Clothe>? Clothes { get; set; } = new();
     }
 }
