@@ -1,4 +1,5 @@
-﻿using RentalAttireBackend.Application.Common.Models;
+﻿using RentalAttireBackend.Application.Clothes.DTOs;
+using RentalAttireBackend.Application.Common.Models;
 using RentalAttireBackend.Domain.Entities;
 
 namespace RentalAttireBackend.Domain.Interfaces
@@ -18,6 +19,11 @@ namespace RentalAttireBackend.Domain.Interfaces
 
         public Task<Clothe?> GetClotheByIdNoTrackingAsync(
             int id,
+            CancellationToken cancellationToken
+            );
+
+        public Task<PagedResult<Clothe>> FilterClothesAsync(
+            ClothesFIlterParameters filters,
             CancellationToken cancellationToken
             );
         #endregion

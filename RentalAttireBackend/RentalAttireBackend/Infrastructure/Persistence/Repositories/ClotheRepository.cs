@@ -1,8 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using RentalAttireBackend.Application.Clothes.DTOs;
 using RentalAttireBackend.Application.Common.Models;
 using RentalAttireBackend.Domain.Entities;
 using RentalAttireBackend.Domain.Interfaces;
 using RentalAttireBackend.Infrastructure.Persistence.DataContext;
+using System.Security.Cryptography.X509Certificates;
 
 namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
 {
@@ -22,6 +24,45 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
             await _context.Clothes.AddAsync(clothe);
             await _context.SaveChangesAsync();
             return clothe.Id;
+        }
+
+        public async Task<PagedResult<Clothe>> FilterClothesAsync(ClothesFIlterParameters filters, CancellationToken cancellationToken)
+        {
+            var clothes = _context.Clothes
+                .Include(c => c.Category)
+                .AsNoTracking()
+                .Where(c =>
+                    (
+                    string.IsNullOrEmpty(filters.SearchQuery) ||
+                    c.ClotheCode.ToLower().Contains(filters.SearchQuery.ToLower()) ||
+                    c.ClotheName.ToLower().Contains(filters.SearchQuery.ToLower())
+                    )
+                    &&
+                    (
+                    string.IsNullOrEmpty(filters.Condition) ||
+                    c.Condition.ToString().ToLower().Equals(filters.Condition.ToLower())
+                    ) &&
+                    (
+                    string.IsNullOrEmpty(filters.ClotheGender) ||
+                    c.Gender.ToString().ToLower().Equals(filters.ClotheGender.ToLower())
+                    )
+                )
+                .AsQueryable();
+
+            var totalCount = await clothes.CountAsync();
+
+            var paginatedClothes = await clothes
+                .Skip(filters.PaginationParams.Skip)
+                .Take(filters.PaginationParams.ItemsPerPage)
+                .ToListAsync(cancellationToken);
+
+            return new PagedResult<Clothe>
+            {
+                Items = paginatedClothes,
+                TotalCount = totalCount,
+                PageNumber = filters.PaginationParams.CurrentPage,
+                PageSize = filters.PaginationParams.ItemsPerPage
+            };
         }
 
         public async Task<PagedResult<Clothe>> GetAllClothesAsync(PaginationParams paginationParams, CancellationToken cancellationToken)

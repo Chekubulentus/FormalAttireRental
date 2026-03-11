@@ -1,0 +1,295 @@
+<div class="clothes-page">
+
+  <!-- ── Page Header ───────────────────────────────────────── -->
+  <div class="page-header">
+    <div class="page-header__left">
+      <span class="eyebrow">Inventory · Catalogue</span>
+      <h1>Clothes</h1>
+      <p class="page-subtitle">Manage your formal attire inventory — rentals, stock, and availability.</p>
+    </div>
+    <button class="btn-add" (click)="openAddModal()">
+      <svg viewBox="0 0 16 16" fill="none">
+        <line x1="8" y1="3" x2="8" y2="13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="3" y1="8" x2="13" y2="8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      Add Item
+    </button>
+  </div>
+
+  <!-- ── Toolbar ───────────────────────────────────────────── -->
+  <div class="toolbar">
+
+    <!-- Search -->
+    <div class="search-wrap">
+      <svg class="search-icon" viewBox="0 0 20 20" fill="none">
+        <circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.5"/>
+        <line x1="13.5" y1="13.5" x2="17" y2="17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      <input
+        class="search-input"
+        type="text"
+        placeholder="Search by name, code, brand..."
+        [(ngModel)]="searchQuery"
+        (ngModelChange)="onSearch()"/>
+    </div>
+
+    <!-- Filter: Category -->
+    <select class="filter-select" [(ngModel)]="filterCategory" (ngModelChange)="onFilterChange()">
+      <option value="">All Categories</option>
+      <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+    </select>
+
+    <!-- Filter: Gender -->
+    <select class="filter-select" [(ngModel)]="filterGender" (ngModelChange)="onFilterChange()">
+      <option value="">All Genders</option>
+      <option *ngFor="let g of genders" [value]="g">{{ g }}</option>
+    </select>
+
+    <!-- Filter: Condition -->
+    <select class="filter-select" [(ngModel)]="filterCondition" (ngModelChange)="onFilterChange()">
+      <option value="">All Conditions</option>
+      <option *ngFor="let c of conditions" [value]="c">{{ c }}</option>
+    </select>
+
+    <!-- Clear Filters -->
+    <button class="btn-clear" *ngIf="hasActiveFilters" (click)="clearFilters()">
+      <svg viewBox="0 0 16 16" fill="none">
+        <line x1="4" y1="4" x2="12" y2="12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+        <line x1="12" y1="4" x2="4"  y2="12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+      </svg>
+      Clear
+    </button>
+
+  </div>
+
+  <!-- ── Stats Bar ─────────────────────────────────────────── -->
+  <div class="stats-bar">
+    <div class="stat">
+      <span class="stat-value">{{ totalCount }}</span>
+      <span class="stat-label">Total Items</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat">
+      <span class="stat-value available">{{ clothes.length }}</span>
+      <span class="stat-label">Showing</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat">
+      <span class="stat-value gold">
+        {{ clothes | currency:'PHP':'symbol':'1.0-0' }}
+      </span>
+      <span class="stat-label">Avg. Rental Price</span>
+    </div>
+  </div>
+
+  <!-- ── Loading Skeleton ──────────────────────────────────── -->
+  <div class="card-grid" *ngIf="isLoading">
+    <div class="skeleton-card" *ngFor="let i of [1,2,3,4,5,6,7,8]">
+      <div class="skeleton-img"></div>
+      <div class="skeleton-body">
+        <div class="skeleton-line wide"></div>
+        <div class="skeleton-line"></div>
+        <div class="skeleton-line narrow"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Empty State ───────────────────────────────────────── -->
+  <div class="empty-state" *ngIf="!isLoading && clothes.length === 0">
+    <svg viewBox="0 0 64 64" fill="none">
+      <rect x="8" y="20" width="48" height="36" rx="3" stroke="currentColor" stroke-width="1.5"/>
+      <path d="M20 20V16a12 12 0 0 1 24 0v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      <circle cx="32" cy="38" r="4" stroke="currentColor" stroke-width="1.5"/>
+    </svg>
+    <p class="empty-title">No items found</p>
+    <p class="empty-sub">Try adjusting your filters or add a new clothing item.</p>
+    <button class="btn-add btn-add--sm" (click)="openAddModal()">
+      <svg viewBox="0 0 16 16" fill="none">
+        <line x1="8" y1="3" x2="8" y2="13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="3" y1="8" x2="13" y2="8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      Add First Item
+    </button>
+  </div>
+
+  <!-- ── Card Grid ─────────────────────────────────────────── -->
+  <div class="card-grid" *ngIf="!isLoading && clothes.length > 0">
+
+    <div class="clothe-card" *ngFor="let clothe of clothes; let i = index"
+         [style.animation-delay]="(i * 0.04) + 's'">
+
+      <!-- Image area -->
+      <div class="card-image-wrap">
+
+        <!-- Profile image -->
+        <img
+          *ngIf="clothe.profileImagePath"
+          [src]="clothe.profileImagePath"
+          [alt]="clothe.clotheName"
+          class="card-image"
+          (error)="onImgError($event)"/>
+
+        <!-- Initials fallback when no image -->
+        <div class="card-image-fallback" *ngIf="!clothe.profileImagePath">
+          <svg viewBox="0 0 32 32" fill="none">
+            <path d="M8 8h16v3l-3 2v11H11V13L8 11V8z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>
+            <path d="M12 8V6a4 4 0 0 1 8 0v2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+          </svg>
+        </div>
+
+        <!-- Stock status badge -->
+        <div class="stock-badge" [class]="'stock-badge--' + getStockStatus(clothe)">
+          <span class="stock-dot"></span>
+          <span *ngIf="getStockStatus(clothe) === 'available'">{{ clothe.availableQuantity }} Available</span>
+          <span *ngIf="getStockStatus(clothe) === 'low'">Low Stock</span>
+          <span *ngIf="getStockStatus(clothe) === 'out'">Out of Stock</span>
+        </div>
+
+        <!-- Hover action overlay -->
+        <div class="card-actions-overlay">
+          <button class="overlay-btn" title="View Details" (click)="openViewModal(clothe); $event.stopPropagation()">
+            <svg viewBox="0 0 16 16" fill="none">
+              <circle cx="8" cy="8" r="3" stroke="currentColor" stroke-width="1.3"/>
+              <path d="M1 8s2.5-5 7-5 7 5 7 5-2.5 5-7 5-7-5-7-5z" stroke="currentColor" stroke-width="1.3"/>
+            </svg>
+          </button>
+          <button class="overlay-btn" title="Edit" (click)="openEditModal(clothe); $event.stopPropagation()">
+            <svg viewBox="0 0 16 16" fill="none">
+              <path d="M11 2l3 3-8 8H3v-3l8-8z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <button class="overlay-btn overlay-btn--danger" title="Archive" (click)="openArchiveModal(clothe); $event.stopPropagation()">
+            <svg viewBox="0 0 16 16" fill="none">
+              <rect x="2" y="3" width="12" height="3" rx="1" stroke="currentColor" stroke-width="1.3"/>
+              <path d="M3 6v6a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V6" stroke="currentColor" stroke-width="1.3"/>
+              <line x1="6" y1="9" x2="10" y2="9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+
+      </div><!-- end .card-image-wrap -->
+
+      <!-- Card Body -->
+      <div class="card-body">
+
+        <!-- Top: code + condition -->
+        <div class="card-meta-row">
+          <span class="clothe-code">{{ clothe.clotheCode }}</span>
+          <span class="condition-badge" [class]="getConditionClass(clothe.condition)">
+            {{ clothe.condition }}
+          </span>
+        </div>
+
+        <!-- Name -->
+        <h3 class="clothe-name">{{ clothe.clotheName }}</h3>
+
+        <!-- Category + Gender chips -->
+        <div class="chip-row">
+          <span class="chip">{{ clothe.categoryName }}</span>
+          <span class="chip">{{ clothe.clotheGender }}</span>
+          <span class="chip">{{ clothe.size }}</span>
+        </div>
+
+        <!-- Details grid -->
+        <div class="card-details">
+          <div class="detail">
+            <span class="detail-label">Brand</span>
+            <span class="detail-value">{{ clothe.brand }}</span>
+          </div>
+          <div class="detail">
+            <span class="detail-label">Material</span>
+            <span class="detail-value">{{ clothe.material }}</span>
+          </div>
+          <div class="detail">
+            <span class="detail-label">Color</span>
+            <span class="detail-value">{{ clothe.color }}</span>
+          </div>
+          <div class="detail">
+            <span class="detail-label">Duration</span>
+            <span class="detail-value">{{ clothe.rentalDurationDays }}d</span>
+          </div>
+        </div>
+
+        <!-- Pricing row -->
+        <div class="card-pricing">
+          <div class="pricing-main">
+            <span class="price-label">Rental</span>
+            <span class="price-value">₱{{ clothe.rentalPrice | number }}</span>
+          </div>
+          <div class="pricing-deposit">
+            <span class="price-label">Deposit</span>
+            <span class="price-value muted">₱{{ clothe.depositAmount | number }}</span>
+          </div>
+        </div>
+
+        <!-- Add to Rental button -->
+        <button
+          class="btn-rent"
+          [disabled]="getStockStatus(clothe) === 'out'"
+          (click)="onAddToRental(clothe)">
+          <svg viewBox="0 0 16 16" fill="none">
+            <path d="M2 3h1.5l2 8h7l1.5-6H5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="8"  cy="13" r="1" fill="currentColor"/>
+            <circle cx="11" cy="13" r="1" fill="currentColor"/>
+          </svg>
+          {{ getStockStatus(clothe) === 'out' ? 'Out of Stock' : 'Add to Rental' }}
+        </button>
+
+      </div><!-- end .card-body -->
+
+    </div><!-- end .clothe-card -->
+
+  </div><!-- end .card-grid -->
+
+  <!-- ── Pagination ────────────────────────────────────────── -->
+  <div class="pagination" *ngIf="!isLoading && clothes.length > 0">
+    <span class="pagination__info">
+      Showing {{ rangeStart }}–{{ rangeEnd }} of {{ totalCount }} items
+    </span>
+    <div class="pagination__controls">
+      <button class="page-btn" [disabled]="currentPage === 1" (click)="goToPage(currentPage - 1)">
+        <svg viewBox="0 0 16 16" fill="none">
+          <polyline points="10 4 6 8 10 12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <ng-container *ngFor="let page of pageNumbers">
+        <span class="page-ellipsis" *ngIf="page === -1">…</span>
+        <button *ngIf="page !== -1" class="page-btn" [class.active]="page === currentPage" (click)="goToPage(page)">
+          {{ page }}
+        </button>
+      </ng-container>
+      <button class="page-btn" [disabled]="currentPage === totalPages" (click)="goToPage(currentPage + 1)">
+        <svg viewBox="0 0 16 16" fill="none">
+          <polyline points="6 4 10 8 6 12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ── Modals — wire these up as you build each one ──────── -->
+  <!-- Add Modal -->
+  <!-- <div class="modal-overlay" *ngIf="showAddModal" (click)="closeAddModal()">
+    <app-add-clothe (closed)="closeAddModal()" (submitted)="onClotheAdded($event)"></app-add-clothe>
+  </div> -->
+
+  <!-- Edit Modal -->
+  <!-- <div class="modal-overlay" *ngIf="clotheToEdit" (click)="closeEditModal()">
+    <app-edit-clothe [clothe]="clotheToEdit" (closed)="closeEditModal()" (updated)="onClotheUpdated($event)"></app-edit-clothe>
+  </div> -->
+
+  <!-- Archive Confirmation -->
+  <!-- <div class="modal-overlay" *ngIf="clotheToArchive" (click)="closeArchiveModal()">
+    <app-archive-confirmation
+      [recordName]="clotheToArchive.clotheName"
+      [recordType]="'Clothing Item'"
+      (cancelled)="closeArchiveModal()"
+      (confirmed)="onArchiveConfirmed()">
+    </app-archive-confirmation>
+  </div> -->
+
+  <!-- View Details Modal -->
+  <!-- <div class="modal-overlay" *ngIf="clotheToView" (click)="closeViewModal()">
+    <app-view-clothe [clothe]="clotheToView" (closed)="closeViewModal()"></app-view-clothe>
+  </div> -->
+
+</div><!-- end .clothes-page -->
