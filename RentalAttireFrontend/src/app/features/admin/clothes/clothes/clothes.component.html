@@ -19,7 +19,6 @@
   <!-- ── Toolbar ───────────────────────────────────────────── -->
   <div class="toolbar">
 
-    <!-- Search -->
     <div class="search-wrap">
       <svg class="search-icon" viewBox="0 0 20 20" fill="none">
         <circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.5"/>
@@ -33,25 +32,21 @@
         (ngModelChange)="onSearch()"/>
     </div>
 
-    <!-- Filter: Category -->
     <select class="filter-select" [(ngModel)]="filterCategory" (ngModelChange)="onFilterChange()">
       <option value="">All Categories</option>
       <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
     </select>
 
-    <!-- Filter: Gender -->
     <select class="filter-select" [(ngModel)]="filterGender" (ngModelChange)="onFilterChange()">
       <option value="">All Genders</option>
       <option *ngFor="let g of genders" [value]="g">{{ g }}</option>
     </select>
 
-    <!-- Filter: Condition -->
     <select class="filter-select" [(ngModel)]="filterCondition" (ngModelChange)="onFilterChange()">
       <option value="">All Conditions</option>
       <option *ngFor="let c of conditions" [value]="c">{{ c }}</option>
     </select>
 
-    <!-- Clear Filters -->
     <button class="btn-clear" *ngIf="hasActiveFilters" (click)="clearFilters()">
       <svg viewBox="0 0 16 16" fill="none">
         <line x1="4" y1="4" x2="12" y2="12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
@@ -75,9 +70,7 @@
     </div>
     <div class="stat-divider"></div>
     <div class="stat">
-      <span class="stat-value gold">
-        {{ clothes | currency:'PHP':'symbol':'1.0-0' }}
-      </span>
+      <span class="stat-value gold">₱{{ avgRentalPrice | number:'1.0-0' }}</span>
       <span class="stat-label">Avg. Rental Price</span>
     </div>
   </div>
@@ -121,7 +114,6 @@
       <!-- Image area -->
       <div class="card-image-wrap">
 
-        <!-- Profile image -->
         <img
           *ngIf="clothe.profileImagePath"
           [src]="clothe.profileImagePath"
@@ -129,7 +121,6 @@
           class="card-image"
           (error)="onImgError($event)"/>
 
-        <!-- Initials fallback when no image -->
         <div class="card-image-fallback" *ngIf="!clothe.profileImagePath">
           <svg viewBox="0 0 32 32" fill="none">
             <path d="M8 8h16v3l-3 2v11H11V13L8 11V8z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>
@@ -172,7 +163,6 @@
       <!-- Card Body -->
       <div class="card-body">
 
-        <!-- Top: code + condition -->
         <div class="card-meta-row">
           <span class="clothe-code">{{ clothe.clotheCode }}</span>
           <span class="condition-badge" [class]="getConditionClass(clothe.condition)">
@@ -180,17 +170,14 @@
           </span>
         </div>
 
-        <!-- Name -->
         <h3 class="clothe-name">{{ clothe.clotheName }}</h3>
 
-        <!-- Category + Gender chips -->
         <div class="chip-row">
           <span class="chip">{{ clothe.categoryName }}</span>
           <span class="chip">{{ clothe.clotheGender }}</span>
           <span class="chip">{{ clothe.size }}</span>
         </div>
 
-        <!-- Details grid -->
         <div class="card-details">
           <div class="detail">
             <span class="detail-label">Brand</span>
@@ -210,7 +197,6 @@
           </div>
         </div>
 
-        <!-- Pricing row -->
         <div class="card-pricing">
           <div class="pricing-main">
             <span class="price-label">Rental</span>
@@ -222,7 +208,6 @@
           </div>
         </div>
 
-        <!-- Add to Rental button -->
         <button
           class="btn-rent"
           [disabled]="getStockStatus(clothe) === 'out'"
@@ -266,18 +251,15 @@
     </div>
   </div>
 
-  <!-- ── Modals — wire these up as you build each one ──────── -->
-  <!-- Add Modal -->
+  <!-- ── Modals — uncomment as you build each one ──────────── -->
   <!-- <div class="modal-overlay" *ngIf="showAddModal" (click)="closeAddModal()">
     <app-add-clothe (closed)="closeAddModal()" (submitted)="onClotheAdded($event)"></app-add-clothe>
   </div> -->
 
-  <!-- Edit Modal -->
   <!-- <div class="modal-overlay" *ngIf="clotheToEdit" (click)="closeEditModal()">
     <app-edit-clothe [clothe]="clotheToEdit" (closed)="closeEditModal()" (updated)="onClotheUpdated($event)"></app-edit-clothe>
   </div> -->
 
-  <!-- Archive Confirmation -->
   <!-- <div class="modal-overlay" *ngIf="clotheToArchive" (click)="closeArchiveModal()">
     <app-archive-confirmation
       [recordName]="clotheToArchive.clotheName"
@@ -287,9 +269,8 @@
     </app-archive-confirmation>
   </div> -->
 
-  <!-- View Details Modal -->
   <!-- <div class="modal-overlay" *ngIf="clotheToView" (click)="closeViewModal()">
     <app-view-clothe [clothe]="clotheToView" (closed)="closeViewModal()"></app-view-clothe>
   </div> -->
 
-</div><!-- end .clothes-page -->
+</div>

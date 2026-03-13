@@ -2,6 +2,7 @@
 {
     public class ClotheDTO
     {
+        public int Id { get; set; }
         public string ClotheCode { get; set; } = string.Empty;
         public string ClotheName { get; set; } = string.Empty;
         public string CategoryName { get; set; } = string.Empty;

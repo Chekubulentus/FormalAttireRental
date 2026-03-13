@@ -3,6 +3,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Infrastructure.Internal;
 using RentalAttireBackend.Application.AuditLogs.DTOs;
 using RentalAttireBackend.Application.Categories.DTOs;
 using RentalAttireBackend.Application.Clothes.Commands.CreateClothe;
+using RentalAttireBackend.Application.Clothes.Commands.UpdateClothe;
 using RentalAttireBackend.Application.Clothes.DTOs;
 using RentalAttireBackend.Application.Common.Interfaces;
 using RentalAttireBackend.Application.Common.Models;
@@ -188,6 +189,18 @@ namespace RentalAttireBackend.Application.Mapping
                 opt => opt.MapFrom(src => "Clothe"))
                 .ForMember(dest => dest.CreatedBy,
                 opt => opt.MapFrom(src => src.PerformedBy));
+            #endregion
+
+            #region UpdateClotheCommand -> Clothe
+            CreateMap<UpdateClotheCommand, Clothe>()
+                .ForMember(dest => dest.CategoryId,
+                opt => opt.Ignore())
+                .ForMember(dest => dest.Gender,
+                opt => opt.MapFrom(src => Enum.Parse<ClotheGender>(src.ClotheGender, true)))
+                .ForMember(dest => dest.ProfileImagePath,
+                opt => opt.Ignore())
+                .ForMember(dest => dest.IsAvailable,
+                opt => opt.Ignore());
             #endregion
 
             #region Category -> CategoryDTO 

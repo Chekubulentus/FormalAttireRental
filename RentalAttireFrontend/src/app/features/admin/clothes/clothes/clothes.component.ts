@@ -1,16 +1,33 @@
-import { CommonModule, CurrencyPipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ClotheDTO } from '../../../../data/models/DTOs/Clothes/clothes';
 
 // TODO: import your ClotheDTO and ClotheService
 // import { ClotheDTO } from '../../../../data/models/DTOs/Clothes/clothe-dto';
 // import { ClotheService } from '../clothe-service/clothe.service';
 
+export class ClotheDTO {
+  clotheCode: string = '';
+  clotheName: string = '';
+  categoryName: string = '';
+  color: string = '';
+  brand: string = '';
+  material: string = '';
+  size: string = '';
+  clotheGender: string = '';
+  stockQuantity: number = 0;
+  availableQuantity: number = 0;
+  rentalPrice: number = 0;
+  depositAmount: number = 0;
+  rentalDurationDays: number = 0;
+  condition: string = '';
+  profileImagePath?: string = '';
+}
+
 @Component({
   selector: 'app-clothes',
   standalone: true,
-  imports: [CommonModule, FormsModule, CurrencyPipe],
+  imports: [CommonModule, FormsModule],
   templateUrl: './clothes.component.html',
   styleUrl: './clothes.component.scss',
 })
@@ -19,23 +36,23 @@ export class ClothesComponent implements OnInit {
   // ============================================================
   // State
   // ============================================================
-  isLoading   = false;
+  isLoading = false;
   clothes: ClotheDTO[] = [];
 
   // ── Search & Filters ───────────────────────────────────────
-  searchQuery      = '';
-  filterCategory   = '';
-  filterGender     = '';
-  filterCondition  = '';
+  searchQuery     = '';
+  filterCategory  = '';
+  filterGender    = '';
+  filterCondition = '';
 
   // ── Pagination ─────────────────────────────────────────────
   currentPage  = 1;
-  itemsPerPage = 12; // 4 columns × 3 rows fits nicely
+  itemsPerPage = 12;
   totalCount   = 0;
   totalPages   = 1;
 
   // ── Modals ─────────────────────────────────────────────────
-  showAddModal     = false;
+  showAddModal    = false;
   clotheToEdit: ClotheDTO | null = null;
   clotheToArchive: ClotheDTO | null = null;
   clotheToView: ClotheDTO | null = null;
@@ -56,8 +73,6 @@ export class ClothesComponent implements OnInit {
     this.getAllClothes();
   }
 
-  
-
   // ============================================================
   // Data Loading — TODO: wire to your ClotheService
   // ============================================================
@@ -70,10 +85,10 @@ export class ClothesComponent implements OnInit {
     //   this.filterGender, this.filterCondition
     // ).then(res => {
     //   if (!res.isSuccess) return;
-    //   this.clothes      = res.data?.items ?? [];
-    //   this.totalCount   = res.data?.totalCount ?? 0;
-    //   this.totalPages   = res.data?.totalPages ?? 1;
-    //   this.currentPage  = res.data?.pageNumber ?? 1;
+    //   this.clothes     = res.data?.items ?? [];
+    //   this.totalCount  = res.data?.totalCount ?? 0;
+    //   this.totalPages  = res.data?.totalPages ?? 1;
+    //   this.currentPage = res.data?.pageNumber ?? 1;
     // }).catch(err => console.error(err))
     //   .finally(() => this.isLoading = false);
     this.isLoading = false;
@@ -106,6 +121,15 @@ export class ClothesComponent implements OnInit {
     this.filterCondition = '';
     this.currentPage     = 1;
     this.getAllClothes();
+  }
+
+  // ============================================================
+  // Stats
+  // ============================================================
+  get avgRentalPrice(): number {
+    if (this.clothes.length === 0) return 0;
+    const total = this.clothes.reduce((sum, c) => sum + c.rentalPrice, 0);
+    return Math.round(total / this.clothes.length);
   }
 
   // ============================================================
@@ -147,8 +171,8 @@ export class ClothesComponent implements OnInit {
   // ============================================================
   // Modal Handlers
   // ============================================================
-  openAddModal(): void     { this.showAddModal = true; }
-  closeAddModal(): void    { this.showAddModal = false; }
+  openAddModal(): void              { this.showAddModal = true; }
+  closeAddModal(): void             { this.showAddModal = false; }
 
   openEditModal(c: ClotheDTO): void    { this.clotheToEdit = c; }
   closeEditModal(): void               { this.clotheToEdit = null; }
@@ -180,8 +204,8 @@ export class ClothesComponent implements OnInit {
   // Helpers
   // ============================================================
   getStockStatus(c: ClotheDTO): 'available' | 'low' | 'out' {
-    if (c.availableQuantity === 0)                        return 'out';
-    if (c.availableQuantity <= c.stockQuantity * 0.2)     return 'low';
+    if (c.availableQuantity === 0)                    return 'out';
+    if (c.availableQuantity <= c.stockQuantity * 0.2) return 'low';
     return 'available';
   }
 

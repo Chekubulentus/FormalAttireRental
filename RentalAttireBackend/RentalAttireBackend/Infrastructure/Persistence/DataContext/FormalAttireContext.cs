@@ -172,7 +172,10 @@ namespace RentalAttireBackend.Infrastructure.Persistence.DataContext
             modelBuilder.Entity<Clothe>(e =>
             {
                 e.HasKey(c => c.Id);
-                e.HasIndex(c => c.ClotheCode);
+                e.HasIndex(c => c.ClotheCode)
+                .IsUnique();
+                e.HasIndex(c => c.ClotheName)
+                .IsUnique();
 
                 e.HasOne(c => c.Category)
                 .WithMany(c => c.Clothes)

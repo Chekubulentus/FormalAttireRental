@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RentalAttireBackend.Application.Clothes.Commands.CreateClothe;
+using RentalAttireBackend.Application.Clothes.Commands.UpdateClothe;
 using RentalAttireBackend.Application.Clothes.DTOs;
 using RentalAttireBackend.Application.Clothes.Queries.FilterClothes;
 using RentalAttireBackend.Application.Clothes.Queries.GetAllClothes;
@@ -65,6 +66,13 @@ namespace RentalAttireBackend.Controllers.ClothesManagerController
             };
 
             var result = await _mediator.Send(new FilterClothesQuery { FilterParameters = filterParameters });
+
+            return result.IsSuccess ? Ok(result) : BadRequest(result.ErrorMessage);
+        }
+        [HttpPut]
+        public async Task<IActionResult> UpdateClotheAsync(UpdateClotheCommand command)
+        {
+            var result = await _mediator.Send(command);
 
             return result.IsSuccess ? Ok(result) : BadRequest(result.ErrorMessage);
         }
