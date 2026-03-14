@@ -45,7 +45,13 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
                     (
                     string.IsNullOrEmpty(filters.ClotheGender) ||
                     c.Gender.ToString().ToLower().Equals(filters.ClotheGender.ToLower())
+                    ) &&
+                    (
+                    string.IsNullOrEmpty(filters.Category) ||
+                    c.Category.CategoryName.ToString().ToLower().Equals(filters.Category.ToLower())
                     )
+                    &&
+                    c.IsActive
                 )
                 .AsQueryable();
 

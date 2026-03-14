@@ -7,6 +7,7 @@ namespace RentalAttireBackend.Application.Clothes.DTOs
         public string SearchQuery { get; set; } = string.Empty;
         public string Condition { get; set; } = string.Empty;
         public string ClotheGender { get; set; } = string.Empty;
+        public string Category { get; set; } = string.Empty;
         public PaginationParams PaginationParams { get; set; } = new();
     }
 }

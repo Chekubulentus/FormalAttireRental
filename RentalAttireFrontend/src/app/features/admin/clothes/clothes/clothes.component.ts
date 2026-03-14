@@ -1,28 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { ClotheDTO } from '../../../../data/models/DTOs/Clothes/clothes';
+import { ClotheService } from '../clothe-service/clothe.service';
+import { ToastrService } from 'ngx-toastr';
 
 // TODO: import your ClotheDTO and ClotheService
 // import { ClotheDTO } from '../../../../data/models/DTOs/Clothes/clothe-dto';
 // import { ClotheService } from '../clothe-service/clothe.service';
-
-export class ClotheDTO {
-  clotheCode: string = '';
-  clotheName: string = '';
-  categoryName: string = '';
-  color: string = '';
-  brand: string = '';
-  material: string = '';
-  size: string = '';
-  clotheGender: string = '';
-  stockQuantity: number = 0;
-  availableQuantity: number = 0;
-  rentalPrice: number = 0;
-  depositAmount: number = 0;
-  rentalDurationDays: number = 0;
-  condition: string = '';
-  profileImagePath?: string = '';
-}
 
 @Component({
   selector: 'app-clothes',
@@ -69,6 +54,11 @@ export class ClothesComponent implements OnInit {
 
   // constructor(private clotheService: ClotheService) {}
 
+  constructor (
+    private clotheService : ClotheService,
+    private toastr : ToastrService
+  ) {}
+
   ngOnInit(): void {
     this.getAllClothes();
   }
@@ -78,20 +68,23 @@ export class ClothesComponent implements OnInit {
   // ============================================================
   getAllClothes(): void {
     this.isLoading = true;
-    // TODO:
-    // this.clotheService.getAllClothesAsync(
-    //   this.currentPage, this.itemsPerPage,
-    //   this.searchQuery, this.filterCategory,
-    //   this.filterGender, this.filterCondition
-    // ).then(res => {
-    //   if (!res.isSuccess) return;
-    //   this.clothes     = res.data?.items ?? [];
-    //   this.totalCount  = res.data?.totalCount ?? 0;
-    //   this.totalPages  = res.data?.totalPages ?? 1;
-    //   this.currentPage = res.data?.pageNumber ?? 1;
-    // }).catch(err => console.error(err))
-    //   .finally(() => this.isLoading = false);
-    this.isLoading = false;
+
+    this.clotheService.filterClothesAsync(
+      this.searchQuery,
+      this.filterCondition,
+      this.filterGender,
+      this.currentPage,
+      this.itemsPerPage
+    ).then(res => {
+      if(!res.isSuccess)
+        this.toastr.error(res.errorMessage);
+
+      this.clothes = res.data?.items ?? [];
+      this.totalCount = res.data?.totalCount ?? 0;
+      this.totalPages = res.data?.totalPages ?? 0;
+    }).catch(err => {
+      this.toastr.error(err.error);
+    }).finally(() => this.isLoading = false);
   }
 
   // ============================================================
