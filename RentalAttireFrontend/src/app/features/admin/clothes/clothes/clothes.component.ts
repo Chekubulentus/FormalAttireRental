@@ -73,12 +73,11 @@ export class ClothesComponent implements OnInit {
       this.searchQuery,
       this.filterCondition,
       this.filterGender,
+      this.filterCategory,
       this.currentPage,
       this.itemsPerPage
     ).then(res => {
-      if(!res.isSuccess)
-        this.toastr.error(res.errorMessage);
-
+      console.log('Category Filter: ' + this.filterCategory);
       this.clothes = res.data?.items ?? [];
       this.totalCount = res.data?.totalCount ?? 0;
       this.totalPages = res.data?.totalPages ?? 0;

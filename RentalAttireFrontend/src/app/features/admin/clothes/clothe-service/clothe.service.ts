@@ -20,6 +20,7 @@ export class ClotheService {
     searchQuery : string,
     condition : string,
     gender : string,
+    category : string,
     currentPage : number,
     itemsPerPage : number,
   ) : Promise<Result<PagedResult<ClotheDTO>>> {
@@ -28,6 +29,7 @@ export class ClotheService {
         searchQuery,
         condition,
         gender,
+        category,
         currentPage,
         itemsPerPage
       };

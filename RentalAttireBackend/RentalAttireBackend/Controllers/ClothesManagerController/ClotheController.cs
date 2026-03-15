@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using RentalAttireBackend.Application.Clothes.Commands.ArchiveClothe;
 using RentalAttireBackend.Application.Clothes.Commands.CreateClothe;
 using RentalAttireBackend.Application.Clothes.Commands.UpdateClothe;
 using RentalAttireBackend.Application.Clothes.DTOs;
@@ -22,6 +23,7 @@ namespace RentalAttireBackend.Controllers.ClothesManagerController
         {
             _mediator = mediator;
         }
+
         [HttpGet]
         public async Task<IActionResult> GetAllClothesAsync(int currentPage, int itemsPerPage)
         {
@@ -35,6 +37,7 @@ namespace RentalAttireBackend.Controllers.ClothesManagerController
 
             return result.IsSuccess ? Ok(result) : BadRequest(result.ErrorMessage);
         }
+
         [HttpPost]
         public async Task<IActionResult> CreateClotheAsync(CreateClotheCommand command)
         {
@@ -42,11 +45,13 @@ namespace RentalAttireBackend.Controllers.ClothesManagerController
 
             return result.IsSuccess ? Ok(result) : BadRequest(result.ErrorMessage);
         }
+
         [HttpGet("filter-clothes")]
         public async Task<IActionResult> FilterClothesAsync(
             string? searchQuery,
             string? condition,
             string? gender,
+            string? category,
             int currentPage,
             int itemsPerPage
             )
@@ -62,6 +67,7 @@ namespace RentalAttireBackend.Controllers.ClothesManagerController
                 SearchQuery = searchQuery,
                 ClotheGender = gender,
                 Condition = condition,
+                Category = category,
                 PaginationParams = paginationParams
             };
 
@@ -69,8 +75,17 @@ namespace RentalAttireBackend.Controllers.ClothesManagerController
 
             return result.IsSuccess ? Ok(result) : BadRequest(result.ErrorMessage);
         }
+
         [HttpPut]
         public async Task<IActionResult> UpdateClotheAsync(UpdateClotheCommand command)
+        {
+            var result = await _mediator.Send(command);
+
+            return result.IsSuccess ? Ok(result) : BadRequest(result.ErrorMessage);
+        }
+
+        [HttpPatch]
+        public async Task<IActionResult> ArchiveClotheByIdAsync(ArchiveClotheCommand command)
         {
             var result = await _mediator.Send(command);
 

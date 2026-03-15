@@ -26,7 +26,7 @@ namespace RentalAttireBackend.Application.Clothes.Queries.FilterClothes
             _clotheRepo = clotheRepo;
             _fileUpload = fileUpload;
         }
-        public async Task<Result<PagedResult<ClotheDTO>>> Handle(FilterClothesQuery request, CancellationToken cancellationToken)
+        public async Task<Result<PagedResult<ClotheDTO>>> Handle(FilterClothesQuery  request, CancellationToken cancellationToken)
         {
             if (request.FilterParameters.PaginationParams is null)
                 return Result<PagedResult<ClotheDTO>>.Failure("Current & ItemsPerPage is null");

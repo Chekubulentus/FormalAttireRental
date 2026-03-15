@@ -28,6 +28,11 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
 
         public async Task<PagedResult<Clothe>> FilterClothesAsync(ClothesFIlterParameters filters, CancellationToken cancellationToken)
         {
+            Condition? conditionEnum = string.IsNullOrEmpty(filters.Condition)
+                ? null : Enum.Parse<Condition>(filters.Condition, true);
+            ClotheGender? clotheGenderEnum = string.IsNullOrEmpty(filters.ClotheGender)
+                ? null : Enum.Parse<ClotheGender>(filters.ClotheGender, true);
+
             var clothes = _context.Clothes
                 .Include(c => c.Category)
                 .AsNoTracking()
@@ -40,15 +45,15 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
                     &&
                     (
                     string.IsNullOrEmpty(filters.Condition) ||
-                    c.Condition.ToString().ToLower().Equals(filters.Condition.ToLower())
+                    c.Condition == conditionEnum
                     ) &&
                     (
                     string.IsNullOrEmpty(filters.ClotheGender) ||
-                    c.Gender.ToString().ToLower().Equals(filters.ClotheGender.ToLower())
+                    c.Gender == clotheGenderEnum
                     ) &&
                     (
                     string.IsNullOrEmpty(filters.Category) ||
-                    c.Category.CategoryName.ToString().ToLower().Equals(filters.Category.ToLower())
+                    c.Category.CategoryName.ToLower().Equals(filters.Category.ToLower())
                     )
                     &&
                     c.IsActive
