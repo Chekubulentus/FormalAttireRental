@@ -1,22 +1,29 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap');
 
-$surface:    #ffffff;
-$border:     #e4ddd6;
-$gold:       #a07840;
-$gold-dim:   rgba(160, 120, 64, 0.08);
-$gold-border:rgba(160, 120, 64, 0.2);
-$text:       #1a1917;
-$text-muted: #9e9590;
-$text-soft:  #6b6560;
-$error:      #c0392b;
+$surface:     #ffffff;
+$border:      #e4ddd6;
+$gold:        #a07840;
+$gold-dim:    rgba(160, 120, 64, 0.08);
+$gold-border: rgba(160, 120, 64, 0.2);
+$text:        #1a1917;
+$text-muted:  #9e9590;
+$text-soft:   #6b6560;
+$error:       #c0392b;
 
+
+// ============================================================
+// Host
+// ============================================================
 :host {
   display: block;
   flex-shrink: 0;
   height: 100vh;
-  /* No position sticky needed — the wrapper handles containment */
 }
 
+
+// ============================================================
+// Sidebar Container
+// ============================================================
 .sidebar {
   width: 256px;
   height: 100vh;
@@ -54,6 +61,10 @@ $error:      #c0392b;
       gap: 0;
     }
 
+    .nav-item--sub {
+      padding-left: 0.8rem; // remove indent when collapsed
+    }
+
     .sidebar-footer {
       padding: 1.25rem 0;
       justify-content: center;
@@ -63,6 +74,10 @@ $error:      #c0392b;
   }
 }
 
+
+// ============================================================
+// Logo
+// ============================================================
 .sidebar-logo {
   display: flex;
   align-items: center;
@@ -132,34 +147,81 @@ $error:      #c0392b;
     &.rotated { transform: rotate(180deg); }
   }
 
-  &:hover {
-    background: $gold-dim;
-    color: $gold;
-    border-color: $gold-border;
-  }
+  &:hover { background: $gold-dim; color: $gold; border-color: $gold-border; }
 }
 
+
+// ============================================================
+// Navigation
+// ============================================================
 .sidebar-nav {
   flex: 1;
-  padding: 1.25rem 0;
+  padding: 0.75rem 0;
   overflow-y: auto;
   overflow-x: hidden;
 
   &::-webkit-scrollbar { width: 0; }
 }
 
-.nav-section {
+
+// ============================================================
+// Nav Group — collapsible section
+// ============================================================
+.nav-group {
+  margin-bottom: 0.25rem;
+}
+
+// Group header button — the section title that toggles open/closed
+.nav-group-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0.6rem 1.5rem 0.35rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  gap: 0.5rem;
+
+  &:hover .nav-group-label { color: $text-soft; }
+}
+
+.nav-group-label {
   font-family: 'DM Sans', sans-serif;
   font-size: 0.6rem;
   font-weight: 500;
   letter-spacing: 0.18em;
   color: $text-muted;
   text-transform: uppercase;
-  padding: 0.85rem 1.5rem 0.35rem;
-  margin: 0;
   white-space: nowrap;
+  transition: color 0.15s;
 }
 
+// Chevron rotates when group is open
+.group-chevron {
+  width: 12px;
+  height: 12px;
+  color: $text-muted;
+  flex-shrink: 0;
+  transition: transform 0.25s ease;
+
+  &.rotated { transform: rotate(180deg); }
+}
+
+// Group items container — collapses via max-height animation
+.nav-group-items {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  // When expanded — large enough to fit any number of items
+  &.expanded { max-height: 500px; }
+}
+
+
+// ============================================================
+// Nav Item
+// ============================================================
 .nav-item {
   display: flex;
   align-items: center;
@@ -177,10 +239,7 @@ $error:      #c0392b;
   border: 1px solid transparent;
   cursor: pointer;
 
-  &:hover {
-    color: $text;
-    background: #f2ede8;
-  }
+  &:hover { color: $text; background: #f2ede8; }
 
   &.active {
     color: $gold;
@@ -188,6 +247,27 @@ $error:      #c0392b;
     border-color: $gold-border;
 
     .nav-icon svg { stroke: $gold; }
+  }
+
+  // Sub-item — slightly indented to show hierarchy under Inventory
+  &--sub {
+    padding-left: 2.5rem;
+    font-size: 0.8rem;
+
+    .nav-icon svg { width: 14px; height: 14px; }
+
+    // Left accent line to visually connect to parent
+    position: relative;
+    &::before {
+      content: '';
+      position: absolute;
+      left: 1.4rem;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 5px;
+      height: 1px;
+      background: $border;
+    }
   }
 }
 
@@ -199,11 +279,7 @@ $error:      #c0392b;
   justify-content: center;
   flex-shrink: 0;
 
-  svg {
-    width: 16px;
-    height: 16px;
-    transition: stroke 0.18s ease;
-  }
+  svg { width: 16px; height: 16px; transition: stroke 0.18s ease; }
 }
 
 .nav-label {
@@ -212,6 +288,10 @@ $error:      #c0392b;
   letter-spacing: 0.01em;
 }
 
+
+// ============================================================
+// Footer
+// ============================================================
 .sidebar-footer {
   display: flex;
   align-items: center;

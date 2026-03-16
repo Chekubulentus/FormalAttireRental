@@ -1,6 +1,6 @@
 <aside class="sidebar" [class.collapsed]="isCollapsed">
 
-  <!-- Logo -->
+  <!-- ── Logo ─────────────────────────────────────────────── -->
   <div class="sidebar-logo">
     <div class="logo-mark">
       <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -22,126 +22,201 @@
     </button>
   </div>
 
-  <!-- Navigation -->
+  <!-- ── Navigation ───────────────────────────────────────── -->
   <nav class="sidebar-nav">
 
-    <p class="nav-section" *ngIf="!isCollapsed">Overview</p>
+    <!-- ════ OVERVIEW GROUP ════ -->
+    <div class="nav-group">
 
-    <a class="nav-item" routerLink="/admin/admin-dashboard" routerLinkActive="active"
-       [routerLinkActiveOptions]="{exact: true}" [title]="isCollapsed ? 'Dashboard' : ''">
-      <span class="nav-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-          <rect x="3" y="3" width="7" height="7" rx="1"/>
-          <rect x="14" y="3" width="7" height="7" rx="1"/>
-          <rect x="14" y="14" width="7" height="7" rx="1"/>
-          <rect x="3" y="14" width="7" height="7" rx="1"/>
+      <!-- Group Header — clicking toggles the group open/closed -->
+      <button
+        class="nav-group-header"
+        [class.open]="groups['overview']"
+        (click)="toggleGroup('overview')"
+        *ngIf="!isCollapsed">
+        <span class="nav-group-label">Overview</span>
+        <svg class="group-chevron" viewBox="0 0 16 16" fill="none"
+             [class.rotated]="groups['overview']">
+          <polyline points="4 6 8 10 12 6" stroke="currentColor" stroke-width="1.3"
+            stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
-      </span>
-      <span class="nav-label" *ngIf="!isCollapsed">Dashboard</span>
-    </a>
+      </button>
 
-    <a class="nav-item" routerLink="/admin/clothes" routerLinkActive="active" [title]="isCollapsed ? 'Inventory' : ''">
-      <span class="nav-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-          <path d="M20.38 3.46L16 2a4 4 0 01-8 0L3.62 3.46a2 2 0 00-1.34 2.23l.58 3.57a1 1 0 00.99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 002-2V10h2.15a1 1 0 00.99-.84l.58-3.57a2 2 0 00-1.34-2.23z"/>
+      <!-- Group Items -->
+      <div class="nav-group-items" [class.expanded]="groups['overview'] || isCollapsed">
+        <a class="nav-item" routerLink="/admin/admin-dashboard" routerLinkActive="active"
+           [routerLinkActiveOptions]="{exact: true}" [title]="isCollapsed ? 'Dashboard' : ''">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <rect x="3" y="3" width="7" height="7" rx="1"/>
+              <rect x="14" y="3" width="7" height="7" rx="1"/>
+              <rect x="14" y="14" width="7" height="7" rx="1"/>
+              <rect x="3" y="14" width="7" height="7" rx="1"/>
+            </svg>
+          </span>
+          <span class="nav-label" *ngIf="!isCollapsed">Dashboard</span>
+        </a>
+
+        <a class="nav-item" routerLink="/admin/clothes" routerLinkActive="active"
+           [title]="isCollapsed ? 'Inventory' : ''">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M20.38 3.46L16 2a4 4 0 01-8 0L3.62 3.46a2 2 0 00-1.34 2.23l.58 3.57a1 1 0 00.99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 002-2V10h2.15a1 1 0 00.99-.84l.58-3.57a2 2 0 00-1.34-2.23z"/>
+            </svg>
+          </span>
+          <span class="nav-label" *ngIf="!isCollapsed">Inventory</span>
+        </a>
+
+        <!-- Categories — nested under Inventory -->
+        <a class="nav-item nav-item--sub" routerLink="/admin/categories" routerLinkActive="active"
+           [title]="isCollapsed ? 'Categories' : ''">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M4 6h16M4 10h16M4 14h10M4 18h6"/>
+            </svg>
+          </span>
+          <span class="nav-label" *ngIf="!isCollapsed">Categories</span>
+        </a>
+
+        <a class="nav-item" routerLink="/admin/rentals" routerLinkActive="active"
+           [title]="isCollapsed ? 'Rentals' : ''">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <line x1="16" y1="13" x2="8" y2="13"/>
+              <line x1="16" y1="17" x2="8" y2="17"/>
+            </svg>
+          </span>
+          <span class="nav-label" *ngIf="!isCollapsed">Rentals</span>
+        </a>
+
+        <a class="nav-item" routerLink="/admin/customers" routerLinkActive="active"
+           [title]="isCollapsed ? 'Customers' : ''">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
+              <circle cx="9" cy="7" r="4"/>
+              <path d="M23 21v-2a4 4 0 00-3-3.87"/>
+              <path d="M16 3.13a4 4 0 010 7.75"/>
+            </svg>
+          </span>
+          <span class="nav-label" *ngIf="!isCollapsed">Customers</span>
+        </a>
+      </div>
+
+    </div><!-- end overview group -->
+
+    <!-- ════ MANAGEMENT GROUP ════ -->
+    <div class="nav-group">
+
+      <button
+        class="nav-group-header"
+        [class.open]="groups['management']"
+        (click)="toggleGroup('management')"
+        *ngIf="!isCollapsed">
+        <span class="nav-group-label">Management</span>
+        <svg class="group-chevron" viewBox="0 0 16 16" fill="none"
+             [class.rotated]="groups['management']">
+          <polyline points="4 6 8 10 12 6" stroke="currentColor" stroke-width="1.3"
+            stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
-      </span>
-      <span class="nav-label" *ngIf="!isCollapsed">Inventory</span>
-    </a>
+      </button>
 
-    <a class="nav-item" routerLink="/admin/rentals" routerLinkActive="active" [title]="isCollapsed ? 'Rentals' : ''">
-      <span class="nav-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-          <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
-          <polyline points="14 2 14 8 20 8"/>
-          <line x1="16" y1="13" x2="8" y2="13"/>
-          <line x1="16" y1="17" x2="8" y2="17"/>
+      <div class="nav-group-items" [class.expanded]="groups['management'] || isCollapsed">
+        <a class="nav-item" routerLink="/admin/reports" routerLinkActive="active"
+           [title]="isCollapsed ? 'Reports' : ''">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <line x1="18" y1="20" x2="18" y2="10"/>
+              <line x1="12" y1="20" x2="12" y2="4"/>
+              <line x1="6" y1="20" x2="6" y2="14"/>
+              <line x1="2" y1="20" x2="22" y2="20"/>
+            </svg>
+          </span>
+          <span class="nav-label" *ngIf="!isCollapsed">Reports</span>
+        </a>
+
+        <a class="nav-item" routerLink="/admin/settings" routerLinkActive="active"
+           [title]="isCollapsed ? 'Settings' : ''">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <circle cx="12" cy="12" r="3"/>
+              <path d="M19.07 4.93l-1.41 1.41M5.34 5.34L3.93 6.76M19.07 19.07l-1.41-1.41M5.34 18.66l-1.41 1.41M21 12h-2M5 12H3M12 21v-2M12 5V3"/>
+            </svg>
+          </span>
+          <span class="nav-label" *ngIf="!isCollapsed">Settings</span>
+        </a>
+      </div>
+
+    </div><!-- end management group -->
+
+    <!-- ════ SYSTEM GROUP ════ -->
+    <div class="nav-group">
+
+      <button
+        class="nav-group-header"
+        [class.open]="groups['system']"
+        (click)="toggleGroup('system')"
+        *ngIf="!isCollapsed">
+        <span class="nav-group-label">System</span>
+        <svg class="group-chevron" viewBox="0 0 16 16" fill="none"
+             [class.rotated]="groups['system']">
+          <polyline points="4 6 8 10 12 6" stroke="currentColor" stroke-width="1.3"
+            stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
-      </span>
-      <span class="nav-label" *ngIf="!isCollapsed">Rentals</span>
-    </a>
+      </button>
 
-    <a class="nav-item" routerLink="/admin/customers" routerLinkActive="active" [title]="isCollapsed ? 'Customers' : ''">
-      <span class="nav-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-          <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
-          <circle cx="9" cy="7" r="4"/>
-          <path d="M23 21v-2a4 4 0 00-3-3.87"/>
-          <path d="M16 3.13a4 4 0 010 7.75"/>
-        </svg>
-      </span>
-      <span class="nav-label" *ngIf="!isCollapsed">Customers</span>
-    </a>
+      <div class="nav-group-items" [class.expanded]="groups['system'] || isCollapsed">
+        <a class="nav-item" routerLink="/admin/user-layout" routerLinkActive="active"
+           [title]="isCollapsed ? 'Users' : ''">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <circle cx="12" cy="8" r="4"/>
+              <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+            </svg>
+          </span>
+          <span class="nav-label" *ngIf="!isCollapsed">Users</span>
+        </a>
 
-    <p class="nav-section" *ngIf="!isCollapsed">Management</p>
+        <a class="nav-item" routerLink="/admin/logs" routerLinkActive="active"
+           [title]="isCollapsed ? 'Logs' : ''">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <line x1="8" y1="13" x2="16" y2="13"/>
+              <line x1="8" y1="17" x2="12" y2="17"/>
+            </svg>
+          </span>
+          <span class="nav-label" *ngIf="!isCollapsed">Logs</span>
+        </a>
 
-    <a class="nav-item" routerLink="/admin/reports" routerLinkActive="active" [title]="isCollapsed ? 'Reports' : ''">
-      <span class="nav-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-          <line x1="18" y1="20" x2="18" y2="10"/>
-          <line x1="12" y1="20" x2="12" y2="4"/>
-          <line x1="6" y1="20" x2="6" y2="14"/>
-          <line x1="2" y1="20" x2="22" y2="20"/>
-        </svg>
-      </span>
-      <span class="nav-label" *ngIf="!isCollapsed">Reports</span>
-    </a>
+        <a class="nav-item" routerLink="/admin/disposables" routerLinkActive="active"
+           [title]="isCollapsed ? 'Disposables' : ''">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <polyline points="3 6 5 6 21 6"/>
+              <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/>
+              <path d="M10 11v6M14 11v6"/>
+              <path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/>
+            </svg>
+          </span>
+          <span class="nav-label" *ngIf="!isCollapsed">Disposables</span>
+        </a>
+      </div>
 
-    <a class="nav-item" routerLink="/admin/settings" routerLinkActive="active" [title]="isCollapsed ? 'Settings' : ''">
-      <span class="nav-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-          <circle cx="12" cy="12" r="3"/>
-          <path d="M19.07 4.93l-1.41 1.41M5.34 5.34L3.93 6.76M19.07 19.07l-1.41-1.41M5.34 18.66l-1.41 1.41M21 12h-2M5 12H3M12 21v-2M12 5V3"/>
-        </svg>
-      </span>
-      <span class="nav-label" *ngIf="!isCollapsed">Settings</span>
-    </a>
-
-    <p class="nav-section" *ngIf="!isCollapsed">System</p>
-
-    <a class="nav-item" routerLink="/admin/user-layout" routerLinkActive="active" [title]="isCollapsed ? 'Users' : ''">
-      <span class="nav-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-          <circle cx="12" cy="8" r="4"/>
-          <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
-        </svg>
-      </span>
-      <span class="nav-label" *ngIf="!isCollapsed">Users</span>
-    </a>
-
-    <a class="nav-item" routerLink="/admin/logs" routerLinkActive="active" [title]="isCollapsed ? 'Logs' : ''">
-      <span class="nav-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-          <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
-          <polyline points="14 2 14 8 20 8"/>
-          <line x1="8" y1="13" x2="16" y2="13"/>
-          <line x1="8" y1="17" x2="12" y2="17"/>
-        </svg>
-      </span>
-      <span class="nav-label" *ngIf="!isCollapsed">Logs</span>
-    </a>
-
-    <a class="nav-item" routerLink="/admin/disposables" routerLinkActive="active" [title]="isCollapsed ? 'Disposables' : ''">
-      <span class="nav-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-          <polyline points="3 6 5 6 21 6"/>
-          <path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/>
-          <path d="M10 11v6M14 11v6"/>
-          <path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/>
-        </svg>
-      </span>
-      <span class="nav-label" *ngIf="!isCollapsed">Disposables</span>
-    </a>
+    </div><!-- end system group -->
 
   </nav>
 
-  <!-- Footer / User -->
+  <!-- ── Footer / User ────────────────────────────────────── -->
   <div class="sidebar-footer">
     <div class="user-block">
       <div class="user-avatar">A</div>
       <div class="user-meta" *ngIf="!isCollapsed">
-        <p class="user-name">{{currentUser?.email}}</p>
-        <p class="user-role">{{currentUser?.rolePosition}}</p>
+        <p class="user-name">{{ currentUser?.email }}</p>
+        <p class="user-role">{{ currentUser?.rolePosition }}</p>
       </div>
     </div>
     <button class="logout-btn" (click)="logout()" title="Sign out" *ngIf="!isCollapsed">

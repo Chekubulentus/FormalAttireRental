@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.AspNetCore.Mvc;
+using RentalAttireBackend.Application.Categories.Queries.FilterCategories;
 using RentalAttireBackend.Application.Categories.Queries.GetAllCategories;
 using RentalAttireBackend.Application.Categories.Queries.GetCategoryById;
 using RentalAttireBackend.Application.Common.Models;
@@ -35,6 +36,32 @@ namespace RentalAttireBackend.Controllers.ClothesManagerController
         public async Task<IActionResult> GetCategoryByIdAsync(int id)
         {
             var result = await _mediator.Send(new GetCategoryByIdQuery { Id = id });
+
+            return result.IsSuccess ? Ok(result) : BadRequest(result.ErrorMessage);
+        }
+
+        [HttpGet("filter-categories")]
+        public async Task<IActionResult> FilterCategoriesAsync(
+            string? categoryCode,
+            string? categoryName,
+            int currentPage,
+            int itemsPerPage
+            )
+        {
+            var paginationParams = new PaginationParams
+            {
+                CurrentPage = currentPage,
+                ItemsPerPage = itemsPerPage
+            };
+
+            var query = new FilterCategoriesQuery
+            {
+                CategoryCode = categoryCode,
+                CategoryName = categoryName,
+                PaginationParams = paginationParams
+            };
+
+            var result = await _mediator.Send(query);
 
             return result.IsSuccess ? Ok(result) : BadRequest(result.ErrorMessage);
         }

@@ -28,6 +28,13 @@ namespace RentalAttireBackend.Domain.Interfaces
             CancellationToken cancellationToken
             );
 
+        public Task<PagedResult<Category>> FilterCategoriesAsync(
+            string categoryCode,
+            string categoryName,
+            PaginationParams paginationParams,
+            CancellationToken cancellationToken
+            );
+
         #endregion
 
         #region Commands

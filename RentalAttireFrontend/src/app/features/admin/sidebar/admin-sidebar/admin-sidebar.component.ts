@@ -1,65 +1,86 @@
-import { Component, OnInit } from '@angular/core';
-import { AuthService } from '../../../../core/services/auth-service/auth.service';
-import { Router, RouterLink, RouterLinkActive, UrlSegment } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { UserViewModel } from '../../../../data/models/DTOs/Users/user-view-model';
+import { Component, OnInit } from '@angular/core';
+import { Router, RouterModule } from '@angular/router';
 import { UserService } from '../../../../core/services/user-service/user.service';
-import { CurrentUser } from '../../../../../environments/current-user';
-import { Result } from '../../../../data/models/Results/result';
+import { AuthService } from '../../../../core/services/auth-service/auth.service';
+import { UserViewModel } from '../../../../data/models/DTOs/Users/user-view-model';
+import { ToastrService } from 'ngx-toastr';
+
+// TODO: replace with your actual imports
+// import { UserService } from '../../../core/services/user-service/user.service';
+// import { UserViewModel } from '../../../data/models/DTOs/Users/user-view-model';
+// import { AuthService } from '../../../core/services/auth-service/auth.service';
 
 @Component({
   selector: 'app-admin-sidebar',
   standalone: true,
-  imports: [
-    CommonModule, 
-    RouterLinkActive, 
-    FormsModule,
-    RouterLink,
-  ],
+  imports: [CommonModule, RouterModule],
   templateUrl: './admin-sidebar.component.html',
   styleUrl: './admin-sidebar.component.scss',
 })
-export class AdminSidebarComponent implements OnInit{
+export class AdminSidebarComponent implements OnInit {
+
+  // ============================================================
+  // State
+  // ============================================================
+
+  // Whether the sidebar is collapsed to icon-only mode
   isCollapsed = false;
-  currentUser : UserViewModel | undefined;
+
+  // Tracks which nav groups are open — all open by default
+  groups: Record<string, boolean> = {
+    overview:   true,
+    management: true,
+    system:     true,
+  };
+  
+  currentUser: UserViewModel | undefined; 
 
   constructor(
-    private authService: AuthService,
     private router: Router,
-    private userService : UserService
+    private userService: UserService,
+    private authService : AuthService,
+    private toastrService : ToastrService
   ) {}
 
   ngOnInit(): void {
     this.getCurrentUser();
   }
 
-  getCurrentUser(){
-    const user = this.authService.getCurrentUser();
-    if(!user)
-      return;
-    const parsedUser = JSON.parse(user);
-    const result = this.userService.getUserViewModelByIdAsync(parsedUser.id)
-    .then(
-      res => {
-        if(!res.isSuccess){
-          return;
-        }
-        this.currentUser = res.data;
-      }
-    ).catch(
-      err => {
-        console.log(`${err.error}`);
-      }
-    )
-  }
-
+  // ============================================================
+  // Collapse / Expand sidebar
+  // ============================================================
   toggleCollapse(): void {
     this.isCollapsed = !this.isCollapsed;
   }
 
+  // ============================================================
+  // Toggle a nav group open or closed
+  // When the sidebar is collapsed all groups are always visible
+  // (controlled in the template via [class.expanded]="groups[x] || isCollapsed")
+  // ============================================================
+  toggleGroup(group: string): void {
+    this.groups[group] = !this.groups[group];
+  }
+
+  // ============================================================
+  // Load current user for the footer
+  // ============================================================
+  getCurrentUser(): void {
+    this.userService.getCurrentUserViewModel()
+    .then(res => {
+      if(!res.isSuccess)
+        this.toastrService.error(res.errorMessage ?? 'Current user cannot be found.');
+      this.currentUser = res.data;
+    }).catch(err => {
+      this.toastrService.error(err.error);
+    })
+  }
+
+  // ============================================================
+  // Logout
+  // ============================================================
   logout(): void {
     this.authService.logout();
-    this.router.navigate(['/log-in']);
   }
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration.EnvironmentVariables;
 using RentalAttireBackend.Application.Common.Models;
 using RentalAttireBackend.Domain.Entities;
 using RentalAttireBackend.Domain.Interfaces;
@@ -21,6 +22,44 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
         {
             await _context.Categories.AddAsync(category);
             return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<PagedResult<Category>> FilterCategoriesAsync(
+            string categoryCode, 
+            string categoryName, 
+            PaginationParams paginationParams,
+            CancellationToken cancellationToken)
+        {
+            var categories = _context.Categories
+                .AsNoTracking()
+                .Where(c =>
+                    (
+                    string.IsNullOrEmpty(categoryCode) ||
+                    c.CategoryCode.ToLower().Contains(categoryCode.ToLower())
+                    )
+                    &&
+                    (
+                    string.IsNullOrEmpty(categoryName) ||
+                    c.CategoryName.ToLower().Contains(categoryName.ToLower())
+                    )
+                    &&
+                    c.IsActive
+                ).AsQueryable();
+
+            var totalCount = await categories.CountAsync();
+
+            var paginatedItems = await categories
+                .Skip(paginationParams.Skip)
+                .Take(paginationParams.ItemsPerPage)
+                .ToListAsync(cancellationToken);
+
+            return new PagedResult<Category>
+            {
+                Items = paginatedItems,
+                TotalCount = totalCount,
+                PageNumber = paginationParams.CurrentPage,
+                PageSize = paginationParams.ItemsPerPage
+            };
         }
 
         public async Task<PagedResult<Category>> GetAllCategoriesAsync(PaginationParams paginationParams, CancellationToken cancellationToken)
