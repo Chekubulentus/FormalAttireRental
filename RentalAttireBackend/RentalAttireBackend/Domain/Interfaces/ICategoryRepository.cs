@@ -35,6 +35,12 @@ namespace RentalAttireBackend.Domain.Interfaces
             CancellationToken cancellationToken
             );
 
+        public Task<bool> CategoryDuplicateValidationAsync(
+            string categoryCode,
+            string categoryName,
+            CancellationToken cancellationToken
+            );
+
         #endregion
 
         #region Commands

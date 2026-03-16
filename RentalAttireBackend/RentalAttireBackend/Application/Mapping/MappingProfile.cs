@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Infrastructure.Internal;
 using RentalAttireBackend.Application.AuditLogs.DTOs;
+using RentalAttireBackend.Application.Categories.Commands.CreateCategory;
 using RentalAttireBackend.Application.Categories.DTOs;
 using RentalAttireBackend.Application.Clothes.Commands.CreateClothe;
 using RentalAttireBackend.Application.Clothes.Commands.UpdateClothe;
@@ -205,6 +206,12 @@ namespace RentalAttireBackend.Application.Mapping
 
             #region Category -> CategoryDTO 
             CreateMap<Category, CategoryDTO>();
+            #endregion
+
+            #region CreateCategoryCommand -> Category
+            CreateMap<CreateCategoryCommand, Category>()
+                .ForMember(dest => dest.Id,
+                opt => opt.Ignore());
             #endregion
         }
     }

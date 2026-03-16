@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.AspNetCore.Mvc;
+using RentalAttireBackend.Application.Categories.Commands.CreateCategory;
 using RentalAttireBackend.Application.Categories.Queries.FilterCategories;
 using RentalAttireBackend.Application.Categories.Queries.GetAllCategories;
 using RentalAttireBackend.Application.Categories.Queries.GetCategoryById;
@@ -62,6 +63,14 @@ namespace RentalAttireBackend.Controllers.ClothesManagerController
             };
 
             var result = await _mediator.Send(query);
+
+            return result.IsSuccess ? Ok(result) : BadRequest(result.ErrorMessage);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateCategoryAsync(CreateCategoryCommand command)
+        {
+            var result = await _mediator.Send(command);
 
             return result.IsSuccess ? Ok(result) : BadRequest(result.ErrorMessage);
         }

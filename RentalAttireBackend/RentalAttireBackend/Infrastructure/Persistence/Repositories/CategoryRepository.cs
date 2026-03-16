@@ -18,6 +18,15 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
             _context = context;
         }
 
+        public async Task<bool> CategoryDuplicateValidationAsync(
+            string categoryCode, 
+            string categoryName, 
+            CancellationToken cancellationToken)
+        {
+            return await _context.Categories.AnyAsync(c => c.CategoryCode.ToLower().Equals(categoryCode.ToLower()) ||
+            c.CategoryName.ToLower().Equals(categoryName.ToLower()) && c.IsActive);
+        }
+
         public async Task<bool> CreateCategoryAsync(Category category, CancellationToken cancellationToken)
         {
             await _context.Categories.AddAsync(category);
