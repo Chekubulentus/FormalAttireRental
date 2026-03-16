@@ -256,6 +256,13 @@
     <app-add-clothe (closed)="closeAddModal()" (submitted)="onClotheAdded($event)"></app-add-clothe>
   </div> -->
 
+  <div class="modal-overlay" *ngIf="showAddModal">
+    <app-create-clothe
+    (closed)="closeAddModal()"
+    (submitted)="onClotheAdded()"
+    ></app-create-clothe>
+  </div>
+
   <!-- <div class="modal-overlay" *ngIf="clotheToEdit" (click)="closeEditModal()">
     <app-edit-clothe [clothe]="clotheToEdit" (closed)="closeEditModal()" (updated)="onClotheUpdated($event)"></app-edit-clothe>
   </div> -->

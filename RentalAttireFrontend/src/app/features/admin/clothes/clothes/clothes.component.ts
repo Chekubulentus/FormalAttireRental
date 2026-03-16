@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ClotheDTO } from '../../../../data/models/DTOs/Clothes/clothes';
 import { ClotheService } from '../clothe-service/clothe.service';
 import { ToastrService } from 'ngx-toastr';
+import { CreateClotheComponent } from '../create-clothe/create-clothe.component';
 
 // TODO: import your ClotheDTO and ClotheService
 // import { ClotheDTO } from '../../../../data/models/DTOs/Clothes/clothe-dto';
@@ -12,7 +13,7 @@ import { ToastrService } from 'ngx-toastr';
 @Component({
   selector: 'app-clothes',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, CreateClotheComponent],
   templateUrl: './clothes.component.html',
   styleUrl: './clothes.component.scss',
 })
@@ -77,7 +78,6 @@ export class ClothesComponent implements OnInit {
       this.currentPage,
       this.itemsPerPage
     ).then(res => {
-      console.log('Category Filter: ' + this.filterCategory);
       this.clothes = res.data?.items ?? [];
       this.totalCount = res.data?.totalCount ?? 0;
       this.totalPages = res.data?.totalPages ?? 0;
@@ -165,6 +165,12 @@ export class ClothesComponent implements OnInit {
   // ============================================================
   openAddModal(): void              { this.showAddModal = true; }
   closeAddModal(): void             { this.showAddModal = false; }
+
+  onClotheAdded() {
+    this.closeAddModal();
+    this.getAllClothes();
+    this.toastr.success("Clothe added successfully.");
+  }
 
   openEditModal(c: ClotheDTO): void    { this.clotheToEdit = c; }
   closeEditModal(): void               { this.clotheToEdit = null; }

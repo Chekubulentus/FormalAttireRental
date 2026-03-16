@@ -39,7 +39,7 @@ namespace RentalAttireBackend.Controllers.ClothesManagerController
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateClotheAsync(CreateClotheCommand command)
+        public async Task<IActionResult> CreateClotheAsync([FromForm] CreateClotheCommand command)
         {
             var result = await _mediator.Send(command);
 
