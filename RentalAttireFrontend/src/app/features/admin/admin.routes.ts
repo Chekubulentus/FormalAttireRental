@@ -30,6 +30,12 @@ export const ADMIN_ROUTES: Routes = [
         loadComponent: () => {
           return import('./clothes/clothes/clothes.component').then(m => m.ClothesComponent);
         }
+      },
+      {
+        path: 'category',
+        loadComponent: () => {
+          return import('./categories/category/category.component').then(m => m.CategoryComponent);
+        }
       }
     ]
   }

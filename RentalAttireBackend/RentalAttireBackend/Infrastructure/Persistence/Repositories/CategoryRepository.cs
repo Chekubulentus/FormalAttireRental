@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration.EnvironmentVariables;
 using RentalAttireBackend.Application.Common.Models;
+using RentalAttireBackend.Application.Employees.Queries.SearchEmployee;
 using RentalAttireBackend.Domain.Entities;
 using RentalAttireBackend.Domain.Interfaces;
 using RentalAttireBackend.Infrastructure.Persistence.DataContext;
@@ -23,8 +24,15 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
             string categoryName, 
             CancellationToken cancellationToken)
         {
-            return await _context.Categories.AnyAsync(c => c.CategoryCode.ToLower().Equals(categoryCode.ToLower()) ||
-            c.CategoryName.ToLower().Equals(categoryName.ToLower()) && c.IsActive);
+            return await _context.Categories
+                .AnyAsync(c =>
+                    (
+                    c.CategoryCode.ToLower().Equals(categoryCode.ToLower()) ||
+                    c.CategoryName.ToLower().Equals(categoryName.ToLower())
+                    )
+                    &&
+                    c.IsActive
+                );
         }
 
         public async Task<bool> CreateCategoryAsync(Category category, CancellationToken cancellationToken)
@@ -34,8 +42,7 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
         }
 
         public async Task<PagedResult<Category>> FilterCategoriesAsync(
-            string categoryCode, 
-            string categoryName, 
+            string searchQuery,
             PaginationParams paginationParams,
             CancellationToken cancellationToken)
         {
@@ -43,13 +50,13 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
                 .AsNoTracking()
                 .Where(c =>
                     (
-                    string.IsNullOrEmpty(categoryCode) ||
-                    c.CategoryCode.ToLower().Contains(categoryCode.ToLower())
+                    string.IsNullOrEmpty(searchQuery) ||
+                    c.CategoryCode.ToLower().Contains(searchQuery.ToLower())
                     )
                     &&
                     (
-                    string.IsNullOrEmpty(categoryName) ||
-                    c.CategoryName.ToLower().Contains(categoryName.ToLower())
+                    string.IsNullOrEmpty(searchQuery) ||
+                    c.CategoryName.ToLower().Contains(searchQuery.ToLower())
                     )
                     &&
                     c.IsActive

@@ -43,8 +43,7 @@ namespace RentalAttireBackend.Controllers.ClothesManagerController
 
         [HttpGet("filter-categories")]
         public async Task<IActionResult> FilterCategoriesAsync(
-            string? categoryCode,
-            string? categoryName,
+            string? searchQuery,
             int currentPage,
             int itemsPerPage
             )
@@ -57,8 +56,7 @@ namespace RentalAttireBackend.Controllers.ClothesManagerController
 
             var query = new FilterCategoriesQuery
             {
-                CategoryCode = categoryCode,
-                CategoryName = categoryName,
+                SearchQuery = searchQuery,
                 PaginationParams = paginationParams
             };
 

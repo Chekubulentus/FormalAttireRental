@@ -7,9 +7,8 @@ namespace RentalAttireBackend.Application.Categories.Queries.FilterCategories
 {
     public class FilterCategoriesQuery : IRequest<Result<PagedResult<CategoryDTO>>>
     {
-        public string? CategoryCode { get; set; } 
-        public string? CategoryName { get; set; }
-        [Required]
+        public string? SearchQuery { get; set; }
+        [Required] 
         public PaginationParams PaginationParams { get; set; } = new();
     }
 }

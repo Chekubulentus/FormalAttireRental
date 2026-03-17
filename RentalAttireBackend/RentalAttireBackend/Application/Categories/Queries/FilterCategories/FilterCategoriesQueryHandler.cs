@@ -32,8 +32,7 @@ namespace RentalAttireBackend.Application.Categories.Queries.FilterCategories
                 return Result<PagedResult<CategoryDTO>>.Failure("Items per page is zero.");
 
             var categories = await _categoryRepo.FilterCategoriesAsync(
-                request.CategoryCode,
-                request.CategoryName,
+                request.SearchQuery,
                 request.PaginationParams,
                 cancellationToken
                 );

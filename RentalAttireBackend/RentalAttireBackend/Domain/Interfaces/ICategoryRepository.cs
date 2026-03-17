@@ -29,8 +29,7 @@ namespace RentalAttireBackend.Domain.Interfaces
             );
 
         public Task<PagedResult<Category>> FilterCategoriesAsync(
-            string categoryCode,
-            string categoryName,
+            string searchQuery,
             PaginationParams paginationParams,
             CancellationToken cancellationToken
             );

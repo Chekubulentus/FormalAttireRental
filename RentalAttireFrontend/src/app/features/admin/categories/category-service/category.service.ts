@@ -1,0 +1,56 @@
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { BaseApiUrl } from '../../../../../environments/base-api-url';
+import { Result } from '../../../../data/models/Results/result';
+import { Category } from '../../../../data/models/DTOs/Category/category';
+import { filter, firstValueFrom } from 'rxjs';
+import { PagedResult } from '../../../../data/models/Results/pagedResult';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class CategoryService {
+  private categoryUrl = `${BaseApiUrl}/Category`;
+
+  constructor(
+    private httpClient : HttpClient
+  ) { }
+
+  async getCategoryByIdAsync(
+    categoryId : number
+  ) : Promise<Result<Category>> {
+    try {
+      var result = await firstValueFrom(
+        this.httpClient.get<Result<Category>>(
+          `${this.categoryUrl}/${categoryId}`
+        )
+      );
+
+      return result;
+    }catch(err : any) {
+      return Result.failure(err.error);
+    }
+  }
+
+  async filterCategoriesAsync(
+    searchQuery : string,
+    currentPage : number,
+    itemsPerPage : number
+  ) : Promise<Result<PagedResult<Category>>> 
+  {
+    const filters =  {
+      searchQuery,
+      currentPage,
+      itemsPerPage
+    };
+
+    var result = await firstValueFrom(
+      this.httpClient.get<Result<PagedResult<Category>>>(
+        `${this.categoryUrl}/filter-categories`, {params: filters}
+      )
+    );
+
+    return result;
+  }
+
+}
