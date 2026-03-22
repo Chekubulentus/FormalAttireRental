@@ -40,6 +40,10 @@ namespace RentalAttireBackend.Domain.Interfaces
             CancellationToken cancellationToken
             );
 
+        public Task<Category?> GetCategoryByIdNoTrackingAsync(
+            int id,
+            CancellationToken cancellationToken
+            );
         #endregion
 
         #region Commands

@@ -3,23 +3,24 @@ import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CategoryService } from '../category-service/category.service';
 import { ToastrService } from 'ngx-toastr';
-
+import { ArchiveConfirmationComponent } from '../../../../shared/components/archive-confirmation/archive-confirmation/archive-confirmation.component';
+import { Category } from '../../../../data/models/DTOs/Category/category';
+import { ArchiveCategoryCommand } from '../../../../data/models/DTOs/Category/archive-category-command';
+import { UserService } from '../../../../core/services/user-service/user.service';
+import { UserViewModel } from '../../../../data/models/DTOs/Users/user-view-model';
 // TODO: replace with your actual imports
 // import { Category } from '../../../../data/models/DTOs/Categories/category';
 // import { CategoryService } from '../category-service/category.service';
 // import { AppToastrService } from '../../../../core/services/toastr-service/app-toastr.service';
 
-export class Category {
-  id: number = 0;
-  categoryCode: string = '';
-  categoryName: string = '';
-  description: string = '';
-}
-
 @Component({
   selector: 'app-category',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [
+    CommonModule, 
+    FormsModule,
+    ArchiveConfirmationComponent
+  ],
   templateUrl: './category.component.html',
   styleUrl: './category.component.scss',
 })
@@ -31,6 +32,7 @@ export class CategoryComponent implements OnInit {
   isLoading    = false;
   isSubmitting = false;
   categories: Category[] = [];
+  currentUser : UserViewModel | undefined;
 
   // ── Inline create form ─────────────────────────────────────
   // showCreateRow flips to true when the user clicks "+ Add Category"
@@ -43,11 +45,11 @@ export class CategoryComponent implements OnInit {
   categoryToEdit: Category | null = null;
 
   // ── Archive confirmation ───────────────────────────────────
-  categoryToArchive: Category | null = null;
+  categoryToArchive: Category | undefined = undefined;
   isArchiving = false;
 
   // ── Search & Pagination ────────────────────────────────────
-  searchQuery  = '';
+  searchQuery  : string = '';
   currentPage  = 1;
   itemsPerPage = 10;
   totalCount   = 0;
@@ -60,7 +62,8 @@ export class CategoryComponent implements OnInit {
 
   constructor(
     private categoryService : CategoryService,
-    private toastrService : ToastrService
+    private toastrService : ToastrService,
+    private userService : UserService
   ) {}
 
   ngOnInit(): void {
@@ -72,21 +75,36 @@ export class CategoryComponent implements OnInit {
   // ============================================================
   getAllCategories(): void {
     this.isLoading = true;
-
     this.categoryService.filterCategoriesAsync(
       this.searchQuery,
       this.currentPage,
       this.itemsPerPage
     ).then(res => {
+      console.log(`Searching for: ${this.searchQuery}`);
       if(!res.isSuccess)
         console.log(`${res.errorMessage ?? 'Categories not found.'}`);
       this.categories = res.data?.items ?? [];
+      this.totalCount = res.data?.totalCount ?? 1;
+      this.totalPages = res.data?.totalPages ?? 1;
     }).catch(err => {
       console.log(`${err.error}`);
-      this.toastrService.error(JSON.stringify(err.error));
     }).finally(() => {
       this.isLoading = false;
     });
+  }
+
+  getCurrentUser() {
+    this.isLoading = true;
+    this.userService.getCurrentUserViewModel()
+    .then(res => {
+      if(!res.isSuccess)
+        this.toastrService.error(res.errorMessage ?? 'Current user could not be fetched.');
+      this.toastrService.success(res.successMessage);
+    }).catch(err => {
+      this.toastrService.error(err.error);
+    }).finally(() => {
+      this.isLoading = false;
+    })
   }
 
   // ============================================================
@@ -178,26 +196,30 @@ export class CategoryComponent implements OnInit {
   }
 
   closeArchiveModal(): void {
-    this.categoryToArchive = null;
+    this.categoryToArchive = undefined;
   }
 
   onArchiveConfirmed(): void {
     if (!this.categoryToArchive) return;
     this.isArchiving = true;
-    // TODO:
-    // this.categoryService.archiveCategoryAsync(this.categoryToArchive.id)
-    //   .then(res => {
-    //     if (!res.isSuccess) {
-    //       this.toastr.error('Failed to archive category.');
-    //       return;
-    //     }
-    //     this.toastr.success('Category successfully archived.');
-    //     this.getAllCategories();
-    //   })
-    //   .catch(err => console.error(err))
-    //   .finally(() => { this.isArchiving = false; this.closeArchiveModal(); });
-    this.isArchiving = false;
-    this.closeArchiveModal();
+
+    const payload : ArchiveCategoryCommand = {
+      id: this.categoryToArchive.id,
+      performedBy : this.currentUser?.fullName ?? '',
+      performedById : this.currentUser?.id ?? 0
+    };
+
+    this.categoryService.archiveCategoryByIdAsync(payload)
+    .then(res => {
+      if(!res.isSuccess)
+        this.toastrService.error(res.errorMessage ?? 'Category could not be archived.');
+      this.toastrService.success(res.successMessage);
+    }).catch(err => {
+      this.toastrService.error(err.error);
+    }).finally(() => {
+      this.isArchiving = false;
+      this.closeArchiveModal();
+    });
   }
 
   // ============================================================

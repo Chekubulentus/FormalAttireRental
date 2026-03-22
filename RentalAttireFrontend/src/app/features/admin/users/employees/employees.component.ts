@@ -131,6 +131,11 @@ export class EmployeesComponent implements OnInit {
     this.toastr.success('Employee successfully updated.');
   }
 
+  closeCreateForm(newEmployee : EmployeeDTO) {
+    this.showModal = false;
+    this.getAllEmployees();
+  }
+
   get rangeStart(): number {
     return Math.min((this.currentPage - 1) * this.itemsPerPage + 1, this.totalCount);
   }

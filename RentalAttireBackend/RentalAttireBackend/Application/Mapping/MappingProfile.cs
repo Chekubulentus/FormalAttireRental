@@ -2,6 +2,7 @@
 using Npgsql.EntityFrameworkCore.PostgreSQL.Infrastructure.Internal;
 using RentalAttireBackend.Application.AuditLogs.DTOs;
 using RentalAttireBackend.Application.Categories.Commands.CreateCategory;
+using RentalAttireBackend.Application.Categories.Commands.UpdateCategory;
 using RentalAttireBackend.Application.Categories.DTOs;
 using RentalAttireBackend.Application.Clothes.Commands.CreateClothe;
 using RentalAttireBackend.Application.Clothes.Commands.UpdateClothe;
@@ -212,6 +213,18 @@ namespace RentalAttireBackend.Application.Mapping
             CreateMap<CreateCategoryCommand, Category>()
                 .ForMember(dest => dest.Id,
                 opt => opt.Ignore());
+            #endregion
+
+            #region UpdateCategoryCommand -> Category
+            CreateMap<UpdateCategoryCommand, Category>()
+                .ForMember(dest => dest.Id,
+                opt => opt.Ignore())
+                .ForMember(dest => dest.CategoryCode,
+                opt => opt.MapFrom(src => src.CategoryCode))
+                .ForMember(dest => dest.CategoryName,
+                opt => opt.MapFrom(src => src.CategoryName))
+                .ForMember(dest => dest.Description,
+                opt => opt.MapFrom(src => src.Description));
             #endregion
         }
     }

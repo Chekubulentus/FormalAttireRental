@@ -494,3 +494,24 @@ $green-border:rgba(39, 174, 96, 0.3);
   color: $text-muted;
   padding: 0 0.2rem;
 }
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(26, 25, 23, 0.55);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2147483647;
+  padding: 1.5rem;
+  box-sizing: border-box;
+  animation: fadeIn 0.2s ease both;
+  border-radius: 1rem;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}

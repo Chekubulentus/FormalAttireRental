@@ -5,52 +5,67 @@ import { Result } from '../../../../data/models/Results/result';
 import { Category } from '../../../../data/models/DTOs/Category/category';
 import { filter, firstValueFrom } from 'rxjs';
 import { PagedResult } from '../../../../data/models/Results/pagedResult';
+import { ArchiveCategoryCommand } from '../../../../data/models/DTOs/Category/archive-category-command';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CategoryService {
   private categoryUrl = `${BaseApiUrl}/Category`;
 
-  constructor(
-    private httpClient : HttpClient
-  ) { }
+  constructor(private httpClient: HttpClient) {}
 
-  async getCategoryByIdAsync(
-    categoryId : number
-  ) : Promise<Result<Category>> {
+  async getCategoryByIdAsync(categoryId: number): Promise<Result<Category>> {
     try {
       var result = await firstValueFrom(
         this.httpClient.get<Result<Category>>(
-          `${this.categoryUrl}/${categoryId}`
-        )
+          `${this.categoryUrl}/${categoryId}`,
+        ),
+      );
+
+      return result;
+    } catch (err: any) {
+      return Result.failure(err.error);
+    }
+  }
+
+  async filterCategoriesAsync(
+    searchQuery: string,
+    currentPage: number,
+    itemsPerPage: number,
+  ): Promise<Result<PagedResult<Category>>> {
+    const filters = {
+      searchQuery,
+      currentPage,
+      itemsPerPage,
+    };
+
+    try {
+      var result = await firstValueFrom(
+        this.httpClient.get<Result<PagedResult<Category>>>(
+          `${this.categoryUrl}/filter-categories`,
+          { params: filters },
+        ),
+      );
+
+      return result;
+    } catch (eryy: any) {
+      return Result.failure(eryy.error);
+    }
+  }
+
+  async archiveCategoryByIdAsync(
+    commnad : ArchiveCategoryCommand
+  ) : Promise<Result<boolean>> {
+    try {
+      var result = await firstValueFrom(
+        this.httpClient.patch<Result<boolean>>(`${this.categoryUrl}`, { commnad})
       );
 
       return result;
     }catch(err : any) {
       return Result.failure(err.error);
     }
-  }
-
-  async filterCategoriesAsync(
-    searchQuery : string,
-    currentPage : number,
-    itemsPerPage : number
-  ) : Promise<Result<PagedResult<Category>>> 
-  {
-    const filters =  {
-      searchQuery,
-      currentPage,
-      itemsPerPage
-    };
-
-    var result = await firstValueFrom(
-      this.httpClient.get<Result<PagedResult<Category>>>(
-        `${this.categoryUrl}/filter-categories`, {params: filters}
-      )
-    );
-
-    return result;
   }
 
 }

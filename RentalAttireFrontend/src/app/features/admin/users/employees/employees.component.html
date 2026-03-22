@@ -149,7 +149,7 @@
   <app-add-employee
     *ngIf="showModal"
     (closed)="showModal = false"
-    (submitted)="onEmployeeSubmitted($event)">
+    (submitted)="closeCreateForm($event)">
   </app-add-employee>
 </div>
 

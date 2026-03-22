@@ -169,6 +169,8 @@ export class AddEmployeeComponent {
   // closeAll = false means the user just went back → only close AddUser
   closeUserFormModal(closeAll: boolean): void {
     this.showUserModal = false;
-    if (closeAll) this.close();
+    if (closeAll) {
+      this.submitted.emit(this.form);
+    }
   }
 }

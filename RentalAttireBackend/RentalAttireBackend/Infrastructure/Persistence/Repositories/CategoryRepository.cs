@@ -51,11 +51,7 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
                 .Where(c =>
                     (
                     string.IsNullOrEmpty(searchQuery) ||
-                    c.CategoryCode.ToLower().Contains(searchQuery.ToLower())
-                    )
-                    &&
-                    (
-                    string.IsNullOrEmpty(searchQuery) ||
+                    c.CategoryCode.ToLower().Contains(searchQuery.ToLower()) ||
                     c.CategoryName.ToLower().Contains(searchQuery.ToLower())
                     )
                     &&
@@ -101,6 +97,13 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
         public async Task<Category?> GetCategoryByIdAsync(int id, CancellationToken cancellationToken)
         {
             return await _context.Categories
+                .FirstOrDefaultAsync(c => c.Id == id, cancellationToken);
+        }
+
+        public async Task<Category?> GetCategoryByIdNoTrackingAsync(int id, CancellationToken cancellationToken)
+        {
+            return await _context.Categories
+                .AsNoTracking()
                 .FirstOrDefaultAsync(c => c.Id == id, cancellationToken);
         }
 

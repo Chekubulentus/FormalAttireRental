@@ -34,7 +34,7 @@ namespace RentalAttireBackend.Application.Categories.Commands.CreateCategory
                 return Result<bool>.Failure("Invalid request.");
 
             if (request.PerformedBy is null || request.PerformedById == 0)
-                return Result<bool>.Failure("Employee that created the transaction cannot be audited.");
+                return Result<bool>.Failure("Employee responsible for this transaction could not be identified.");
 
             try
             {

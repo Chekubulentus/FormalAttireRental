@@ -215,4 +215,14 @@
     </app-archive-confirmation>
   </div> -->
 
+  <div class="modal-overlay" *ngIf="categoryToArchive">
+    <app-archive-confirmation
+    [recordName]="categoryToArchive.categoryName"
+    [recordType]="'Category'"
+    [isArchiving]="isArchiving"
+    (cancelled)="closeArchiveModal()"
+    (confirmed)="onArchiveConfirmed()"
+    ></app-archive-confirmation>
+  </div>
+
 </div>
