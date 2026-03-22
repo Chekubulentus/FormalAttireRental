@@ -6,6 +6,7 @@ import { Category } from '../../../../data/models/DTOs/Category/category';
 import { filter, firstValueFrom } from 'rxjs';
 import { PagedResult } from '../../../../data/models/Results/pagedResult';
 import { ArchiveCategoryCommand } from '../../../../data/models/DTOs/Category/archive-category-command';
+import { CreateCategoryCommand } from '../../../../data/models/DTOs/Category/create-category';
 
 @Injectable({
   providedIn: 'root',
@@ -68,4 +69,17 @@ export class CategoryService {
     }
   }
 
+  async createCategoryAsync(
+    command : CreateCategoryCommand
+  ) : Promise<Result<boolean>> {
+    try {
+      var result = await firstValueFrom(
+        this.httpClient.post<Result<boolean>>(`${this.categoryUrl}`, command)
+      );
+
+      return result;
+    }catch(err : any) {
+      return Result.failure(err.error);
+    }
+  }
 }

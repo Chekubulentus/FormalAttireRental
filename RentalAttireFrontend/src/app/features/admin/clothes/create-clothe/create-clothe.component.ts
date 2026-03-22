@@ -257,7 +257,6 @@ export class CreateClotheComponent implements OnInit {
     .then(res => {
       if(!res.isSuccess) 
         this.toastrService.error(res.errorMessage ?? "Failed to create record.");
-      this.toastrService.success(res.successMessage);
       this.submitted.emit();
       this.close();
     }).catch(err => {

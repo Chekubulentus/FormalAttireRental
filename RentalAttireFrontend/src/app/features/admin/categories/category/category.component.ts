@@ -8,6 +8,8 @@ import { Category } from '../../../../data/models/DTOs/Category/category';
 import { ArchiveCategoryCommand } from '../../../../data/models/DTOs/Category/archive-category-command';
 import { UserService } from '../../../../core/services/user-service/user.service';
 import { UserViewModel } from '../../../../data/models/DTOs/Users/user-view-model';
+import { CreateCategoryCommand } from '../../../../data/models/DTOs/Category/create-category';
+import { EditCategoryComponent } from '../edit-category/edit-category.component';
 // TODO: replace with your actual imports
 // import { Category } from '../../../../data/models/DTOs/Categories/category';
 // import { CategoryService } from '../category-service/category.service';
@@ -19,7 +21,8 @@ import { UserViewModel } from '../../../../data/models/DTOs/Users/user-view-mode
   imports: [
     CommonModule, 
     FormsModule,
-    ArchiveConfirmationComponent
+    ArchiveConfirmationComponent,
+    EditCategoryComponent
   ],
   templateUrl: './category.component.html',
   styleUrl: './category.component.scss',
@@ -68,6 +71,7 @@ export class CategoryComponent implements OnInit {
 
   ngOnInit(): void {
     this.getAllCategories();
+    this.getCurrentUser();
   }
 
   // ============================================================
@@ -99,11 +103,12 @@ export class CategoryComponent implements OnInit {
     .then(res => {
       if(!res.isSuccess)
         this.toastrService.error(res.errorMessage ?? 'Current user could not be fetched.');
-      this.toastrService.success(res.successMessage);
+      this.currentUser = res.data ?? undefined;
     }).catch(err => {
       this.toastrService.error(err.error);
     }).finally(() => {
       this.isLoading = false;
+      console.log(`Current User: ${JSON.stringify(this.currentUser)}`);
     })
   }
 
@@ -152,21 +157,28 @@ export class CategoryComponent implements OnInit {
     if (!this.createIsValid) return;
 
     this.isSubmitting = true;
-    // TODO:
-    // this.categoryService.createCategoryAsync(this.newCategory)
-    //   .then(res => {
-    //     if (!res.isSuccess) {
-    //       this.toastr.error(res.errorMessage ?? 'Failed to create category.');
-    //       return;
-    //     }
-    //     this.toastr.success('Category successfully created.');
-    //     this.cancelCreate();
-    //     this.getAllCategories();
-    //   })
-    //   .catch(err => console.error(err))
-    //   .finally(() => this.isSubmitting = false);
-    this.isSubmitting = false;
-    this.cancelCreate();
+
+    const payload : CreateCategoryCommand = {
+      id : this.newCategory.id,
+      categoryCode : this.newCategory.categoryCode,
+      categoryName : this.newCategory.categoryName,
+      description : this.newCategory.description,
+      performedBy : this.currentUser?.fullName ?? '',
+      performedById : this.currentUser?.id ?? 0
+    };
+    
+    this.categoryService.createCategoryAsync(payload)
+    .then(res => {
+      if(!res.isSuccess)
+        this.toastrService.error(res.errorMessage ?? 'Category cannot be created.');
+      this.getAllCategories();
+      this.toastrService.success(res.successMessage);
+    }).catch(err => {
+      this.toastrService.error(err.error);
+    }).finally(() =>  {
+      this.isLoading = false;
+      this.cancelCreate();
+    });
   }
 
   // ============================================================

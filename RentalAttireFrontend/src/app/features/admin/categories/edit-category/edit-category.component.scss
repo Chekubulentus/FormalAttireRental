@@ -1,0 +1,297 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap');
+
+// ============================================================
+// Design Tokens
+// ============================================================
+$surface:      #ffffff;
+$bg:           #f9f7f5;
+$border:       #e4ddd6;
+$gold:         #a07840;
+$gold-dim:     rgba(160, 120, 64, 0.08);
+$gold-border:  rgba(160, 120, 64, 0.25);
+$text:         #1a1917;
+$text-muted:   #9e9590;
+$text-soft:    #6b6560;
+$red:          #c0392b;
+$red-bg:       rgba(192, 57, 43, 0.06);
+$red-border:   rgba(192, 57, 43, 0.4);
+$green:        #27ae60;
+
+
+// ============================================================
+// Host — centers the card inside the overlay
+// ============================================================
+:host {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+
+// ============================================================
+// Modal Card
+// ============================================================
+.modal-card {
+  background: $surface;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 480px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.14);
+  animation: slideUp 0.22s ease;
+  font-family: 'DM Sans', sans-serif;
+  overflow: hidden;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+
+// ============================================================
+// Header
+// ============================================================
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid $border;
+  flex-shrink: 0;
+
+  &__left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+}
+
+.modal-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: $gold-dim;
+  border: 1px solid $gold-border;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: $gold;
+
+  svg { width: 16px; height: 16px; }
+}
+
+.modal-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.15rem;
+  color: $text;
+  margin: 0 0 2px;
+}
+
+.modal-subtitle {
+  font-size: 0.78rem;
+  color: $text-muted;
+  margin: 0;
+}
+
+.btn-close {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid $border;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $text-muted;
+  transition: background 0.15s, color 0.15s;
+  flex-shrink: 0;
+
+  svg { width: 14px; height: 14px; }
+
+  &:hover {
+    background: $bg;
+    color: $text;
+  }
+}
+
+
+// ============================================================
+// Category Badge — shows original code + name before editing
+// ============================================================
+.category-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 24px;
+  background: $bg;
+  border-bottom: 1px solid $border;
+  flex-shrink: 0;
+}
+
+.badge-code {
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: $gold;
+  background: $gold-dim;
+  border: 1px solid $gold-border;
+  border-radius: 6px;
+  padding: 3px 8px;
+}
+
+.badge-name {
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: $text-soft;
+}
+
+
+// ============================================================
+// Body — scrollable
+// ============================================================
+.modal-body {
+  padding: 20px 24px;
+  overflow-y: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+
+// ============================================================
+// Fields
+// ============================================================
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  &__label {
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: $text-soft;
+    letter-spacing: 0.02em;
+  }
+
+  &__input {
+    height: 38px;
+    padding: 0 12px;
+    border: 1.5px solid $border;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.88rem;
+    color: $text;
+    background: $surface;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    outline: none;
+
+    &:focus {
+      border-color: $gold;
+      box-shadow: 0 0 0 3px $gold-dim;
+    }
+  }
+
+  &__textarea {
+    height: auto;
+    padding: 10px 12px;
+    resize: vertical;
+    line-height: 1.5;
+  }
+
+  &__error {
+    font-size: 0.74rem;
+    color: $red;
+  }
+
+  // Invalid state
+  &.invalid {
+    .field__input {
+      border-color: $red-border;
+      background: $red-bg;
+
+      &:focus {
+        border-color: $red;
+        box-shadow: 0 0 0 3px rgba(192, 57, 43, 0.08);
+      }
+    }
+  }
+}
+
+.required { color: $red; margin-left: 2px; }
+.optional  { color: $text-muted; font-weight: 400; }
+
+
+// ============================================================
+// Footer
+// ============================================================
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 16px 24px;
+  border-top: 1px solid $border;
+  flex-shrink: 0;
+}
+
+.btn-cancel {
+  height: 36px;
+  padding: 0 18px;
+  border-radius: 8px;
+  border: 1.5px solid $border;
+  background: transparent;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: $text-soft;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+
+  &:hover:not(:disabled) {
+    background: $bg;
+    color: $text;
+  }
+
+  &:disabled { opacity: 0.5; cursor: not-allowed; }
+}
+
+.btn-save {
+  height: 36px;
+  padding: 0 20px;
+  border-radius: 8px;
+  border: none;
+  background: $green;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: opacity 0.15s;
+
+  &:hover:not(:disabled) { opacity: 0.88; }
+  &:disabled { opacity: 0.55; cursor: not-allowed; }
+}
+
+.btn-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: inline-block;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

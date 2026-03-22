@@ -6,6 +6,7 @@ import { firstValueFrom } from 'rxjs';
 import { BaseApiUrl } from '../../../../environments/base-api-url';
 import { BaseRouteReuseStrategy } from '@angular/router';
 import { AuthService } from '../auth-service/auth.service';
+import { CreateCategoryCommand } from '../../../data/models/DTOs/Category/create-category';
 
 @Injectable({
   providedIn: 'root',
