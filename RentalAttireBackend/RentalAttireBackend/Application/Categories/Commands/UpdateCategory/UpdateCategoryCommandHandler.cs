@@ -24,6 +24,7 @@ namespace RentalAttireBackend.Application.Categories.Commands.UpdateCategory
             _transaction = transaction;
             _categoryRepo = categoryRepo;
             _mapper = mapper;
+            _auditService = auditService;
         }
 
         public async Task<Result<bool>> Handle(UpdateCategoryCommand request, CancellationToken cancellationToken)
@@ -36,8 +37,6 @@ namespace RentalAttireBackend.Application.Categories.Commands.UpdateCategory
             {
                 await _transaction.BeginTransactionAsync(cancellationToken);
 
-
-
                 var category = await _categoryRepo.GetCategoryByIdAsync(request.Id, cancellationToken);
 
                 if (category is null)
@@ -45,7 +44,7 @@ namespace RentalAttireBackend.Application.Categories.Commands.UpdateCategory
 
                 var oldCategoryDetails = await _categoryRepo.GetCategoryByIdNoTrackingAsync(request.Id, cancellationToken);
 
-                _mapper.Map<Category>(request);
+                _mapper.Map(request, category);
 
                 var updateCategory = await _categoryRepo.UpdateCategoryAsync(category, cancellationToken);
 
@@ -69,6 +68,7 @@ namespace RentalAttireBackend.Application.Categories.Commands.UpdateCategory
                     return Result<bool>.Failure("Transaction could not be audited.");
                 }
 
+                await _transaction.CommitTransacionAsync(cancellationToken);
                 return Result<bool>.SuccessWithMessage("Category successfully updated.");
             }catch(Exception e)
             {

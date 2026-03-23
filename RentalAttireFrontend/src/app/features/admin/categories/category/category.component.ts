@@ -191,13 +191,15 @@ export class CategoryComponent implements OnInit {
 
   closeEditModal(): void {
     this.categoryToEdit = null;
+    this.toastrService.error('Failed to update category.');
   }
 
   onCategoryUpdated(updated: Category): void {
     const index = this.categories.findIndex(c => c.id === updated.id);
     if (index !== -1) this.categories[index] = updated;
-    this.closeEditModal();
-    // TODO: this.toastr.success('Category successfully updated.');
+
+    this.categoryToEdit = null;
+    this.toastrService.success('Category successfully updated.');
   }
 
   // ============================================================

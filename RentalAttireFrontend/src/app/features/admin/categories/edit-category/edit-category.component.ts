@@ -2,6 +2,10 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Category } from '../../../../data/models/DTOs/Category/category';
+import { CategoryService } from '../category-service/category.service';
+import { UpdateCategoryCommand } from '../../../../data/models/DTOs/Category/update-category';
+import { UserViewModel } from '../../../../data/models/DTOs/Users/user-view-model';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-edit-category',
@@ -17,6 +21,7 @@ export class EditCategoryComponent implements OnInit {
   // ============================================================
 
   @Input() category: Category = new Category();
+  @Input() currentUser : UserViewModel | undefined;
 
   @Output() closed  = new EventEmitter<void>();
   @Output() updated = new EventEmitter<Category>();
@@ -31,6 +36,11 @@ export class EditCategoryComponent implements OnInit {
 
   // Local copy — edits don't affect the parent list until saved
   form: Category = new Category();
+
+  constructor(
+    private categoryService : CategoryService,
+    private toastrService : ToastrService
+  ) {}
 
   ngOnInit(): void {
     this.form = { ...this.category };
@@ -74,23 +84,27 @@ export class EditCategoryComponent implements OnInit {
     if (!this.isValid) return;
 
     this.isSaving = true;
-    // TODO: wire CategoryService.updateCategoryAsync(this.form) here
-    // this.categoryService.updateCategoryAsync(this.form)
-    //   .then(res => {
-    //     if (!res.isSuccess) {
-    //       this.toastr.error(res.errorMessage ?? 'Failed to update category.');
-    //       return;
-    //     }
-    //     this.toastr.success('Category successfully updated.');
-    //     this.updated.emit(this.form);
-    //     this.close();
-    //   })
-    //   .catch(err => console.error(err))
-    //   .finally(() => this.isSaving = false);
 
-    // ↓ Remove once API is wired in
-    this.updated.emit(this.form);
-    this.isSaving = false;
-    this.close();
+    const payload : UpdateCategoryCommand = {
+      id : this.form.id,
+      categoryCode : this.form.categoryCode,
+      categoryName : this.form.categoryName,
+      description : this.form.description,
+      performedBy : this.currentUser?.fullName ?? '',
+      performedById : this.currentUser?.id ?? 0
+    };
+
+    this.categoryService.updateCategoryAsync(
+      payload
+    ).then(res => {
+      if(!res.isSuccess) 
+        this.toastrService.error(res.errorMessage);
+      this.updated.emit(this.form);
+    }).catch(err => {
+      this.toastrService.error(err.error);
+      this.close();
+    }).finally(() => {
+      this.isSaving = false;
+    });
   }
 }

@@ -7,6 +7,7 @@ import { filter, firstValueFrom } from 'rxjs';
 import { PagedResult } from '../../../../data/models/Results/pagedResult';
 import { ArchiveCategoryCommand } from '../../../../data/models/DTOs/Category/archive-category-command';
 import { CreateCategoryCommand } from '../../../../data/models/DTOs/Category/create-category';
+import { UpdateCategoryCommand } from '../../../../data/models/DTOs/Category/update-category';
 
 @Injectable({
   providedIn: 'root',
@@ -82,4 +83,19 @@ export class CategoryService {
       return Result.failure(err.error);
     }
   }
+
+  async updateCategoryAsync(
+    command : UpdateCategoryCommand
+  ) : Promise<Result<boolean>> {
+    try {
+      var result = await firstValueFrom(
+        this.httpClient.put<Result<boolean>>(`${this.categoryUrl}`, command)
+      );
+
+      return result;
+    }catch(err : any) {
+      return Result.failure(err.error);
+    }
+  }
+
 }

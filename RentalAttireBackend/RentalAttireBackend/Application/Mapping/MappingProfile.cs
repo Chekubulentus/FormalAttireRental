@@ -224,7 +224,11 @@ namespace RentalAttireBackend.Application.Mapping
                 .ForMember(dest => dest.CategoryName,
                 opt => opt.MapFrom(src => src.CategoryName))
                 .ForMember(dest => dest.Description,
-                opt => opt.MapFrom(src => src.Description));
+                opt => opt.MapFrom(src => src.Description))
+                .ForMember(dest => dest.UpdatedAt,
+                opt => opt.MapFrom(src => DateTime.UtcNow))
+                .ForMember(dest => dest.UpdatedBy,
+                opt => opt.MapFrom(src => src.PerformedBy));
             #endregion
         }
     }

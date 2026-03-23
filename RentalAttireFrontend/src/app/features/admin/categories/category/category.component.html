@@ -208,6 +208,7 @@
     <app-edit-category
     *ngIf="this.categoryToEdit"
     [category]="this.categoryToEdit"
+    [currentUser]="this.currentUser"
     (closed)="closeEditModal()"
     (updated)="onCategoryUpdated($event)"
     ></app-edit-category>
