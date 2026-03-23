@@ -7,8 +7,7 @@ namespace RentalAttireBackend.Domain.Interfaces
     public interface ICategoryRepository
     {
         #region Queries
-        public Task<PagedResult<Category>> GetAllCategoriesAsync(
-            PaginationParams paginationParams,
+        public Task<List<Category>> GetAllCategoriesAsync(
             CancellationToken cancellationToken
             );
 

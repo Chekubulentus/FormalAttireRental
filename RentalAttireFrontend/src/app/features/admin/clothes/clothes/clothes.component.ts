@@ -5,6 +5,10 @@ import { ClotheDTO } from '../../../../data/models/DTOs/Clothes/clothes';
 import { ClotheService } from '../clothe-service/clothe.service';
 import { ToastrService } from 'ngx-toastr';
 import { CreateClotheComponent } from '../create-clothe/create-clothe.component';
+import { Category } from '../../../../data/models/DTOs/Category/category';
+import { CategoryComponent } from '../../categories/category/category.component';
+import { CategoryService } from '../../categories/category-service/category.service';
+import { ViewClotheComponent } from '../view-clothe/view-clothe.component';
 
 // TODO: import your ClotheDTO and ClotheService
 // import { ClotheDTO } from '../../../../data/models/DTOs/Clothes/clothe-dto';
@@ -13,7 +17,12 @@ import { CreateClotheComponent } from '../create-clothe/create-clothe.component'
 @Component({
   selector: 'app-clothes',
   standalone: true,
-  imports: [CommonModule, FormsModule, CreateClotheComponent],
+  imports: [
+    CommonModule, 
+    FormsModule, 
+    CreateClotheComponent,
+    ViewClotheComponent
+  ],
   templateUrl: './clothes.component.html',
   styleUrl: './clothes.component.scss',
 })
@@ -44,10 +53,7 @@ export class ClothesComponent implements OnInit {
   clotheToView: ClotheDTO | null = null;
 
   // ── Dropdown options ───────────────────────────────────────
-  categories: string[] = [
-    'Barong', 'Gown', 'Suit', 'Groom', 'Bridesmaid',
-    'Debut', 'Costume', 'Casual', 'Others',
-  ];
+  categories : Category[] = [];
 
   genders: string[] = ['Male', 'Female', 'Unisex'];
 
@@ -57,11 +63,13 @@ export class ClothesComponent implements OnInit {
 
   constructor (
     private clotheService : ClotheService,
-    private toastr : ToastrService
+    private toastr : ToastrService,
+    private categoryService : CategoryService
   ) {}
 
   ngOnInit(): void {
     this.getAllClothes();
+    this.getAllCategories();
   }
 
   // ============================================================
@@ -84,6 +92,20 @@ export class ClothesComponent implements OnInit {
     }).catch(err => {
       this.toastr.error(err.error);
     }).finally(() => this.isLoading = false);
+  }
+
+  getAllCategories() {
+    this.isLoading = true;
+    this.categoryService.getAllCategories(this.currentPage, this.itemsPerPage)
+    .then(res => {
+      if(!res.isSuccess)
+        this.toastr.error(res.errorMessage);
+      this.categories = res.data ?? [];
+    }).catch(err => {
+      console.log(`${err.error}`);
+    }).finally(() => {
+      this.isLoading = false;
+    })
   }
 
   // ============================================================

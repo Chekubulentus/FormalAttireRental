@@ -7,7 +7,7 @@ using RentalAttireBackend.Domain.Interfaces;
 
 namespace RentalAttireBackend.Application.Categories.Queries.GetAllCategories
 {
-    public class GetAllCategoriesQueryHandler : IRequestHandler<GetAllCategoriesQuery, Result<PagedResult<CategoryDTO>>>
+    public class GetAllCategoriesQueryHandler : IRequestHandler<GetAllCategoriesQuery, Result<List<CategoryDTO>>>
     {
         private readonly IMapper _mapper;
         private readonly ICategoryRepository _categoryRepo;
@@ -21,25 +21,16 @@ namespace RentalAttireBackend.Application.Categories.Queries.GetAllCategories
             _categoryRepo = categoryRepo;
         }
 
-        public async Task<Result<PagedResult<CategoryDTO>>> Handle(GetAllCategoriesQuery request, CancellationToken cancellationToken)
+        public async Task<Result<List<CategoryDTO>>> Handle(GetAllCategoriesQuery request, CancellationToken cancellationToken)
         {
-            if (request.PaginationParams.CurrentPage == 0 || request.PaginationParams.ItemsPerPage == 0)
-                return Result<PagedResult<CategoryDTO>>.Failure("No category currently registered.");
+            var categories = await _categoryRepo.GetAllCategoriesAsync(cancellationToken);
 
-            try
-            {
-                var categoriesPagedResult = await _categoryRepo.GetAllCategoriesAsync(request.PaginationParams, cancellationToken);
+            if (!categories.Any() || categories.Count() == 0)
+                return Result<List<CategoryDTO>>.Failure("No categories found.");
 
-                if (!categoriesPagedResult.Items.Any() || categoriesPagedResult.Items.Count() == 0)
-                    return Result<PagedResult<CategoryDTO>>.Failure("No categories currently registered.");
+            var categoryDtos = _mapper.Map<List<CategoryDTO>>(categories);
 
-                var paginatedCategories = _mapper.Map<PagedResult<CategoryDTO>>(categoriesPagedResult.Items);
-
-                return Result<PagedResult<CategoryDTO>>.Success(paginatedCategories);
-            }catch(Exception e)
-            {
-                return Result<PagedResult<CategoryDTO>>.Failure(e.Message);
-            }
+            return Result<List<CategoryDTO>>.Success(categoryDtos);
         }
     }
 }

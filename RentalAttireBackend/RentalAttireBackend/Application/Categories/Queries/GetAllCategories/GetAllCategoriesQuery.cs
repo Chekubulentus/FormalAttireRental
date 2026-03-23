@@ -4,8 +4,7 @@ using RentalAttireBackend.Application.Common.Models;
 
 namespace RentalAttireBackend.Application.Categories.Queries.GetAllCategories
 {
-    public class GetAllCategoriesQuery : IRequest<Result<PagedResult<CategoryDTO>>>
+    public class GetAllCategoriesQuery : IRequest<Result<List<CategoryDTO>>>
     {
-        public PaginationParams PaginationParams { get; set; } = null!;
     }
 }

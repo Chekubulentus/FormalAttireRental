@@ -34,7 +34,7 @@
 
     <select class="filter-select" [(ngModel)]="filterCategory" (ngModelChange)="onFilterChange()">
       <option value="">All Categories</option>
-      <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+      <option *ngFor="let cat of categories" [value]="cat.categoryName">{{ cat.categoryName }}</option>
     </select>
 
     <select class="filter-select" [(ngModel)]="filterGender" (ngModelChange)="onFilterChange()">
@@ -279,5 +279,12 @@
   <!-- <div class="modal-overlay" *ngIf="clotheToView" (click)="closeViewModal()">
     <app-view-clothe [clothe]="clotheToView" (closed)="closeViewModal()"></app-view-clothe>
   </div> -->
+
+  <div class="modal-overlay" *ngIf="clotheToView">
+    <app-view-clothe
+    [clothe]="clotheToView"
+    (closed)="closeViewModal()"
+    ></app-view-clothe>
+  </div>
 
 </div>

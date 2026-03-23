@@ -74,24 +74,11 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
             };
         }
 
-        public async Task<PagedResult<Category>> GetAllCategoriesAsync(PaginationParams paginationParams, CancellationToken cancellationToken)
+        public async Task<List<Category>> GetAllCategoriesAsync(CancellationToken cancellationToken)
         {
-            var categories = _context.Categories.AsNoTracking();
-
-            var totalCount = await categories.CountAsync();
-
-            var items = await categories
-                .Skip(paginationParams.Skip)
-                .Take(paginationParams.ItemsPerPage)
+            return await _context.Categories
+                .AsNoTracking()
                 .ToListAsync(cancellationToken);
-
-            return new PagedResult<Category>
-            {
-                Items = items,
-                TotalCount = totalCount,
-                PageNumber = paginationParams.CurrentPage,
-                PageSize = paginationParams.ItemsPerPage,
-            };
         }
 
         public async Task<Category?> GetCategoryByIdAsync(int id, CancellationToken cancellationToken)

@@ -23,15 +23,9 @@ namespace RentalAttireBackend.Controllers.ClothesManagerController
             _mediator = mediator;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAllCategoriesAsync(int currentPage, int itemsPerPage)
+        public async Task<IActionResult> GetAllCategoriesAsync()
         {
-            var paginationParams = new PaginationParams
-            {
-                CurrentPage = currentPage,
-                ItemsPerPage = itemsPerPage
-            };
-
-            var result = await _mediator.Send(new GetAllCategoriesQuery { PaginationParams = paginationParams });
+            var result = await _mediator.Send(new GetAllCategoriesQuery());
 
             return result.IsSuccess ? Ok(result) : BadRequest(result.ErrorMessage);
         }

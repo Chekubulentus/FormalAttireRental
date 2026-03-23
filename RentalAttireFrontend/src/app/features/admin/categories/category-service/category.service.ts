@@ -8,6 +8,7 @@ import { PagedResult } from '../../../../data/models/Results/pagedResult';
 import { ArchiveCategoryCommand } from '../../../../data/models/DTOs/Category/archive-category-command';
 import { CreateCategoryCommand } from '../../../../data/models/DTOs/Category/create-category';
 import { UpdateCategoryCommand } from '../../../../data/models/DTOs/Category/update-category';
+import { reportUnhandledError } from 'rxjs/internal/util/reportUnhandledError';
 
 @Injectable({
   providedIn: 'root',
@@ -90,6 +91,23 @@ export class CategoryService {
     try {
       var result = await firstValueFrom(
         this.httpClient.put<Result<boolean>>(`${this.categoryUrl}`, command)
+      );
+
+      return result;
+    }catch(err : any) {
+      return Result.failure(err.error);
+    }
+  }
+
+  async getAllCategories(
+    currentPage : number,
+    itemsPerPage : number,
+  ) : Promise<Result<Category[]>> {
+    try {
+      var result = await firstValueFrom(
+        this.httpClient.get<Result<Category[]>>(
+          `${this.categoryUrl}`
+        )
       );
 
       return result;

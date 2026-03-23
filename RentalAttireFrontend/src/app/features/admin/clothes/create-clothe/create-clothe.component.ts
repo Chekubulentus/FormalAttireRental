@@ -5,6 +5,7 @@ import { UserViewModel } from '../../../../data/models/DTOs/Users/user-view-mode
 import { ClotheService } from '../clothe-service/clothe.service';
 import { Toast, ToastrService } from 'ngx-toastr';
 import { UserService } from '../../../../core/services/user-service/user.service';
+import { ClotheDTO } from '../../../../data/models/DTOs/Clothes/clothes';
 
 // TODO: replace with your actual imports
 // import { CreateClotheCommand } from '../../../../data/models/DTOs/Clothes/create-clothe-command';
@@ -14,24 +15,6 @@ import { UserService } from '../../../../core/services/user-service/user.service
 // import { AppToastrService } from '../../../../core/services/toastr-service/app-toastr.service';
 
 // ── Inline models — remove once you have real imports ────────
-export class ClotheDTO {
-  id: number = 0;
-  clotheCode: string = '';
-  clotheName: string = '';
-  categoryName: string = '';
-  color: string = '';
-  brand: string = '';
-  material: string = '';
-  size: string = '';
-  clotheGender: string = '';
-  stockQuantity: number = 0;
-  availableQuantity: number = 0;
-  rentalPrice: number = 0;
-  depositAmount: number = 0;
-  rentalDurationDays: number = 0;
-  condition: string = '';
-  profileImagePath?: string = '';
-}
 
 export class CreateClotheCommand extends ClotheDTO {
   performedBy: string = '';

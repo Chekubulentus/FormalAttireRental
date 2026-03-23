@@ -1,0 +1,556 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap');
+
+// ============================================================
+// Design Tokens
+// ============================================================
+$surface:     #ffffff;
+$bg:          #f9f7f5;
+$bg-deep:     #f2ede8;
+$border:      #e4ddd6;
+$border-soft: #ede8e2;
+$gold:        #a07840;
+$gold-dim:    rgba(160, 120, 64, 0.09);
+$gold-border: rgba(160, 120, 64, 0.22);
+$text:        #1a1917;
+$text-muted:  #9e9590;
+$text-soft:   #6b6560;
+$red:         #c0392b;
+$red-dim:     rgba(192, 57, 43, 0.09);
+$green:       #27ae60;
+$green-dim:   rgba(39, 174, 96, 0.09);
+$amber:       #d4820a;
+$amber-dim:   rgba(212, 130, 10, 0.09);
+
+
+// ============================================================
+// Host
+// ============================================================
+:host {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+
+// ============================================================
+// Modal Card — two-panel side by side
+// ============================================================
+.modal-card {
+  display: flex;
+  width: 100%;
+  max-width: 780px;
+  max-height: 88vh;
+  background: $surface;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow:
+    0 2px 4px rgba(0,0,0,0.04),
+    0 8px 24px rgba(0,0,0,0.09),
+    0 32px 72px rgba(0,0,0,0.12);
+  animation: cardIn 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+  font-family: 'DM Sans', sans-serif;
+}
+
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(20px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+
+// ============================================================
+// LEFT PANEL — Image
+// ============================================================
+.panel-image {
+  width: 260px;
+  flex-shrink: 0;
+  background: $bg;
+  border-right: 1px solid $border;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 16px;
+  gap: 16px;
+}
+
+// Image frame
+.image-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid $border;
+  background: $bg-deep;
+  flex-shrink: 0;
+
+  &--zoomable {
+    cursor: zoom-in;
+
+    &:hover .zoom-hint { opacity: 1; transform: translateY(0); }
+    &:hover .clothe-img { transform: scale(1.04); }
+  }
+}
+
+.clothe-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+  display: block;
+}
+
+.image-fallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: $text-muted;
+
+  svg { width: 48px; height: 48px; opacity: 0.35; }
+
+  span {
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    opacity: 0.5;
+  }
+}
+
+.zoom-hint {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background: rgba(26, 25, 23, 0.72);
+  backdrop-filter: blur(6px);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  border-radius: 20px;
+  padding: 5px 10px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.2s, transform 0.2s;
+
+  svg { width: 12px; height: 12px; }
+}
+
+// Stock meter
+.stock-meter {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &__label {
+    font-size: 0.7rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: $text-muted;
+  }
+
+  &__pct {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: $text-soft;
+  }
+
+  &__track {
+    height: 5px;
+    background: $border;
+    border-radius: 99px;
+    overflow: hidden;
+  }
+
+  &__fill {
+    height: 100%;
+    border-radius: 99px;
+    transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+
+    &.fill--green { background: $green; }
+    &.fill--amber { background: $amber; }
+    &.fill--red   { background: $red; }
+  }
+
+  &__counts {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.7rem;
+    color: $text-muted;
+  }
+}
+
+// Status + condition pills
+.panel-badges {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  border-radius: 8px;
+  padding: 7px 12px;
+  border: 1px solid transparent;
+
+  &--available { background: $green-dim; color: $green;  border-color: rgba(39,174,96,0.2); }
+  &--low       { background: $amber-dim; color: $amber;  border-color: rgba(212,130,10,0.2); }
+  &--out       { background: $red-dim;   color: $red;    border-color: rgba(192,57,43,0.2); }
+}
+
+.status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+  flex-shrink: 0;
+
+  .status-pill--low & { animation: pulse 1.5s ease-in-out infinite; }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.3; }
+}
+
+.condition-pill {
+  font-size: 0.78rem;
+  font-weight: 500;
+  border-radius: 8px;
+  padding: 7px 12px;
+  border: 1px solid transparent;
+
+  &.cond--new  { background: $green-dim; color: $green;  border-color: rgba(39,174,96,0.2); }
+  &.cond--good { background: $gold-dim;  color: $gold;   border-color: $gold-border; }
+  &.cond--fair { background: $amber-dim; color: $amber;  border-color: rgba(212,130,10,0.2); }
+  &.cond--poor { background: $red-dim;   color: $red;    border-color: rgba(192,57,43,0.2); }
+}
+
+
+// ============================================================
+// RIGHT PANEL — Details
+// ============================================================
+.panel-details {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+// Details header
+.details-header {
+  padding: 24px 24px 16px;
+  border-bottom: 1px solid $border-soft;
+  flex-shrink: 0;
+
+  &__top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6px;
+  }
+}
+
+.clothe-code {
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: $gold;
+  background: $gold-dim;
+  border: 1px solid $gold-border;
+  border-radius: 6px;
+  padding: 3px 8px;
+}
+
+.btn-close {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  border: 1px solid $border;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $text-muted;
+  transition: background 0.15s, color 0.15s;
+  flex-shrink: 0;
+
+  svg { width: 13px; height: 13px; }
+  &:hover { background: $bg; color: $text; }
+}
+
+.clothe-name {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.4rem;
+  color: $text;
+  margin: 0 0 10px;
+  line-height: 1.25;
+}
+
+.tag-row {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.tag {
+  font-size: 0.72rem;
+  color: $text-soft;
+  background: $bg;
+  border: 1px solid $border;
+  border-radius: 20px;
+  padding: 3px 10px;
+}
+
+// Scrollable section
+.details-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 24px 8px;
+
+  &::-webkit-scrollbar { width: 4px; }
+  &::-webkit-scrollbar-track { background: transparent; }
+  &::-webkit-scrollbar-thumb { background: $border; border-radius: 99px; }
+}
+
+// Pricing block
+.pricing-block {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin: 18px 0;
+  background: $bg;
+  border: 1px solid $border;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.price-main {
+  display: flex;
+  flex-direction: column;
+  padding: 14px 18px;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.price-eyebrow {
+  font-size: 0.68rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: $text-muted;
+}
+
+.price-amount {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.6rem;
+  color: $gold;
+  line-height: 1;
+}
+
+.price-divider {
+  width: 1px;
+  align-self: stretch;
+  background: $border;
+  flex-shrink: 0;
+}
+
+.price-secondary {
+  display: flex;
+  flex: 1;
+  gap: 0;
+}
+
+.price-sub {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 14px 16px;
+  gap: 3px;
+  border-right: 1px solid $border;
+
+  &:last-child { border-right: none; }
+
+  &__label {
+    font-size: 0.68rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: $text-muted;
+  }
+
+  &__val {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: $text-soft;
+  }
+}
+
+// Section
+.section {
+  margin-bottom: 8px;
+}
+
+.section__title {
+  font-size: 0.68rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: $text-muted;
+  margin: 0 0 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid $border-soft;
+}
+
+// Attribute list
+.attr-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.attr-row {
+  display: grid;
+  grid-template-columns: 28px 90px 1fr;
+  align-items: center;
+  gap: 0;
+  padding: 9px 0;
+  border-bottom: 1px solid $border-soft;
+  transition: background 0.12s;
+
+  &:last-child { border-bottom: none; }
+
+  &:hover {
+    background: $bg;
+    margin: 0 -24px;
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+}
+
+.attr-icon {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $text-muted;
+  opacity: 0.7;
+
+  svg { width: 14px; height: 14px; }
+}
+
+.attr-key {
+  font-size: 0.78rem;
+  color: $text-muted;
+  font-weight: 400;
+}
+
+.attr-val {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: $text;
+  text-align: right;
+}
+
+// Footer
+.details-footer {
+  padding: 14px 24px;
+  border-top: 1px solid $border-soft;
+  display: flex;
+  justify-content: flex-end;
+  flex-shrink: 0;
+}
+
+.btn-dismiss {
+  height: 36px;
+  padding: 0 20px;
+  border-radius: 8px;
+  border: 1.5px solid $border;
+  background: transparent;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: $text-soft;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+
+  &:hover { background: $bg; color: $text; border-color: darken($border, 8%); }
+}
+
+
+// ============================================================
+// ZOOM LIGHTBOX
+// ============================================================
+.zoom-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(10, 9, 8, 0.88);
+  backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn 0.18s ease;
+  cursor: zoom-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.zoom-img {
+  max-width: 90vw;
+  max-height: 88vh;
+  border-radius: 12px;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.5);
+  cursor: default;
+  animation: zoomIn 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+  object-fit: contain;
+}
+
+@keyframes zoomIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.zoom-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.1);
+  backdrop-filter: blur(8px);
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s, border-color 0.15s;
+
+  svg { width: 16px; height: 16px; }
+  &:hover { background: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.4); }
+}
