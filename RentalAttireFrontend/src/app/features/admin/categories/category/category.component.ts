@@ -191,7 +191,6 @@ export class CategoryComponent implements OnInit {
 
   closeEditModal(): void {
     this.categoryToEdit = null;
-    this.toastrService.error('Failed to update category.');
   }
 
   onCategoryUpdated(updated: Category): void {

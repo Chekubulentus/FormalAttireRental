@@ -77,7 +77,7 @@ namespace RentalAttireBackend.Controllers.ClothesManagerController
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateClotheAsync(UpdateClotheCommand command)
+        public async Task<IActionResult> UpdateClotheAsync([FromForm] UpdateClotheCommand command)
         {
             var result = await _mediator.Send(command);
 

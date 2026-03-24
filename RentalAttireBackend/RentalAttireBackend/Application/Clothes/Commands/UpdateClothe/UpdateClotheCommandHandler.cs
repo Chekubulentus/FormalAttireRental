@@ -14,18 +14,21 @@ namespace RentalAttireBackend.Application.Clothes.Commands.UpdateClothe
         private readonly IClotheRepository _clotheRepo;
         private readonly ITransactionManager _transaction;
         private readonly IAuditLogService _auditService;
+        private readonly IFileUploadService _fileUploadService;
 
         public UpdateClotheCommandHandler(
             IMapper mapper,
             IClotheRepository clotheRepo,
             ITransactionManager transaction,
-            IAuditLogService auditService
+            IAuditLogService auditService,
+            IFileUploadService fileUploadService
             )
         {
             _clotheRepo = clotheRepo;
             _mapper = mapper;
             _transaction = transaction;
             _auditService = auditService;
+            _fileUploadService = fileUploadService;
         }
 
         public async Task<Result<bool>> Handle(UpdateClotheCommand request, CancellationToken cancellationToken)
@@ -39,6 +42,8 @@ namespace RentalAttireBackend.Application.Clothes.Commands.UpdateClothe
 
             try
             {
+                await _transaction.BeginTransactionAsync(cancellationToken);
+
                 var clotheToUpdate = await _clotheRepo.GetClotheByIdAsync(request.Id, cancellationToken);
 
                 if (clotheToUpdate is null)
@@ -49,7 +54,22 @@ namespace RentalAttireBackend.Application.Clothes.Commands.UpdateClothe
 
                 var oldClotheDetails = await _clotheRepo.GetClotheByIdNoTrackingAsync(request.Id, cancellationToken);
 
-                _mapper.Map<Clothe>(request);
+                if(request.Image is not null)
+                {
+                    await _fileUploadService.DeleteFileAsync(clotheToUpdate.ProfileImagePath);
+
+                    var uploadImage = await _fileUploadService.UploadImageAsync(request.Image, $"clothes/{clotheToUpdate.Id}");
+
+                    if (!uploadImage.Success)
+                    {
+                        await _transaction.RollbackTransactionAsync(cancellationToken);
+                        return Result<bool>.Failure("Image could not be uploaded.");
+                    }
+
+                    clotheToUpdate.ProfileImagePath = uploadImage.FilePath;
+                }
+
+                _mapper.Map(request, clotheToUpdate);
 
                 var updateClothe = await _clotheRepo.UpdateClotheAsync(clotheToUpdate, cancellationToken);
 
@@ -73,6 +93,7 @@ namespace RentalAttireBackend.Application.Clothes.Commands.UpdateClothe
                     return Result<bool>.Failure("Transaction cannot be audited.");
                 }
 
+                await _transaction.CommitTransacionAsync(cancellationToken);
                 return Result<bool>.SuccessWithMessage("Clothe successfully updated.");
             }
             catch(Exception e) {

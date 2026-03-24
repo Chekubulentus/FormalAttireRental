@@ -6,6 +6,8 @@ import { ClotheService } from '../clothe-service/clothe.service';
 import { Toast, ToastrService } from 'ngx-toastr';
 import { UserService } from '../../../../core/services/user-service/user.service';
 import { ClotheDTO } from '../../../../data/models/DTOs/Clothes/clothes';
+import { CategoryService } from '../../categories/category-service/category.service';
+import { Category } from '../../../../data/models/DTOs/Category/category';
 
 // TODO: replace with your actual imports
 // import { CreateClotheCommand } from '../../../../data/models/DTOs/Clothes/create-clothe-command';
@@ -58,10 +60,7 @@ export class CreateClotheComponent implements OnInit {
   // Dropdown Options
   // ============================================================
 
-  categories: string[] = [
-    'Barong', 'Gown', 'Suit', 'Groom', 'Bridesmaid',
-    'Debut', 'Costume', 'Casual', 'Others',
-  ];
+  categories : Category[] = [];
 
   genders: string[] = ['Male', 'Female', 'Unisex'];
 
@@ -92,11 +91,13 @@ export class CreateClotheComponent implements OnInit {
   constructor(
     private clotheService : ClotheService,
     private toastrService : ToastrService,
-    private userService : UserService
+    private userService : UserService,
+    private categoryService : CategoryService
   ) {}
 
   ngOnInit(): void {
     this.getCurrentUser();
+    this.getAllCategories();
   }
 
   getCurrentUser(): void {
@@ -107,6 +108,19 @@ export class CreateClotheComponent implements OnInit {
       this.currentUser = res.data;
     }).catch(err => {
       this.toastrService.error(err.error);
+    })
+  }
+
+  getAllCategories() {
+    this.categoryService.getAllCategories()
+    .then(res => {
+      if(!res.isSuccess)
+        this.toastrService.error(res.errorMessage);
+      this.categories = res.data ?? [];
+    }).catch(err => {
+      this.toastrService.error(err.error);
+    }).finally(() => {
+
     })
   }
 

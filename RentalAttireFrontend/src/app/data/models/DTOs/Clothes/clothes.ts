@@ -1,4 +1,5 @@
 export class ClotheDTO {
+  id : number = 0;
   clotheCode: string = '';
   clotheName: string = '';
   categoryName: string = '';

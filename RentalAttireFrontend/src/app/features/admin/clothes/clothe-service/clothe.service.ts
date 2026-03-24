@@ -6,6 +6,7 @@ import { firstValueFrom } from 'rxjs';
 import { BaseApiUrl } from '../../../../../environments/base-api-url';
 import { ClotheDTO } from '../../../../data/models/DTOs/Clothes/clothes';
 import { CreateClotheCommand } from '../create-clothe/create-clothe.component';
+import { UpdateClotheCommand } from '../edit-clothe/edit-clothe.component';
 
 @Injectable({
   providedIn: 'root'
@@ -52,6 +53,20 @@ export class ClotheService {
     try { 
       var result = await firstValueFrom(
         this.httpClient.post<Result<boolean>>(`${this.clotheUrl}`, command)
+      );
+
+      return result;
+    }catch(err : any) {
+      return Result.failure(err.error);
+    }
+  }
+
+  async updateClotheAsync(
+    command : FormData
+  ) : Promise<Result<boolean>> {
+    try {
+      var result = await firstValueFrom(
+        this.httpClient.put<Result<boolean>>(`${this.clotheUrl}`, command)
       );
 
       return result;

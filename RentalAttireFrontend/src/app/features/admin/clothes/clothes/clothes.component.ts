@@ -9,6 +9,9 @@ import { Category } from '../../../../data/models/DTOs/Category/category';
 import { CategoryComponent } from '../../categories/category/category.component';
 import { CategoryService } from '../../categories/category-service/category.service';
 import { ViewClotheComponent } from '../view-clothe/view-clothe.component';
+import { EditClotheComponent } from '../edit-clothe/edit-clothe.component';
+import { UserViewModel } from '../../../../data/models/DTOs/Users/user-view-model';
+import { UserService } from '../../../../core/services/user-service/user.service';
 
 // TODO: import your ClotheDTO and ClotheService
 // import { ClotheDTO } from '../../../../data/models/DTOs/Clothes/clothe-dto';
@@ -21,7 +24,8 @@ import { ViewClotheComponent } from '../view-clothe/view-clothe.component';
     CommonModule, 
     FormsModule, 
     CreateClotheComponent,
-    ViewClotheComponent
+    ViewClotheComponent,
+    EditClotheComponent
   ],
   templateUrl: './clothes.component.html',
   styleUrl: './clothes.component.scss',
@@ -59,17 +63,33 @@ export class ClothesComponent implements OnInit {
 
   conditions: string[] = ['New', 'Good', 'Fair', 'Poor'];
 
-  // constructor(private clotheService: ClotheService) {}
+  currentUser : UserViewModel | undefined;
 
   constructor (
     private clotheService : ClotheService,
     private toastr : ToastrService,
-    private categoryService : CategoryService
+    private categoryService : CategoryService,
+    private userService : UserService
   ) {}
 
   ngOnInit(): void {
     this.getAllClothes();
     this.getAllCategories();
+    this.getCurrentUser();
+  }
+
+  getCurrentUser() {
+    this.isLoading = true;
+    this.userService.getCurrentUserViewModel()
+    .then(res => {
+      if(!res.isSuccess)
+        this.toastr.error(res.errorMessage ?? 'Current user is missing.');
+      this.currentUser = res.data ?? undefined;
+    }).catch(err => {
+      this.toastr.error(err.error);
+    }).finally(() => {
+      this.isLoading = false;
+    })
   }
 
   // ============================================================
@@ -96,7 +116,7 @@ export class ClothesComponent implements OnInit {
 
   getAllCategories() {
     this.isLoading = true;
-    this.categoryService.getAllCategories(this.currentPage, this.itemsPerPage)
+    this.categoryService.getAllCategories()
     .then(res => {
       if(!res.isSuccess)
         this.toastr.error(res.errorMessage);
@@ -207,7 +227,6 @@ export class ClothesComponent implements OnInit {
     const index = this.clothes.findIndex(c => c.clotheCode === updated.clotheCode);
     if (index !== -1) this.clothes[index] = updated;
     this.closeEditModal();
-    // TODO: this.toastr.success('Item successfully updated.');
   }
 
   onArchiveConfirmed(): void {

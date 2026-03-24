@@ -99,10 +99,7 @@ export class CategoryService {
     }
   }
 
-  async getAllCategories(
-    currentPage : number,
-    itemsPerPage : number,
-  ) : Promise<Result<Category[]>> {
+  async getAllCategories() : Promise<Result<Category[]>> {
     try {
       var result = await firstValueFrom(
         this.httpClient.get<Result<Category[]>>(

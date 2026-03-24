@@ -266,6 +266,14 @@
   <!-- <div class="modal-overlay" *ngIf="clotheToEdit" (click)="closeEditModal()">
     <app-edit-clothe [clothe]="clotheToEdit" (closed)="closeEditModal()" (updated)="onClotheUpdated($event)"></app-edit-clothe>
   </div> -->
+  <div class="modal-overlay" *ngIf="clotheToEdit">
+    <app-edit-clothe
+    [clothe]="clotheToEdit"
+    [currentUser]="this.currentUser"
+    (closed)="closeEditModal()"
+    (updated)="onClotheUpdated($event)"
+    ></app-edit-clothe>
+  </div>
 
   <!-- <div class="modal-overlay" *ngIf="clotheToArchive" (click)="closeArchiveModal()">
     <app-archive-confirmation
@@ -274,10 +282,6 @@
       (cancelled)="closeArchiveModal()"
       (confirmed)="onArchiveConfirmed()">
     </app-archive-confirmation>
-  </div> -->
-
-  <!-- <div class="modal-overlay" *ngIf="clotheToView" (click)="closeViewModal()">
-    <app-view-clothe [clothe]="clotheToView" (closed)="closeViewModal()"></app-view-clothe>
   </div> -->
 
   <div class="modal-overlay" *ngIf="clotheToView">

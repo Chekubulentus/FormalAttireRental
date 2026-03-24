@@ -8,5 +8,6 @@ namespace RentalAttireBackend.Application.Clothes.Commands.UpdateClothe
     {
         public string PerformedBy { get; set; } = string.Empty;
         public int PerformedById { get; set; }
+        public IFormFile? Image { get; set; } 
     }
 }
