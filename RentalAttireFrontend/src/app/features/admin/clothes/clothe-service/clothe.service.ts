@@ -7,6 +7,7 @@ import { BaseApiUrl } from '../../../../../environments/base-api-url';
 import { ClotheDTO } from '../../../../data/models/DTOs/Clothes/clothes';
 import { CreateClotheCommand } from '../create-clothe/create-clothe.component';
 import { UpdateClotheCommand } from '../edit-clothe/edit-clothe.component';
+import { ArchiveClotheCommand } from '../../../../data/models/DTOs/Clothes/archive-clothe';
 
 @Injectable({
   providedIn: 'root'
@@ -67,6 +68,22 @@ export class ClotheService {
     try {
       var result = await firstValueFrom(
         this.httpClient.put<Result<boolean>>(`${this.clotheUrl}`, command)
+      );
+
+      return result;
+    }catch(err : any) {
+      return Result.failure(err.error);
+    }
+  }
+
+  async archiveClotheByIdAsync(
+    command : ArchiveClotheCommand
+  ) : Promise<Result<boolean>> {
+    try {
+      var result = await firstValueFrom(
+        this.httpClient.patch<Result<boolean>>(
+          `${this.clotheUrl}`, command
+        )
       );
 
       return result;

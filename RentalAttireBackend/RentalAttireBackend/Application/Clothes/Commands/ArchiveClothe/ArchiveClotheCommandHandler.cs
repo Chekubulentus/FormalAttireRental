@@ -49,6 +49,7 @@ namespace RentalAttireBackend.Application.Clothes.Commands.ArchiveClothe
                     return Result<bool>.Failure("Clothe cannot be archived.");
                 }
 
+                await _transaction.CommitTransacionAsync(cancellationToken);
                 return Result<bool>.SuccessWithMessage("Clothe successfully archived.");
             }catch(Exception e)
             {

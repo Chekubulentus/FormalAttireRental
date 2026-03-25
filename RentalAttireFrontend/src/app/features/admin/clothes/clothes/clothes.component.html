@@ -284,6 +284,16 @@
     </app-archive-confirmation>
   </div> -->
 
+  <div class="modal-overlay" *ngIf="clotheToArchive">
+    <app-archive-confirmation
+    [recordName]="clotheToArchive.clotheName"
+    [recordType]="'Clothe'"
+    [isArchiving]="isArchiving"
+    (cancelled)="closeArchiveModal()"
+    (confirmed)="onArchiveConfirmed()"
+    ></app-archive-confirmation>
+  </div>
+
   <div class="modal-overlay" *ngIf="clotheToView">
     <app-view-clothe
     [clothe]="clotheToView"

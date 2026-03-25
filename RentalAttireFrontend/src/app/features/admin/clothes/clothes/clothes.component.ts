@@ -12,6 +12,8 @@ import { ViewClotheComponent } from '../view-clothe/view-clothe.component';
 import { EditClotheComponent } from '../edit-clothe/edit-clothe.component';
 import { UserViewModel } from '../../../../data/models/DTOs/Users/user-view-model';
 import { UserService } from '../../../../core/services/user-service/user.service';
+import { ArchiveConfirmationComponent } from '../../../../shared/components/archive-confirmation/archive-confirmation/archive-confirmation.component';
+import { ArchiveClotheCommand } from '../../../../data/models/DTOs/Clothes/archive-clothe';
 
 // TODO: import your ClotheDTO and ClotheService
 // import { ClotheDTO } from '../../../../data/models/DTOs/Clothes/clothe-dto';
@@ -25,7 +27,8 @@ import { UserService } from '../../../../core/services/user-service/user.service
     FormsModule, 
     CreateClotheComponent,
     ViewClotheComponent,
-    EditClotheComponent
+    EditClotheComponent,
+    ArchiveConfirmationComponent
   ],
   templateUrl: './clothes.component.html',
   styleUrl: './clothes.component.scss',
@@ -37,6 +40,7 @@ export class ClothesComponent implements OnInit {
   // ============================================================
   isLoading = false;
   clothes: ClotheDTO[] = [];
+  isArchiving = false;
 
   // ── Search & Filters ───────────────────────────────────────
   searchQuery     = '';
@@ -230,8 +234,23 @@ export class ClothesComponent implements OnInit {
   }
 
   onArchiveConfirmed(): void {
-    // TODO: call archive API then toastr
-    this.closeArchiveModal();
+    const payload : ArchiveClotheCommand = {
+      id: this.clotheToArchive?.id ?? 0,
+      performedBy: this.currentUser?.fullName ?? '',
+      performedById: this.currentUser?.id ?? 0
+    };
+
+    this.clotheService.archiveClotheByIdAsync(payload)
+    .then(res => {
+      if(!res.isSuccess)
+        this.toastr.error(res.errorMessage);
+      this.toastr.success(res.successMessage);
+      this.getAllClothes();
+    }).catch(err => {
+      this.toastr.error(err.error);
+    }).finally(() => {
+      this.closeArchiveModal();
+    });
   }
 
   onAddToRental(c: ClotheDTO): void {
