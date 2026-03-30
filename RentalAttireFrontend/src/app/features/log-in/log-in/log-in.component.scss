@@ -1,27 +1,23 @@
 // ============================================================
-//  ÉLÉGANCE — Login Component (Clean Minimal Redesign)
+//  ÉLÉGANCE — Login Component
 // ============================================================
 
 @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap');
 
 // --- Tokens ---
-$white:       #ffffff;
-$off-white:   #f9f7f5;
-$cream:       #f2ede8;
-$stone:       #e4ddd6;
-$muted:       #9e9590;
-$text:        #1a1917;
-$text-light:  #6b6560;
-$border:      #e0dbd5;
-$accent:      #1a1917;
-$error:       #c0392b;
-$error-bg:    #fdf3f2;
+$white:      #ffffff;
+$off-white:  #f9f7f5;
+$cream:      #f2ede8;
+$stone:      #e4ddd6;
+$muted:      #9e9590;
+$text:       #1a1917;
+$text-light: #6b6560;
+$border:     #e0dbd5;
+$accent:     #1a1917;
+$error:      #c0392b;
+$error-bg:   #fdf3f2;
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
 // ============================================================
 //  WRAPPER
@@ -48,7 +44,6 @@ $error-bg:    #fdf3f2;
   border-right: 1px solid $border;
 }
 
-// Subtle grid overlay
 .grid-decoration {
   position: absolute;
   inset: 0;
@@ -60,18 +55,10 @@ $error-bg:    #fdf3f2;
   background: $stone;
   opacity: 0.5;
 
-  &.h {
-    left: 0; right: 0;
-    height: 1px;
-  }
-
-  &.v {
-    top: 0; bottom: 0;
-    width: 1px;
-  }
+  &.h { left: 0; right: 0; height: 1px; }
+  &.v { top: 0; bottom: 0; width: 1px; }
 }
 
-// Brand (top)
 .visual-top { position: relative; z-index: 1; }
 
 .brand {
@@ -85,12 +72,10 @@ $error-bg:    #fdf3f2;
   width: 36px;
   height: 36px;
   flex-shrink: 0;
-
   svg { width: 100%; height: 100%; }
 }
 
 .brand-name {
-  font-family: 'DM Sans', sans-serif;
   font-size: 0.85rem;
   font-weight: 500;
   letter-spacing: 0.25em;
@@ -98,7 +83,6 @@ $error-bg:    #fdf3f2;
   text-transform: uppercase;
 }
 
-// Center Content
 .visual-center {
   position: relative;
   z-index: 1;
@@ -125,10 +109,7 @@ $error-bg:    #fdf3f2;
   color: $text;
   letter-spacing: -0.01em;
 
-  em {
-    font-style: italic;
-    color: $text-light;
-  }
+  em { font-style: italic; color: $text-light; }
 }
 
 .visual-body {
@@ -139,7 +120,6 @@ $error-bg:    #fdf3f2;
   font-weight: 300;
 }
 
-// Silhouette illustrations
 .silhouette-group {
   display: flex;
   gap: 1.5rem;
@@ -149,19 +129,12 @@ $error-bg:    #fdf3f2;
 .silhouette {
   opacity: 0.7;
   transition: opacity 0.3s;
-
   &:hover { opacity: 1; }
-
-  svg {
-    display: block;
-    filter: drop-shadow(0 4px 12px rgba(0,0,0,0.06));
-  }
-
+  svg { display: block; filter: drop-shadow(0 4px 12px rgba(0,0,0,0.06)); }
   &.suit  svg { width: 70px; height: 140px; }
   &.dress svg { width: 70px; height: 140px; }
 }
 
-// Footer (bottom)
 .visual-bottom {
   position: relative;
   z-index: 1;
@@ -194,10 +167,7 @@ $error-bg:    #fdf3f2;
   animation: fadeUp 0.8s ease 0.1s both;
 }
 
-// Form Header
-.form-header {
-  margin-bottom: 2.4rem;
-}
+.form-header { margin-bottom: 2.4rem; }
 
 .form-title {
   font-family: 'DM Serif Display', serif;
@@ -229,19 +199,9 @@ $error-bg:    #fdf3f2;
   flex-direction: column;
   gap: 0.45rem;
 
-  &--focused .field-input-wrap {
-    border-color: $accent;
-    background: $white;
-  }
-
-  &--error .field-input-wrap {
-    border-color: $error;
-    background: $error-bg;
-  }
-
-  &--error .field-label {
-    color: $error;
-  }
+  &--focused .field-input-wrap { border-color: $accent; background: $white; }
+  &--error   .field-input-wrap { border-color: $error; background: $error-bg; }
+  &--error   .field-label      { color: $error; }
 }
 
 .field-label {
@@ -262,13 +222,8 @@ $error-bg:    #fdf3f2;
   background: $off-white;
   transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
 
-  &:hover {
-    border-color: darken($border, 10%);
-  }
-
-  .field--focused & {
-    box-shadow: 0 0 0 3px rgba(26,25,23,0.06);
-  }
+  &:hover { border-color: darken($border, 10%); }
+  .field--focused & { box-shadow: 0 0 0 3px rgba(26,25,23,0.06); }
 }
 
 .field-icon {
@@ -277,7 +232,6 @@ $error-bg:    #fdf3f2;
   flex-shrink: 0;
   color: $muted;
   transition: color 0.2s;
-
   .field--focused & { color: $text; }
 }
 
@@ -294,7 +248,6 @@ $error-bg:    #fdf3f2;
   letter-spacing: 0.01em;
 
   &::placeholder { color: $muted; }
-
   &:-webkit-autofill {
     -webkit-box-shadow: 0 0 0 100px $off-white inset;
     -webkit-text-fill-color: $text;
@@ -311,9 +264,7 @@ $error-bg:    #fdf3f2;
   align-items: center;
   transition: color 0.2s;
   flex-shrink: 0;
-
   &:hover { color: $text; }
-
   svg { width: 18px; height: 18px; }
 }
 
@@ -324,7 +275,6 @@ $error-bg:    #fdf3f2;
   letter-spacing: 0.01em;
 }
 
-// Options Row
 .options-row {
   display: flex;
   justify-content: space-between;
@@ -346,11 +296,7 @@ $error-bg:    #fdf3f2;
   &:checked + .checkbox-box {
     background: $accent;
     border-color: $accent;
-
-    &::after {
-      opacity: 1;
-      transform: rotate(45deg) scale(1);
-    }
+    &::after { opacity: 1; transform: rotate(45deg) scale(1); }
   }
 }
 
@@ -367,10 +313,8 @@ $error-bg:    #fdf3f2;
   &::after {
     content: '';
     position: absolute;
-    left: 4px;
-    top: 1px;
-    width: 4px;
-    height: 8px;
+    left: 4px; top: 1px;
+    width: 4px; height: 8px;
     border-right: 2px solid $white;
     border-bottom: 2px solid $white;
     opacity: 0;
@@ -391,11 +335,9 @@ $error-bg:    #fdf3f2;
   text-decoration: none;
   font-weight: 400;
   transition: color 0.2s;
-
   &:hover { color: $text; text-decoration: underline; }
 }
 
-// Error Banner
 .error-banner {
   display: flex;
   align-items: center;
@@ -407,11 +349,9 @@ $error-bg:    #fdf3f2;
   font-size: 0.8rem;
   color: $error;
   letter-spacing: 0.01em;
-
   svg { flex-shrink: 0; }
 }
 
-// Submit Button
 .btn-submit {
   width: 100%;
   padding: 0.95rem;
@@ -436,45 +376,20 @@ $error-bg:    #fdf3f2;
     box-shadow: 0 6px 20px rgba(0,0,0,0.15);
     transform: translateY(-1px);
   }
-
-  &:active:not(:disabled) {
-    transform: translateY(0);
-    box-shadow: none;
-  }
-
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
+  &:active:not(:disabled) { transform: translateY(0); box-shadow: none; }
+  &:disabled { opacity: 0.6; cursor: not-allowed; }
 }
 
-// Loader dots
-.loader {
-  display: flex;
-  gap: 5px;
-  align-items: center;
-
-  span {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: $white;
-    animation: dotPulse 1.2s ease-in-out infinite;
-
-    &:nth-child(2) { animation-delay: 0.2s; }
-    &:nth-child(3) { animation-delay: 0.4s; }
-  }
-}
-
-// Divider
+// ============================================================
+//  DIVIDER
+// ============================================================
 .divider {
   display: flex;
   align-items: center;
   gap: 1rem;
   margin: 1.8rem 0 1.2rem;
 
-  &::before,
-  &::after {
+  &::before, &::after {
     content: '';
     flex: 1;
     height: 1px;
@@ -488,13 +403,16 @@ $error-bg:    #fdf3f2;
   }
 }
 
-// Register Button
-.btn-register {
+// ============================================================
+//  GOOGLE SIGN-IN BUTTON
+// ============================================================
+.btn-google {
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 0.65rem;
   width: 100%;
-  padding: 0.9rem;
+  padding: 0.88rem;
   border: 1.5px solid $border;
   border-radius: 8px;
   background: $white;
@@ -502,17 +420,52 @@ $error-bg:    #fdf3f2;
   font-size: 0.88rem;
   font-weight: 500;
   color: $text;
-  text-decoration: none;
   letter-spacing: 0.02em;
-  transition: background 0.2s, border-color 0.2s;
+  cursor: pointer;
+  min-height: 50px;
+  transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
 
-  &:hover {
+  &:hover:not(:disabled) {
     background: $off-white;
     border-color: darken($border, 8%);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   }
+
+  &:active:not(:disabled) { background: $cream; }
+  &:disabled { opacity: 0.6; cursor: not-allowed; }
 }
 
-// Terms Note
+.google-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+// ============================================================
+//  LOADER DOTS (shared by both buttons)
+// ============================================================
+.loader {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+
+  span {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: $white;
+    animation: dotPulse 1.2s ease-in-out infinite;
+    &:nth-child(2) { animation-delay: 0.2s; }
+    &:nth-child(3) { animation-delay: 0.4s; }
+  }
+
+  // Dark variant for the Google button (white background)
+  &--dark span { background: $muted; }
+}
+
+// ============================================================
+//  TERMS NOTE
+// ============================================================
 .terms-note {
   margin-top: 1.5rem;
   font-size: 0.72rem;
@@ -526,7 +479,6 @@ $error-bg:    #fdf3f2;
     text-decoration: underline;
     text-underline-offset: 2px;
     transition: color 0.2s;
-
     &:hover { color: $text; }
   }
 }
@@ -558,11 +510,11 @@ $error-bg:    #fdf3f2;
 //  RESPONSIVE
 // ============================================================
 @media (max-width: 860px) {
-  .login-wrapper     { flex-direction: column; }
-  .visual-panel      { flex: 0 0 auto; padding: 2rem; min-height: 260px; border-right: none; border-bottom: 1px solid $border; }
-  .visual-headline   { font-size: 2.8rem; }
-  .silhouette-group  { display: none; }
-  .form-panel        { padding: 2.5rem 1.5rem; }
+  .login-wrapper   { flex-direction: column; }
+  .visual-panel    { flex: 0 0 auto; padding: 2rem; min-height: 260px; border-right: none; border-bottom: 1px solid $border; }
+  .visual-headline { font-size: 2.8rem; }
+  .silhouette-group { display: none; }
+  .form-panel      { padding: 2.5rem 1.5rem; }
 }
 
 @media (max-width: 480px) {
@@ -570,4 +522,23 @@ $error-bg:    #fdf3f2;
   .visual-headline { font-size: 2.2rem; }
   .form-title      { font-size: 2rem; }
   .form-container  { max-width: 100%; }
+}
+
+// ── Add to log-in.component.scss ──────────────────────────
+
+.google-btn-wrap {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.google-loading-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
 }

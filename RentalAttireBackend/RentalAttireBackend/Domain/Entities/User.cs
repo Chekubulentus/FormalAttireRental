@@ -10,6 +10,7 @@ namespace RentalAttireBackend.Domain.Entities
         public string RefreshToken { get; set; } = string.Empty;
         public DateTime? RefreshTokenExpiryTime { get; set; }
         public int PersonId { get; set; }
+        public bool IsGoogleAccount { get; set; } = false;
 
         //NavProp
         [JsonIgnore]

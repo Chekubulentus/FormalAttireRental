@@ -24,10 +24,14 @@ export class AuthService {
   private baseUrl = `${BaseApiUrl}/Authentication`;
   private accessTokenKey = `${AccessTokenKey}`;
   private refreshTokenKey = `${RefreshTokenKey}`;
+  private isLoggingOut = false;
 
   logout() {
+    this.isLoggingOut = true;
     this.removeTokens();
-    this.router.navigateByUrl('/log-in');
+    this.router.navigateByUrl('/log-in').then(() => {
+      this.isLoggingOut = false;
+    });
   }
 
   getAccessToken(): string | null {
@@ -104,5 +108,14 @@ export class AuthService {
       console.log(message);
       return Result.failure(message);
     }
+  }
+
+  googleLogin(idToken: string): Promise<Result<AuthenticationResult>> {
+    return firstValueFrom(
+      this.httpClient.post<Result<AuthenticationResult>>(
+        `${this.baseUrl}/google-login`,
+        { idToken },
+      ),
+    );
   }
 }

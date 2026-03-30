@@ -152,7 +152,11 @@ namespace RentalAttireBackend.Application.Mapping
                 .ForMember(dest => dest.Department,
                 opt => opt.MapFrom(src => src.Employee.Department))
                 .ForMember(dest => dest.FullName,
-                opt => opt.MapFrom(src => src.Person.FullName));
+                opt => opt.MapFrom(src => src.Person.FullName))
+                .ForMember(dest => dest.IsGoogleAccount,
+                opt => opt.MapFrom(src => src.IsGoogleAccount))
+                .ForMember(dest => dest.CustomerCode,
+                opt => opt.MapFrom(src => src.Customer.CustomerCode));
             #endregion
 
             #region AuditLog -> AuditLogDTO

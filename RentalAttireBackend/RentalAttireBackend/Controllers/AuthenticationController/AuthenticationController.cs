@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using RentalAttireBackend.Application.Authentication.Commands.GoogleLogin;
 using RentalAttireBackend.Application.Authentication.Commands.Login;
 using RentalAttireBackend.Application.Authentication.Commands.RefreshToken;
 using RentalAttireBackend.Application.Common.Interfaces;
@@ -30,6 +31,13 @@ namespace RentalAttireBackend.Controllers.AuthenticationController
         }
         [HttpPost("refresh")]
         public async Task<IActionResult> RefreshTokenAsync(RefreshTokenCommand command)
+        {
+            var result = await _mediator.Send(command);
+
+            return result.IsSuccess ? Ok(result) : BadRequest(result.ErrorMessage);
+        }
+        [HttpPost("google-login")]
+        public async Task<IActionResult> GoogleLoginAsync(GoogleLoginCommand command)
         {
             var result = await _mediator.Send(command);
 

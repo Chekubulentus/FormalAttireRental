@@ -25,7 +25,7 @@ namespace RentalAttireBackend.Infrastructure.Persistence.DataContext
             modelBuilder.Entity<Customer>(e =>
             {
                 e.HasKey(c => c.Id);
-                e.HasIndex(c => c.CustomerCode);
+                e.HasIndex(c => c.CustomerCode).IsUnique();
 
                 //User Relationship
                 e.HasOne(c => c.User)
@@ -59,7 +59,7 @@ namespace RentalAttireBackend.Infrastructure.Persistence.DataContext
             modelBuilder.Entity<Person>(e =>
             {
                 e.HasKey(p => p.Id);
-                e.Property(p => p.PhoneNumber).IsRequired().HasMaxLength(11);
+                e.Property(p => p.PhoneNumber).HasMaxLength(11);
             });
             #endregion
 

@@ -5,6 +5,7 @@ import { UserService } from '../../../../core/services/user-service/user.service
 import { AuthService } from '../../../../core/services/auth-service/auth.service';
 import { UserViewModel } from '../../../../data/models/DTOs/Users/user-view-model';
 import { ToastrService } from 'ngx-toastr';
+import { SocialAuthService } from '@abacritt/angularx-social-login';
 
 // TODO: replace with your actual imports
 // import { UserService } from '../../../core/services/user-service/user.service';
@@ -40,7 +41,8 @@ export class AdminSidebarComponent implements OnInit {
     private router: Router,
     private userService: UserService,
     private authService : AuthService,
-    private toastrService : ToastrService
+    private toastrService : ToastrService,
+    private socialAuthService : SocialAuthService
   ) {}
 
   ngOnInit(): void {
@@ -72,6 +74,7 @@ export class AdminSidebarComponent implements OnInit {
       if(!res.isSuccess)
         this.toastrService.error(res.errorMessage ?? 'Current user cannot be found.');
       this.currentUser = res.data;
+      console.log(`Current User On SDIEBAR: ${JSON.stringify(this.currentUser)}`);
     }).catch(err => {
       this.toastrService.error(err.error);
     })
@@ -81,6 +84,7 @@ export class AdminSidebarComponent implements OnInit {
   // Logout
   // ============================================================
   logout(): void {
+    this.socialAuthService.signOut().catch(() => {});
     this.authService.logout();
   }
 }

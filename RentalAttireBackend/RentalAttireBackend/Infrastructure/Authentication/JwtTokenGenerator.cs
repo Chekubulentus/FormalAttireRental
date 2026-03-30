@@ -19,15 +19,33 @@ namespace RentalAttireBackend.Infrastructure.Authentication
         }
         public string GenerateAccessToken(User user)
         {
-            var claims = new List<Claim>
+            var claims = new List<Claim>();
+
+            if(user.Employee is not null && user.Customer is null)
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim("userId", user.Id.ToString()),
-                new Claim("firstName", user.Person.FirstName),
-                new Claim("lastName", user.Person.LastName),
-                new Claim(ClaimTypes.Role, user.Employee.Role.RolePosition.ToString())
-            };
+                claims = new List<Claim>
+                {
+                    new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+                    new Claim(ClaimTypes.Email, user.Email),
+                    new Claim("userId", user.Id.ToString()),
+                    new Claim("firstName", user.Person.FirstName),
+                    new Claim("lastName", user.Person.LastName),
+                    new Claim(ClaimTypes.Role, user.Employee.Role.RolePosition.ToString())
+                };
+            }
+
+            if(user.Customer is not null && user.Employee is null)
+            {
+                claims = new List<Claim>
+                {
+                    new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+                    new Claim(ClaimTypes.Email, user.Email),
+                    new Claim("userId", user.Id.ToString()),
+                    new Claim("firstName", user.Person.FirstName),
+                    new Claim("lastName", user.Person.LastName),
+                    new Claim(ClaimTypes.Role, "Customer")
+                };
+            }
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.SecretKey));
             var signingCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);

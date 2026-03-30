@@ -4,14 +4,14 @@ import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
-import { provideAnimations, provideNoopAnimations } from '@angular/platform-browser/animations';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { provideToastr } from 'ngx-toastr';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { SocialAuthServiceConfig, GoogleLoginProvider } from '@abacritt/angularx-social-login';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideZoneChangeDetection({ eventCoalescing: true }), 
-    provideRouter(routes), 
+    provideZoneChangeDetection({ eventCoalescing: true }),
+    provideRouter(routes),
     provideHttpClient(withInterceptors([authInterceptor])),
     provideNoopAnimations(),
     provideToastr({
@@ -21,5 +21,16 @@ export const appConfig: ApplicationConfig = {
       progressBar: true,
       closeButton: true
     }),
+    {
+      provide: 'SocialAuthServiceConfig',   // ← tells Angular what this config is for
+      useValue: {                            // ← the actual config value
+        providers: [                         // ← array of login providers
+          {
+            id: GoogleLoginProvider.PROVIDER_ID,
+            provider: new GoogleLoginProvider('823033561760-8hufmkpd8vtpda89u9g8clc133p6nfoj.apps.googleusercontent.com')
+          }
+        ]
+      } as SocialAuthServiceConfig
+    }
   ]
 };

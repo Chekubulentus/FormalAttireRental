@@ -95,8 +95,7 @@
               placeholder="you@example.com"
               autocomplete="email"
               (focus)="emailFocused = true"
-              (blur)="emailFocused = false"
-            />
+              (blur)="emailFocused = false"/>
           </div>
           <span class="field-msg" *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.hasError('required')">
             Email is required.
@@ -125,8 +124,7 @@
               placeholder="••••••••"
               autocomplete="current-password"
               (focus)="passwordFocused = true"
-              (blur)="passwordFocused = false"
-            />
+              (blur)="passwordFocused = false"/>
             <button type="button" class="toggle-btn" (click)="togglePassword()">
               <svg *ngIf="!showPassword" viewBox="0 0 20 20" fill="none">
                 <path d="M1 10s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6z" stroke="currentColor" stroke-width="1.2"/>
@@ -165,7 +163,7 @@
         </div>
 
         <!-- Submit -->
-        <button type="submit" class="btn-submit" [disabled]="isLoading">
+        <button type="submit" class="btn-submit" [disabled]="isLoading || isGoogleLoading">
           <span *ngIf="!isLoading">Sign in</span>
           <span class="loader" *ngIf="isLoading">
             <span></span><span></span><span></span>
@@ -174,9 +172,27 @@
 
       </form>
 
-      <div class="divider"><span>Don't have an account?</span></div>
+      <!-- Divider -->
+      <div class="divider"><span>or continue with</span></div>
 
-      <a href="#" class="btn-register">Create an account</a>
+      <!-- Google Sign-In — rendered by the library, triggers authState in TS -->
+      <div class="google-btn-wrap" [class.google-btn-wrap--loading]="isGoogleLoading">
+        <asl-google-signin-button
+          type="standard"
+          size="large"
+          text="signin_with"
+          shape="rectangular"
+          theme="outline"
+          width="352">
+        </asl-google-signin-button>
+
+        <!-- Loading overlay so the user knows something is happening post-click -->
+        <div class="google-loading-overlay" *ngIf="isGoogleLoading">
+          <span class="loader loader--dark">
+            <span></span><span></span><span></span>
+          </span>
+        </div>
+      </div>
 
       <p class="terms-note">
         By continuing, you agree to our
