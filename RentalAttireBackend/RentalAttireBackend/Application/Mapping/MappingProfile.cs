@@ -9,6 +9,7 @@ using RentalAttireBackend.Application.Clothes.Commands.UpdateClothe;
 using RentalAttireBackend.Application.Clothes.DTOs;
 using RentalAttireBackend.Application.Common.Interfaces;
 using RentalAttireBackend.Application.Common.Models;
+using RentalAttireBackend.Application.Customers.DTOs;
 using RentalAttireBackend.Application.Employees.Commands.CreateEmployee;
 using RentalAttireBackend.Application.Employees.Commands.UpdateEmployee;
 using RentalAttireBackend.Application.Employees.DTOs;
@@ -233,6 +234,16 @@ namespace RentalAttireBackend.Application.Mapping
                 opt => opt.MapFrom(src => DateTime.UtcNow))
                 .ForMember(dest => dest.UpdatedBy,
                 opt => opt.MapFrom(src => src.PerformedBy));
+            #endregion
+
+            #region Customer -> CustomerDTO
+            CreateMap<Customer, CustomerDTO>()
+                .ForMember(dest => dest.Email,
+                opt => opt.MapFrom(src => src.User.Email))
+                .ForMember(dest => dest.IsGoogleAccount,
+                opt => opt.MapFrom(src => src.User.IsGoogleAccount))
+                .ForMember(dest => dest.Person,
+                opt => opt.MapFrom(src => src.User.Person));
             #endregion
         }
     }

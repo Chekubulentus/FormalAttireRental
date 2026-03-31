@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using RentalAttireBackend.Application.Common.Models;
 using RentalAttireBackend.Domain.Entities;
 using RentalAttireBackend.Domain.Interfaces;
 using RentalAttireBackend.Infrastructure.Persistence.DataContext;
@@ -21,6 +22,33 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
         {
             await _context.Customers.AddAsync(customer);
             return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<PagedResult<Customer>> FilterCustomersAsync(PaginationParams paginationParams, string searchQuery, CancellationToken cancellationToken)
+        {
+            var customers = _context.Customers
+                .AsNoTracking()
+                .Include(c => c.User)
+                .ThenInclude(u => u.Person)
+                // Order by mapped properties instead of the unmapped FullName computed property to allow server-side translation
+                .OrderBy(c => c.User.Person.LastName)
+                .ThenBy(c => c.User.Person.FirstName)
+                .AsQueryable();
+
+            var totalCount = await customers.CountAsync(cancellationToken);
+
+            var paginatedItems = await customers
+                .Skip(paginationParams.Skip)
+                .Take(paginationParams.ItemsPerPage)
+                .ToListAsync(cancellationToken);
+
+            return new PagedResult<Customer>
+            {
+                Items = paginatedItems,
+                TotalCount = totalCount,
+                PageNumber = paginationParams.CurrentPage,
+                PageSize = paginationParams.ItemsPerPage
+            };
         }
 
         public async Task<List<Customer>> GetAllCustomersAsync(CancellationToken cancellationToken)

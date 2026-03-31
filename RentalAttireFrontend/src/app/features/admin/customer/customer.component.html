@@ -1,0 +1,242 @@
+<div class="customers-page">
+
+  <!-- ── Page Header ───────────────────────────────────────── -->
+  <div class="page-header">
+    <div class="page-header__left">
+      <span class="eyebrow">Management · CRM</span>
+      <h1>Customers</h1>
+      <p class="page-subtitle">View and manage registered customers across all accounts.</p>
+    </div>
+  </div>
+
+  <!-- ── Stats Bar ─────────────────────────────────────────── -->
+  <div class="stats-bar">
+    <div class="stat">
+      <span class="stat-value">{{ totalCount }}</span>
+      <span class="stat-label">Total Customers</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat">
+      <span class="stat-value">{{ totalRentalsAll }}</span>
+      <span class="stat-label">Total Rentals</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat">
+      <span class="stat-value gold">{{ totalSpentAll | currency:'PHP':'symbol':'1.0-0' }}</span>
+      <span class="stat-label">Total Revenue</span>
+    </div>
+  </div>
+
+  <!-- ── Toolbar ───────────────────────────────────────────── -->
+  <div class="toolbar">
+    <div class="search-wrap">
+      <svg class="search-icon" viewBox="0 0 20 20" fill="none">
+        <circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.5"/>
+        <line x1="13.5" y1="13.5" x2="17" y2="17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      <input
+        class="search-input"
+        type="text"
+        placeholder="Search by name, email, or code..."
+        [(ngModel)]="searchQuery"
+        (ngModelChange)="onSearch()"/>
+    </div>
+
+    <select class="filter-select" [(ngModel)]="filterType" (ngModelChange)="onFilterChange()">
+      <option value="">All Accounts</option>
+      <option value="google">Google Accounts</option>
+      <option value="regular">Regular Accounts</option>
+    </select>
+
+    <button class="btn-clear" *ngIf="hasActiveFilters" (click)="clearFilters()">
+      <svg viewBox="0 0 16 16" fill="none">
+        <line x1="4" y1="4" x2="12" y2="12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+        <line x1="12" y1="4" x2="4"  y2="12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+      </svg>
+      Clear
+    </button>
+
+    <span class="total-count">{{ totalCount }} {{ totalCount === 1 ? 'customer' : 'customers' }}</span>
+  </div>
+
+  <!-- ── Table ─────────────────────────────────────────────── -->
+  <div class="table-wrap">
+
+    <!-- Table Header -->
+    <div class="table-header">
+      <span class="col col--customer">Customer</span>
+      <span class="col col--code">Code</span>
+      <span class="col col--contact">Contact</span>
+      <span class="col col--rentals">Rentals</span>
+      <span class="col col--spent">Total Spent</span>
+      <span class="col col--type">Type</span>
+      <span class="col col--actions">Actions</span>
+    </div>
+
+    <!-- Loading Skeleton -->
+    <div class="skeleton-list" *ngIf="isLoading">
+      <div class="skeleton-row" *ngFor="let i of [1,2,3,4,5]">
+        <div class="skeleton-avatar"></div>
+        <div class="skeleton-cell wide"></div>
+        <div class="skeleton-cell"></div>
+        <div class="skeleton-cell narrow"></div>
+        <div class="skeleton-cell narrow"></div>
+        <div class="skeleton-cell narrow"></div>
+        <div class="skeleton-cell narrow"></div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="!isLoading && customers.length === 0">
+      <svg viewBox="0 0 48 48" fill="none">
+        <path d="M32 21v-2a8 8 0 0 0-16 0v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        <circle cx="24" cy="13" r="6" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M6 40c0-8 8-14 18-14s18 6 18 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      <p class="empty-title">No customers found</p>
+      <p class="empty-sub">
+        {{ hasActiveFilters ? 'Try adjusting your search or filters.' : 'Customers will appear here once they register.' }}
+      </p>
+      <button class="btn-clear-empty" *ngIf="hasActiveFilters" (click)="clearFilters()">Clear filters</button>
+    </div>
+
+    <!-- Customer Rows -->
+    <div class="customer-list" *ngIf="!isLoading && customers.length > 0">
+      <div class="customer-row"
+           *ngFor="let customer of customers; let i = index"
+           [style.animation-delay]="(i * 0.03) + 's'">
+
+        <!-- Customer -->
+        <div class="col col--customer">
+          <div class="avatar-wrap">
+            <img
+              *ngIf="customer.person.profileImagePath"
+              [src]="customer.person.profileImagePath"
+              [alt]="customer.person.fullName"
+              class="avatar-img"
+              (error)="onImgError($event, customer)"/>
+            <div
+              *ngIf="!customer.person.profileImagePath"
+              class="avatar"
+              [style.background]="getAvatarColor(customer.id)">
+              {{ getInitials(customer.person.fullName) }}
+            </div>
+          </div>
+          <div class="customer-info">
+            <p class="customer-name">{{ customer.person.fullName }}</p>
+            <p class="customer-email">{{ customer.email   }}</p>
+          </div>
+        </div>
+
+        <!-- Code -->
+        <div class="col col--code">
+          <span class="code-badge">{{ customer.customerCode }}</span>
+        </div>
+
+        <!-- Contact -->
+        <div class="col col--contact">
+          <span class="cell-text">{{ customer.person.phoneNumber || '—' }}</span>
+        </div>
+
+        <!-- Rentals -->
+        <div class="col col--rentals">
+          <span class="rentals-count">{{ customer.totalRentals }}</span>
+        </div>
+
+        <!-- Total Spent -->
+        <div class="col col--spent">
+          <span class="spent-amount">{{ customer.totalSpent | currency:'PHP':'symbol':'1.2-2' }}</span>
+        </div>
+
+        <!-- Account Type -->
+        <div class="col col--type">
+          <span class="type-badge type-badge--google" *ngIf="customer.isGoogleAccount">
+            <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+              <path d="M14.9 8.16c0-.52-.05-1.02-.13-1.5H8v2.84h3.95c-.17.91-.69 1.68-1.47 2.2v1.85h2.38c1.39-1.28 2.19-3.16 2.19-5.39z" fill="#4285F4"/>
+              <path d="M8 15c1.98 0 3.64-.66 4.85-1.78l-2.38-1.85c-.65.44-1.49.7-2.47.7-1.9 0-3.51-1.28-4.09-3.01H1.46v1.9C2.66 13.27 5.17 15 8 15z" fill="#34A853"/>
+              <path d="M3.91 9.06A4.45 4.45 0 0 1 3.68 8c0-.37.06-.72.16-1.06V5.04H1.46A7.01 7.01 0 0 0 1 8c0 1.13.27 2.2.75 3.13l2.16-1.89-.02.82z" fill="#FBBC05"/>
+              <path d="M8 3.58c1.07 0 2.03.37 2.79 1.09l2.09-2.09C11.63 1.39 9.97.67 8 .67 5.17.67 2.66 2.4 1.46 4.87l2.45 1.9C4.49 5.04 6.1 3.58 8 3.58z" fill="#EA4335"/>
+            </svg>
+            Google
+          </span>
+          <span class="type-badge type-badge--regular" *ngIf="!customer.isGoogleAccount">
+            <svg viewBox="0 0 16 16" fill="none">
+              <circle cx="8" cy="6" r="3" stroke="currentColor" stroke-width="1.3"/>
+              <path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+            </svg>
+            Regular
+          </span>
+        </div>
+
+        <!-- Actions -->
+        <div class="col col--actions">
+          <button class="action-btn" title="View" (click)="openViewModal(customer)">
+            <svg viewBox="0 0 16 16" fill="none">
+              <circle cx="8" cy="8" r="3" stroke="currentColor" stroke-width="1.3"/>
+              <path d="M1 8s2.5-5 7-5 7 5 7 5-2.5 5-7 5-7-5-7-5z" stroke="currentColor" stroke-width="1.3"/>
+            </svg>
+          </button>
+          <button class="action-btn action-btn--danger" title="Archive" (click)="openArchiveModal(customer)">
+            <svg viewBox="0 0 16 16" fill="none">
+              <rect x="2" y="3" width="12" height="3" rx="1" stroke="currentColor" stroke-width="1.3"/>
+              <path d="M3 6v6a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V6" stroke="currentColor" stroke-width="1.3"/>
+              <line x1="6" y1="9" x2="10" y2="9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- end .table-wrap -->
+
+  <!-- ── Pagination ────────────────────────────────────────── -->
+  <div class="pagination" *ngIf="!isLoading && customers.length > 0">
+    <span class="pagination__info">
+      Showing {{ rangeStart }}–{{ rangeEnd }} of {{ totalCount }} customers
+    </span>
+    <div class="pagination__controls">
+      <button class="page-btn" [disabled]="currentPage === 1" (click)="goToPage(currentPage - 1)">
+        <svg viewBox="0 0 16 16" fill="none">
+          <polyline points="10 4 6 8 10 12" stroke="currentColor" stroke-width="1.3"
+            stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <ng-container *ngFor="let page of pageNumbers">
+        <span class="page-ellipsis" *ngIf="page === -1">…</span>
+        <button *ngIf="page !== -1" class="page-btn"
+          [class.active]="page === currentPage" (click)="goToPage(page)">
+          {{ page }}
+        </button>
+      </ng-container>
+      <button class="page-btn" [disabled]="currentPage === totalPages" (click)="goToPage(currentPage + 1)">
+        <svg viewBox="0 0 16 16" fill="none">
+          <polyline points="6 4 10 8 6 12" stroke="currentColor" stroke-width="1.3"
+            stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ── Archive Confirmation Modal ───────────────────────── -->
+  <!-- <div class="modal-overlay" *ngIf="customerToArchive" (click)="closeArchiveModal()">
+    <app-archive-confirmation
+      [recordName]="customerToArchive?.fullName ?? ''"
+      [recordType]="'Customer'"
+      [isArchiving]="isArchiving"
+      (cancelled)="closeArchiveModal()"
+      (confirmed)="onArchiveConfirmed()"
+      (click)="$event.stopPropagation()">
+    </app-archive-confirmation>
+  </div> -->
+
+  <!-- ── View Customer Modal ───────────────────────────────── -->
+  <!-- <div class="modal-overlay" *ngIf="customerToView" (click)="closeViewModal()">
+    <app-view-customer
+      [customer]="customerToView"
+      (closed)="closeViewModal()"
+      (click)="$event.stopPropagation()">
+    </app-view-customer>
+  </div> -->
+
+</div>
