@@ -44,6 +44,9 @@ namespace RentalAttireBackend.Application.Customers.Queries.FilterCustomers
                 if (string.IsNullOrEmpty(customer.Person.ProfileImagePath))
                     continue;
 
+                if (customer.IsGoogleAccount == true)
+                    continue;
+
                 customer.Person.ProfileImagePath = _fileUploadService.GetFileUrl(customer.Person.ProfileImagePath);
             }
 

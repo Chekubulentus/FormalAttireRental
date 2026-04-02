@@ -21,6 +21,7 @@ namespace RentalAttireBackend.Application.Authentication.Commands.GoogleLogin
         private readonly IJwtTokenGenerator _tokenGenerator;
         private readonly ICustomerRepository _customerRepo;
         private readonly IPasswordHasher _passwordHasher;
+        private readonly IFileUploadService _fileUploadService;
 
         public GoogleLoginCommandHandler(
             ITransactionManager transactionManager,
@@ -30,7 +31,8 @@ namespace RentalAttireBackend.Application.Authentication.Commands.GoogleLogin
             IMapper mapper,
             IJwtTokenGenerator tokenGenerator,
             ICustomerRepository customerRepo,
-            IPasswordHasher passwordHasher
+            IPasswordHasher passwordHasher,
+            IFileUploadService fileUploadService
             )
         {
             _transactionManager = transactionManager;
@@ -41,6 +43,7 @@ namespace RentalAttireBackend.Application.Authentication.Commands.GoogleLogin
             _tokenGenerator = tokenGenerator;
             _customerRepo = customerRepo;
             _passwordHasher = passwordHasher;
+            _fileUploadService = fileUploadService;
         }
         public async Task<Result<AuthenticationResult>> Handle(GoogleLoginCommand command, CancellationToken cancellationToken)
         {
@@ -112,6 +115,7 @@ namespace RentalAttireBackend.Application.Authentication.Commands.GoogleLogin
                 newPerson.LastName = payload.FamilyName;
                 newPerson.CreatedBy = payload.Name;
                 newPerson.EntityType = "Person";
+                newPerson.ProfileImagePath = payload.Picture;
 
                 var newUser = new User
                 {
