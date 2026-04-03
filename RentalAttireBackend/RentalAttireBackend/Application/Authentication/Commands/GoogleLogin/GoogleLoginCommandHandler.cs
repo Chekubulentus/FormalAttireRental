@@ -173,7 +173,9 @@ namespace RentalAttireBackend.Application.Authentication.Commands.GoogleLogin
             catch (Exception e)
             {
                 await _transactionManager.RollbackTransactionAsync(cancellationToken);
-                return Result<AuthenticationResult>.Failure(e.Message);
+                var error = e.InnerException?.Message ?? e.Message;
+
+                return Result<AuthenticationResult>.Failure(error);
             }
         }
 

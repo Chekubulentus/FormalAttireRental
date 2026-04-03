@@ -1,8 +1,9 @@
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Customer } from '../../../data/models/DTOs/Customer/customer';
+import { Customer } from '../../../../data/models/DTOs/Customer/customer';
 import { ToastrService } from 'ngx-toastr';
+import { CustomerService } from '../customer-service/customer.service';
 
 @Component({
   selector: 'app-customers',
@@ -46,7 +47,8 @@ export class CustomerComponent implements OnInit {
   ];
 
   constructor(
-    private toastrService : ToastrService
+    private toastrService : ToastrService,
+    private customerService : CustomerService
   ) {}
 
   ngOnInit(): void {
@@ -58,17 +60,21 @@ export class CustomerComponent implements OnInit {
   // ============================================================
   getAllCustomers(): void {
     this.isLoading = true;
-    // TODO: wire to CustomerService
-    // this.customerService.filterCustomersAsync(
-    //   this.searchQuery, this.filterType, this.currentPage, this.itemsPerPage
-    // ).then(res => {
-    //   if (!res.isSuccess) { this.customers = []; this.totalCount = 0; this.totalPages = 1; return; }
-    //   this.customers   = res.data?.items ?? [];
-    //   this.totalCount  = res.data?.totalCount ?? 0;
-    //   this.totalPages  = res.data?.totalPages ?? 1;
-    //   this.currentPage = res.data?.pageNumber ?? 1;
-    // }).catch(err => console.error(err))
-    //   .finally(() => this.isLoading = false);
+    
+    this.customerService.filterClothesAsync(
+      this.currentPage,
+      this.itemsPerPage,
+      this.searchQuery
+    ).then(res => {
+      if(!res.isSuccess)
+        this.toastrService.error(res.errorMessage ?? 'No customers found.');
+      this.customers = res.data?.items ?? [];
+    }).catch(err => {
+      this.toastrService.error(err.error);
+    }).finally(() => {
+      this.isLoading = false;
+    })
+
     this.totalCount = 2;
     this.totalPages = 1;
     this.isLoading  = false;
