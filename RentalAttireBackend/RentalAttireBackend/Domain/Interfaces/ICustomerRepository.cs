@@ -16,7 +16,7 @@ namespace RentalAttireBackend.Domain.Interfaces
         public Task<Customer?> GetCustomerByIdAsync(int id, CancellationToken cancellationToken);
         public Task<PagedResult<Customer>> FilterCustomersAsync(
             PaginationParams paginationParams,
-            string searchQuery,
+            string? searchQuery,
             CancellationToken cancellationToken
             );
         #endregion

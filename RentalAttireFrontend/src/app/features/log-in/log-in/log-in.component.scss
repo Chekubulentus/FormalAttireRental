@@ -159,6 +159,7 @@ $error-bg:   #fdf3f2;
   justify-content: center;
   padding: 2.5rem 2rem;
   background: $white;
+  overflow-y: auto;
 }
 
 .form-container {
@@ -352,6 +353,7 @@ $error-bg:   #fdf3f2;
   svg { flex-shrink: 0; }
 }
 
+// ── Submit ─────────────────────────────────────────────────
 .btn-submit {
   width: 100%;
   padding: 0.95rem;
@@ -381,7 +383,7 @@ $error-bg:   #fdf3f2;
 }
 
 // ============================================================
-//  DIVIDER
+//  DIVIDERS
 // ============================================================
 .divider {
   display: flex;
@@ -401,18 +403,43 @@ $error-bg:   #fdf3f2;
     color: $muted;
     white-space: nowrap;
   }
+
+  // Tighter variant between google and register
+  &--sm {
+    margin: 1.2rem 0 1rem;
+  }
 }
 
 // ============================================================
-//  GOOGLE SIGN-IN BUTTON
+//  GOOGLE SIGN-IN WRAPPER
 // ============================================================
-.btn-google {
+.google-btn-wrap {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.google-loading-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.75);
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.65rem;
+  border-radius: 4px;
+}
+
+// ============================================================
+//  REGISTER BUTTON
+// ============================================================
+.btn-register {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
   width: 100%;
-  padding: 0.88rem;
+  padding: 0.9rem;
   border: 1.5px solid $border;
   border-radius: 8px;
   background: $white;
@@ -422,27 +449,29 @@ $error-bg:   #fdf3f2;
   color: $text;
   letter-spacing: 0.02em;
   cursor: pointer;
-  min-height: 50px;
   transition: background 0.2s, border-color 0.2s, box-shadow 0.2s;
 
-  &:hover:not(:disabled) {
-    background: $off-white;
-    border-color: darken($border, 8%);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  svg {
+    width: 16px;
+    height: 16px;
+    color: $text-light;
+    flex-shrink: 0;
+    transition: color 0.2s;
   }
 
-  &:active:not(:disabled) { background: $cream; }
-  &:disabled { opacity: 0.6; cursor: not-allowed; }
-}
+  &:hover {
+    background: $off-white;
+    border-color: darken($border, 8%);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 
-.google-icon {
-  width: 18px;
-  height: 18px;
-  flex-shrink: 0;
+    svg { color: $text; }
+  }
+
+  &:active { background: $cream; }
 }
 
 // ============================================================
-//  LOADER DOTS (shared by both buttons)
+//  LOADER DOTS
 // ============================================================
 .loader {
   display: flex;
@@ -459,7 +488,6 @@ $error-bg:   #fdf3f2;
     &:nth-child(3) { animation-delay: 0.4s; }
   }
 
-  // Dark variant for the Google button (white background)
   &--dark span { background: $muted; }
 }
 
@@ -510,11 +538,11 @@ $error-bg:   #fdf3f2;
 //  RESPONSIVE
 // ============================================================
 @media (max-width: 860px) {
-  .login-wrapper   { flex-direction: column; }
-  .visual-panel    { flex: 0 0 auto; padding: 2rem; min-height: 260px; border-right: none; border-bottom: 1px solid $border; }
-  .visual-headline { font-size: 2.8rem; }
+  .login-wrapper    { flex-direction: column; }
+  .visual-panel     { flex: 0 0 auto; padding: 2rem; min-height: 260px; border-right: none; border-bottom: 1px solid $border; }
+  .visual-headline  { font-size: 2.8rem; }
   .silhouette-group { display: none; }
-  .form-panel      { padding: 2.5rem 1.5rem; }
+  .form-panel       { padding: 2.5rem 1.5rem; }
 }
 
 @media (max-width: 480px) {
@@ -522,23 +550,4 @@ $error-bg:   #fdf3f2;
   .visual-headline { font-size: 2.2rem; }
   .form-title      { font-size: 2rem; }
   .form-container  { max-width: 100%; }
-}
-
-// ── Add to log-in.component.scss ──────────────────────────
-
-.google-btn-wrap {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  width: 100%;
-}
-
-.google-loading-overlay {
-  position: absolute;
-  inset: 0;
-  background: rgba(255, 255, 255, 0.75);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 4px;
 }

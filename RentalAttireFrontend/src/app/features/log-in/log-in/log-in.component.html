@@ -77,31 +77,30 @@
 
       <form class="login-form" (ngSubmit)="onLogin()" [formGroup]="loginForm" novalidate>
 
-        <!-- Email -->
+        <!-- Username -->
         <div class="field"
-             [class.field--focused]="emailFocused"
-             [class.field--error]="loginForm.get('email')?.touched && loginForm.get('email')?.invalid">
-          <label for="email" class="field-label">Email address</label>
+             [class.field--focused]="usernameFocused"
+             [class.field--error]="loginForm.get('username')?.touched && loginForm.get('username')?.invalid">
+          <label for="username" class="field-label">Username</label>
           <div class="field-input-wrap">
             <svg class="field-icon" viewBox="0 0 20 20" fill="none">
-              <path d="M2.5 5.5h15v10a1 1 0 01-1 1h-13a1 1 0 01-1-1v-10z" stroke="currentColor" stroke-width="1.2"/>
-              <path d="M2.5 5.5l7.5 6 7.5-6" stroke="currentColor" stroke-width="1.2"/>
+              <circle cx="10" cy="7" r="3.5" stroke="currentColor" stroke-width="1.2"/>
+              <path d="M2.5 17.5c0-4.1 3.4-7.5 7.5-7.5s7.5 3.4 7.5 7.5"
+                    stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
             </svg>
             <input
-              id="email"
-              type="email"
-              formControlName="email"
+              id="username"
+              type="text"
+              formControlName="username"
               class="field-input"
-              placeholder="you@example.com"
-              autocomplete="email"
-              (focus)="emailFocused = true"
-              (blur)="emailFocused = false"/>
+              placeholder="your_username"
+              autocomplete="username"
+              (focus)="usernameFocused = true"
+              (blur)="usernameFocused = false"/>
           </div>
-          <span class="field-msg" *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.hasError('required')">
-            Email is required.
-          </span>
-          <span class="field-msg" *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.hasError('email')">
-            Please enter a valid email.
+          <span class="field-msg"
+                *ngIf="loginForm.get('username')?.touched && loginForm.get('username')?.hasError('required')">
+            Username is required.
           </span>
         </div>
 
@@ -137,7 +136,8 @@
               </svg>
             </button>
           </div>
-          <span class="field-msg" *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.hasError('required')">
+          <span class="field-msg"
+                *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.hasError('required')">
             Password is required.
           </span>
         </div>
@@ -175,8 +175,8 @@
       <!-- Divider -->
       <div class="divider"><span>or continue with</span></div>
 
-      <!-- Google Sign-In — rendered by the library, triggers authState in TS -->
-      <div class="google-btn-wrap" [class.google-btn-wrap--loading]="isGoogleLoading">
+      <!-- Google Sign-In -->
+      <div class="google-btn-wrap">
         <asl-google-signin-button
           type="standard"
           size="large"
@@ -186,13 +186,26 @@
           width="352">
         </asl-google-signin-button>
 
-        <!-- Loading overlay so the user knows something is happening post-click -->
         <div class="google-loading-overlay" *ngIf="isGoogleLoading">
           <span class="loader loader--dark">
             <span></span><span></span><span></span>
           </span>
         </div>
       </div>
+
+      <!-- Register -->
+      <div class="divider divider--sm"><span>don't have an account?</span></div>
+
+      <button type="button" class="btn-register" (click)="goToRegister()">
+        <svg viewBox="0 0 20 20" fill="none">
+          <circle cx="10" cy="7" r="3.5" stroke="currentColor" stroke-width="1.2"/>
+          <path d="M2.5 17.5c0-4.1 3.4-7.5 7.5-7.5s7.5 3.4 7.5 7.5"
+                stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+          <line x1="16" y1="5" x2="16" y2="9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+          <line x1="14" y1="7" x2="18" y2="7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+        </svg>
+        Create an account
+      </button>
 
       <p class="terms-note">
         By continuing, you agree to our

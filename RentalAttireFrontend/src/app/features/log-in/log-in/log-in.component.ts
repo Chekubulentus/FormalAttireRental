@@ -28,7 +28,7 @@ export class LogInComponent implements OnInit, OnDestroy {
   loginForm!: FormGroup;
 
   // UI State
-  emailFocused    = false;
+  usernameFocused = false;
   passwordFocused = false;
   showPassword    = false;
   isLoading       = false;
@@ -47,12 +47,12 @@ export class LogInComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loginForm = this.fb.group({
-      email:      ['', [Validators.required, Validators.email]],
+      username:   ['', [Validators.required]],
       password:   ['', [Validators.required]],
       rememberMe: [false],
     });
 
-    // Fires when the Google button is clicked and the user completes sign-in
+    // Fires when the Google button completes sign-in
     this.authStateSub = this.socialAuthService.authState.subscribe((user: SocialUser) => {
       if (!user?.idToken || this.isLoggingOut) return;
 
@@ -100,10 +100,10 @@ export class LogInComponent implements OnInit, OnDestroy {
     this.isLoading  = true;
     this.loginError = undefined;
 
-    const { email, password } = this.loginForm.value;
+    const { username, password } = this.loginForm.value;
 
     this.authService
-      .login(email, password)
+      .login(username, password)
       .then((result) => {
         if (!result.isSuccess) {
           this.loginError = result.errorMessage;
@@ -123,6 +123,11 @@ export class LogInComponent implements OnInit, OnDestroy {
       });
   }
 
-  get emailCtrl()    { return this.loginForm.get('email'); }
+  // ── Navigate to registration ───────────────────────────────
+  goToRegister(): void {
+    this.router.navigateByUrl('/register');
+  }
+
+  get usernameCtrl() { return this.loginForm.get('username'); }
   get passwordCtrl() { return this.loginForm.get('password'); }
 }

@@ -38,6 +38,7 @@ namespace RentalAttireBackend.Application.Disposables.GetAllArchivedEntities
                 _mapper.Map<List<ArchivedEntityDto>>(await _userRepo.GetAllArchivedUsers(cancellationToken))
                 );
 
+            //Employees
             archivedEntities.Items.AddRange(
                 _mapper.Map<List<ArchivedEntityDto>>(await _employeeRepo.GetAllArchivedEmployeesAsync(cancellationToken))
                 );

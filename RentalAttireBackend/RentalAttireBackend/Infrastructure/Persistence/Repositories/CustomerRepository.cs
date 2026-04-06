@@ -24,7 +24,7 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
             return await _context.SaveChangesAsync() > 0;
         }
 
-        public async Task<PagedResult<Customer>> FilterCustomersAsync(PaginationParams paginationParams, string searchQuery, CancellationToken cancellationToken)
+        public async Task<PagedResult<Customer>> FilterCustomersAsync(PaginationParams paginationParams, string? searchQuery, CancellationToken cancellationToken)
         {
             var customers = _context.Customers
                 .AsNoTracking()
@@ -61,7 +61,10 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
 
         public async Task<Customer?> GetCustomerByIdAsync(int id, CancellationToken cancellationToken)
         {
-            return await _context.Customers.FirstOrDefaultAsync(c => c.Id == id, cancellationToken);
+            return await _context.Customers
+                .Include(c => c.User)
+                .ThenInclude(u => u.Person)
+                .FirstOrDefaultAsync(c => c.Id == id, cancellationToken);
         }
 
         public async Task<bool> UpdateCustomerAsync(Customer customer, CancellationToken cancellationToken)
