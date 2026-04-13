@@ -26,16 +26,21 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
 
         public async Task<PagedResult<Customer>> FilterCustomersAsync(PaginationParams paginationParams, string? searchQuery, CancellationToken cancellationToken)
         {
+            var loweredQuery = searchQuery?.ToLower();
             var customers = _context.Customers
                 .AsNoTracking()
                 .Include(c => c.User)
                 .ThenInclude(u => u.Person)
-                // Order by mapped properties instead of the unmapped FullName computed property to allow server-side translation
+                .Where(c => 
+                (string.IsNullOrEmpty(searchQuery) ||
+                c.User.Person.LastName.ToLower().Contains(loweredQuery ?? "") || 
+                c.User.Person.FirstName.ToLower().Contains(loweredQuery ?? ""))
+                && c.IsActive)
                 .OrderBy(c => c.User.Person.LastName)
                 .ThenBy(c => c.User.Person.FirstName)
                 .AsQueryable();
 
-            var totalCount = await customers.CountAsync(cancellationToken);
+            var totalCount = await customers.CountAsync();
 
             var paginatedItems = await customers
                 .Skip(paginationParams.Skip)
