@@ -15,19 +15,25 @@ namespace RentalAttireBackend.Application.Disposables.GetAllArchivedEntities
         private readonly IUserRepository _userRepo;
         private readonly IPersonRepository _personRepo;
         private readonly IMapper _mapper;
+        private readonly ICustomerRepository _customerRepo;
+        private readonly IClotheRepository _clotheRepo;
 
         public GetAllArchivedEntitiesQueryHandler
             (
             IEmployeeRepository employeeRepo,
             IPersonRepository personRepo,
             IUserRepository userRepo,
-            IMapper mapper
+            IMapper mapper,
+            ICustomerRepository customerRepo,
+            IClotheRepository clotheRepo
             )
         {
             _employeeRepo = employeeRepo;
             _userRepo = userRepo;
             _personRepo = personRepo;
             _mapper = mapper;
+            _customerRepo = customerRepo;
+            _clotheRepo = clotheRepo;
         }
         public async Task<Result<PagedResult<ArchivedEntityDto>>> Handle(GetAllArchivedEntitiesQuery request, 
             CancellationToken cancellationToken)
@@ -46,6 +52,16 @@ namespace RentalAttireBackend.Application.Disposables.GetAllArchivedEntities
             archivedEntities.Items.AddRange(
                 _mapper.Map<List<ArchivedEntityDto>>(await _personRepo.GetAllArchivedPersonAsync(cancellationToken))
                 );
+
+            //Customers
+            archivedEntities.Items.AddRange(
+                _mapper.Map<List<ArchivedEntityDto>>(await _customerRepo.GetAllArchivedCustomersAsync(cancellationToken))
+                );
+
+            //Clothes
+            archivedEntities.Items.AddRange(
+                _mapper.Map<List<ArchivedEntityDto>>(await _clotheRepo.GetAllArchivedClothesAsync(cancellationToken))
+                ); 
 
             archivedEntities.TotalCount = archivedEntities.Items.Count();
             archivedEntities.PageNumber = request.PaginationParams.CurrentPage;

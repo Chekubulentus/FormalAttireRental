@@ -3,9 +3,8 @@ using System.Text.Json.Serialization;
 
 namespace RentalAttireBackend.Domain.Entities
 {
-    public class Rental
+    public class Rental : BaseEntity
     {
-        public int Id { get; set; }
         public string RentalCode { get; set; } = string.Empty;
         public int CustomerId { get; set; }
         public DateTime RentalDate { get; set; } // Also pick-up date

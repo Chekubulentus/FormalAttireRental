@@ -31,7 +31,7 @@ export class CustomerService {
 
       var result = await firstValueFrom(
         this.httpClient.get<Result<PagedResult<Customer>>>(
-          `${this.customerUrl}/filter-clothes`, {params: params}
+          `${this.customerUrl}/filter-customers`, {params: params}
         )
       );
 

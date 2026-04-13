@@ -40,7 +40,7 @@ namespace RentalAttireBackend.Application.Clothes.Commands.CreateClothe
 
             if (command.PerformedBy is null || 
                 command.PerformedById == 0)
-                return Result<bool>.Failure("Employee that creates the transaction cannot be audited.");
+                return Result<bool>.Failure("Employee associated with this transaction could not be found.");
 
             if (command.Image is null)
                 return Result<bool>.Failure("Image of the clothe is required.");

@@ -103,7 +103,7 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Services
                 var folderPath = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", folder);
                 Directory.CreateDirectory(folderPath);  // Create if doesn't exist
 
-                // STEP 5.4: Full file path
+                // STEP 5.4: Full file path 
                 // Example: wwwroot/uploads/persons/1/profile_20241231143000_abc123.jpg
                 var filePath = Path.Combine(folderPath, fileName);
 

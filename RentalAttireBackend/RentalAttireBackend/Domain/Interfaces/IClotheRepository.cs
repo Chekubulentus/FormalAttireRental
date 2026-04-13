@@ -26,6 +26,10 @@ namespace RentalAttireBackend.Domain.Interfaces
             ClothesFIlterParameters filters,
             CancellationToken cancellationToken
             );
+
+        public Task<List<Clothe>> GetAllArchivedClothesAsync(
+            CancellationToken cancellationToken
+            );
         #endregion
 
         #region Commands

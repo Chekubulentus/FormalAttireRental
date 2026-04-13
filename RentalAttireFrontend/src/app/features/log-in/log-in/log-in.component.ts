@@ -15,11 +15,17 @@ import {
 } from '@abacritt/angularx-social-login';
 import { Subscription } from 'rxjs';
 import { CurrentUser } from '../../../../environments/current-user';
+import { RegistrationComponent } from '../registration/registration.component';
 
 @Component({
   selector: 'app-log-in',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, SocialLoginModule],
+  imports: [
+    CommonModule, 
+    ReactiveFormsModule, 
+    SocialLoginModule,
+    RegistrationComponent
+  ],
   templateUrl: './log-in.component.html',
   styleUrl: './log-in.component.scss',
 })
@@ -34,6 +40,8 @@ export class LogInComponent implements OnInit, OnDestroy {
   isLoading       = false;
   isGoogleLoading = false;
   loginError: string | undefined;
+
+  openRegistration: boolean = false;
 
   private authStateSub!: Subscription;
   private isLoggingOut = false;

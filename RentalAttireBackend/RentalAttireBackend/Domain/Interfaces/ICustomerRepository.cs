@@ -19,6 +19,7 @@ namespace RentalAttireBackend.Domain.Interfaces
             string? searchQuery,
             CancellationToken cancellationToken
             );
+        public Task<List<Customer>> GetAllArchivedCustomersAsync(CancellationToken cancellationToken);
         #endregion
     }
 }

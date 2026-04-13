@@ -71,6 +71,7 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
         {
             return await _context.Users
                 .AsNoTracking()
+                .Include(u => u.Customer)
                 .Include(u => u.Employee)
                     .ThenInclude(e => e.Role)
                 .Include(u => u.Person)

@@ -21,7 +21,7 @@ namespace RentalAttireBackend.Controllers.AdminController
         {
             _mediator = mediator;
         }
-        [HttpGet("filter-clothes")]
+        [HttpGet("filter-customers")]
         public async Task<IActionResult> FilterClothesAsync(
             int currentPage,
             int itemsPerPage,

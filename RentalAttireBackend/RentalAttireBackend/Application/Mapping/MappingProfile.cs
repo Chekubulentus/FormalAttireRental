@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Infrastructure.Internal;
 using RentalAttireBackend.Application.AuditLogs.DTOs;
+using RentalAttireBackend.Application.Authentication.Commands.RegistrationCommand;
 using RentalAttireBackend.Application.Categories.Commands.CreateCategory;
 using RentalAttireBackend.Application.Categories.Commands.UpdateCategory;
 using RentalAttireBackend.Application.Categories.DTOs;
@@ -85,6 +86,26 @@ namespace RentalAttireBackend.Application.Mapping
                 opt => opt.MapFrom(src => src.ArchivedBy));
 
             CreateMap<Person, ArchivedEntityDto>()
+                .ForMember(dest => dest.EntityType,
+                opt => opt.MapFrom(src => src.EntityType))
+                .ForMember(dest => dest.EntityId,
+                opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.ArchivedAt,
+                opt => opt.MapFrom(src => src.ArchivedAt))
+                .ForMember(dest => dest.ArchivedBy,
+                opt => opt.MapFrom(src => src.ArchivedBy));
+
+            CreateMap<Customer, ArchivedEntityDto>()
+                .ForMember(dest => dest.EntityType,
+                opt => opt.MapFrom(src => src.EntityType))
+                .ForMember(dest => dest.EntityId,
+                opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.ArchivedAt,
+                opt => opt.MapFrom(src => src.ArchivedAt))
+                .ForMember(dest => dest.ArchivedBy,
+                opt => opt.MapFrom(src => src.ArchivedBy));
+
+            CreateMap<Clothe, ArchivedEntityDto>()
                 .ForMember(dest => dest.EntityType,
                 opt => opt.MapFrom(src => src.EntityType))
                 .ForMember(dest => dest.EntityId,
@@ -244,6 +265,25 @@ namespace RentalAttireBackend.Application.Mapping
                 opt => opt.MapFrom(src => src.User.IsGoogleAccount))
                 .ForMember(dest => dest.Person,
                 opt => opt.MapFrom(src => src.User.Person));
+            #endregion
+
+            #region RegistrationCustomerCommnad -> Customer
+            CreateMap<RegistrationCustomerCommand, Customer>()
+                .ForMember(dest => dest.TotalRentals,
+                opt => opt.Ignore())
+                .ForMember(dest => dest.TotalSpent,
+                opt => opt.Ignore())
+                .ForMember(dest => dest.UserId,
+                opt => opt.Ignore())
+                .ForPath(dest => dest.User.Email,
+                opt => opt.MapFrom(src => src.Email))
+                .ForPath(dest => dest.User.HashedPassword,
+                opt => opt.Ignore())
+                .ForPath(dest => dest.User.Person,
+                opt => opt.MapFrom(src => src.Person))
+                .ForMember(dest => dest.EntityType,
+                opt => opt.MapFrom(src => "Customer"));
+
             #endregion
         }
     }

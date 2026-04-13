@@ -124,7 +124,7 @@ namespace RentalAttireBackend.Application.Authentication.Commands.GoogleLogin
                     Person = newPerson,
                     IsGoogleAccount = true,
                     CreatedBy = payload.Name,
-                    EntityType = "User"
+                    EntityType = "User",
                 };
 
                 var newCustomer = new Customer

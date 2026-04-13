@@ -16,7 +16,7 @@ namespace RentalAttireBackend.Domain.Entities
 
         //NavProp
         [JsonIgnore]
-        public User User { get; set; } = new();
+        public User User { get; set; } = null!;
         [JsonIgnore]
         public List<Rental> Rentals { get; set; } = new();
     }

@@ -16,6 +16,13 @@ export const routes: Routes = [
         }
     },
     {
+        path: 'register',
+        loadComponent: () => {
+            return import('./features/log-in/registration/registration.component')
+            .then(m => m.RegistrationComponent);
+        }
+    },
+    {
         path: 'admin',
         canActivate: [authGuard],
         loadChildren: () => 

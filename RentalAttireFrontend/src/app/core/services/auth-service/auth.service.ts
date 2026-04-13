@@ -11,6 +11,7 @@ import { CurrentUser } from '../../../../environments/current-user';
 import { UserViewModel } from '../../../data/models/DTOs/Users/user-view-model';
 import { UserDTO } from '../../../data/models/DTOs/Users/user-dto';
 import { identifierName } from '@angular/compiler';
+import { RegisterCustomerCommand } from '../../../data/models/DTOs/Customer/register-customer';
 
 @Injectable({
   providedIn: 'root',
@@ -117,5 +118,22 @@ export class AuthService {
         { idToken },
       ),
     );
+  }
+
+  async customerRegistrationAsync(
+    command : RegisterCustomerCommand
+  ) : Promise<Result<AuthenticationResult>> {
+    try {
+      var result = await firstValueFrom(
+        this.httpClient.post<Result<AuthenticationResult>>(`${this.baseUrl}/registration`, command)
+      );
+
+      this.saveTokens(result.data?.accessToken, result.data?.refreshToken);
+      localStorage.setItem(CurrentUser, JSON.stringify(result.data?.user));
+
+      return result;
+    }catch(err : any) {
+      return Result.failure(err.error);
+    }
   }
 }

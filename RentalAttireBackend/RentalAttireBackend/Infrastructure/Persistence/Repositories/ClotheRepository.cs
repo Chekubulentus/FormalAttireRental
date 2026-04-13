@@ -76,6 +76,15 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
             };
         }
 
+        public async Task<List<Clothe>> GetAllArchivedClothesAsync(CancellationToken cancellationToken)
+        {
+            return await _context.Clothes
+                .AsNoTracking()
+                .Include(c => c.Category)
+                .Where(c => !c.IsActive)
+                .ToListAsync(cancellationToken);
+        }
+
         public async Task<PagedResult<Clothe>> GetAllClothesAsync(PaginationParams paginationParams, CancellationToken cancellationToken)
         {
             var clothes = _context.Clothes

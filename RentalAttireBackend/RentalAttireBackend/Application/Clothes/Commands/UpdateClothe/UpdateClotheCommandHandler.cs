@@ -38,7 +38,7 @@ namespace RentalAttireBackend.Application.Clothes.Commands.UpdateClothe
 
             if (request.PerformedBy is null ||
                 request.PerformedById == 0)
-                return Result<bool>.Failure("Employee that creates the transaction cannot be audited.");
+                return Result<bool>.Failure("Employee associated with this transaction could not be audited.");
 
             try
             {

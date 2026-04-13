@@ -551,3 +551,14 @@ $error-bg:   #fdf3f2;
   .form-title      { font-size: 2rem; }
   .form-container  { max-width: 100%; }
 }
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(26, 25, 23, 0.45);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

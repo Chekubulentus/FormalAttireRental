@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using RentalAttireBackend.Application.Authentication.Commands.GoogleLogin;
 using RentalAttireBackend.Application.Authentication.Commands.Login;
 using RentalAttireBackend.Application.Authentication.Commands.RefreshToken;
+using RentalAttireBackend.Application.Authentication.Commands.RegistrationCommand;
 using RentalAttireBackend.Application.Common.Interfaces;
 using RentalAttireBackend.Domain.Entities;
 
@@ -42,6 +43,13 @@ namespace RentalAttireBackend.Controllers.AuthenticationController
             var result = await _mediator.Send(command);
 
             return result.IsSuccess ? Ok(result) : BadRequest(result.ErrorMessage);
+        }
+        [HttpPost("registration")]
+        public async Task<IActionResult> CustomerRegistrationCommandAsync(RegistrationCustomerCommand command)
+        {
+            var result = await _mediator.Send(command);
+
+             return result.IsSuccess ? Ok(result) : BadRequest(result.ErrorMessage);
         }
     }
 }

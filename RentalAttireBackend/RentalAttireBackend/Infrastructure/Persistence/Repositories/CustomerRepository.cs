@@ -51,6 +51,16 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
             };
         }
 
+        public async Task<List<Customer>> GetAllArchivedCustomersAsync(CancellationToken cancellationToken)
+        {
+            return await _context.Customers
+                .AsNoTracking()
+                .Include(c => c.User)
+                .ThenInclude(u => u.Person)
+                .Where(c => !c.IsActive)
+                .ToListAsync(cancellationToken);
+        }
+
         public async Task<List<Customer>> GetAllCustomersAsync(CancellationToken cancellationToken)
         {
             return await _context.Customers

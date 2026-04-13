@@ -1,0 +1,329 @@
+<div class="register-wrapper">
+
+  <!-- ── LEFT PANEL ────────────────────────────────────────── -->
+  <div class="visual-panel">
+
+    <div class="visual-top">
+      <div class="brand">
+        <div class="brand-logo">
+          <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="1" y="1" width="38" height="38" rx="2" stroke="#1a1a1a" stroke-width="1.2"/>
+            <path d="M20 10 C20 10 20 14 20 14 L9 26 Q8 27 9 28 L31 28 Q32 27 31 26 Z"
+                  stroke="#1a1a1a" stroke-width="1.2" fill="none" stroke-linejoin="round"/>
+            <circle cx="20" cy="9" r="1.5" fill="#1a1a1a"/>
+            <line x1="20" y1="7.5" x2="20" y2="5" stroke="#1a1a1a" stroke-width="1.2"/>
+            <path d="M18 5 Q20 3.5 22 5" stroke="#1a1a1a" stroke-width="1.2" fill="none"/>
+          </svg>
+        </div>
+        <span class="brand-name">ÉLÉGANCE</span>
+      </div>
+    </div>
+
+    <div class="visual-center">
+      <div class="visual-text">
+        <p class="visual-eyebrow">Join Us Today</p>
+        <h1 class="visual-headline">
+          Your next<br/>
+          look starts<br/>
+          <em>here.</em>
+        </h1>
+        <p class="visual-body">
+          Create an account to browse our collection,<br/>
+          book rentals, and track your orders.
+        </p>
+      </div>
+
+      <div class="feature-list">
+        <div class="feature-item">
+          <div class="feature-icon">
+            <svg viewBox="0 0 20 20" fill="none">
+              <path d="M2 3h1.5l2 8h7l1.5-6H5" stroke="currentColor" stroke-width="1.3"
+                    stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="8"  cy="13.5" r="1.2" fill="currentColor"/>
+              <circle cx="12" cy="13.5" r="1.2" fill="currentColor"/>
+            </svg>
+          </div>
+          <span>Easy online booking</span>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">
+            <svg viewBox="0 0 20 20" fill="none">
+              <path d="M17 8c0 5-7 9-7 9S3 13 3 8a7 7 0 0 1 14 0z"
+                    stroke="currentColor" stroke-width="1.3"/>
+              <circle cx="10" cy="8" r="2.5" stroke="currentColor" stroke-width="1.3"/>
+            </svg>
+          </div>
+          <span>Nationwide delivery</span>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon">
+            <svg viewBox="0 0 20 20" fill="none">
+              <polyline points="4 10 8 14 16 6" stroke="currentColor" stroke-width="1.3"
+                        stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <span>Curated formal attire collection</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="visual-bottom">
+      <p class="visual-tagline">Est. 2010 &nbsp;·&nbsp; Nationwide Delivery</p>
+    </div>
+
+    <div class="grid-decoration">
+      <div class="grid-line h" style="top: 33%"></div>
+      <div class="grid-line h" style="top: 66%"></div>
+      <div class="grid-line v" style="left: 33%"></div>
+      <div class="grid-line v" style="left: 66%"></div>
+    </div>
+  </div>
+
+  <!-- ── RIGHT PANEL ───────────────────────────────────────── -->
+  <div class="form-panel">
+    <div class="form-container">
+
+      <!-- Header -->
+      <div class="form-header">
+        <h2 class="form-title">Create account</h2>
+        <p class="form-subtitle">Fill in your details to get started</p>
+      </div>
+
+      <!-- ── Section 1: Account ──────────────────────────── -->
+      <div class="form-section">
+        <div class="section-label">
+          <span class="section-num">1</span>
+          Account Details
+        </div>
+
+        <!-- Username -->
+        <div class="field" [class.field--error]="hasError('username')">
+          <label class="field-label">Username <span class="required">*</span></label>
+          <div class="field-input-wrap">
+            <svg class="field-icon" viewBox="0 0 20 20" fill="none">
+              <circle cx="10" cy="7" r="3.5" stroke="currentColor" stroke-width="1.2"/>
+              <path d="M2.5 17.5c0-4.1 3.4-7.5 7.5-7.5s7.5 3.4 7.5 7.5"
+                    stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+            </svg>
+            <input class="field-input" type="text" placeholder="your_username"
+                   autocomplete="username" [(ngModel)]="form.email"/>
+          </div>
+          <span class="field-msg" *ngIf="hasError('username')">{{ errorMsg('username') }}</span>
+        </div>
+
+        <!-- Password row -->
+        <div class="field-row cols-2">
+
+          <div class="field" [class.field--error]="hasError('password')">
+            <label class="field-label">Password <span class="required">*</span></label>
+            <div class="field-input-wrap">
+              <svg class="field-icon" viewBox="0 0 20 20" fill="none">
+                <rect x="3.5" y="9" width="13" height="9.5" rx="1.5" stroke="currentColor" stroke-width="1.2"/>
+                <path d="M7 9V6.5a3 3 0 016 0V9" stroke="currentColor" stroke-width="1.2"/>
+                <circle cx="10" cy="13.5" r="1.2" fill="currentColor"/>
+              </svg>
+              <input class="field-input" [type]="showPassword ? 'text' : 'password'"
+                     placeholder="Min. 8 characters" [(ngModel)]="form.password"/>
+              <button type="button" class="toggle-btn" (click)="togglePassword()">
+                <svg *ngIf="!showPassword" viewBox="0 0 20 20" fill="none">
+                  <path d="M1 10s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6z" stroke="currentColor" stroke-width="1.2"/>
+                  <circle cx="10" cy="10" r="2.5" stroke="currentColor" stroke-width="1.2"/>
+                </svg>
+                <svg *ngIf="showPassword" viewBox="0 0 20 20" fill="none">
+                  <path d="M3 3l14 14M8.5 8.6a2.5 2.5 0 003.4 3.4" stroke="currentColor" stroke-width="1.2"/>
+                  <path d="M6.2 6.3C3.8 7.6 2 10 2 10s3.5 6 8 6c1.5 0 2.9-.5 4-.3" stroke="currentColor" stroke-width="1.2"/>
+                  <path d="M10 4c4.5 0 8 6 8 6s-.9 1.5-2.3 3" stroke="currentColor" stroke-width="1.2"/>
+                </svg>
+              </button>
+            </div>
+            <span class="field-msg" *ngIf="hasError('password')">{{ errorMsg('password') }}</span>
+          </div>
+
+          <div class="field" [class.field--error]="hasError('confirmPassword')">
+            <label class="field-label">Confirm Password <span class="required">*</span></label>
+            <div class="field-input-wrap">
+              <svg class="field-icon" viewBox="0 0 20 20" fill="none">
+                <rect x="3.5" y="9" width="13" height="9.5" rx="1.5" stroke="currentColor" stroke-width="1.2"/>
+                <path d="M7 9V6.5a3 3 0 016 0V9" stroke="currentColor" stroke-width="1.2"/>
+                <polyline points="7 13 9.5 15.5 13.5 10.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <input class="field-input" [type]="showConfirm ? 'text' : 'password'"
+                     placeholder="Repeat password" [(ngModel)]="form.confirmPassword"/>
+              <button type="button" class="toggle-btn" (click)="toggleConfirm()">
+                <svg *ngIf="!showConfirm" viewBox="0 0 20 20" fill="none">
+                  <path d="M1 10s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6z" stroke="currentColor" stroke-width="1.2"/>
+                  <circle cx="10" cy="10" r="2.5" stroke="currentColor" stroke-width="1.2"/>
+                </svg>
+                <svg *ngIf="showConfirm" viewBox="0 0 20 20" fill="none">
+                  <path d="M3 3l14 14M8.5 8.6a2.5 2.5 0 003.4 3.4" stroke="currentColor" stroke-width="1.2"/>
+                  <path d="M6.2 6.3C3.8 7.6 2 10 2 10s3.5 6 8 6c1.5 0 2.9-.5 4-.3" stroke="currentColor" stroke-width="1.2"/>
+                  <path d="M10 4c4.5 0 8 6 8 6s-.9 1.5-2.3 3" stroke="currentColor" stroke-width="1.2"/>
+                </svg>
+              </button>
+            </div>
+            <span class="field-msg" *ngIf="hasError('confirmPassword')">{{ errorMsg('confirmPassword') }}</span>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="section-divider"></div>
+
+      <!-- ── Section 2: Personal Information ────────────── -->
+      <div class="form-section">
+        <div class="section-label">
+          <span class="section-num">2</span>
+          Personal Information
+        </div>
+
+        <div class="field-row cols-3">
+          <div class="field" [class.field--error]="hasError('lastName')">
+            <label class="field-label">Last Name <span class="required">*</span></label>
+            <input class="field-input" type="text" placeholder="e.g. Santos" [(ngModel)]="form.person.lastName"/>
+            <span class="field-msg" *ngIf="hasError('lastName')">{{ errorMsg('lastName') }}</span>
+          </div>
+
+          <div class="field" [class.field--error]="hasError('firstName')">
+            <label class="field-label">First Name <span class="required">*</span></label>
+            <input class="field-input" type="text" placeholder="e.g. Maria" [(ngModel)]="form.person.firstName"/>
+            <span class="field-msg" *ngIf="hasError('firstName')">{{ errorMsg('firstName') }}</span>
+          </div>
+
+          <div class="field">
+            <label class="field-label">Middle Name <span class="optional">optional</span></label>
+            <input class="field-input" type="text" placeholder="e.g. Cruz" [(ngModel)]="form.person.middleName"/>
+          </div>
+        </div>
+
+        <div class="field-row cols-3">
+          <div class="field" [class.field--error]="hasError('age')">
+            <label class="field-label">Age <span class="required">*</span></label>
+            <input class="field-input" type="number" placeholder="e.g. 25" min="1"
+                   [(ngModel)]="form.person.age"/>
+            <span class="field-msg" *ngIf="hasError('age')">{{ errorMsg('age') }}</span>
+          </div>
+
+          <div class="field" [class.field--error]="hasError('gender')">
+            <label class="field-label">Gender <span class="required">*</span></label>
+            <select class="field-input" [(ngModel)]="form.person.gender">
+              <option value="" disabled>Select</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+            </select>
+            <span class="field-msg" *ngIf="hasError('gender')">{{ errorMsg('gender') }}</span>
+          </div>
+
+          <div class="field" [class.field--error]="hasError('maritalStatus')">
+            <label class="field-label">Marital Status <span class="required">*</span></label>
+            <select class="field-input" [(ngModel)]="form.person.maritalStatus">
+              <option value="" disabled>Select</option>
+              <option value="Single">Single</option>
+              <option value="Married">Married</option>
+              <option value="Widowed">Widowed</option>
+              <option value="Separated">Separated</option>
+            </select>
+            <span class="field-msg" *ngIf="hasError('maritalStatus')">{{ errorMsg('maritalStatus') }}</span>
+          </div>
+        </div>
+
+        <div class="field" [class.field--error]="hasError('phoneNumber')">
+          <label class="field-label">Phone Number <span class="required">*</span></label>
+          <div class="field-input-wrap">
+            <svg class="field-icon" viewBox="0 0 20 20" fill="none">
+              <path d="M3 3.5A1.5 1.5 0 014.5 2h.879a1 1 0 01.948.684l.879 2.637a1 1 0 01-.23 1.04L5.5 7.5s1 2.5 3 4.5 4.5 3 4.5 3l1.139-1.476a1 1 0 011.04-.23l2.637.879A1 1 0 0118.5 15.12v.879A1.5 1.5 0 0117 17.5C9.5 17.5 2.5 10.5 3 3.5z"
+                    stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/>
+            </svg>
+            <input class="field-input" type="tel" placeholder="09XXXXXXXXX"
+                   [(ngModel)]="form.person.phoneNumber"/>
+          </div>
+          <span class="field-msg" *ngIf="hasError('phoneNumber')">{{ errorMsg('phoneNumber') }}</span>
+        </div>
+      </div>
+
+      <div class="section-divider"></div>
+
+      <!-- ── Section 3: Address ──────────────────────────── -->
+      <div class="form-section">
+        <div class="section-label">
+          <span class="section-num">3</span>
+          Address
+        </div>
+
+        <div class="field" [class.field--error]="hasError('street')">
+          <label class="field-label">Street / House No. <span class="required">*</span></label>
+          <input class="field-input" type="text" placeholder="e.g. 123 Rizal Street"
+                 [(ngModel)]="form.person.street"/>
+          <span class="field-msg" *ngIf="hasError('street')">{{ errorMsg('street') }}</span>
+        </div>
+
+        <div class="field-row cols-2">
+          <div class="field" [class.field--error]="hasError('barangay')">
+            <label class="field-label">Barangay <span class="required">*</span></label>
+            <input class="field-input" type="text" placeholder="e.g. Barangay 1"
+                   [(ngModel)]="form.person.barangay"/>
+            <span class="field-msg" *ngIf="hasError('barangay')">{{ errorMsg('barangay') }}</span>
+          </div>
+
+          <div class="field" [class.field--error]="hasError('city')">
+            <label class="field-label">City / Municipality <span class="required">*</span></label>
+            <input class="field-input" type="text" placeholder="e.g. Manila"
+                   [(ngModel)]="form.person.city"/>
+            <span class="field-msg" *ngIf="hasError('city')">{{ errorMsg('city') }}</span>
+          </div>
+        </div>
+
+        <div class="field-row cols-2">
+          <div class="field" [class.field--error]="hasError('province')">
+            <label class="field-label">Province <span class="required">*</span></label>
+            <input class="field-input" type="text" placeholder="e.g. Metro Manila"
+                   [(ngModel)]="form.person.province"/>
+            <span class="field-msg" *ngIf="hasError('province')">{{ errorMsg('province') }}</span>
+          </div>
+
+          <div class="field" [class.field--error]="hasError('postalCode')">
+            <label class="field-label">Postal Code <span class="required">*</span></label>
+            <input class="field-input" type="text" placeholder="e.g. 1000"
+                   [(ngModel)]="form.person.postalCode"/>
+            <span class="field-msg" *ngIf="hasError('postalCode')">{{ errorMsg('postalCode') }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Footer ─────────────────────────────────────── -->
+      <div class="form-footer">
+        <span class="footer-error" *ngIf="touched && !isValid">
+          Please fix the errors above before continuing.
+        </span>
+
+        <button type="button" class="btn-back" (click)="goToLogin()" [disabled]="isSubmitting">
+          <svg viewBox="0 0 16 16" fill="none">
+            <polyline points="10 4 6 8 10 12" stroke="currentColor" stroke-width="1.3"
+                      stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Back to Sign in
+        </button>
+
+        <button type="button" class="btn-submit" (click)="submit()" [disabled]="isSubmitting">
+          <ng-container *ngIf="!isSubmitting">
+            <svg viewBox="0 0 16 16" fill="none">
+              <polyline points="3 8 6.5 11.5 13 4.5" stroke="currentColor" stroke-width="1.5"
+                        stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Create Account
+          </ng-container>
+          <ng-container *ngIf="isSubmitting">
+            <span class="btn-spinner"></span>
+            Creating...
+          </ng-container>
+        </button>
+      </div>
+
+      <p class="terms-note">
+        By registering, you agree to our
+        <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>.
+      </p>
+
+    </div>
+  </div>
+
+</div>

@@ -69,6 +69,7 @@ export class CustomerComponent implements OnInit {
       if(!res.isSuccess)
         this.toastrService.error(res.errorMessage ?? 'No customers found.');
       this.customers = res.data?.items ?? [];
+      this.totalCount = res.data?.totalCount ?? 0;
     }).catch(err => {
       this.toastrService.error(err.error);
     }).finally(() => {

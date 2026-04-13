@@ -26,7 +26,7 @@ namespace RentalAttireBackend.Application.Clothes.Commands.ArchiveClothe
 
             if (request.PerformedBy is null ||
                 request.PerformedById == 0)
-                return Result<bool>.Failure("Employee who created the transaction does not exist.");
+                return Result<bool>.Failure("Employee associated with this transcation could not be found.");
             try
             {
                 await _transaction.BeginTransactionAsync(cancellationToken);

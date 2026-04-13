@@ -1,0 +1,518 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap');
+
+// ============================================================
+// Tokens — matches login exactly
+// ============================================================
+$white:      #ffffff;
+$off-white:  #f9f7f5;
+$cream:      #f2ede8;
+$stone:      #e4ddd6;
+$muted:      #9e9590;
+$text:       #1a1917;
+$text-light: #6b6560;
+$border:     #e0dbd5;
+$accent:     #1a1917;
+$gold:       #a07840;
+$gold-dim:   rgba(160, 120, 64, 0.08);
+$error:      #c0392b;
+$error-bg:   #fdf3f2;
+$green:      #27ae60;
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+
+// ============================================================
+// Wrapper — same two-panel split as login
+// ============================================================
+.register-wrapper {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+  font-family: 'DM Sans', sans-serif;
+  background: $white;
+}
+
+
+// ============================================================
+// LEFT — Visual Panel
+// ============================================================
+.visual-panel {
+  position: relative;
+  flex: 0 0 38%;
+  height: 100vh;
+  background: $off-white;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 2.5rem 3rem;
+  overflow: hidden;
+  border-right: 1px solid $border;
+}
+
+.grid-decoration { position: absolute; inset: 0; pointer-events: none; }
+.grid-line {
+  position: absolute;
+  background: $stone;
+  opacity: 0.5;
+  &.h { left: 0; right: 0; height: 1px; }
+  &.v { top: 0; bottom: 0; width: 1px; }
+}
+
+.visual-top { position: relative; z-index: 1; }
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  animation: fadeDown 0.7s ease both;
+}
+
+.brand-logo {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  svg { width: 100%; height: 100%; }
+}
+
+.brand-name {
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.25em;
+  color: $text;
+  text-transform: uppercase;
+}
+
+.visual-center {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  animation: fadeUp 0.8s ease 0.15s both;
+}
+
+.visual-eyebrow {
+  font-size: 0.72rem;
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: $muted;
+  margin-bottom: 0.9rem;
+}
+
+.visual-headline {
+  font-family: 'DM Serif Display', serif;
+  font-size: 3.2rem;
+  font-weight: 400;
+  line-height: 1.1;
+  color: $text;
+  letter-spacing: -0.01em;
+
+  em { font-style: italic; color: $text-light; }
+}
+
+.visual-body {
+  margin-top: 1.2rem;
+  font-size: 0.84rem;
+  color: $text-light;
+  line-height: 1.75;
+  font-weight: 300;
+}
+
+// Feature list
+.feature-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.82rem;
+  color: $text-light;
+  font-weight: 400;
+}
+
+.feature-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: $gold-dim;
+  border: 1px solid rgba(160, 120, 64, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $gold;
+  flex-shrink: 0;
+
+  svg { width: 14px; height: 14px; }
+}
+
+.visual-bottom {
+  position: relative;
+  z-index: 1;
+  animation: fadeIn 1s ease 0.4s both;
+}
+
+.visual-tagline {
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: $muted;
+  font-weight: 300;
+}
+
+
+// ============================================================
+// RIGHT — Form Panel
+// ============================================================
+.form-panel {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  justify-content: center;
+  padding: 3rem 2.5rem;
+  background: $white;
+}
+
+.form-container {
+  width: 100%;
+  max-width: 560px;
+  animation: fadeUp 0.8s ease 0.1s both;
+}
+
+.form-header {
+  margin-bottom: 2rem;
+}
+
+.form-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 2.2rem;
+  font-weight: 400;
+  color: $text;
+  letter-spacing: -0.01em;
+  margin-bottom: 0.35rem;
+}
+
+.form-subtitle {
+  font-size: 0.84rem;
+  color: $text-light;
+  font-weight: 300;
+}
+
+
+// ============================================================
+// Sections
+// ============================================================
+.form-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.section-label {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.63rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: $muted;
+  margin-bottom: 0.1rem;
+}
+
+.section-num {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: $accent;
+  color: $white;
+  font-size: 0.6rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.section-divider {
+  height: 1px;
+  background: $border;
+  margin: 1.4rem 0;
+}
+
+
+// ============================================================
+// Field Rows
+// ============================================================
+.field-row {
+  display: grid;
+  gap: 0.75rem;
+
+  &.cols-2 { grid-template-columns: 1fr 1fr; }
+  &.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+}
+
+
+// ============================================================
+// Individual Fields
+// ============================================================
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+
+  &--error {
+    .field-label   { color: $error; }
+    .field-input-wrap { border-color: $error; background: $error-bg; }
+    .field-input   { background: transparent; }
+  }
+}
+
+.field-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  color: $text;
+  transition: color 0.15s;
+}
+
+.required { color: $error;  font-size: 0.68rem; }
+.optional  { color: $muted; font-size: 0.66rem; font-weight: 300; }
+
+.field-msg {
+  font-size: 0.72rem;
+  color: $error;
+  letter-spacing: 0.01em;
+}
+
+// Wrapped input (with icon)
+.field-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0 0.9rem;
+  border: 1.5px solid $border;
+  border-radius: 8px;
+  background: $off-white;
+  transition: border-color 0.2s, background 0.2s;
+
+  &:focus-within {
+    border-color: $accent;
+    background: $white;
+    box-shadow: 0 0 0 3px rgba(26,25,23,0.05);
+  }
+}
+
+.field-icon {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+  color: $muted;
+}
+
+// Plain input (no wrapper)
+.field-input {
+  height: 40px;
+  padding: 0 0.85rem;
+  border: 1.5px solid $border;
+  border-radius: 8px;
+  background: $off-white;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 300;
+  color: $text;
+  outline: none;
+  width: 100%;
+  transition: border-color 0.2s, background 0.2s;
+  appearance: none;
+
+  &::placeholder { color: $muted; }
+
+  &:focus {
+    border-color: $accent;
+    background: $white;
+    box-shadow: 0 0 0 3px rgba(26,25,23,0.05);
+  }
+
+  // When inside a wrapper — remove own border/bg
+  .field-input-wrap & {
+    height: 40px;
+    border: none;
+    background: transparent;
+    padding: 0;
+    box-shadow: none;
+    flex: 1;
+  }
+
+  // Spin buttons
+  &[type=number]::-webkit-inner-spin-button,
+  &[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; }
+  &[type=number] { -moz-appearance: textfield; }
+}
+
+select.field-input {
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolyline points='4 6 8 10 12 6' stroke='%239e9590' stroke-width='1.3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.7rem center;
+  background-size: 13px;
+  padding-right: 2rem;
+}
+
+.toggle-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: $muted;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  transition: color 0.2s;
+  &:hover { color: $text; }
+  svg { width: 17px; height: 17px; }
+}
+
+
+// ============================================================
+// Footer
+// ============================================================
+.form-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.65rem;
+  margin-top: 2rem;
+  padding-top: 1.4rem;
+  border-top: 1px solid $border;
+}
+
+.footer-error {
+  font-size: 0.7rem;
+  color: $error;
+  margin-right: auto;
+}
+
+.btn-back {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  height: 40px;
+  padding: 0 1rem;
+  border: 1.5px solid $border;
+  border-radius: 8px;
+  background: transparent;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.84rem;
+  font-weight: 500;
+  color: $text-light;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+
+  svg { width: 13px; height: 13px; }
+
+  &:hover:not(:disabled) { background: $off-white; color: $text; }
+  &:disabled { opacity: 0.5; cursor: not-allowed; }
+}
+
+.btn-submit {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 40px;
+  padding: 0 1.4rem;
+  background: $accent;
+  color: $white;
+  border: none;
+  border-radius: 8px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.84rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+
+  svg { width: 14px; height: 14px; }
+
+  &:hover:not(:disabled) {
+    background: #333;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.14);
+  }
+
+  &:disabled { opacity: 0.55; cursor: not-allowed; }
+}
+
+.btn-spinner {
+  width: 13px;
+  height: 13px;
+  border: 1.5px solid rgba(255,255,255,0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: inline-block;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+
+// ============================================================
+// Terms note
+// ============================================================
+.terms-note {
+  margin-top: 1.4rem;
+  font-size: 0.72rem;
+  color: $muted;
+  text-align: center;
+  line-height: 1.6;
+  font-weight: 300;
+
+  a {
+    color: $text-light;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    transition: color 0.2s;
+    &:hover { color: $text; }
+  }
+}
+
+
+// ============================================================
+// Animations
+// ============================================================
+@keyframes fadeDown {
+  from { opacity: 0; transform: translateY(-12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+
+// ============================================================
+// Responsive
+// ============================================================
+@media (max-width: 900px) {
+  .register-wrapper { flex-direction: column; height: auto; overflow: auto; }
+  .visual-panel     { flex: 0 0 auto; height: auto; min-height: 220px; border-right: none; border-bottom: 1px solid $border; padding: 2rem; }
+  .visual-headline  { font-size: 2.4rem; }
+  .feature-list     { display: none; }
+  .form-panel       { padding: 2rem 1.5rem; overflow-y: visible; }
+}
+
+@media (max-width: 520px) {
+  .field-row.cols-2,
+  .field-row.cols-3 { grid-template-columns: 1fr; }
+  .form-title       { font-size: 1.8rem; }
+}
