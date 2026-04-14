@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Customer } from '../../../../data/models/DTOs/Customer/customer';
 import { ToastrService } from 'ngx-toastr';
 import { CustomerService } from '../customer-service/customer.service';
+import { ViewCustomerComponent } from '../view-customer/view-customer.component';
 
 @Component({
   selector: 'app-customers',
@@ -12,6 +13,7 @@ import { CustomerService } from '../customer-service/customer.service';
     CommonModule,
     FormsModule,
     CurrencyPipe,
+    ViewCustomerComponent
     // ArchiveConfirmationComponent,
   ],
   templateUrl: './customer.component.html',
@@ -154,7 +156,9 @@ export class CustomerComponent implements OnInit {
   // ============================================================
   // Modals
   // ============================================================
-  openViewModal(customer: Customer): void    { this.customerToView = customer; }
+  openViewModal(customer: Customer): void    { 
+    this.customerToView = customer; 
+  }
   closeViewModal(): void                         { this.customerToView = null; }
 
   openArchiveModal(customer: Customer): void  { this.customerToArchive = customer; }

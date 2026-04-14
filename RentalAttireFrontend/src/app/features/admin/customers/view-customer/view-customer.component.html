@@ -1,0 +1,209 @@
+<div class="modal-card" (click)="$event.stopPropagation()">
+
+  <!-- ════════════════════════════════════════════════════════
+       LEFT PANEL — Avatar + Stats
+  ═════════════════════════════════════════════════════════ -->
+  <div class="panel-left">
+
+    <!-- Avatar -->
+    <div class="avatar-frame">
+      <img
+        *ngIf="customer.person.profileImagePath && !imgError"
+        [src]="customer.person.profileImagePath"
+        [alt]="customer.person.fullName"
+        class="avatar-img"
+        (error)="onImgError($event)"/>
+      <div
+        *ngIf="!customer.person.profileImagePath || imgError"
+        class="avatar-initials"
+        [style.background]="getAvatarColor(customer.id)">
+        {{ getInitials(customer.person.fullName) }}
+      </div>
+    </div>
+
+    <!-- Name & code -->
+    <div class="panel-left__identity">
+      <h3 class="customer-name">{{ customer.person.fullName }}</h3>
+      <span class="customer-code">{{ customer.customerCode }}</span>
+    </div>
+
+    <!-- Account type pill -->
+    <div class="type-pill type-pill--google" *ngIf="customer.isGoogleAccount">
+      <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.9 8.16c0-.52-.05-1.02-.13-1.5H8v2.84h3.95c-.17.91-.69 1.68-1.47 2.2v1.85h2.38c1.39-1.28 2.19-3.16 2.19-5.39z" fill="#4285F4"/>
+        <path d="M8 15c1.98 0 3.64-.66 4.85-1.78l-2.38-1.85c-.65.44-1.49.7-2.47.7-1.9 0-3.51-1.28-4.09-3.01H1.46v1.9C2.66 13.27 5.17 15 8 15z" fill="#34A853"/>
+        <path d="M3.91 9.06A4.45 4.45 0 0 1 3.68 8c0-.37.06-.72.16-1.06V5.04H1.46A7.01 7.01 0 0 0 1 8c0 1.13.27 2.2.75 3.13l2.16-1.89-.02.82z" fill="#FBBC05"/>
+        <path d="M8 3.58c1.07 0 2.03.37 2.79 1.09l2.09-2.09C11.63 1.39 9.97.67 8 .67 5.17.67 2.66 2.4 1.46 4.87l2.45 1.9C4.49 5.04 6.1 3.58 8 3.58z" fill="#EA4335"/>
+      </svg>
+      Google Account
+    </div>
+    <div class="type-pill type-pill--regular" *ngIf="!customer.isGoogleAccount">
+      <svg viewBox="0 0 16 16" fill="none">
+        <circle cx="8" cy="6" r="3" stroke="currentColor" stroke-width="1.3"/>
+        <path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+      </svg>
+      Regular Account
+    </div>
+
+    <!-- Rental stats -->
+    <div class="stat-cards">
+      <div class="stat-card">
+        <span class="stat-card__value">{{ customer.totalRentals }}</span>
+        <span class="stat-card__label">Total Rentals</span>
+      </div>
+      <div class="stat-card stat-card--gold">
+        <span class="stat-card__value">{{ customer.totalSpent | currency:'PHP':'symbol':'1.0-0' }}</span>
+        <span class="stat-card__label">Total Spent</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-card__value">{{ avgSpentPerRental | currency:'PHP':'symbol':'1.0-0' }}</span>
+        <span class="stat-card__label">Avg. per Rental</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════
+       RIGHT PANEL — Details
+  ═════════════════════════════════════════════════════════ -->
+  <div class="panel-right">
+
+    <!-- Header -->
+    <div class="panel-header">
+      <div class="panel-header__left">
+        <div class="panel-icon">
+          <svg viewBox="0 0 20 20" fill="none">
+            <circle cx="10" cy="7" r="3.5" stroke="currentColor" stroke-width="1.3"/>
+            <path d="M2.5 17.5c0-4.1 3.4-7.5 7.5-7.5s7.5 3.4 7.5 7.5"
+                  stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div>
+          <h2 class="panel-title">Customer Profile</h2>
+          <p class="panel-subtitle">{{ customer.email }}</p>
+        </div>
+      </div>
+      <button class="btn-close" (click)="close()" title="Close">
+        <svg viewBox="0 0 16 16" fill="none">
+          <line x1="4" y1="4" x2="12" y2="12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="12" y1="4" x2="4"  y2="12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Scrollable body -->
+    <div class="panel-body">
+
+      <!-- ── Personal Information ───────────────────────── -->
+      <div class="section-label">Personal Information</div>
+      <div class="attr-list">
+
+        <div class="attr-row">
+          <div class="attr-icon">
+            <svg viewBox="0 0 16 16" fill="none">
+              <circle cx="8" cy="6" r="3" stroke="currentColor" stroke-width="1.3"/>
+              <path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <span class="attr-key">Full Name</span>
+          <span class="attr-val">{{ customer.person.fullName || '—' }}</span>
+        </div>
+
+        <div class="attr-row">
+          <div class="attr-icon">
+            <svg viewBox="0 0 16 16" fill="none">
+              <path d="M2 3.5h12v10a1 1 0 01-1 1H3a1 1 0 01-1-1v-10z" stroke="currentColor" stroke-width="1.3"/>
+              <path d="M2 3.5l6 5 6-5" stroke="currentColor" stroke-width="1.3"/>
+            </svg>
+          </div>
+          <span class="attr-key">Email</span>
+          <span class="attr-val">{{ customer.email || '—' }}</span>
+        </div>
+
+        <div class="attr-row">
+          <div class="attr-icon">
+            <svg viewBox="0 0 16 16" fill="none">
+              <path d="M2.5 2.8A1.2 1.2 0 013.7 1.6h.7a.8.8 0 01.76.55l.7 2.1a.8.8 0 01-.18.83L4.9 6.2s.8 2 2.4 3.6 3.6 2.4 3.6 2.4l.91-1.18a.8.8 0 01.83-.18l2.1.7a.8.8 0 01.55.76v.7a1.2 1.2 0 01-1.2 1.2C7.2 14.2 1.8 8.8 2.5 2.8z"
+                    stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <span class="attr-key">Phone</span>
+          <span class="attr-val">{{ customer.person.phoneNumber || '—' }}</span>
+        </div>
+
+      </div>
+
+      <div class="section-divider"></div>
+
+      <!-- ── Address ─────────────────────────────────────── -->
+      <div class="section-label">Address</div>
+      <div class="attr-list">
+
+        <div class="attr-row">
+          <div class="attr-icon">
+            <svg viewBox="0 0 16 16" fill="none">
+              <path d="M8 1.5C5.5 1.5 3.5 3.5 3.5 6c0 3.5 4.5 8.5 4.5 8.5S12.5 9.5 12.5 6C12.5 3.5 10.5 1.5 8 1.5z"
+                    stroke="currentColor" stroke-width="1.3"/>
+              <circle cx="8" cy="6" r="1.5" stroke="currentColor" stroke-width="1.3"/>
+            </svg>
+          </div>
+          <span class="attr-key">Street</span>
+          <span class="attr-val">{{ customer.person.street || '—' }}</span>
+        </div>
+
+        <div class="attr-row">
+          <div class="attr-icon">
+            <svg viewBox="0 0 16 16" fill="none">
+              <rect x="2" y="4" width="12" height="9" rx="1" stroke="currentColor" stroke-width="1.3"/>
+              <path d="M5 4V3a3 3 0 016 0v1" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <span class="attr-key">Barangay</span>
+          <span class="attr-val">{{ customer.person.barangay || '—' }}</span>
+        </div>
+
+        <div class="attr-row">
+          <div class="attr-icon">
+            <svg viewBox="0 0 16 16" fill="none">
+              <path d="M2 12L5 4l3 5 3-5 3 8" stroke="currentColor" stroke-width="1.3"
+                    stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <span class="attr-key">City</span>
+          <span class="attr-val">{{ customer.person.city || '—' }}</span>
+        </div>
+
+        <div class="attr-row">
+          <div class="attr-icon">
+            <svg viewBox="0 0 16 16" fill="none">
+              <rect x="1" y="5" width="14" height="8" rx="1" stroke="currentColor" stroke-width="1.3"/>
+              <path d="M4 5V3.5a4 4 0 018 0V5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <span class="attr-key">Province</span>
+          <span class="attr-val">{{ customer.person.province || '—' }}</span>
+        </div>
+
+        <div class="attr-row">
+          <div class="attr-icon">
+            <svg viewBox="0 0 16 16" fill="none">
+              <path d="M3 3h10v10H3z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>
+              <path d="M6 3v10M10 3v10M3 6h10M3 10h10" stroke="currentColor" stroke-width="1.3"/>
+            </svg>
+          </div>
+          <span class="attr-key">Postal Code</span>
+          <span class="attr-val">{{ customer.person.postalCode || '—' }}</span>
+        </div>
+
+      </div>
+
+    </div><!-- end panel-body -->
+
+    <!-- Footer -->
+    <div class="panel-footer">
+      <button class="btn-dismiss" (click)="close()">Close</button>
+    </div>
+
+  </div><!-- end panel-right -->
+
+</div>

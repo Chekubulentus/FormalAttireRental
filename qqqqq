@@ -1,0 +1,74 @@
+[33madfcf83[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mfeature/googleauth[m[33m)[m customer filter fixed
+[33m06d0d5f[m customer registration feature
+[33m6511a18[m create account login ui feature
+[33mfaa7fe1[m customer filter fetching
+[33m6a2f9cd[m customer google sign in image path
+[33mbd6ee47[m filter customers endpoint feature
+[33mda318b8[m goole authentication feature
+[33ma39a390[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/feature/googleauth[m[33m, [m[1;31morigin/devs[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m, [m[1;32mdevs[m[33m)[m clothe archive feature
+[33mb142125[m clothe update feature w/ image
+[33mc272855[m view clothe feature
+[33m847c06a[m category ui finished
+[33m935a681[m category edit ui
+[33mdb3392b[m category archive feature
+[33mc112c37[m category archived function backend
+[33m43be5e9[m category component draft ui
+[33m56d0a9f[m create category feature (backend)
+[33m222f90c[m filter category feature (backend)
+[33m03c6193[m clothe create feature
+[33m497e3d5[m clothes filter feature
+[33m1629985[m inventory ui draft version
+[33mcfff0a4[m clothe update method finished
+[33mc702783[m clothe filter endpoint
+[33m54eebf0[m create clothe finished
+[33m69e218d[m category services finished
+[33m5c2929c[m archive confirmation finished
+[33m4e3350c[m logs module
+[33mb9ac082[m logs component search and pill filter finished
+[33m2382a3e[m GetAllAuditLogs modified
+[33m30b5f15[m archive employee finished
+[33m0fd80a9[m notification working
+[33mb9ffa36[m update employee working
+[33m611420e[m edit employee form draft
+[33m6f3698d[m create employee finish
+[33mef61eca[m added add user ui
+[33m6fb39f8[m add employee ui
+[33md63fb0c[m search employee finished
+[33m7d8f6e9[m employee search bar working
+[33m0bb7902[m employees module working
+[33m3b40802[m Users module draft version
+[33meec8483[m added new modules for admin-dashboard
+[33m73968c5[m user view model
+[33mf6fca69[m[33m ([m[1;31morigin/feature/frontend-structure[m[33m, [m[1;32mfeature/frontend-structure[m[33m)[m finished admin layout
+[33m70e29ae[m admin dashboard
+[33m1feccf6[m added auth interceptor
+[33m636f280[m refresh token endpoint
+[33md9f7510[m log-in working
+[33m8ab9708[m log-in user interface
+[33mc9cb057[m added frontend angular
+[33m4662366[m[33m ([m[1;31morigin/feature/auditing[m[33m, [m[1;32mfeature/auditing[m[33m)[m disposables feature
+[33md2c7644[m added authentication
+[33m861e3d4[m modified result messages
+[33m577452a[m finalized update employee
+[33mc19ac94[m update employee audit log
+[33m366cb93[m[33m ([m[1;31morigin/feature/image-employee[m[33m)[m finish upload person image
+[33m8685b82[m reacreated update employee
+[33m72f95ff[m archive and update employee
+[33m4e9ea29[m get employee by id
+[33m68770d6[m[33m ([m[1;31morigin/feature/modifiying-entities[m[33m)[m recreated create employee
+[33m2d2f7bd[m fixed modifiying entites
+[33m9712382[m[33m ([m[1;31morigin/feature/jwt-feature[m[33m)[m finished jwt feature
+[33mcd134a6[m create employees final version
+[33m9a8c460[m create employee w/ user draft v1
+[33mdfb7f29[m paginated get all employees method
+[33m73f9bdb[m search employees feature
+[33m0d6b2cd[m can create employees part 2
+[33me9af0c1[m can add employees
+[33mfb9a298[m get all employees
+[33m2ab3925[m update person
+[33m249dac1[m adding entity relationships
+[33m5786644[m person basic queries
+[33m393bbda[m completed employee & customer relationships
+[33ma51cbc9[m important entities
+[33m47263ac[m Initial Commit
+[33m596c06c[m Initial commit

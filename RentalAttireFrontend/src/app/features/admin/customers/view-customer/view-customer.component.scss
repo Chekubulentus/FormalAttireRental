@@ -1,0 +1,367 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap');
+
+// ============================================================
+// Design Tokens
+// ============================================================
+$surface:      #ffffff;
+$bg:           #f9f7f5;
+$bg-deep:      #f2ede8;
+$border:       #e4ddd6;
+$border-soft:  #ede8e2;
+$gold:         #a07840;
+$gold-dim:     rgba(160, 120, 64, 0.09);
+$gold-border:  rgba(160, 120, 64, 0.22);
+$text:         #1a1917;
+$text-muted:   #9e9590;
+$text-soft:    #6b6560;
+$blue:         #4285F4;
+$blue-dim:     rgba(66, 133, 244, 0.08);
+$blue-border:  rgba(66, 133, 244, 0.22);
+
+
+// ============================================================
+// Host
+// ============================================================
+:host {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+
+// ============================================================
+// Modal Card — two-panel
+// ============================================================
+.modal-card {
+  display: flex;
+  width: 100%;
+  max-width: 700px;
+  max-height: 88vh;
+  background: $surface;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow:
+    0 2px 4px rgba(0,0,0,0.04),
+    0 8px 24px rgba(0,0,0,0.09),
+    0 32px 72px rgba(0,0,0,0.12);
+  animation: cardIn 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+  font-family: 'DM Sans', sans-serif;
+}
+
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(20px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+
+// ============================================================
+// LEFT PANEL
+// ============================================================
+.panel-left {
+  width: 220px;
+  flex-shrink: 0;
+  background: $bg;
+  border-right: 1px solid $border;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 28px 18px 20px;
+  gap: 14px;
+}
+
+// Avatar
+.avatar-frame {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2.5px solid $border;
+  flex-shrink: 0;
+}
+
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatar-initials {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  font-weight: 500;
+  color: #fff;
+  letter-spacing: 0.02em;
+}
+
+// Identity
+.panel-left__identity {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  text-align: center;
+}
+
+.customer-name {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1rem;
+  color: $text;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.customer-code {
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: $gold;
+  background: $gold-dim;
+  border: 1px solid $gold-border;
+  border-radius: 6px;
+  padding: 2px 7px;
+}
+
+// Type pill
+.type-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.72rem;
+  font-weight: 500;
+  border-radius: 20px;
+  padding: 4px 10px;
+  border: 1px solid transparent;
+
+  svg { width: 11px; height: 11px; flex-shrink: 0; }
+
+  &--google  { color: $blue;      background: $blue-dim;  border-color: $blue-border; }
+  &--regular { color: $text-soft; background: $bg-deep;   border-color: $border; }
+}
+
+// Stat cards
+.stat-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  margin-top: 4px;
+}
+
+.stat-card {
+  background: $surface;
+  border: 1px solid $border;
+  border-radius: 10px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  &--gold {
+    background: $gold-dim;
+    border-color: $gold-border;
+  }
+}
+
+.stat-card__value {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.05rem;
+  color: $text;
+  line-height: 1;
+
+  .stat-card--gold & { color: $gold; }
+}
+
+.stat-card__label {
+  font-size: 0.62rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: $text-muted;
+}
+
+
+// ============================================================
+// RIGHT PANEL
+// ============================================================
+.panel-right {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+// Header
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 22px 16px;
+  border-bottom: 1px solid $border-soft;
+  flex-shrink: 0;
+
+  &__left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+}
+
+.panel-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: $gold-dim;
+  border: 1px solid $gold-border;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $gold;
+  flex-shrink: 0;
+  svg { width: 15px; height: 15px; }
+}
+
+.panel-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.1rem;
+  color: $text;
+  margin: 0 0 2px;
+}
+
+.panel-subtitle {
+  font-size: 0.72rem;
+  color: $text-muted;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 220px;
+}
+
+.btn-close {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  border: 1px solid $border;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $text-muted;
+  transition: background 0.15s, color 0.15s;
+  flex-shrink: 0;
+
+  svg { width: 13px; height: 13px; }
+  &:hover { background: $bg; color: $text; }
+}
+
+// Body
+.panel-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 18px 22px 8px;
+
+  &::-webkit-scrollbar { width: 4px; }
+  &::-webkit-scrollbar-track { background: transparent; }
+  &::-webkit-scrollbar-thumb { background: $border; border-radius: 99px; }
+}
+
+// Section
+.section-label {
+  font-size: 0.65rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: $text-muted;
+  margin-bottom: 10px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid $border-soft;
+}
+
+.section-divider {
+  height: 1px;
+  background: $border-soft;
+  margin: 16px 0;
+}
+
+// Attribute rows
+.attr-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.attr-row {
+  display: grid;
+  grid-template-columns: 24px 110px 1fr;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid $border-soft;
+  transition: background 0.12s;
+
+  &:last-child { border-bottom: none; }
+
+  &:hover {
+    background: $bg;
+    margin: 0 -22px;
+    padding-left: 22px;
+    padding-right: 22px;
+  }
+}
+
+.attr-icon {
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $text-muted;
+  opacity: 0.65;
+  svg { width: 13px; height: 13px; }
+}
+
+.attr-key {
+  font-size: 0.75rem;
+  color: $text-muted;
+}
+
+.attr-val {
+  font-size: 0.84rem;
+  font-weight: 500;
+  color: $text;
+  text-align: right;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+// Footer
+.panel-footer {
+  padding: 12px 22px;
+  border-top: 1px solid $border-soft;
+  display: flex;
+  justify-content: flex-end;
+  flex-shrink: 0;
+}
+
+.btn-dismiss {
+  height: 34px;
+  padding: 0 18px;
+  border-radius: 8px;
+  border: 1.5px solid $border;
+  background: transparent;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.83rem;
+  font-weight: 500;
+  color: $text-soft;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+
+  &:hover { background: $bg; color: $text; }
+}
