@@ -66,7 +66,7 @@ namespace RentalAttireBackend.Application.Customers.Commands.ArchiveCustomer
                 }
 
                 await _transactionManager.CommitTransacionAsync(cancellationToken);
-                return Result<bool>.Failure("Customer successfully archived.");
+                return Result<bool>.SuccessWithMessage("Customer successfully archived.");
             }catch(Exception e)
             {
                 await _transactionManager.RollbackTransactionAsync(cancellationToken);

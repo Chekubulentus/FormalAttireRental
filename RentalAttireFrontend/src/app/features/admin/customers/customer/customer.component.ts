@@ -5,6 +5,10 @@ import { Customer } from '../../../../data/models/DTOs/Customer/customer';
 import { ToastrService } from 'ngx-toastr';
 import { CustomerService } from '../customer-service/customer.service';
 import { ViewCustomerComponent } from '../view-customer/view-customer.component';
+import { ArchiveConfirmationComponent } from '../../../../shared/components/archive-confirmation/archive-confirmation/archive-confirmation.component';
+import { ArchiveCustomerByIdCommand } from '../../../../data/models/DTOs/Customer/archive-customer';
+import { UserService } from '../../../../core/services/user-service/user.service';
+import { UserViewModel } from '../../../../data/models/DTOs/Users/user-view-model';
 
 @Component({
   selector: 'app-customers',
@@ -13,8 +17,8 @@ import { ViewCustomerComponent } from '../view-customer/view-customer.component'
     CommonModule,
     FormsModule,
     CurrencyPipe,
-    ViewCustomerComponent
-    // ArchiveConfirmationComponent,
+    ViewCustomerComponent,
+    ArchiveConfirmationComponent
   ],
   templateUrl: './customer.component.html',
   styleUrl: './customer.component.scss',
@@ -41,6 +45,7 @@ export class CustomerComponent implements OnInit {
   customerToView: Customer | null = null;
   customerToArchive: Customer | undefined = undefined;
   isArchiving = false;
+  currentUser : UserViewModel | undefined;
 
   // ── Avatar colors ──────────────────────────────────────────
   private avatarColors = [
@@ -50,10 +55,12 @@ export class CustomerComponent implements OnInit {
 
   constructor(
     private toastrService : ToastrService,
-    private customerService : CustomerService
+    private customerService : CustomerService,
+    private userService : UserService
   ) {}
 
   ngOnInit(): void {
+    this.getCurrentUser();
     this.getAllCustomers();
   }
 
@@ -167,17 +174,39 @@ export class CustomerComponent implements OnInit {
   onArchiveConfirmed(): void {
     if (!this.customerToArchive) return;
     this.isArchiving = true;
-    // TODO: wire to CustomerService.archiveCustomerAsync()
-    // this.customerService.archiveCustomerAsync(this.customerToArchive.id)
-    //   .then(res => {
-    //     if (!res.isSuccess) { this.toastr.error('Failed to archive customer.'); return; }
-    //     this.toastr.success('Customer archived.');
-    //     this.getAllCustomers();
-    //   })
-    //   .catch(err => console.error(err))
-    //   .finally(() => { this.isArchiving = false; this.closeArchiveModal(); });
-    this.isArchiving = false;
-    this.closeArchiveModal();
+
+    const payload : ArchiveCustomerByIdCommand = {
+      id : this.customerToArchive.id,
+      performedBy : this.currentUser?.fullName ?? '',
+      performedById : this.currentUser?.id ?? 0
+    };
+  
+    this.customerService.archiveCustomerByIdAsync(payload)
+    .then(res => {
+      if(!res.isSuccess) 
+        this.toastrService.error(res.errorMessage ?? 'Transaction failed.');
+      this.toastrService.success(res.successMessage);   
+    }).catch(err => {
+      this.toastrService.error(err.error);
+    }).finally(() => {
+      this.isArchiving = false;
+      this.closeArchiveModal();
+    });
+  }
+
+  getCurrentUser() {
+    this.isLoading = true;
+
+    this.userService.getCurrentUserViewModel()
+    .then(res => {
+      if(!res.isSuccess)
+        this.toastrService.error(res.errorMessage ?? 'Current user does not exist.');
+      this.currentUser = res.data ?? undefined;
+    }).catch(err => {
+      this.toastrService.error(err.error);
+    }).finally(() => {
+      this.isLoading = false;
+    });
   }
 
   // ============================================================

@@ -198,16 +198,16 @@
   </div>
 
   <!-- ── Archive Confirmation Modal ───────────────────────── -->
-  <!-- <div class="modal-overlay" *ngIf="customerToArchive" (click)="closeArchiveModal()">
+   <div class="modal-overlay" *ngIf="customerToArchive" (click)="closeArchiveModal()">
     <app-archive-confirmation
-      [recordName]="customerToArchive?.fullName ?? ''"
+      [recordName]="customerToArchive.person.fullName"
       [recordType]="'Customer'"
       [isArchiving]="isArchiving"
       (cancelled)="closeArchiveModal()"
       (confirmed)="onArchiveConfirmed()"
       (click)="$event.stopPropagation()">
     </app-archive-confirmation>
-  </div> -->
+  </div> 
 
   <!-- ── View Customer Modal ───────────────────────────────── -->
   <div class="modal-overlay" *ngIf="customerToView" (click)="closeViewModal()">

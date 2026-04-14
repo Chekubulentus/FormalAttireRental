@@ -6,6 +6,7 @@ import { AuthenticationResult } from '../../../../data/models/Results/authentica
 import { firstValueFrom } from 'rxjs';
 import { PagedResult } from '../../../../data/models/Results/pagedResult';
 import { Customer } from '../../../../data/models/DTOs/Customer/customer';
+import { ArchiveCustomerByIdCommand } from '../../../../data/models/DTOs/Customer/archive-customer';
 
 @Injectable({
   providedIn: 'root'
@@ -37,6 +38,20 @@ export class CustomerService {
 
       return result;
     }catch(err : any) {
+      return Result.failure(err.error);
+    }
+  }
+
+  async archiveCustomerByIdAsync(
+    command : ArchiveCustomerByIdCommand
+  ) : Promise<Result<boolean>> {
+    try {
+      var result = await firstValueFrom(
+        this.httpClient.patch<Result<boolean>>(`${this.customerUrl}`, command)
+      );
+
+      return result;
+    }catch(err: any) {
       return Result.failure(err.error);
     }
   }
