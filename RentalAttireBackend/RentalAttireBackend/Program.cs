@@ -5,6 +5,9 @@ using Microsoft.IdentityModel.Tokens;
 using RentalAttireBackend.Application;
 using RentalAttireBackend.Application.Common.Interfaces;
 using RentalAttireBackend.Application.Common.Models;
+using RentalAttireBackend.Application.Disposables.EntityRestorers.ClotheRestorer;
+using RentalAttireBackend.Application.Disposables.EntityRestorers.CustomerRestorer;
+using RentalAttireBackend.Application.Disposables.EntityRestorers.EmployeeRestorer;
 using RentalAttireBackend.Application.Mapping;
 using RentalAttireBackend.Domain.Interfaces;
 using RentalAttireBackend.Infrastructure.Authentication;
@@ -70,6 +73,10 @@ builder.Services.AddScoped<IAuditLogService, AuditLogService>();
 builder.Services.AddScoped<IClotheRepository, ClotheRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+
+builder.Services.AddScoped<IEntityRestorer, CustomerRestorer>();
+builder.Services.AddScoped<IEntityRestorer, ClotheRestorer>();
+builder.Services.AddScoped<IEntityRestorer, EmployeeRestorer>();
 
 builder.Services.AddHttpContextAccessor();
 

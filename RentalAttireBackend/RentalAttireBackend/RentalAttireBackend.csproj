@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="appsettings.json" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="16.1.1" />
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
     <PackageReference Include="Google.Apis.Auth" Version="1.68.0" />
@@ -36,6 +40,10 @@
     <Folder Include="Application\Users\Commands\" />
     <Folder Include="Controllers\CustomerController\" />
     <Folder Include="Controllers\CashierController\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="appsettings.json" />
   </ItemGroup>
 
 </Project>
