@@ -40,6 +40,8 @@ namespace RentalAttireBackend.Application.Clothes.Commands.ArchiveClothe
                 }
 
                 clothe.IsActive = false;
+                clothe.ArchivedAt = DateTime.UtcNow;
+                clothe.ArchivedBy = request.PerformedBy;
 
                 var updateClothe = await _clotheRepo.UpdateClotheAsync(clothe, cancellationToken);
 

@@ -107,6 +107,7 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Services
             var createCount = await auditLogs.CountAsync(al => al.ActionType.ToLower().Equals("create"));
             var updateCount = await auditLogs.CountAsync(al => al.ActionType.ToLower().Equals("update"));
             var archiveCount = await auditLogs.CountAsync(al => al.ActionType.ToLower().Equals("archived"));
+            var restoreCount = await auditLogs.CountAsync(al => al.ActionType.ToLower().Equals("restored"));
 
             int skippedItemsCount = (currentPage - 1) * itemsPerPage;
 
@@ -126,7 +127,8 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Services
                 LoginCount = loginCount,
                 CreateCount = createCount,
                 UpdateCount = updateCount,
-                ArchiveCount = archiveCount
+                ArchiveCount = archiveCount,
+                RestoreCount = restoreCount
             };
         }
 
@@ -255,6 +257,24 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Services
             };
 
             await _context.AuditLogs.AddAsync(auditLog);
+            return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<bool> RestorationAuditLogAsync<T>(T entity, string performedBy, int performedById, string entityNameRestored) where T : BaseEntity
+        {
+            var restorationLog = new AuditLog
+            {
+                EntityType = typeof(T).Name,
+                EntityId = entity.Id,
+                ActionType = "Restored",
+                ChangedBy = performedBy,
+                ChangedById = performedById,
+                OldValues = null,
+                NewValues = JsonSerializer.Serialize(entity),
+                IpAddress = GetIpAddress()
+            };
+
+            await _context.AuditLogs.AddAsync(restorationLog);
             return await _context.SaveChangesAsync() > 0;
         }
     }

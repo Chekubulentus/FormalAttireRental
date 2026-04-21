@@ -41,6 +41,8 @@ namespace RentalAttireBackend.Application.Customers.Commands.ArchiveCustomer
                     return Result<bool>.Failure("Customer does not exist.");
 
                 customer.IsActive = false;
+                customer.ArchivedAt = DateTime.UtcNow;
+                customer.ArchivedBy = request.PerformedBy;
                 customer?.User?.IsActive = false;
                 customer?.User?.Person.IsActive = false;
 

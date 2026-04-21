@@ -10,6 +10,7 @@
         public int CreateCount { get; set; }
         public int UpdateCount { get; set; }
         public int ArchiveCount { get; set; }
+        public int RestoreCount { get; set; }
         public int TotalPages => (int)Math.Ceiling(TotalCount / (double)ItemsPerPage);
     }
 }

@@ -8,7 +8,7 @@ namespace RentalAttireBackend.Application.Disposables.RestoreRecord
     {
         private readonly Dictionary<string, IEntityRestorer> _restorers;
 
-        public RestoreRecordCommandHandler(List<IEntityRestorer> restorers)
+        public RestoreRecordCommandHandler(IEnumerable<IEntityRestorer> restorers)
         {
             _restorers = restorers.ToDictionary(r => r.EntityType, StringComparer.OrdinalIgnoreCase);
         }
@@ -21,7 +21,7 @@ namespace RentalAttireBackend.Application.Disposables.RestoreRecord
             if (!_restorers.TryGetValue(request.EntityType, out var restorer))
                 return Result<bool>.Failure($"No restorer registered for this record type {request.EntityType}");
 
-            return await restorer.RestoreAsync(request.Id, cancellationToken);
+            return await restorer.RestoreAsync(request.Id, request.PerformedBy, request.PerformedById ,cancellationToken);
         }
     }
 }

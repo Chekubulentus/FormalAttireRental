@@ -9,6 +9,8 @@
         public DateTime? UpdatedAt { get; set; }
         public string ArchivedBy { get; set; } = string.Empty;
         public DateTime? ArchivedAt { get; set; }
+        public string RestoredBy { get; set; } = string.Empty;
+        public DateTime? RestoredAt { get; set; }
         public bool IsActive { get; set; } = true;
         public bool IsDeleted { get; set; } = false;
         public string? EntityType { get; set; } = string.Empty;

@@ -10,4 +10,5 @@ export class LogsReponse{
     createCount: number = 0;
     updateCount: number = 0;
     archiveCount: number = 0;
+    restoreCount : number = 0;
 }

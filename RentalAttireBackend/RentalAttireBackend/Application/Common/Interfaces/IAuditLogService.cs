@@ -30,6 +30,12 @@ namespace RentalAttireBackend.Application.Common.Interfaces
             );
         public Task<bool> LoginAuditLogAsync<T>(T entity, string name, int id) where T : BaseEntity;
         public Task<bool> ViewAuditLogAsync<T>(T viewer, T target, int personId, string personName) where T : BaseEntity;
+        public Task<bool> RestorationAuditLogAsync<T>(
+            T entity,
+            string performedBy,
+            int performedById,
+            string entityNameRestored
+            ) where T : BaseEntity;
 
     }
 }

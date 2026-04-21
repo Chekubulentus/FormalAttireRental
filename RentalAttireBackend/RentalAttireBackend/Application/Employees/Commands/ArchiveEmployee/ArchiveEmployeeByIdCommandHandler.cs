@@ -47,6 +47,8 @@ namespace RentalAttireBackend.Application.Employees.Commands.ArchiveEmployee
                 }
 
                 employee.IsActive = false;
+                employee.ArchivedBy = command.PerformedBy;
+                employee.ArchivedAt = DateTime.UtcNow;
                 employee.User.IsActive = false;
                 employee.User.Person.IsActive = false;
 
