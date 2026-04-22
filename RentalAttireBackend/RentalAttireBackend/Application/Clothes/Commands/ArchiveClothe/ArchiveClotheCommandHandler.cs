@@ -1,7 +1,9 @@
 ﻿using MediatR;
+using RentalAttireBackend.Application.Common.Interfaces;
 using RentalAttireBackend.Application.Common.Models;
 using RentalAttireBackend.Domain.Interfaces;
 using System.Runtime.InteropServices;
+using System.Security.AccessControl;
 
 namespace RentalAttireBackend.Application.Clothes.Commands.ArchiveClothe
 {
@@ -9,14 +11,17 @@ namespace RentalAttireBackend.Application.Clothes.Commands.ArchiveClothe
     {
         private readonly IClotheRepository _clotheRepo;
         private readonly ITransactionManager _transaction;
+        private readonly IAuditLogService _auditService;
 
         public ArchiveClotheCommandHandler(
             IClotheRepository clotheRepo,
-            ITransactionManager transaction            
+            ITransactionManager transaction,
+            IAuditLogService auditService
             )
         {
             _clotheRepo = clotheRepo;
             _transaction = transaction;
+            _auditService = auditService;
         }
 
         public async Task<Result<bool>> Handle(ArchiveClotheCommand request, CancellationToken cancellationToken)
@@ -49,6 +54,19 @@ namespace RentalAttireBackend.Application.Clothes.Commands.ArchiveClothe
                 {
                     await _transaction.RollbackTransactionAsync(cancellationToken);
                     return Result<bool>.Failure("Clothe cannot be archived.");
+                }
+
+                var auditTransaction = await _auditService.ArchiveAuditLogAsync(
+                    clothe,
+                    request.PerformedById,
+                    request.PerformedBy,
+                    clothe.ClotheName
+                    );
+
+                if(!auditTransaction)
+                {
+                    await _transaction.RollbackTransactionAsync(cancellationToken);
+                    return Result<bool>.Failure("Failed to record audit log for this action. No changes were saved.");
                 }
 
                 await _transaction.CommitTransacionAsync(cancellationToken);

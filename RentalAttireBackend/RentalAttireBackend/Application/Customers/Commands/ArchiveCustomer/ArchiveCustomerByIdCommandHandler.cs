@@ -64,7 +64,7 @@ namespace RentalAttireBackend.Application.Customers.Commands.ArchiveCustomer
                 if(!auditTransaction)
                 {
                     await _transactionManager.RollbackTransactionAsync(cancellationToken);
-                    return Result<bool>.Failure("Transaction could not be audited.");
+                    return Result<bool>.Failure("Failed to record audit log for this action. No changes were saved.");
                 }
 
                 await _transactionManager.CommitTransacionAsync(cancellationToken);

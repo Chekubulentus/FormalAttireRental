@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using RentalAttireBackend.Application.Common.Interfaces;
 using RentalAttireBackend.Application.Common.Models;
 using RentalAttireBackend.Domain.Interfaces;
 
@@ -8,14 +9,17 @@ namespace RentalAttireBackend.Application.Categories.Commands.ArchiveCategory
     {
         private readonly ITransactionManager _transaction;
         private readonly ICategoryRepository _categoryRepo;
+        private readonly IAuditLogService _auditService;
 
         public ArchiveCategoryByIdCommandHandler(
             ICategoryRepository categoryRepo,
-            ITransactionManager transaction
+            ITransactionManager transaction,
+            IAuditLogService auditService
             )
         {
             _categoryRepo = categoryRepo;
             _transaction = transaction;
+            _auditService = auditService;
         }
 
         public async Task<Result<bool>> Handle(ArchiveCategoryByIdCommand request, CancellationToken cancellationToken)
@@ -46,6 +50,19 @@ namespace RentalAttireBackend.Application.Categories.Commands.ArchiveCategory
                 {
                     await _transaction.RollbackTransactionAsync(cancellationToken);
                     return Result<bool>.Failure("Category could not be archived.");
+                }
+
+                var auditTransaction = await _auditService.ArchiveAuditLogAsync(
+                    category,
+                    request.PerformedById,
+                    request.PerformedBy,
+                    category.CategoryName
+                    );
+
+                if(!auditTransaction)
+                {
+                    await _transaction.RollbackTransactionAsync(cancellationToken);
+                    return Result<bool>.Failure("Failed to record audit log for this action. No changes were saved.");
                 }
 
                 await _transaction.CommitTransacionAsync(cancellationToken);
