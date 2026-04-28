@@ -10,6 +10,7 @@ using RentalAttireBackend.Application.Clothes.Commands.UpdateClothe;
 using RentalAttireBackend.Application.Clothes.DTOs;
 using RentalAttireBackend.Application.Common.Interfaces;
 using RentalAttireBackend.Application.Common.Models;
+using RentalAttireBackend.Application.Customers.Commands.CustomerRegistration;
 using RentalAttireBackend.Application.Customers.DTOs;
 using RentalAttireBackend.Application.Employees.Commands.CreateEmployee;
 using RentalAttireBackend.Application.Employees.Commands.UpdateEmployee;
@@ -268,13 +269,13 @@ namespace RentalAttireBackend.Application.Mapping
             #endregion
 
             #region RegistrationCustomerCommnad -> Customer
-            CreateMap<RegistrationCustomerCommand, Customer>()
-                .ForMember(dest => dest.TotalRentals,
-                opt => opt.Ignore())
-                .ForMember(dest => dest.TotalSpent,
+            CreateMap<CustomerRegistrationCommand, Customer>()
+                .ForMember(dest => dest.CustomerCode,
                 opt => opt.Ignore())
                 .ForMember(dest => dest.UserId,
                 opt => opt.Ignore())
+                .ForMember(dest => dest.CreatedBy,
+                opt => opt.MapFrom(src => src.PerformedBy))
                 .ForPath(dest => dest.User.Email,
                 opt => opt.MapFrom(src => src.Email))
                 .ForPath(dest => dest.User.HashedPassword,
@@ -283,7 +284,6 @@ namespace RentalAttireBackend.Application.Mapping
                 opt => opt.MapFrom(src => src.Person))
                 .ForMember(dest => dest.EntityType,
                 opt => opt.MapFrom(src => "Customer"));
-
             #endregion
         }
     }

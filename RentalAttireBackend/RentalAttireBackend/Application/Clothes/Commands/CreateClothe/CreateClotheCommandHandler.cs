@@ -76,7 +76,7 @@ namespace RentalAttireBackend.Application.Clothes.Commands.CreateClothe
                 if (createClothe == 0)
                 {
                     await _transaction.RollbackTransactionAsync(cancellationToken);
-                    return Result<bool>.Failure("Clothe cannot be created.");
+                    return Result<bool>.Failure("Failed to create clothe record.");
                 }
 
                 var auditClothe = await _auditService.CreateAuditLogAsync(

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using RentalAttireBackend.Application.Clothes.Queries.FilterClothes;
 using RentalAttireBackend.Application.Common.Models;
 using RentalAttireBackend.Application.Customers.Commands.ArchiveCustomer;
+using RentalAttireBackend.Application.Customers.Commands.CustomerRegistration;
 using RentalAttireBackend.Application.Customers.Queries.FilterCustomers;
 
 namespace RentalAttireBackend.Controllers.AdminController
@@ -41,6 +42,13 @@ namespace RentalAttireBackend.Controllers.AdminController
 
         [HttpPatch]
         public async Task<IActionResult> ArchiveCustomerByIdAsync(ArchiveCustomerByIdCommand command)
+        {
+            var result = await _mediator.Send(command);
+
+            return result.IsSuccess ? Ok(result) : BadRequest(result.ErrorMessage);
+        }
+        [HttpPost]
+        public async Task<IActionResult> CustomerRegistrationAsync(CustomerRegistrationCommand command)
         {
             var result = await _mediator.Send(command);
 
