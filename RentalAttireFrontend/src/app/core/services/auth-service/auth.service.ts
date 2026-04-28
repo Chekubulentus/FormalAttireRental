@@ -23,6 +23,7 @@ export class AuthService {
   ) {}
 
   private baseUrl = `${BaseApiUrl}/Authentication`;
+  private customerUrl = `${BaseApiUrl}/Customer`
   private accessTokenKey = `${AccessTokenKey}`;
   private refreshTokenKey = `${RefreshTokenKey}`;
   private isLoggingOut = false;
@@ -125,7 +126,7 @@ export class AuthService {
   ) : Promise<Result<AuthenticationResult>> {
     try {
       var result = await firstValueFrom(
-        this.httpClient.post<Result<AuthenticationResult>>(`${this.baseUrl}/registration`, command)
+        this.httpClient.post<Result<AuthenticationResult>>(`${this.customerUrl}`, command)
       );
 
       this.saveTokens(result.data?.accessToken, result.data?.refreshToken);

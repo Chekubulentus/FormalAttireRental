@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ApplicationConfig, Component, EventEmitter, Input, Output } from '@angular/core';
+import { ApplicationConfig, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { RegisterCustomerCommand } from '../../../data/models/DTOs/Customer/register-customer';
@@ -18,7 +18,7 @@ import { AuthService } from '../../../core/services/auth-service/auth.service';
   templateUrl: './registration.component.html',
   styleUrl: './registration.component.scss',
 })
-export class RegistrationComponent {
+export class RegistrationComponent implements OnInit{
   @Output() closed = new EventEmitter<void>();
 
   form: RegisterCustomerCommand = new RegisterCustomerCommand();
@@ -35,6 +35,24 @@ export class RegistrationComponent {
     private toastrService : AppToastrService,
     private authService : AuthService
   ) {}
+
+  ngOnInit(): void {
+    this.form.email = 'obloks213';
+    this.form.password = 'obloks213';
+    this.form.confirmPassword = 'obloks213';
+    this.form.person.lastName = 'Santos';
+    this.form.person.firstName = 'Maria';
+    this.form.person.middleName = 'Cruz';
+    this.form.person.age = 23;
+    this.form.person.gender = 'Male';
+    this.form.person.maritalStatus = 'Single';
+    this.form.person.street = 'Rizal Street 213';
+    this.form.person.barangay = 'Barangay 2';
+    this.form.person.city = 'Manila';
+    this.form.person.province = 'Metro Pero Manila';
+    this.form.person.postalCode = '1332';
+    this.form.person.phoneNumber = '09321654987';
+  }
 
   // ============================================================
   // Validation

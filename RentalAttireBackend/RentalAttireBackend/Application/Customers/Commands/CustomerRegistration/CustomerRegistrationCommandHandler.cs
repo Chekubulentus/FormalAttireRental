@@ -40,9 +40,6 @@ namespace RentalAttireBackend.Application.Customers.Commands.CustomerRegistratio
             if (request is null)
                 return Result<AuthenticationResult>.Failure("Invalid request.");
 
-            if (string.IsNullOrEmpty(request.PerformedBy) || request.PerformedById == 0)
-                return Result<AuthenticationResult>.Failure("Employee associated with this transaction could not be found.");
-
             try
             {
                 await _transactionManager.BeginTransactionAsync(cancellationToken);
