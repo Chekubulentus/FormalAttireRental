@@ -43,6 +43,10 @@ namespace RentalAttireBackend.Domain.Interfaces
             int id,
             CancellationToken cancellationToken
             );
+
+        public Task<List<Category>> GetAllArchivedCategoriesAsync(
+            CancellationToken ct
+            );
         #endregion
 
         #region Commands

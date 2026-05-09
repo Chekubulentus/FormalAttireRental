@@ -74,6 +74,14 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
             };
         }
 
+        public async Task<List<Category>> GetAllArchivedCategoriesAsync(CancellationToken ct)
+        {
+            return await _context.Categories
+                .AsNoTracking()
+                .Where(c => !c.IsActive && !c.IsDeleted)
+                .ToListAsync(ct);
+        }
+
         public async Task<List<Category>> GetAllCategoriesAsync(CancellationToken cancellationToken)
         {
             return await _context.Categories

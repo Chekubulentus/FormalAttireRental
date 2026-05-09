@@ -51,6 +51,13 @@ export const ADMIN_ROUTES: Routes = [
           );
         },
       },
+      {
+        path: 'disposables',
+        loadComponent: () => {
+          return import('./disposables/disposables/disposables.component')
+          .then(m => m.DisposablesComponent)
+        }
+      }
     ],
   },
 ];

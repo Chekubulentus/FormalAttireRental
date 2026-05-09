@@ -70,8 +70,8 @@ export class CategoryComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.getAllCategories();
     this.getCurrentUser();
+    this.getAllCategories();
   }
 
   // ============================================================
@@ -84,9 +84,8 @@ export class CategoryComponent implements OnInit {
       this.currentPage,
       this.itemsPerPage
     ).then(res => {
-      console.log(`Searching for: ${this.searchQuery}`);
       if(!res.isSuccess)
-        console.log(`${res.errorMessage ?? 'Categories not found.'}`);
+        this.toastrService.error(`${res.errorMessage ?? 'Categories not found.'}`);
       this.categories = res.data?.items ?? [];
       this.totalCount = res.data?.totalCount ?? 1;
       this.totalPages = res.data?.totalPages ?? 1;
@@ -108,7 +107,6 @@ export class CategoryComponent implements OnInit {
       this.toastrService.error(err.error);
     }).finally(() => {
       this.isLoading = false;
-      console.log(`Current User: ${JSON.stringify(this.currentUser)}`);
     })
   }
 
@@ -222,6 +220,8 @@ export class CategoryComponent implements OnInit {
       performedById : this.currentUser?.id ?? 0
     };
 
+    console.log(`Archive Category Payload: ${JSON.stringify(payload)}`);
+
     this.categoryService.archiveCategoryByIdAsync(payload)
     .then(res => {
       if(!res.isSuccess)
@@ -232,6 +232,7 @@ export class CategoryComponent implements OnInit {
     }).finally(() => {
       this.isArchiving = false;
       this.closeArchiveModal();
+      this.getAllCategories();
     });
   }
 

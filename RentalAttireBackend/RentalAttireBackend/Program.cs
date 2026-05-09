@@ -8,6 +8,8 @@ using RentalAttireBackend.Application.Common.Models;
 using RentalAttireBackend.Application.Disposables.EntityRestorers.ClotheRestorer;
 using RentalAttireBackend.Application.Disposables.EntityRestorers.CustomerRestorer;
 using RentalAttireBackend.Application.Disposables.EntityRestorers.EmployeeRestorer;
+using RentalAttireBackend.Application.Disposables.ViewArchivedRecords.ViewCategoryRecord;
+using RentalAttireBackend.Application.Disposables.ViewArchivedRecords.ViewClotheRecord;
 using RentalAttireBackend.Application.Mapping;
 using RentalAttireBackend.Domain.Interfaces;
 using RentalAttireBackend.Infrastructure.Authentication;
@@ -77,6 +79,10 @@ builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<IEntityRestorer, CustomerRestorer>();
 builder.Services.AddScoped<IEntityRestorer, ClotheRestorer>();
 builder.Services.AddScoped<IEntityRestorer, EmployeeRestorer>();
+
+builder.Services.AddScoped<IViewArchivedEntity, ViewCategoryRecord>();
+builder.Services.AddScoped<IViewArchivedEntity, ViewClotheRecord>();
+
 
 builder.Services.AddHttpContextAccessor();
 

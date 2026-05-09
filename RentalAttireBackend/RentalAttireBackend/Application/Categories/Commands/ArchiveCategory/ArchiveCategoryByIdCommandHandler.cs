@@ -43,6 +43,8 @@ namespace RentalAttireBackend.Application.Categories.Commands.ArchiveCategory
                 }
 
                 category.IsActive = false;
+                category.ArchivedAt = DateTime.UtcNow;
+                category.ArchivedBy = request.PerformedBy;
 
                 var updateCategory = await _categoryRepo.UpdateCategoryAsync(category, cancellationToken);
 

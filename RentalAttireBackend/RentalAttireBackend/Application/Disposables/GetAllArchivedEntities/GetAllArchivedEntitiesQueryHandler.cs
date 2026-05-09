@@ -12,28 +12,26 @@ namespace RentalAttireBackend.Application.Disposables.GetAllArchivedEntities
     public class GetAllArchivedEntitiesQueryHandler : IRequestHandler<GetAllArchivedEntitiesQuery, Result<PagedResult<ArchivedEntityDto>>>
     {
         private readonly IEmployeeRepository _employeeRepo;
-        private readonly IUserRepository _userRepo;
-        private readonly IPersonRepository _personRepo;
         private readonly IMapper _mapper;
         private readonly ICustomerRepository _customerRepo;
         private readonly IClotheRepository _clotheRepo;
+        private readonly ICategoryRepository _categoryRepo;
 
         public GetAllArchivedEntitiesQueryHandler
             (
             IEmployeeRepository employeeRepo,
-            IPersonRepository personRepo,
-            IUserRepository userRepo,
             IMapper mapper,
             ICustomerRepository customerRepo,
-            IClotheRepository clotheRepo
+            IClotheRepository clotheRepo,
+            ICategoryRepository categoryRepo
             )
         {
             _employeeRepo = employeeRepo;
-            _userRepo = userRepo;
-            _personRepo = personRepo;
             _mapper = mapper;
             _customerRepo = customerRepo;
             _clotheRepo = clotheRepo;
+            _categoryRepo = categoryRepo;
+            
         }
         public async Task<Result<PagedResult<ArchivedEntityDto>>> Handle(GetAllArchivedEntitiesQuery request, 
             CancellationToken cancellationToken)
@@ -53,7 +51,11 @@ namespace RentalAttireBackend.Application.Disposables.GetAllArchivedEntities
             //Clothes
             archivedEntities.Items.AddRange(
                 _mapper.Map<List<ArchivedEntityDto>>(await _clotheRepo.GetAllArchivedClothesAsync(cancellationToken))
-                ); 
+                );
+
+            archivedEntities.Items.AddRange(
+                _mapper.Map<List<ArchivedEntityDto>>(await _categoryRepo.GetAllArchivedCategoriesAsync(cancellationToken))
+                );
 
             archivedEntities.TotalCount = archivedEntities.Items.Count();
             archivedEntities.PageNumber = request.PaginationParams.CurrentPage;

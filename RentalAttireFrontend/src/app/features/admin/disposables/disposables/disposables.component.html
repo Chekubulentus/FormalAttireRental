@@ -1,0 +1,315 @@
+<div class="disposables-page">
+
+  <!-- ── Page Header ───────────────────────────────────────── -->
+  <div class="page-header">
+    <div class="page-header__left">
+      <span class="eyebrow">System · Disposables</span>
+      <h1>Archived Records</h1>
+      <p class="page-subtitle">Restore records back to active or permanently remove them from the system.</p>
+    </div>
+  </div>
+
+  <!-- ── Stats Bar ─────────────────────────────────────────── -->
+  <div class="stats-bar">
+    <div class="stat">
+      <span class="stat-value">{{ totalCount }}</span>
+      <span class="stat-label">Total Archived</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat">
+      <span class="stat-value employee">{{ employeeCount }}</span>
+      <span class="stat-label">Employees</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat">
+      <span class="stat-value customer">{{ customerCount }}</span>
+      <span class="stat-label">Customers</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat">
+      <span class="stat-value clothe">{{ clotheCount }}</span>
+      <span class="stat-label">Clothes</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat">
+      <span class="stat-value category">{{ categoryCount }}</span>
+      <span class="stat-label">Categories</span>
+    </div>
+  </div>
+
+  <!-- ── Toolbar ───────────────────────────────────────────── -->
+  <div class="toolbar">
+    <div class="search-wrap">
+      <svg class="search-icon" viewBox="0 0 20 20" fill="none">
+        <circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.5"/>
+        <line x1="13.5" y1="13.5" x2="17" y2="17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      <input
+        class="search-input"
+        type="text"
+        placeholder="Search by type, ID, or archived by..."
+        [(ngModel)]="searchQuery"/>
+    </div>
+
+    <select class="filter-select" [(ngModel)]="filterType">
+      <option value="">All Types</option>
+      <option value="Employee">Employee</option>
+      <option value="Customer">Customer</option>
+      <option value="Clothe">Clothe</option>
+      <option value="Category">Category</option>
+    </select>
+
+    <button class="btn-clear" *ngIf="hasActiveFilters" (click)="clearFilters()">
+      <svg viewBox="0 0 16 16" fill="none">
+        <line x1="4" y1="4" x2="12" y2="12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+        <line x1="12" y1="4" x2="4"  y2="12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+      </svg>
+      Clear
+    </button>
+
+    <span class="total-count">{{ filteredRecords.length }} record{{ filteredRecords.length !== 1 ? 's' : '' }}</span>
+  </div>
+
+  <!-- ── Table ─────────────────────────────────────────────── -->
+  <div class="table-wrap">
+
+    <!-- Table Header -->
+    <div class="table-header">
+      <span class="col col--type">Type</span>
+      <span class="col col--by">Archived By</span>
+      <span class="col col--date">Archived At</span>
+      <span class="col col--actions">Actions</span>
+    </div>
+
+    <!-- Loading Skeleton -->
+    <div class="skeleton-list" *ngIf="isLoading">
+      <div class="skeleton-row" *ngFor="let i of [1,2,3,4,5]">
+        <div class="skeleton-cell narrow"></div>
+        <div class="skeleton-cell"></div>
+        <div class="skeleton-cell"></div>
+        <div class="skeleton-cell narrow"></div>
+      </div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="!isLoading && filteredRecords.length === 0">
+      <svg viewBox="0 0 48 48" fill="none">
+        <rect x="6" y="10" width="36" height="28" rx="3" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M16 24h16M16 30h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M24 10V6M20 6h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      <p class="empty-title">No archived records</p>
+      <p class="empty-sub">
+        {{ hasActiveFilters ? 'Try adjusting your search or filter.' : 'Archived records will appear here.' }}
+      </p>
+      <button class="btn-clear-empty" *ngIf="hasActiveFilters" (click)="clearFilters()">Clear filters</button>
+    </div>
+
+    <!-- Records List -->
+    <div class="record-list" *ngIf="!isLoading && filteredRecords.length > 0">
+      <div class="record-row"
+           *ngFor="let record of filteredRecords; let i = index"
+           [style.animation-delay]="(i * 0.03) + 's'">
+
+        <!-- Type -->
+        <div class="col col--type">
+          <div class="type-badge" [class]="getEntityTypeClass(record.entityType)">
+
+            <!-- Employee icon -->
+            <svg *ngIf="record.entityType === 'Employee'" viewBox="0 0 16 16" fill="none">
+              <circle cx="8" cy="5.5" r="2.5" stroke="currentColor" stroke-width="1.3"/>
+              <path d="M2.5 14c0-3 2.5-5 5.5-5s5.5 2 5.5 5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+              <rect x="5" y="8.5" width="6" height="2" rx="0.5" stroke="currentColor" stroke-width="1"/>
+            </svg>
+
+            <!-- Customer icon -->
+            <svg *ngIf="record.entityType === 'Customer'" viewBox="0 0 16 16" fill="none">
+              <circle cx="8" cy="5.5" r="2.5" stroke="currentColor" stroke-width="1.3"/>
+              <path d="M2.5 14c0-3 2.5-5 5.5-5s5.5 2 5.5 5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+            </svg>
+
+            <!-- Clothe icon -->
+            <svg *ngIf="record.entityType === 'Clothe'" viewBox="0 0 16 16" fill="none">
+              <path d="M5 2h6l2 3-3 1v7H6V6L3 5z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>
+              <path d="M5 2C5 3.1 6.3 4 8 4s3-0.9 3-2" stroke="currentColor" stroke-width="1.3"/>
+            </svg>
+
+            <!-- Category icon -->
+            <svg *ngIf="record.entityType === 'Category'" viewBox="0 0 16 16" fill="none">
+              <path d="M2 2h5l7 7-5 5-7-7V2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>
+              <circle cx="5.5" cy="5.5" r="1" fill="currentColor"/>
+            </svg>
+
+            {{ record.entityType }}
+          </div>
+        </div>
+
+        <!-- Archived By -->
+        <div class="col col--by">
+          <div class="by-cell">
+            <div class="by-avatar">{{ record.archivedBy?.charAt(0)?.toUpperCase() }}</div>
+            <span class="by-name">{{ record.archivedBy }}</span>
+          </div>
+        </div>
+
+        <!-- Archived At -->
+        <div class="col col--date">
+          <div class="date-cell">
+            <span class="date-main">{{ record.archivedAt | date:'MMM d, y' }}</span>
+            <span class="date-time">{{ record.archivedAt | date:'h:mm a' }}</span>
+          </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="col col--actions">
+          <button class="action-btn action-btn--view"
+                  title="View record"
+                  (click)="openViewModal(record)">
+            <svg viewBox="0 0 16 16" fill="none">
+              <circle cx="8" cy="8" r="3" stroke="currentColor" stroke-width="1.3"/>
+              <path d="M1 8s2.5-5 7-5 7 5 7 5-2.5 5-7 5-7-5-7-5z" stroke="currentColor" stroke-width="1.3"/>
+            </svg>
+            View
+          </button>
+
+          <button class="action-btn action-btn--restore"
+                  title="Restore record"
+                  (click)="openConfirm(record, 'restore')">
+            <svg viewBox="0 0 16 16" fill="none">
+              <path d="M13 8A5 5 0 1 1 8 3a5 5 0 0 1 3.5 1.5L13 6"
+                    stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+              <polyline points="13 2 13 6 9 6"
+                        stroke="currentColor" stroke-width="1.4"
+                        stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Restore
+          </button>
+
+          <button class="action-btn action-btn--delete"
+                  title="Permanently delete"
+                  (click)="openConfirm(record, 'delete')">
+            <svg viewBox="0 0 16 16" fill="none">
+              <polyline points="3 5 4 5 13 5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+              <path d="M5 5V4a1 1 0 011-1h4a1 1 0 011 1v1" stroke="currentColor" stroke-width="1.3"/>
+              <path d="M6 7v4M10 7v4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+              <path d="M4 5l.7 8a1 1 0 001 .9h4.6a1 1 0 001-.9L12 5"
+                    stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+            </svg>
+            Delete
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- end .table-wrap -->
+
+  <!-- ── Pagination ────────────────────────────────────────── -->
+  <div class="pagination" *ngIf="!isLoading && records.length > 0">
+    <span class="pagination__info">
+      Showing {{ rangeStart }}–{{ rangeEnd }} of {{ totalCount }} records
+    </span>
+    <div class="pagination__controls">
+      <button class="page-btn" [disabled]="currentPage === 1" (click)="goToPage(currentPage - 1)">
+        <svg viewBox="0 0 16 16" fill="none">
+          <polyline points="10 4 6 8 10 12" stroke="currentColor" stroke-width="1.3"
+            stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <ng-container *ngFor="let page of pageNumbers">
+        <span class="page-ellipsis" *ngIf="page === -1">…</span>
+        <button *ngIf="page !== -1" class="page-btn"
+          [class.active]="page === currentPage" (click)="goToPage(page)">
+          {{ page }}
+        </button>
+      </ng-container>
+      <button class="page-btn" [disabled]="currentPage === totalPages" (click)="goToPage(currentPage + 1)">
+        <svg viewBox="0 0 16 16" fill="none">
+          <polyline points="6 4 10 8 6 12" stroke="currentColor" stroke-width="1.3"
+            stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+
+  <!-- ════════════════════════════════════════════════════════
+       CONFIRMATION MODAL
+  ═════════════════════════════════════════════════════════ -->
+  <div class="modal-overlay" *ngIf="pendingRecord" (click)="closeConfirm()">
+    <div class="confirm-card" (click)="$event.stopPropagation()">
+
+      <!-- Restore confirmation -->
+      <ng-container *ngIf="pendingAction === 'restore'">
+        <div class="confirm-icon confirm-icon--restore">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M20 12A8 8 0 1 1 6 5.3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            <polyline points="20 3 20 9 14 9" stroke="currentColor" stroke-width="1.5"
+                      stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h3 class="confirm-title">Restore Record</h3>
+        <p class="confirm-body">
+          Are you sure you want to restore this
+          <strong>{{ pendingRecord.entityType }}</strong> record
+          <strong>(#{{ pendingRecord.entityId }})</strong>?
+          It will be moved back to active and visible across the system.
+        </p>
+        <div class="confirm-record-chip confirm-record-chip--restore">
+          <svg viewBox="0 0 16 16" fill="none">
+            <path d="M13 8A5 5 0 1 1 8 3a5 5 0 0 1 3.5 1.5L13 6"
+                  stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+            <polyline points="13 2 13 6 9 6" stroke="currentColor" stroke-width="1.4"
+                      stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          {{ pendingRecord.entityType }} · #{{ pendingRecord.entityId }}
+        </div>
+        <div class="confirm-actions">
+          <button class="btn-cancel" (click)="closeConfirm()" [disabled]="isConfirming">Cancel</button>
+          <button class="btn-confirm btn-confirm--restore" (click)="onConfirmed()" [disabled]="isConfirming">
+            <span class="btn-spinner" *ngIf="isConfirming"></span>
+            <ng-container *ngIf="!isConfirming">Yes, Restore</ng-container>
+          </button>
+        </div>
+      </ng-container>
+
+      <!-- Delete confirmation -->
+      <ng-container *ngIf="pendingAction === 'delete'">
+        <div class="confirm-icon confirm-icon--delete">
+          <svg viewBox="0 0 24 24" fill="none">
+            <polyline points="4 7 6 7 20 7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M8 7V5a2 2 0 012-2h4a2 2 0 012 2v2" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M10 11v6M14 11v6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M5 7l1 13a2 2 0 002 2h8a2 2 0 002-2l1-13"
+                  stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h3 class="confirm-title">Permanently Delete</h3>
+        <p class="confirm-body">
+          This will <strong>permanently remove</strong> this
+          <strong>{{ pendingRecord.entityType }}</strong> record
+          <strong>(#{{ pendingRecord.entityId }})</strong>
+          from the system. <span class="warn-text">This action cannot be undone.</span>
+        </p>
+        <div class="confirm-record-chip confirm-record-chip--delete">
+          <svg viewBox="0 0 16 16" fill="none">
+            <polyline points="3 5 4 5 13 5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+            <path d="M5 5V4a1 1 0 011-1h4a1 1 0 011 1v1" stroke="currentColor" stroke-width="1.3"/>
+            <path d="M4 5l.7 8a1 1 0 001 .9h4.6a1 1 0 001-.9L12 5"
+                  stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+          </svg>
+          {{ pendingRecord.entityType }} · #{{ pendingRecord.entityId }}
+        </div>
+        <div class="confirm-actions">
+          <button class="btn-cancel" (click)="closeConfirm()" [disabled]="isConfirming">Cancel</button>
+          <button class="btn-confirm btn-confirm--delete" (click)="onConfirmed()" [disabled]="isConfirming">
+            <span class="btn-spinner btn-spinner--light" *ngIf="isConfirming"></span>
+            <ng-container *ngIf="!isConfirming">Yes, Delete Permanently</ng-container>
+          </button>
+        </div>
+      </ng-container>
+
+    </div>
+  </div>
+
+</div>

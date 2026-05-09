@@ -74,7 +74,6 @@ export class AdminSidebarComponent implements OnInit {
       if(!res.isSuccess)
         this.toastrService.error(res.errorMessage ?? 'Current user cannot be found.');
       this.currentUser = res.data;
-      console.log(`Current User On SDIEBAR: ${JSON.stringify(this.currentUser)}`);
     }).catch(err => {
       this.toastrService.error(err.error);
     })

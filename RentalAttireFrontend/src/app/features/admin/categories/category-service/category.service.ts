@@ -62,7 +62,7 @@ export class CategoryService {
   ) : Promise<Result<boolean>> {
     try {
       var result = await firstValueFrom(
-        this.httpClient.patch<Result<boolean>>(`${this.categoryUrl}`, { commnad})
+        this.httpClient.patch<Result<boolean>>(`${this.categoryUrl}`, commnad)
       );
 
       return result;
