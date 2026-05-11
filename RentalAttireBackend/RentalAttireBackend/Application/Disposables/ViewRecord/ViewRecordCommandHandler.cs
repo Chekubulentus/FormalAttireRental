@@ -16,7 +16,14 @@ namespace RentalAttireBackend.Application.Disposables.ViewRecord
 
         public async Task<Result<ViewRecordResponse>> Handle(ViewRecordCommand request, CancellationToken cancellationToken)
         {
+            if (string.IsNullOrEmpty(request.EntityType) ||
+                request.Id == 0)
+                return Result<ViewRecordResponse>.Failure("Invalid request. Please try again.");
 
+            if (!_viwers.TryGetValue(request.EntityType, out var recordViwer))
+                return Result<ViewRecordResponse>.Failure($"No viewer handler registered for type {request.EntityType}.");
+
+            return await recordViwer.GetArchivedRecordAsync(request.Id, request.EntityType, cancellationToken);
         }
     }
 }

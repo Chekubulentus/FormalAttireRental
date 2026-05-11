@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using RentalAttireBackend.Application.Common.Models;
 using RentalAttireBackend.Application.Disposables.GetAllArchivedEntities;
 using RentalAttireBackend.Application.Disposables.RestoreRecord;
+using RentalAttireBackend.Application.Disposables.ViewRecord;
 
 namespace RentalAttireBackend.Controllers.AdminController
 {
@@ -30,6 +31,13 @@ namespace RentalAttireBackend.Controllers.AdminController
         public async Task<IActionResult> RestoreArchivedRecordAsync(RestoreRecordCommand command)
         {
             var result = await _mediator.Send(command);
+
+            return result.IsSuccess ? Ok(result) : BadRequest(result.ErrorMessage);
+        }
+        [HttpGet("view-record")]
+        public async Task<IActionResult> ViewArchivedRecordAsync(int id, string entityType)
+        {
+            var result = await _mediator.Send(new ViewRecordCommand { Id = id, EntityType = entityType});
 
             return result.IsSuccess ? Ok(result) : BadRequest(result.ErrorMessage);
         }
