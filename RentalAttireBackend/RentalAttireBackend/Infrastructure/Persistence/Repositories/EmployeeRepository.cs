@@ -84,7 +84,7 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
             return await _context.Employees
                 .Include(e => e.User)
                     .ThenInclude(u => u.Person)
-                .FirstOrDefaultAsync(e => e.Id == id && e.IsActive, cancellationToken);
+                .FirstOrDefaultAsync(e => e.Id == id, cancellationToken);
         }
 
         public async Task<PagedResult<Employee>> SearchEmployeeAsync

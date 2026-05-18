@@ -19,7 +19,9 @@ export class ViewRecordComponent implements OnInit {
   isLoading = false;
   imgError  = false;
 
-  // ── Fetched record — only one will be populated ────────────
+  // ── Fetched data — only one will be populated ──────────────
+  // res.data = ViewRecordResponse { entityType, record: object }
+  // res.data.record is the actual DTO (EmployeeDTO, CustomerDTO, etc.)
   employee: any = null;
   customer: any = null;
   clothe:   any = null;
@@ -33,18 +35,27 @@ export class ViewRecordComponent implements OnInit {
 
   fetchRecord(): void {
     this.isLoading = true;
+
     this.disposablesService
       .viewArchivedRecordAsync(this.record.entityId, this.record.entityType)
       .then((res) => {
-        if (!res.isSuccess) return;
+        if (!res.isSuccess) {
+          console.error('ViewRecord error:', res.errorMessage);
+          return;
+        }
+
+        // res.data is ViewRecordResponse — the actual DTO is in res.data.record
+        const data = res.data as any;
+        const dto  = data?.record;
+
         switch (this.record.entityType) {
-          case 'Employee': this.employee = res.data; break;
-          case 'Customer': this.customer = res.data; break;
-          case 'Clothe':   this.clothe   = res.data; break;
-          case 'Category': this.category = res.data; break;
+          case 'Employee': this.employee = dto; break;
+          case 'Customer': this.customer = dto; break;
+          case 'Clothe':   this.clothe   = dto; break;
+          case 'Category': this.category = dto; break;
         }
       })
-      .catch((err) => console.error(err))
+      .catch((err) => console.error('ViewRecord fetch error:', err))
       .finally(() => (this.isLoading = false));
   }
 
