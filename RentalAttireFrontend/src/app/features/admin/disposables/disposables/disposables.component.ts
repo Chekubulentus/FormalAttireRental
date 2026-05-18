@@ -5,14 +5,8 @@ import { DisposablesService } from '../disposables-service/disposables.service';
 import { AppToastrService } from '../../../../core/services/toastr-service/app-toastr.service';
 import { UserService } from '../../../../core/services/user-service/user.service';
 import { UserViewModel } from '../../../../data/models/DTOs/Users/user-view-model';
-
-// ── Inline model — replace with real import once created ─────
-export class ArchivedEntityDto {
-  entityType: string      = '';
-  entityId: number        = 0;
-  archivedAt: Date | null = null;
-  archivedBy: string      = '';
-}
+import { ArchivedEntity } from '../../../../data/models/DTOs/Disposables/archive-entity';
+import { ViewRecordComponent } from "../view-record/view-record.component";
 
 export class RestoreRecordCommand {
   id: number            = 0;
@@ -25,7 +19,7 @@ export class RestoreRecordCommand {
 @Component({
   selector: 'app-disposables',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ViewRecordComponent],
   templateUrl: './disposables.component.html',
   styleUrl: './disposables.component.scss',
 })
@@ -35,7 +29,7 @@ export class DisposablesComponent implements OnInit {
   // State
   // ============================================================
   isLoading = false;
-  records: ArchivedEntityDto[] = [];
+  records: ArchivedEntity[] = [];
 
   // ── Search & Filter ────────────────────────────────────────
   searchQuery = '';
@@ -48,12 +42,12 @@ export class DisposablesComponent implements OnInit {
   totalPages   = 1;
 
   // ── Confirmation modal ─────────────────────────────────────
-  pendingRecord: ArchivedEntityDto | null     = null;
+  pendingRecord: ArchivedEntity | null     = null;
   pendingAction: 'restore' | 'delete' | null  = null;
   isConfirming = false;
 
   // ── View modal ─────────────────────────────────────────────
-  recordToView: ArchivedEntityDto | null = null;
+  recordToView: ArchivedEntity | null = null;
 
   // ── Current user ───────────────────────────────────────────
   currentUser: UserViewModel | undefined;
@@ -102,7 +96,7 @@ export class DisposablesComponent implements OnInit {
   // ============================================================
   // Search & Filter
   // ============================================================
-  get filteredRecords(): ArchivedEntityDto[] {
+  get filteredRecords(): ArchivedEntity[] {
     let list = this.records;
     if (this.filterType)
       list = list.filter((r) => r.entityType === this.filterType);
@@ -166,14 +160,17 @@ export class DisposablesComponent implements OnInit {
   // ============================================================
   // View Modal
   // ============================================================
-  openViewModal(record: ArchivedEntityDto): void { this.recordToView = record; }
+  openViewModal(record: ArchivedEntity): void {
+    console.log(`THIS FCKING OPENS`); 
+    this.recordToView = record; 
+  }
   closeViewModal(): void                          { this.recordToView = null; }
 
 
   // ============================================================
   // Confirmation Modal
   // ============================================================
-  openConfirm(record: ArchivedEntityDto, action: 'restore' | 'delete'): void {
+  openConfirm(record: ArchivedEntity, action: 'restore' | 'delete'): void {
     this.pendingRecord = record;
     this.pendingAction = action;
   }
@@ -188,14 +185,6 @@ export class DisposablesComponent implements OnInit {
   }
 
 
-  // ============================================================
-  // Restore
-  // ============================================================
-
-
-  // ============================================================
-  // Permanent Delete
-  // ============================================================
 
 
   // ============================================================

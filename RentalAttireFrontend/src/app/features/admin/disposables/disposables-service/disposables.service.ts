@@ -5,6 +5,7 @@ import { Result } from '../../../../data/models/Results/result';
 import { PagedResult } from '../../../../data/models/Results/pagedResult';
 import { ArchivedEntity } from '../../../../data/models/DTOs/Disposables/archive-entity';
 import { firstValueFrom } from 'rxjs';
+import { ViewRecordResponse } from '../DTOs/view-record-response';
 
 @Injectable({
   providedIn: 'root',
@@ -26,6 +27,21 @@ export class DisposablesService {
 
       return result;
     } catch(err: any) {
+      return Result.failure(err.error);
+    }
+  }
+
+  async viewArchivedRecordAsync(
+    id : number,
+    entityType : string
+  ) : Promise<Result<ViewRecordResponse>> {
+    try {
+      var result = await firstValueFrom(
+        this.httpClient.get<Result<ViewRecordResponse>>(`${this.disposablesUrl}/view-record?id=${id}&entityType=${entityType}`)
+      );
+
+      return result;
+    }catch(err : any) {
       return Result.failure(err.error);
     }
   }

@@ -111,36 +111,39 @@
            *ngFor="let record of filteredRecords; let i = index"
            [style.animation-delay]="(i * 0.03) + 's'">
 
-        <!-- Type -->
+        <!-- Type + Name -->
         <div class="col col--type">
-          <div class="type-badge" [class]="getEntityTypeClass(record.entityType)">
+          <div class="type-cell">
+            <div class="type-badge" [class]="getEntityTypeClass(record.entityType)">
 
-            <!-- Employee icon -->
-            <svg *ngIf="record.entityType === 'Employee'" viewBox="0 0 16 16" fill="none">
-              <circle cx="8" cy="5.5" r="2.5" stroke="currentColor" stroke-width="1.3"/>
-              <path d="M2.5 14c0-3 2.5-5 5.5-5s5.5 2 5.5 5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
-              <rect x="5" y="8.5" width="6" height="2" rx="0.5" stroke="currentColor" stroke-width="1"/>
-            </svg>
+              <!-- Employee icon -->
+              <svg *ngIf="record.entityType === 'Employee'" viewBox="0 0 16 16" fill="none">
+                <circle cx="8" cy="5.5" r="2.5" stroke="currentColor" stroke-width="1.3"/>
+                <path d="M2.5 14c0-3 2.5-5 5.5-5s5.5 2 5.5 5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+                <rect x="5" y="8.5" width="6" height="2" rx="0.5" stroke="currentColor" stroke-width="1"/>
+              </svg>
 
-            <!-- Customer icon -->
-            <svg *ngIf="record.entityType === 'Customer'" viewBox="0 0 16 16" fill="none">
-              <circle cx="8" cy="5.5" r="2.5" stroke="currentColor" stroke-width="1.3"/>
-              <path d="M2.5 14c0-3 2.5-5 5.5-5s5.5 2 5.5 5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
-            </svg>
+              <!-- Customer icon -->
+              <svg *ngIf="record.entityType === 'Customer'" viewBox="0 0 16 16" fill="none">
+                <circle cx="8" cy="5.5" r="2.5" stroke="currentColor" stroke-width="1.3"/>
+                <path d="M2.5 14c0-3 2.5-5 5.5-5s5.5 2 5.5 5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+              </svg>
 
-            <!-- Clothe icon -->
-            <svg *ngIf="record.entityType === 'Clothe'" viewBox="0 0 16 16" fill="none">
-              <path d="M5 2h6l2 3-3 1v7H6V6L3 5z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>
-              <path d="M5 2C5 3.1 6.3 4 8 4s3-0.9 3-2" stroke="currentColor" stroke-width="1.3"/>
-            </svg>
+              <!-- Clothe icon -->
+              <svg *ngIf="record.entityType === 'Clothe'" viewBox="0 0 16 16" fill="none">
+                <path d="M5 2h6l2 3-3 1v7H6V6L3 5z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>
+                <path d="M5 2C5 3.1 6.3 4 8 4s3-0.9 3-2" stroke="currentColor" stroke-width="1.3"/>
+              </svg>
 
-            <!-- Category icon -->
-            <svg *ngIf="record.entityType === 'Category'" viewBox="0 0 16 16" fill="none">
-              <path d="M2 2h5l7 7-5 5-7-7V2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>
-              <circle cx="5.5" cy="5.5" r="1" fill="currentColor"/>
-            </svg>
+              <!-- Category icon -->
+              <svg *ngIf="record.entityType === 'Category'" viewBox="0 0 16 16" fill="none">
+                <path d="M2 2h5l7 7-5 5-7-7V2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>
+                <circle cx="5.5" cy="5.5" r="1" fill="currentColor"/>
+              </svg>
 
-            {{ record.entityType }}
+              {{ record.entityType }}
+            </div>
+            <span class="entity-name">{{ record.entityName || '—' }}</span>
           </div>
         </div>
 
@@ -312,4 +315,12 @@
     </div>
   </div>
 
+</div>
+
+<div class="modal-overlay" *ngIf="recordToView">
+  <app-view-record
+  *ngIf="recordToView"
+  [record]="recordToView"
+  (closed)="closeViewModal()"
+  ></app-view-record>
 </div>

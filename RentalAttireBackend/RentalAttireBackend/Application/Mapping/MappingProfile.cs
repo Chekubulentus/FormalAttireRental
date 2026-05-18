@@ -74,7 +74,9 @@ namespace RentalAttireBackend.Application.Mapping
                 .ForMember(dest => dest.ArchivedAt,
                 opt => opt.MapFrom(src => src.ArchivedAt))
                 .ForMember(dest => dest.ArchivedBy,
-                opt => opt.MapFrom(src => src.ArchivedBy));
+                opt => opt.MapFrom(src => src.ArchivedBy))
+                .ForMember(dest => dest.EntityName,
+                opt => opt.MapFrom(src => src.Person.FullName));
 
             CreateMap<Employee, ArchivedEntityDto>()
                 .ForMember(dest => dest.EntityType,
@@ -84,7 +86,9 @@ namespace RentalAttireBackend.Application.Mapping
                 .ForMember(dest => dest.ArchivedAt,
                 opt => opt.MapFrom(src => src.ArchivedAt))
                 .ForMember(dest => dest.ArchivedBy,
-                opt => opt.MapFrom(src => src.ArchivedBy));
+                opt => opt.MapFrom(src => src.ArchivedBy))
+                .ForMember(dest => dest.EntityName,
+                opt => opt.MapFrom(src => src.User.Person.FullName));
 
             CreateMap<Person, ArchivedEntityDto>()
                 .ForMember(dest => dest.EntityType,
@@ -104,7 +108,9 @@ namespace RentalAttireBackend.Application.Mapping
                 .ForMember(dest => dest.ArchivedAt,
                 opt => opt.MapFrom(src => src.ArchivedAt))
                 .ForMember(dest => dest.ArchivedBy,
-                opt => opt.MapFrom(src => src.ArchivedBy));
+                opt => opt.MapFrom(src => src.ArchivedBy))
+                .ForMember(dest => dest.EntityName,
+                opt => opt.MapFrom(src => src.User.Person.FullName));
 
             CreateMap<Clothe, ArchivedEntityDto>()
                 .ForMember(dest => dest.EntityType,
@@ -114,7 +120,9 @@ namespace RentalAttireBackend.Application.Mapping
                 .ForMember(dest => dest.ArchivedAt,
                 opt => opt.MapFrom(src => src.ArchivedAt))
                 .ForMember(dest => dest.ArchivedBy,
-                opt => opt.MapFrom(src => src.ArchivedBy));
+                opt => opt.MapFrom(src => src.ArchivedBy))
+                .ForMember(dest => dest.EntityName,
+                opt => opt.MapFrom(src => src.ClotheName));
 
             CreateMap<Category, ArchivedEntityDto>()
                 .ForMember(dest => dest.EntityType,
@@ -124,7 +132,9 @@ namespace RentalAttireBackend.Application.Mapping
                 .ForMember(dest => dest.ArchivedAt,
                 opt => opt.MapFrom(src => src.ArchivedAt))
                 .ForMember(dest => dest.ArchivedBy,
-                opt => opt.MapFrom(src => src.ArchivedBy));
+                opt => opt.MapFrom(src => src.ArchivedBy))
+                .ForMember(dest => dest.EntityName,
+                opt => opt.MapFrom(src => src.CategoryName));
 
             #endregion
 

@@ -28,7 +28,9 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
         {
             return await _context.Employees
                 .AsNoTracking()
-                .Where(e => !e.IsActive)
+                .Include(e => e.User)
+                .ThenInclude(u => u.Person)
+                .Where(e => !e.IsActive && !e.IsDeleted)
                 .ToListAsync(cancellationToken);
         }
 

@@ -344,6 +344,23 @@ h1 {
   to   { opacity: 1; transform: translateY(0); }
 }
 
+// Type cell — badge stacked above entity name
+.type-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.entity-name {
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: $text;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 180px;
+}
+
 // Type badge
 .type-badge {
   display: inline-flex;

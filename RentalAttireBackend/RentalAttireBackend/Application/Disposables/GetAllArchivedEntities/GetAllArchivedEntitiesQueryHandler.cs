@@ -57,6 +57,7 @@ namespace RentalAttireBackend.Application.Disposables.GetAllArchivedEntities
                 _mapper.Map<List<ArchivedEntityDto>>(await _categoryRepo.GetAllArchivedCategoriesAsync(cancellationToken))
                 );
 
+            archivedEntities.Items.OrderByDescending(r => r.ArchivedAt);
             archivedEntities.TotalCount = archivedEntities.Items.Count();
             archivedEntities.PageNumber = request.PaginationParams.CurrentPage;
             archivedEntities.PageSize = request.PaginationParams.ItemsPerPage;
