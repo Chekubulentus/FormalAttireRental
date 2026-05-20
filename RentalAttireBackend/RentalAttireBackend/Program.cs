@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using RentalAttireBackend.Application;
 using RentalAttireBackend.Application.Common.Interfaces;
 using RentalAttireBackend.Application.Common.Models;
+using RentalAttireBackend.Application.Disposables.EntityDeleters;
 using RentalAttireBackend.Application.Disposables.EntityRestorers.ClotheRestorer;
 using RentalAttireBackend.Application.Disposables.EntityRestorers.CustomerRestorer;
 using RentalAttireBackend.Application.Disposables.EntityRestorers.EmployeeRestorer;
@@ -86,6 +87,8 @@ builder.Services.AddScoped<IViewArchivedEntity, ViewCategoryRecord>();
 builder.Services.AddScoped<IViewArchivedEntity, ViewClotheRecord>();
 builder.Services.AddScoped<IViewArchivedEntity, ViewCustomerRecord>();
 builder.Services.AddScoped<IViewArchivedEntity, ViewEmployeeRecord>();
+
+builder.Services.AddScoped<IDeleteArchivedEntity, CategoryDeleter>();
 
 
 builder.Services.AddHttpContextAccessor();

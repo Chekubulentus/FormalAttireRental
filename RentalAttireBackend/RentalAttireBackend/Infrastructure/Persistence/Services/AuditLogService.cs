@@ -277,5 +277,30 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Services
             await _context.AuditLogs.AddAsync(restorationLog);
             return await _context.SaveChangesAsync() > 0;
         }
+
+        public async Task<bool> DeleteAuditLogAsync<T>(
+            T entity,
+            string performedBy,
+            int performedById,
+            string recordName
+            ) where T : BaseEntity
+        {
+            var deleteLog = new AuditLog
+            {
+                EntityType = typeof(T).Name,
+                EntityId = entity.Id,
+                EntityName = recordName,
+                ActionType = "Deleted",
+                ChangedBy = performedBy,
+                ChangedById = performedById,
+                ChangedAt = DateTime.UtcNow,
+                NewValues = JsonSerializer.Serialize(entity),
+                OldValues = null,
+                IpAddress = GetIpAddress()
+            };
+
+            await _context.AuditLogs.AddAsync(deleteLog);
+            return await _context.SaveChangesAsync() > 0;
+        }
     }
 }

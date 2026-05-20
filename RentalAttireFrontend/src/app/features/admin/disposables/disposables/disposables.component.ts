@@ -161,7 +161,6 @@ export class DisposablesComponent implements OnInit {
   // View Modal
   // ============================================================
   openViewModal(record: ArchivedEntity): void {
-    console.log(`THIS FCKING OPENS`); 
     this.recordToView = record; 
   }
   closeViewModal(): void                          { this.recordToView = null; }

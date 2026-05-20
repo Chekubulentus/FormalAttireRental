@@ -36,6 +36,11 @@ namespace RentalAttireBackend.Application.Common.Interfaces
             int performedById,
             string entityNameRestored
             ) where T : BaseEntity;
-
+        public Task<bool> DeleteAuditLogAsync<T>(
+            T entity,
+            string performedBy,
+            int performedById,
+            string recordName
+            ) where T : BaseEntity;
     }
 }
