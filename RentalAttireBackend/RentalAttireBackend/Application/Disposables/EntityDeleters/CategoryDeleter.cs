@@ -8,41 +8,66 @@ namespace RentalAttireBackend.Application.Disposables.EntityDeleters
     {
         private readonly ICategoryRepository _categoryRepo;
         private readonly IAuditLogService _auditService;
+        private readonly ITransactionManager _transactionManager;
         public CategoryDeleter(
             ICategoryRepository categoryRepo,
-            IAuditLogService auditLogService
+            IAuditLogService auditLogService,
+            ITransactionManager transactionManager
             )
         {
             _categoryRepo = categoryRepo;
             _auditService = auditLogService;
+            _transactionManager = transactionManager;
         }
         public string EntityType => "Category";
 
         public async Task<Result<bool>> DeleteArchivedRecordAsync(int id, string performedBy, int performedById, CancellationToken ct)
         {
-            var category = await _categoryRepo.GetCategoryByIdAsync(id, ct);
+            if (id == 0)
+                return Result<bool>.Failure("Invalid record identifier.");
 
-            if (category is null)
-                return Result<bool>.Failure("Record could not be found.");
+            if (string.IsNullOrEmpty(performedBy) || performedById == 0)
+                return Result<bool>.Failure("Employee associated with this transaction could not be found.");
 
-            category.IsDeleted = true;
+            try
+            {
+                await _transactionManager.BeginTransactionAsync(ct);
 
-            var deleteCategory = await _categoryRepo.UpdateCategoryAsync(category, ct);
+                var categoryToDelete = await _categoryRepo.GetCategoryByIdAsync(id, ct);
 
-            if (!deleteCategory)
-                return Result<bool>.Failure("Record could not be deleted. Please try again.");
+                if (categoryToDelete is null)
+                    return Result<bool>.Failure("Record could not be found.");
 
-            var auditTransaction = await _auditService.DeleteAuditLogAsync(
-                category,
-                performedBy,
-                performedById,
-                category.CategoryName
-                );
+                categoryToDelete.IsDeleted = true;
 
-            if (!auditTransaction)
-                return Result<bool>.Failure("Transaction could not be audited.");
+                var deleteTransaction = await _categoryRepo.UpdateCategoryAsync(categoryToDelete, ct);
 
-            return Result<bool>.SuccessWithMessage("Record permanently deleted.");
+                if(!deleteTransaction)
+                {
+                    await _transactionManager.RollbackTransactionAsync(ct);
+                    return Result<bool>.Failure("Record could not be deleted.");
+                }
+
+                var auditTransaction = await _auditService.DeleteAuditLogAsync(
+                    categoryToDelete,
+                    performedBy,
+                    performedById,
+                    categoryToDelete.CategoryName
+                    );
+
+                if (!auditTransaction)
+                {
+                    await _transactionManager.RollbackTransactionAsync(ct);
+                    return Result<bool>.Failure("Failed to record audit log for this transaction. No changes were saved.");
+                }
+
+                await _transactionManager.CommitTransacionAsync(ct);
+                return Result<bool>.SuccessWithMessage("Record permanently deleted.");
+            }catch(Exception e)
+            {
+                await _transactionManager.RollbackTransactionAsync(ct);
+                return Result<bool>.Failure(e.Message);
+            }
         }
     }
 }

@@ -28,7 +28,7 @@ namespace RentalAttireBackend.Application.Disposables.EntityDeleters
                 return Result<bool>.Failure("Employee associated with this transaction could not be found.");
 
             if (id == 0)
-                return Result<bool>.Failure("Invalid request.");
+                return Result<bool>.Failure("Invalid record identifier. Please try again.");
             try
             {
                 var employeeToDelete = await _repo.GetEmployeeByIdAsync(id, ct);

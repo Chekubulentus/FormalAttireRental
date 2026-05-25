@@ -10,44 +10,70 @@ namespace RentalAttireBackend.Application.Disposables.EntityDeleters
     {
         private readonly ICustomerRepository _customerRepo;
         private readonly IAuditLogService _auditService;
+        private readonly ITransactionManager _transactionManager;
 
         public CustomerDeleter(
             ICustomerRepository customerRepo,
-            IAuditLogService auditService
+            IAuditLogService auditService,
+            ITransactionManager transactionManager
             )
         {
             _customerRepo = customerRepo;
             _auditService = auditService;
+            _transactionManager = transactionManager;
         }
         public string EntityType => "Customer";
 
         public async Task<Result<bool>> DeleteArchivedRecordAsync(int id, string performedBy, int performedById, CancellationToken ct)
         {
-            var customer = await _customerRepo.GetCustomerByIdAsync(id, ct);
+            if (id == 0)
+                return Result<bool>.Failure("Invalid record identifier. Please try again.");
 
-            if (customer is null)
-                return Result<bool>.Failure("Record could not be found.");
+            if (string.IsNullOrEmpty(performedBy) || performedById == 0)
+                return Result<bool>.Failure("Employee associated with this transaction could not be found.");
 
-            customer.IsDeleted = true;
-            customer.User.IsDeleted = true;
-            customer.User.Person.IsDeleted = true;
+            try
+            {
+                await _transactionManager.BeginTransactionAsync(ct);
+                var customerToDelete = await _customerRepo.GetCustomerByIdAsync(id, ct);
 
-            var deleteCustomer = await _customerRepo.UpdateCustomerAsync(customer, ct);
+                if (customerToDelete is null)
+                    return Result<bool>.Failure("Record could not be found.");
 
-            if (!deleteCustomer)
-                return Result<bool>.Failure("Record could not be deleted. Please try again.");
+                customerToDelete.IsDeleted = true;
+                customerToDelete.User.IsDeleted = true;
+                customerToDelete.User.Person.IsDeleted = true;
 
-            var auditTransaction = await _auditService.DeleteAuditLogAsync(
-                customer,
-                performedBy,
-                performedById,
-                customer.User.Person.FullName
-                );
+                var deleteTransaction = await _customerRepo.UpdateCustomerAsync(customerToDelete, ct);
 
-            if (!auditTransaction)
-                return Result<bool>.Failure("Transaction could not be audited.");
+                if(!deleteTransaction)
+                {
+                    await _transactionManager.RollbackTransactionAsync(ct);
+                    return Result<bool>.Failure("Record could not be deleted.");
+                }
 
-            return Result<bool>.SuccessWithMessage("Record permanently deleted.");
+                var customerName = customerToDelete.User.Person.FullName;
+
+                var auditTransaction = await _auditService.DeleteAuditLogAsync(
+                    customerToDelete,
+                    performedBy,
+                    performedById,
+                    customerName
+                    );
+
+                if(!auditTransaction)
+                {
+                    await _transactionManager.RollbackTransactionAsync(ct);
+                    return Result<bool>.Failure("Failed to record audit log for this transaction. No changes were saved.");
+                }
+
+                await _transactionManager.CommitTransacionAsync(ct);
+                return Result<bool>.SuccessWithMessage("Record permanently deleted.");
+            }catch(Exception e)
+            {
+                await _transactionManager.RollbackTransactionAsync(ct);
+                return Result<bool>.Failure(e.Message);
+            }
         }
     }
 }
