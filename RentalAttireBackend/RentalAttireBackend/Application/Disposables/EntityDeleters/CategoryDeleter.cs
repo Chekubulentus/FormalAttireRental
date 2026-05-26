@@ -45,7 +45,7 @@ namespace RentalAttireBackend.Application.Disposables.EntityDeleters
                 if(!deleteTransaction)
                 {
                     await _transactionManager.RollbackTransactionAsync(ct);
-                    return Result<bool>.Failure("Record could not be deleted.");
+                    return Result<bool>.Failure("Record could not be deleted. No changes were saved.");
                 }
 
                 var auditTransaction = await _auditService.DeleteAuditLogAsync(

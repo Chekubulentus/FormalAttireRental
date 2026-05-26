@@ -1,29 +1,24 @@
 ﻿using RentalAttireBackend.Application.Common.Interfaces;
 using RentalAttireBackend.Application.Common.Models;
 using RentalAttireBackend.Domain.Interfaces;
-using System.Diagnostics;
-using System.Reflection;
 
 namespace RentalAttireBackend.Application.Disposables.EntityDeleters
 {
-    public class CustomerDeleter : IDeleteArchivedEntity
+    public class ClotheDeleter : IDeleteArchivedEntity
     {
-        private readonly ICustomerRepository _customerRepo;
+        private readonly IClotheRepository _repo;
         private readonly IAuditLogService _auditService;
         private readonly ITransactionManager _transactionManager;
+        public string EntityType => "Clothe";
 
-        public CustomerDeleter(
-            ICustomerRepository customerRepo,
+        public ClotheDeleter(
+            IClotheRepository repo,
             IAuditLogService auditService,
             ITransactionManager transactionManager
             )
         {
-            _customerRepo = customerRepo;
-            _auditService = auditService;
-            _transactionManager = transactionManager;
+            
         }
-        public string EntityType => "Customer";
-
         public async Task<Result<bool>> DeleteArchivedRecordAsync(int id, string performedBy, int performedById, CancellationToken ct)
         {
             if (id == 0)
@@ -35,16 +30,14 @@ namespace RentalAttireBackend.Application.Disposables.EntityDeleters
             try
             {
                 await _transactionManager.BeginTransactionAsync(ct);
-                var customerToDelete = await _customerRepo.GetCustomerByIdAsync(id, ct);
+                var clotheToDelete = await _repo.GetClotheByIdAsync(id, ct);
 
-                if (customerToDelete is null)
+                if (clotheToDelete is null)
                     return Result<bool>.Failure("Record could not be found.");
 
-                customerToDelete.IsDeleted = true;
-                customerToDelete.User.IsDeleted = true;
-                customerToDelete.User.Person.IsDeleted = true;
+                clotheToDelete.IsDeleted = true;
 
-                var deleteTransaction = await _customerRepo.UpdateCustomerAsync(customerToDelete, ct);
+                var deleteTransaction = await _repo.UpdateClotheAsync(clotheToDelete, ct);
 
                 if(!deleteTransaction)
                 {
@@ -52,16 +45,14 @@ namespace RentalAttireBackend.Application.Disposables.EntityDeleters
                     return Result<bool>.Failure("Record could not be deleted. No changes were saved.");
                 }
 
-                var customerName = customerToDelete.User.Person.FullName;
-
                 var auditTransaction = await _auditService.DeleteAuditLogAsync(
-                    customerToDelete,
+                    clotheToDelete,
                     performedBy,
                     performedById,
-                    customerName
+                    clotheToDelete.ClotheName
                     );
 
-                if(!auditTransaction)
+                if (!auditTransaction)
                 {
                     await _transactionManager.RollbackTransactionAsync(ct);
                     return Result<bool>.Failure("Failed to record audit log for this transaction. No changes were saved.");
