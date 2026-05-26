@@ -44,6 +44,9 @@ namespace RentalAttireBackend.Application.Clothes.Commands.ArchiveClothe
                     return Result<bool>.Failure("Clothe does not exist.");
                 }
 
+                if (clothe.StockQuantity > 0)
+                    return Result<bool>.Failure("Clothe still has some available stocks.");
+
                 clothe.IsActive = false;
                 clothe.ArchivedAt = DateTime.UtcNow;
                 clothe.ArchivedBy = request.PerformedBy;

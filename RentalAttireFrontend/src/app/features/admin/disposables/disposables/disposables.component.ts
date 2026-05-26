@@ -181,6 +181,27 @@ export class DisposablesComponent implements OnInit {
 
   onConfirmed(): void {
     if (!this.pendingRecord || !this.pendingAction) return;
+
+    if(this.pendingAction == 'delete') {
+      this.isLoading = true;
+
+      this.disposablesService.deleteRecordAsync(
+        this.pendingRecord.entityId,
+        this.pendingRecord.entityType,
+        this.currentUser?.fullName ?? '',
+        this.currentUser?.id ?? 0
+      ).then(res => {
+        if(!res.isSuccess)
+          this.toastrService.error(res.errorMessage ?? 'Record could not be deleted.');
+        this.toastrService.success(res.successMessage ?? 'Record permanently deleted.');
+      }).catch(err => {
+        this.toastrService.error(err.error);
+      }).finally(() => {
+        this.isLoading = false;
+        this.pendingRecord = null;
+        this.getAllArchivedRecords();
+      });
+    }
   }
 
 

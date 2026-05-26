@@ -21,7 +21,7 @@ export class DisposablesService {
     try {
       var result = await firstValueFrom(
         this.httpClient.get<Result<PagedResult<ArchivedEntity>>>(
-          `${this.disposablesUrl}`,
+          `${this.disposablesUrl}?currentPage=${currentPage}&itemsPerPage=${itemsPerPage}`,
         ),
       );
 
@@ -38,6 +38,30 @@ export class DisposablesService {
     try {
       var result = await firstValueFrom(
         this.httpClient.get<Result<ViewRecordResponse>>(`${this.disposablesUrl}/view-record?id=${id}&entityType=${entityType}`)
+      );
+
+      return result;
+    }catch(err : any) {
+      return Result.failure(err.error);
+    }
+  }
+
+  async deleteRecordAsync(
+    id : number,
+    entityType : string,
+    performedBy : string,
+    performedById : number
+  ) : Promise<Result<boolean>> {
+    try {
+      var payload = {
+        id,
+        entityType,
+        performedBy,
+        performedById
+      };
+
+      var result = await firstValueFrom(
+        this.httpClient.patch<Result<boolean>>(`${this.disposablesUrl}/delete-record`, payload)
       );
 
       return result;

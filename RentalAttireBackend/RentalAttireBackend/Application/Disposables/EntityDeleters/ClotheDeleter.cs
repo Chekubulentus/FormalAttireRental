@@ -21,12 +21,6 @@ namespace RentalAttireBackend.Application.Disposables.EntityDeleters
         }
         public async Task<Result<bool>> DeleteArchivedRecordAsync(int id, string performedBy, int performedById, CancellationToken ct)
         {
-            if (id == 0)
-                return Result<bool>.Failure("Invalid record identifier. Please try again.");
-
-            if (string.IsNullOrEmpty(performedBy) || performedById == 0)
-                return Result<bool>.Failure("Employee associated with this transaction could not be found.");
-
             try
             {
                 await _transactionManager.BeginTransactionAsync(ct);

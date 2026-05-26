@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RentalAttireBackend.Application.Common.Models;
+using RentalAttireBackend.Application.Disposables.DeleteRecord;
 using RentalAttireBackend.Application.Disposables.GetAllArchivedEntities;
 using RentalAttireBackend.Application.Disposables.RestoreRecord;
 using RentalAttireBackend.Application.Disposables.ViewRecord;
@@ -38,6 +39,13 @@ namespace RentalAttireBackend.Controllers.AdminController
         public async Task<IActionResult> ViewArchivedRecordAsync(int id, string entityType)
         {
             var result = await _mediator.Send(new ViewRecordCommand { Id = id, EntityType = entityType});
+
+            return result.IsSuccess ? Ok(result) : BadRequest(result.ErrorMessage);
+        }
+        [HttpPatch("delete-record")]
+        public async Task<IActionResult> DeleteArchivedRecordAsync(DeleteRecordCommand command)
+        {
+            var result = await _mediator.Send(command);
 
             return result.IsSuccess ? Ok(result) : BadRequest(result.ErrorMessage);
         }

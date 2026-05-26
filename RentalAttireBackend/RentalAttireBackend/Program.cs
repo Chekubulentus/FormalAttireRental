@@ -89,7 +89,9 @@ builder.Services.AddScoped<IViewArchivedEntity, ViewCustomerRecord>();
 builder.Services.AddScoped<IViewArchivedEntity, ViewEmployeeRecord>();
 
 builder.Services.AddScoped<IDeleteArchivedEntity, CategoryDeleter>();
-
+builder.Services.AddScoped<IDeleteArchivedEntity, ClotheDeleter>();
+builder.Services.AddScoped<IDeleteArchivedEntity, EmployeeDeleter>();
+builder.Services.AddScoped<IDeleteArchivedEntity, CustomerDeleter>();
 
 builder.Services.AddHttpContextAccessor();
 
