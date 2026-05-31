@@ -19,6 +19,14 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
             _context = context;
         }
 
+        public async Task<bool> ClotheDuplicationValidationAsync(string clotheName, CancellationToken ct)
+        {
+            return await _context.Clothes
+                .AnyAsync(c =>
+                c.ClotheName.ToLower().Equals(clotheName.ToLower())
+                && c.IsActive && !c.IsDeleted);
+        }
+
         public async Task<int> CreateClotheAsync(Clothe clothe, CancellationToken cancellationToken)
         {
             await _context.Clothes.AddAsync(clothe);

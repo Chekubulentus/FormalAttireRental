@@ -30,6 +30,11 @@ namespace RentalAttireBackend.Domain.Interfaces
         public Task<List<Clothe>> GetAllArchivedClothesAsync(
             CancellationToken cancellationToken
             );
+
+        public Task<bool> ClotheDuplicationValidationAsync(
+            string clotheName,
+            CancellationToken ct
+            );
         #endregion
 
         #region Commands

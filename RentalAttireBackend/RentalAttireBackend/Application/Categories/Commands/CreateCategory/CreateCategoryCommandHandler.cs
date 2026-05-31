@@ -38,7 +38,6 @@ namespace RentalAttireBackend.Application.Categories.Commands.CreateCategory
 
             try
             {
-                //REMEMBER: No duplicate validation for Category.
                 var duplicateValidation = await _categoryRepo.CategoryDuplicateValidationAsync(
                     request.CategoryCode,
                     request.CategoryName,

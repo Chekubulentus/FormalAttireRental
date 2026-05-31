@@ -57,6 +57,14 @@ namespace RentalAttireBackend.Application.Clothes.Commands.CreateClothe
                     return Result<bool>.Failure("Category is required.");
                 }
 
+                var duplicationValidation = await _clotheRepo.ClotheDuplicationValidationAsync(
+                    command.ClotheName,
+                    cancellationToken
+                    );
+
+                if (duplicationValidation)
+                    return Result<bool>.Failure("Clothe record already exist.");
+
                 var clothe = _mapper.Map<Clothe>(command);
                 clothe.CategoryId = category.Id;
 
