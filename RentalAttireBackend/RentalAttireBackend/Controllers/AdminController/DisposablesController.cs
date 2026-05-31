@@ -28,6 +28,7 @@ namespace RentalAttireBackend.Controllers.AdminController
 
             return result.IsSuccess ? Ok(result) : BadRequest(result.ErrorMessage);
         }
+        //RestoreRecord
         [HttpPatch]
         public async Task<IActionResult> RestoreArchivedRecordAsync(RestoreRecordCommand command)
         {

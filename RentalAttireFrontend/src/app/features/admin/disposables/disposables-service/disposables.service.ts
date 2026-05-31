@@ -6,6 +6,7 @@ import { PagedResult } from '../../../../data/models/Results/pagedResult';
 import { ArchivedEntity } from '../../../../data/models/DTOs/Disposables/archive-entity';
 import { firstValueFrom } from 'rxjs';
 import { ViewRecordResponse } from '../DTOs/view-record-response';
+import { RestoreRecordCommand } from '../DTOs/restore-record-command';
 
 @Injectable({
   providedIn: 'root',
@@ -62,6 +63,20 @@ export class DisposablesService {
 
       var result = await firstValueFrom(
         this.httpClient.patch<Result<boolean>>(`${this.disposablesUrl}/delete-record`, payload)
+      );
+
+      return result;
+    }catch(err : any) {
+      return Result.failure(err.error);
+    }
+  }
+
+  async restoreRecordAsync(
+    command : RestoreRecordCommand
+  ) : Promise<Result<boolean>> {
+    try {
+      var result = await firstValueFrom(
+        this.httpClient.patch<Result<boolean>>(`${this.disposablesUrl}`, command)
       );
 
       return result;

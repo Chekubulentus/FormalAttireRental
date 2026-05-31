@@ -7,13 +7,7 @@ import { UserService } from '../../../../core/services/user-service/user.service
 import { UserViewModel } from '../../../../data/models/DTOs/Users/user-view-model';
 import { ArchivedEntity } from '../../../../data/models/DTOs/Disposables/archive-entity';
 import { ViewRecordComponent } from "../view-record/view-record.component";
-
-export class RestoreRecordCommand {
-  id: number            = 0;
-  entityType: string    = '';
-  performedBy: string   = '';
-  performedById: number = 0;
-}
+import { RestoreRecordCommand } from '../DTOs/restore-record-command';
 // ─────────────────────────────────────────────────────────────
 
 @Component({
@@ -201,6 +195,30 @@ export class DisposablesComponent implements OnInit {
         this.pendingRecord = null;
         this.getAllArchivedRecords();
       });
+    }
+
+    if(this.pendingAction == 'restore') {
+      this.isLoading = true;
+
+      const payload : RestoreRecordCommand = {
+        entityType : this.pendingRecord.entityType,
+        id : this.pendingRecord.entityId,
+        performedBy : this.currentUser?.fullName ?? '',
+        performedById : this.currentUser?.id ?? 0
+      };
+
+      this.disposablesService.restoreRecordAsync(
+        payload
+      ).then(res => {
+        if(!res.isSuccess)
+          this.toastrService.error(res.errorMessage ?? 'Record could not be restored.');
+        this.toastrService.success(res.successMessage ?? 'Record successfully restored.');
+      }).catch(err => {
+        this.toastrService.error(err.error);
+      }).finally(() => {
+        this.isLoading = false;
+        this.getAllArchivedRecords();
+      })
     }
   }
 
