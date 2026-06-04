@@ -11,8 +11,13 @@ namespace RentalAttireBackend.Domain.Interfaces
         #endregion
 
         #region Queries
-        public Task<RentalPageResponse> FilterRentalItemsAsync(
-            RentalPageRequest request,
+        public Task<PagedResult<Rental>> FilterRentalItemsAsync(
+            string? categoryType,
+            string? searchQuery,
+            DateTime? startingDate,
+            DateTime? endingDate,
+            int currentPage,
+            int itemsPerPage,
             CancellationToken ct
             );
         #endregion

@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.MicrosoftExtensions;
+using RentalAttireBackend.Application.Common.Models;
 using RentalAttireBackend.Application.Rentals.DTOs;
 using RentalAttireBackend.Domain.Entities;
 using RentalAttireBackend.Domain.Interfaces;
@@ -14,50 +16,50 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
         {
             _context = context;
         }
-
-        public async Task<RentalPageResponse> FilterRentalItemsAsync(RentalPageRequest request, CancellationToken ct)
+        public async Task<PagedResult<Rental>> FilterRentalItemsAsync(string? categoryType, string? searchQuery, DateTime? startingDate, DateTime? endingDate, int currentPage, int itemsPerPage, CancellationToken ct)
         {
-            var categoryTypeValidator = string.IsNullOrEmpty(request.CategoryType);
-            var searchQueryValidation = string.IsNullOrEmpty(request.SearchQuery);
+            var categoryTypeValidator = string.IsNullOrEmpty(categoryType);
+            var searchQueryValidator = string.IsNullOrEmpty(searchQuery);
 
-            var rentalItems = _context.Rentals
+            var rentals = _context.Rentals
                 .Include(r => r.Customer)
                     .ThenInclude(c => c.User)
                         .ThenInclude(u => u.Person)
                 .Include(r => r.RentalItems)
                     .ThenInclude(ri => ri.Clothe)
-                        .ThenInclude(c => c.Category)
+                        .ThenInclude(cl => cl.Category)
+                .OrderByDescending(r => r.RentalDate)
                 .Where(r =>
                     (
-                    categoryTypeValidator ||
-                    r.RentalItems.Any(ri => ri.Clothe.Category.CategoryName.ToLower().Contains(request.CategoryType.ToLower()))
+                        searchQueryValidator ||
+                        r.Customer.User.Person.FullName.ToLower().Contains(searchQuery.ToLower())
                     ) &&
                     (
-                    searchQueryValidation ||
-                    r.Customer.User.Person.FullName.ToLower().Contains(request.SearchQuery.ToLower())
+                        categoryTypeValidator ||
+                        r.RentalItems.Any(ri => ri.Clothe.Category.CategoryName.ToLower().Contains(categoryType.ToLower()))
                     ) &&
                     (
-                    !request.StartingDate.HasValue || r.RentalDate >= request.StartingDate
-                    )
-                    &&
+                        !startingDate.HasValue || r.RentalDate >= startingDate
+                    ) &&
                     (
-                    !request.EndingDate.HasValue || r.RentalDate <= request.EndingDate
-                    )
+                        !endingDate.HasValue || r.RentalDate <= endingDate
+                    ) &&
+                    r.IsActive
                 );
 
-            var totalCount = await rentalItems.CountAsync();
+            var totalCount = await rentals.CountAsync();
 
-            var paginatedRentalItems = await rentalItems
-                .Skip((request.CurrentPage - 1) * request.ItemsPerPage)
-                .Take(request.ItemsPerPage)
+            var paginatedRentals = await rentals
+                .Skip((currentPage - 1) * itemsPerPage)
+                .Take(itemsPerPage)
                 .ToListAsync(ct);
 
-            return new RentalPageResponse
+            return new PagedResult<Rental>
             {
-                Items = paginatedRentalItems,
-                CurrentPage = request.CurrentPage,
-                ItemsPerPage = request.ItemsPerPage,
-                TotalCount = totalCount
+                Items = paginatedRentals,
+                TotalCount = totalCount,
+                PageNumber = currentPage,
+                PageSize = itemsPerPage,
             };
         }
     }

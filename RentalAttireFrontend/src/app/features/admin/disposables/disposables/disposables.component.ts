@@ -217,6 +217,7 @@ export class DisposablesComponent implements OnInit {
         this.toastrService.error(err.error);
       }).finally(() => {
         this.isLoading = false;
+        this.pendingRecord = null;
         this.getAllArchivedRecords();
       })
     }

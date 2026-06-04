@@ -78,6 +78,7 @@ builder.Services.AddScoped<IAuditLogService, AuditLogService>();
 builder.Services.AddScoped<IClotheRepository, ClotheRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+builder.Services.AddScoped<IRentalRepository, RentalRepository>();
 
 builder.Services.AddScoped<IEntityRestorer, CustomerRestorer>();
 builder.Services.AddScoped<IEntityRestorer, ClotheRestorer>();

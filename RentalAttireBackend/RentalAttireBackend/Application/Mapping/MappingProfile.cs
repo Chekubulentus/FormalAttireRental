@@ -17,6 +17,7 @@ using RentalAttireBackend.Application.Employees.Commands.UpdateEmployee;
 using RentalAttireBackend.Application.Employees.DTOs;
 using RentalAttireBackend.Application.Persons.Commands.UpdatePerson;
 using RentalAttireBackend.Application.Persons.DTO;
+using RentalAttireBackend.Application.Rentals.DTOs;
 using RentalAttireBackend.Application.Users.DTO;
 using RentalAttireBackend.Domain.Entities;
 using System.CodeDom;
@@ -306,6 +307,42 @@ namespace RentalAttireBackend.Application.Mapping
                 opt => opt.MapFrom(src => src.Person))
                 .ForMember(dest => dest.EntityType,
                 opt => opt.MapFrom(src => "Customer"));
+            #endregion
+
+            #region RentalItem -> RentalItemDTO
+            CreateMap<RentalItem, RentalItemDTO>()
+                .ForMember(dest => dest.Id,
+                opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.RentalId,
+                opt => opt.MapFrom(src => src.RentalId))
+                .ForMember(dest => dest.ClotheId,
+                opt => opt.MapFrom(src => src.ClotheId))
+                .ForMember(dest => dest.RentalPrice,
+                opt => opt.MapFrom(src => src.RentalPrice))
+                .ForMember(dest => dest.Quantity,
+                opt => opt.MapFrom(src => src.Quantity))
+                .ForMember(dest => dest.TotalAmount,
+                opt => opt.MapFrom(src => src.TotalAmount));
+            #endregion
+
+            #region Rental -> RentalDTO
+            CreateMap<Rental, RentalDTO>()
+                .ForMember(dest => dest.RentalCode,
+                opt => opt.MapFrom(src => src.RentalCode))
+                .ForMember(dest => dest.CustomerId,
+                opt => opt.MapFrom(src => src.CustomerId))
+                .ForMember(dest => dest.RentalDate,
+                opt => opt.MapFrom(src => src.RentalDate))
+                .ForMember(dest => dest.ReturnDate,
+                opt => opt.MapFrom(src => src.ReturnDate))
+                .ForMember(dest => dest.TotalAmount,
+                opt => opt.MapFrom(src => src.TotalAmount))
+                .ForMember(dest => dest.DepositAmount,
+                opt => opt.MapFrom(dest => dest.Status))
+                .ForMember(dest => dest.PaymentMethod,
+                opt => opt.MapFrom(src => src.PaymentMethod.ToString()))
+                .ForMember(dest => dest.RentalItems,
+                opt => opt.MapFrom(src => src.RentalItems));
             #endregion
         }
     }

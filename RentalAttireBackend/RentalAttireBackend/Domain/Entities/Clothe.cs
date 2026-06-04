@@ -21,13 +21,13 @@ namespace RentalAttireBackend.Domain.Entities
         public Condition Condition { get; set; }
         public string ProfileImagePath { get; set; } = string.Empty;
         public bool IsAvailable => AvailableQuantity > 0;
-
+        public int RentalCount { get; set; }
         //NavProp
         public Category Category { get; set; } = null!;
         [JsonIgnore]
         public List<RentalItem> RentalItems { get; set; } = new();
     }
-    public enum ClotheGender
+    public enum ClotheGender    
     {
         Male = 0,
         Female = 1,

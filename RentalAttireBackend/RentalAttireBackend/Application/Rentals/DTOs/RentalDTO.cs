@@ -2,7 +2,7 @@
 
 namespace RentalAttireBackend.Application.Rentals.DTOs
 {
-    public class RentaDTO
+    public class RentalDTO
     {
         public string RentalCode { get; set; } = string.Empty;
         public int CustomerId { get; set; }
@@ -12,6 +12,6 @@ namespace RentalAttireBackend.Application.Rentals.DTOs
         public int DepositAmount { get; set; }
         public string Status { get; set; } = string.Empty;
         public PaymentMethod PaymentMethod { get; set; }
-        public List<RentalItem> RentalItems { get; set; } = new();
+        public List<RentalItemDTO> RentalItems { get; set; } = new();
     }
 }

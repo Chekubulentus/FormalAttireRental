@@ -9,6 +9,7 @@ namespace RentalAttireBackend.Domain.Entities
         public int ClotheId { get; set; }
         public int RentalPrice { get; set; }
         public int Quantity { get; set; }
+        public int TotalAmount => RentalPrice * Quantity;
         //NavProp
         public Rental Rental { get; set; } = null!;
         [JsonIgnore]
