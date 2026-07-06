@@ -104,15 +104,16 @@ namespace RentalAttireBackend.Application.Authentication.Commands.GoogleLogin
                         AccessToken = accessToken,
                         RefreshToken = refreshToken,
                         ExpiresAt = DateTime.UtcNow.AddMinutes(60),
-                        User = userDto
+                        Id = user.Id,
+                        Email = user.Email,
                     });
-                }
+                } 
 
                 await _transactionManager.BeginTransactionAsync(cancellationToken);
 
                 var newPerson = new Person();
                 newPerson.FirstName = payload.GivenName;
-                newPerson.LastName = payload.FamilyName;
+                newPerson.LastName = payload.FamilyName ?? "";
                 newPerson.CreatedBy = payload.Name;
                 newPerson.EntityType = "Person";
                 newPerson.ProfileImagePath = payload.Picture;
@@ -167,7 +168,8 @@ namespace RentalAttireBackend.Application.Authentication.Commands.GoogleLogin
                     AccessToken = newAccessToken,
                     RefreshToken = newRefreshToken,
                     ExpiresAt = DateTime.UtcNow.AddMinutes(60),
-                    User = newUserDto
+                    Id = newUser.Id,
+                    Email = newUser.Email,
                 });
             }
             catch (Exception e)

@@ -51,7 +51,7 @@ namespace RentalAttireBackend.Application.Rentals.Queries
                 var rentalsDto = _mapper.Map<List<RentalDTO>>(rentals);
 
                 return Result<RentalPageResponse>.Success(new RentalPageResponse
-                {
+                { 
                     Items = rentalsDto,
                     CurrentPage = request.CurrentPage,
                     ItemsPerPage = request.ItemsPerPage,

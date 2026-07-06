@@ -82,7 +82,7 @@ namespace RentalAttireBackend.Application.Customers.Commands.CustomerRegistratio
                     AccessToken = accessToken,
                     RefreshToken = refreshToken,
                     ExpiresAt = DateTime.UtcNow.AddMinutes(60),
-                    User = _mapper.Map<UserDTO>(newCustomer.User)
+                    Id = newCustomer.User.Id,
                 });
             }catch(Exception e)
             {

@@ -52,7 +52,7 @@ namespace RentalAttireBackend.Application.Authentication.Commands.RefreshToken
                 AccessToken = newAccessToken,
                 RefreshToken = user.RefreshToken,
                 ExpiresAt = DateTime.UtcNow.AddMinutes(60),
-                User = userDto
+                Id = user.Id
             });
         }
     }

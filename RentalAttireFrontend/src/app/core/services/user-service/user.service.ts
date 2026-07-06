@@ -36,15 +36,14 @@ export class UserService {
 
   async getCurrentUserViewModel(): Promise<Result<UserViewModel>> {
     try {
-      const user = this.authService.getCurrentUser();
+      const userId = this.authService.getCurrentUser();
+      console.log(`USER ID NG ADMIN: ${userId}`);
 
-      if (!user) return Result.failure('User does not exist.');
-
-      const parsedUser = JSON.parse(user);
+      if (!userId) return Result.failure('User does not exist.');
 
       const result = await firstValueFrom(
         this.httpClient.get<Result<UserViewModel>>(
-          `${this.baseUrl}/user-view-model/${parsedUser.id}`,
+          `${this.baseUrl}/user-view-model/${userId}`,
         ),
       );
 

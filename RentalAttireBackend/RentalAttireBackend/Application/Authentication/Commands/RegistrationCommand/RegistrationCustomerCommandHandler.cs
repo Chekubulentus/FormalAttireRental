@@ -106,7 +106,8 @@ namespace RentalAttireBackend.Application.Authentication.Commands.RegistrationCo
                     AccessToken = accessToken,
                     RefreshToken = refreshToken,
                     ExpiresAt = DateTime.UtcNow.AddMinutes(60),
-                    User = _mapper.Map<UserDTO>(newCustomer.User)
+                    Id = newCustomer.User.Id,
+                    Email = newCustomer.User.Email,
                 });
             }catch(Exception e)
             {

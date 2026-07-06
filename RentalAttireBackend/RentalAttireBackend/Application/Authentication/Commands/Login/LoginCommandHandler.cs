@@ -63,10 +63,11 @@ namespace RentalAttireBackend.Application.Authentication.Commands.Login
 
                 return Result<AuthenticationResult>.Success(new AuthenticationResult    
                 {
+                    Id = user.Id,
                     AccessToken = accessToken,
                     RefreshToken = refreshToken,
                     ExpiresAt = DateTime.UtcNow.AddMinutes(60),
-                    User = _mapper.Map<UserDTO>(user)
+                    Email = user.Email,
                 });
             }catch(Exception e)
             {

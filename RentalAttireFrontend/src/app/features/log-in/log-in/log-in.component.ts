@@ -15,6 +15,7 @@ import {
 } from '@abacritt/angularx-social-login';
 import { Subscription } from 'rxjs';
 import { CurrentUser } from '../../../../environments/current-user';
+import { USER_ID } from '../../../../environments/user-id';
 
 @Component({
   selector: 'app-log-in',
@@ -68,7 +69,7 @@ export class LogInComponent implements OnInit, OnDestroy {
           }
           if (result.data?.accessToken && result.data?.refreshToken) {
             this.authService.saveTokens(result.data.accessToken, result.data.refreshToken);
-            localStorage.setItem(CurrentUser, JSON.stringify(result.data.user));
+            localStorage.setItem(USER_ID, JSON.stringify(result.data.id));
           }
           this.router.navigateByUrl('/admin');
         })

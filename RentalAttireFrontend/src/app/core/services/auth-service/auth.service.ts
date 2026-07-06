@@ -12,6 +12,7 @@ import { UserViewModel } from '../../../data/models/DTOs/Users/user-view-model';
 import { UserDTO } from '../../../data/models/DTOs/Users/user-dto';
 import { identifierName } from '@angular/compiler';
 import { RegisterCustomerCommand } from '../../../data/models/DTOs/Customer/register-customer';
+import { USER_ID } from '../../../../environments/user-id';
 
 @Injectable({
   providedIn: 'root',
@@ -57,11 +58,11 @@ export class AuthService {
   removeTokens() {
     localStorage.removeItem(this.accessTokenKey);
     localStorage.removeItem(this.refreshTokenKey);
-    localStorage.removeItem(CurrentUser);
+    localStorage.removeItem(USER_ID);
   }
 
   getCurrentUser() {
-    return localStorage.getItem(CurrentUser);
+    return localStorage.getItem(USER_ID);
   }
 
   async login(
@@ -75,7 +76,7 @@ export class AuthService {
           password: password,
         }),
       );
-      localStorage.setItem(CurrentUser, JSON.stringify(response.data?.user));
+      localStorage.setItem(USER_ID, JSON.stringify(response.data?.id));
       return response;
     } catch (err: any) {
       console.log('Error body:', err?.error);
@@ -130,7 +131,7 @@ export class AuthService {
       );
 
       this.saveTokens(result.data?.accessToken, result.data?.refreshToken);
-      localStorage.setItem(CurrentUser, JSON.stringify(result.data?.user));
+      localStorage.setItem(USER_ID, JSON.stringify(result.data?.id));
 
       return result;
     }catch(err : any) {
