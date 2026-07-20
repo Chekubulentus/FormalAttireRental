@@ -1,0 +1,683 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap');
+
+// ============================================================
+// Design Tokens
+// ============================================================
+$surface:      #ffffff;
+$bg:           #f9f7f5;
+$border:       #e4ddd6;
+$gold:         #a07840;
+$gold-dim:     rgba(160, 120, 64, 0.08);
+$gold-border:  rgba(160, 120, 64, 0.25);
+$text:         #1a1917;
+$text-muted:   #9e9590;
+$text-soft:    #6b6560;
+
+// Action type colors
+$login-color:   #4a90a4;
+$login-bg:      rgba(74, 144, 164, 0.08);
+$login-border:  rgba(74, 144, 164, 0.25);
+
+$create-color:  #27ae60;
+$create-bg:     rgba(39, 174, 96, 0.08);
+$create-border: rgba(39, 174, 96, 0.25);
+
+$update-color:  #a07840;
+$update-bg:     rgba(160, 120, 64, 0.08);
+$update-border: rgba(160, 120, 64, 0.25);
+
+$archive-color: #8b7aad;
+$archive-bg:    rgba(139, 122, 173, 0.08);
+$archive-border:rgba(139, 122, 173, 0.25);
+
+$red:           #c0392b;
+
+
+// ============================================================
+// Page Layout
+// ============================================================
+.logs-page {
+  padding: 2rem 2.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-width: 1200px;
+  font-family: 'DM Sans', sans-serif;
+}
+
+
+// ============================================================
+// Page Header
+// ============================================================
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.page-header__left {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.eyebrow {
+  font-size: 0.6rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: $gold;
+}
+
+.page-header h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 2rem;
+  font-weight: 400;
+  color: $text;
+  margin: 0;
+  line-height: 1.1;
+}
+
+.page-subtitle {
+  font-size: 0.78rem;
+  color: $text-muted;
+  font-weight: 300;
+  margin: 0;
+}
+
+// Live indicator badge
+.live-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.8rem;
+  border: 1px solid $border;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: $text-muted;
+  background: $surface;
+  transition: all 0.2s;
+
+  &.live {
+    border-color: $create-border;
+    color: $create-color;
+    background: $create-bg;
+
+    .live-dot {
+      background: $create-color;
+      animation: pulse 1.5s ease infinite;
+    }
+  }
+}
+
+.live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: $text-muted;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.5; transform: scale(0.8); }
+}
+
+
+// ============================================================
+// Toolbar — search + date range + export
+// ============================================================
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+// Search
+.search-wrap {
+  position: relative;
+  flex: 1;
+  min-width: 240px;
+}
+
+.search-icon {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 14px;
+  height: 14px;
+  color: $text-muted;
+  pointer-events: none;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.6rem 0.85rem 0.6rem 2.2rem;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.82rem;
+  color: $text;
+  background: $surface;
+  border: 1px solid $border;
+  border-radius: 9px;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.18s;
+
+  &::placeholder { color: $text-muted; font-weight: 300; }
+  &:focus { border-color: $gold-border; }
+}
+
+// Date range
+.date-range {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.date-input {
+  padding: 0.6rem 0.75rem;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.78rem;
+  color: $text;
+  background: $surface;
+  border: 1px solid $border;
+  border-radius: 9px;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.18s;
+
+  &:focus { border-color: $gold-border; }
+}
+
+.date-sep {
+  font-size: 0.75rem;
+  color: $text-muted;
+}
+
+// Export button
+.btn-export {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.6rem 1rem;
+  background: $surface;
+  border: 1px solid $border;
+  border-radius: 9px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: $text-soft;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+
+  svg { width: 13px; height: 13px; }
+
+  &:hover { background: $bg; color: $text; border-color: $gold-border; }
+}
+
+
+// ============================================================
+// Filter Pills
+// ============================================================
+.filter-pills {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.pill {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.85rem;
+  border: 1px solid $border;
+  border-radius: 20px;
+  background: $surface;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: $text-soft;
+  cursor: pointer;
+  transition: all 0.15s;
+
+  // Count badge inside the pill
+  .pill-count {
+    font-size: 0.65rem;
+    font-weight: 400;
+    color: $text-muted;
+    background: $bg;
+    border-radius: 10px;
+    padding: 0.1rem 0.4rem;
+  }
+
+  // Small colored dot
+  .pill-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+  }
+
+  &:hover { background: $bg; }
+
+  // Active state — "All"
+  &.active {
+    background: $text;
+    border-color: $text;
+    color: #fff;
+    .pill-count { background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.8); }
+  }
+}
+
+// Per-type pill active states
+.pill--login {
+  .pill-dot { background: $login-color; }
+  &.active  { background: $login-bg; border-color: $login-border; color: $login-color;
+               .pill-count { background: rgba(74,144,164,0.12); color: $login-color; } }
+}
+.pill--create {
+  .pill-dot { background: $create-color; }
+  &.active  { background: $create-bg; border-color: $create-border; color: $create-color;
+               .pill-count { background: rgba(39,174,96,0.12); color: $create-color; } }
+}
+.pill--update {
+  .pill-dot { background: $update-color; }
+  &.active  { background: $update-bg; border-color: $update-border; color: $update-color;
+               .pill-count { background: rgba(160,120,64,0.12); color: $update-color; } }
+}
+.pill--archive {
+  .pill-dot { background: $archive-color; }
+  &.active  { background: $archive-bg; border-color: $archive-border; color: $archive-color;
+               .pill-count { background: rgba(139,122,173,0.12); color: $archive-color; } }
+}
+
+
+// ============================================================
+// Table Wrap
+// ============================================================
+.table-wrap {
+  background: $surface;
+  border: 1px solid $border;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+
+// ============================================================
+// Loading Skeleton
+// ============================================================
+.skeleton-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.skeleton-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid $border;
+
+  &:last-child { border-bottom: none; }
+}
+
+.skeleton-cell {
+  height: 12px;
+  background: linear-gradient(90deg, $bg 25%, darken($bg, 3%) 50%, $bg 75%);
+  background-size: 200% 100%;
+  border-radius: 6px;
+  animation: shimmer 1.4s ease infinite;
+  flex: 1;
+
+  &.wide   { flex: 2; }
+  &.narrow { flex: 0.5; }
+}
+
+@keyframes shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+
+// ============================================================
+// Empty State
+// ============================================================
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  gap: 0.75rem;
+
+  svg { width: 40px; height: 40px; color: $border; }
+}
+
+.empty-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.1rem;
+  color: $text-soft;
+  margin: 0;
+}
+
+.empty-sub {
+  font-size: 0.78rem;
+  color: $text-muted;
+  margin: 0;
+  font-weight: 300;
+}
+
+
+// ============================================================
+// Log List & Rows
+// ============================================================
+.log-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.log-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 0.9rem 1.5rem;
+  border-bottom: 1px solid $border;
+  cursor: pointer;
+  transition: background 0.15s;
+
+  &:last-child  { border-bottom: none; }
+  &:hover       { background: $bg; }
+  &.expanded    { background: $bg; border-bottom-color: transparent; }
+}
+
+// Left — icon + text
+.log-row__main {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  min-width: 0;
+}
+
+// Action type badge — circular icon
+.action-badge {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  svg { width: 14px; height: 14px; }
+
+  // Color per action type via data attribute
+  &[data-type="Login"]   { background: $login-bg;   color: $login-color;   border: 1px solid $login-border; }
+  &[data-type="Create"]  { background: $create-bg;  color: $create-color;  border: 1px solid $create-border; }
+  &[data-type="Update"]  { background: $update-bg;  color: $update-color;  border: 1px solid $update-border; }
+  &[data-type="Archive"] { background: $archive-bg; color: $archive-color; border: 1px solid $archive-border; }
+}
+
+.log-row__text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.log-action {
+  font-size: 0.7rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: $text-muted;
+}
+
+.log-message {
+  font-size: 0.82rem;
+  color: $text;
+  font-weight: 400;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+// Center — user
+.log-row__user {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  white-space: nowrap;
+}
+
+.user-avatar {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  font-weight: 500;
+  color: #fff;
+  flex-shrink: 0;
+  text-transform: uppercase;
+}
+
+.user-name {
+  font-size: 0.78rem;
+  color: $text-soft;
+  font-weight: 400;
+}
+
+// Right — timestamp + chevron
+.log-row__meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  white-space: nowrap;
+}
+
+.log-timestamp {
+  font-size: 0.72rem;
+  color: $text-muted;
+  font-weight: 300;
+}
+
+.chevron {
+  width: 14px;
+  height: 14px;
+  color: $text-muted;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+
+  &.rotated { transform: rotate(180deg); }
+}
+
+
+// ============================================================
+// Expanded Detail Panel
+// ============================================================
+.log-detail {
+  padding: 1rem 1.5rem 1.25rem 1.5rem;
+  background: $bg;
+  border-bottom: 1px solid $border;
+  border-top: 1px solid $border;
+  animation: expandIn 0.2s ease both;
+}
+
+@keyframes expandIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.log-detail__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.detail-label {
+  font-size: 0.62rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: $text-muted;
+}
+
+.detail-value {
+  font-size: 0.8rem;
+  color: $text;
+  font-weight: 400;
+}
+
+.detail-notes {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid $border;
+
+  p {
+    font-size: 0.8rem;
+    color: $text-soft;
+    margin: 0;
+    font-weight: 300;
+    line-height: 1.5;
+  }
+}
+
+
+// ============================================================
+// Pagination
+// ============================================================
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pagination__info {
+  font-size: 0.72rem;
+  color: $text-muted;
+  font-weight: 300;
+}
+
+.pagination__controls {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.page-btn {
+  min-width: 32px;
+  height: 32px;
+  padding: 0 0.5rem;
+  border: 1px solid $border;
+  border-radius: 8px;
+  background: $surface;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.78rem;
+  color: $text-soft;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s;
+
+  svg { width: 13px; height: 13px; }
+
+  &:hover:not(:disabled) { background: $bg; color: $text; }
+  &.active  { background: $text; border-color: $text; color: #fff; }
+  &:disabled { opacity: 0.35; cursor: not-allowed; }
+}
+
+.page-ellipsis {
+  font-size: 0.78rem;
+  color: $text-muted;
+  padding: 0 0.2rem;
+}
+
+
+// ============================================================
+// Log message — "Who verb'd a What — EntityName"
+// ============================================================
+.log-message {
+  font-size: 0.82rem;
+  color: $text;
+  font-weight: 400;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.log-who        { font-weight: 500; color: $text; }
+.log-verb       { color: $text-soft; font-weight: 300; }
+.log-subject    { font-weight: 400; color: $text-soft; }
+.log-entity-name{ color: $text-muted; font-weight: 300; }
+
+
+// ============================================================
+// User info — name + IP stacked
+// ============================================================
+.user-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.user-role {
+  font-size: 0.65rem;
+  color: $text-muted;
+  font-weight: 300;
+}
+
+
+// ============================================================
+// Detail action value — colored per type
+// ============================================================
+.detail-action {
+  font-weight: 500;
+
+  &[data-type="Login"]   { color: $login-color; }
+  &[data-type="Create"]  { color: $create-color; }
+  &[data-type="Update"]  { color: $update-color; }
+  &[data-type="Archived"]{ color: $archive-color; }
+}
+
+
+// ============================================================
+// Clear Filters button
+// ============================================================
+.btn-clear {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.85rem;
+  border: 1px solid rgba(192, 57, 43, 0.3);
+  border-radius: 20px;
+  background: rgba(192, 57, 43, 0.05);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: #c0392b;
+  cursor: pointer;
+  transition: all 0.15s;
+
+  svg { width: 10px; height: 10px; }
+
+  &:hover {
+    background: rgba(192, 57, 43, 0.1);
+    border-color: rgba(192, 57, 43, 0.5);
+  }
+}

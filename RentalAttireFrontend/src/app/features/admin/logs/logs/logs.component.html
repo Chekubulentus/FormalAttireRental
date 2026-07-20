@@ -1,0 +1,282 @@
+<div class="logs-page">
+
+  <!-- ── Page Header ────────────────────────────────────────── -->
+  <div class="page-header">
+    <div class="page-header__left">
+      <span class="eyebrow">System · Activity</span>
+      <h1>Logs</h1>
+      <p class="page-subtitle">A complete audit trail of all actions performed in the system.</p>
+    </div>
+
+    <div class="live-badge" [class.live]="isLive" (click)="toggleLive()">
+      <span class="live-dot"></span>
+      <span>{{ isLive ? 'Live' : 'Paused' }}</span>
+    </div>
+  </div>
+
+  <!-- ── Toolbar ────────────────────────────────────────────── -->
+  <div class="toolbar">
+
+    <div class="search-wrap">
+      <svg class="search-icon" viewBox="0 0 20 20" fill="none">
+        <circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.5"/>
+        <line x1="13.5" y1="13.5" x2="17" y2="17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      <input
+        class="search-input"
+        type="text"
+        placeholder="Search by user, action, or record..."
+        [(ngModel)]="searchQuery"
+        (ngModelChange)="onSearch()"/>
+    </div>
+
+    <div class="date-range">
+      <input class="date-input" type="date" [(ngModel)]="dateFrom" (ngModelChange)="getAllAuditLogs()" title="From"/>
+      <span class="date-sep">→</span>
+      <input class="date-input" type="date" [(ngModel)]="dateTo" (ngModelChange)="getAllAuditLogs()" title="To"/>
+    </div>
+
+    <button class="btn-export" (click)="exportLogs()">
+      <svg viewBox="0 0 16 16" fill="none">
+        <path d="M8 2v8M5 7l3 3 3-3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M2 12h12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+      </svg>
+      Export
+    </button>
+
+  </div>
+
+  <!-- ── Action Filter Pills ───────────────────────────────── -->
+  <div class="filter-pills">
+
+    <button class="pill" [class.active]="activeFilter === 'all'" (click)="setFilter('')">
+      All
+      <span class="pill-count">{{ totalCount }}</span>
+    </button>
+
+    <button class="pill pill--login" [class.active]="activeFilter === 'login'" (click)="setFilter('login')">
+      <span class="pill-dot"></span> Login
+      <span class="pill-count">{{ loginCount }}</span>
+    </button>
+
+    <button class="pill pill--create" [class.active]="activeFilter === 'create'" (click)="setFilter('create')">
+      <span class="pill-dot"></span> Create
+      <span class="pill-count">{{ createCount }}</span>
+    </button>
+
+    <button class="pill pill--update" [class.active]="activeFilter === 'update'" (click)="setFilter('update')">
+      <span class="pill-dot"></span> Update
+      <span class="pill-count">{{ updateCount }}</span>
+    </button>
+
+    <button class="pill pill--archive" [class.active]="activeFilter === 'archive'" (click)="setFilter('archive')">
+      <span class="pill-dot"></span> Archive
+      <span class="pill-count">{{ archiveCount }}</span>
+    </button>
+
+    <button class="pill pill--restore" [class.active]="activeFilter === 'restore'" (click)="setFilter('restore')">
+      <span class="pill-dot"></span> Restored
+      <span class="pill-count">{{ restoreCount }}</span>
+    </button>
+
+    <button class="btn-clear" *ngIf="hasActiveFilters" (click)="clearFilters()">
+      <svg viewBox="0 0 16 16" fill="none">
+        <line x1="4" y1="4" x2="12" y2="12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+        <line x1="12" y1="4" x2="4"  y2="12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+      </svg>
+      Clear Filters
+    </button>
+
+  </div>
+
+  <!-- ── Log Table ─────────────────────────────────────────── -->
+  <div class="table-wrap">
+
+    <!-- Loading skeleton -->
+    <div class="skeleton-list" *ngIf="isLoading">
+      <div class="skeleton-row" *ngFor="let i of [1,2,3,4,5,6]">
+        <div class="skeleton-cell wide"></div>
+        <div class="skeleton-cell"></div>
+        <div class="skeleton-cell"></div>
+        <div class="skeleton-cell narrow"></div>
+      </div>
+    </div>
+
+    <!-- Empty state -->
+    <div class="empty-state" *ngIf="!isLoading && logs.length === 0">
+      <svg viewBox="0 0 48 48" fill="none">
+        <rect x="8" y="6" width="32" height="36" rx="3" stroke="currentColor" stroke-width="1.5"/>
+        <line x1="16" y1="16" x2="32" y2="16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="16" y1="22" x2="28" y2="22" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="16" y1="28" x2="24" y2="28" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      <p class="empty-title">No logs found</p>
+      <p class="empty-sub">Try adjusting your search or filter criteria.</p>
+    </div>
+
+    <!-- Log Rows -->
+    <div class="log-list" *ngIf="!isLoading && logs.length > 0">
+
+      <ng-container *ngFor="let log of logs">
+
+        <div
+          class="log-row"
+          [class.expanded]="expandedLogId === log.id"
+          (click)="toggleExpand(log.id)">
+
+          <!-- Left: action badge + entity info -->
+          <div class="log-row__main">
+
+            <span class="action-badge" [attr.data-type]="log.actionType">
+              <svg *ngIf="log.actionType === 'Login'" viewBox="0 0 16 16" fill="none">
+                <path d="M10 2h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+                <polyline points="7 5 10 8 7 11" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                <line x1="2" y1="8" x2="10" y2="8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+              </svg>
+              <svg *ngIf="log.actionType === 'Create'" viewBox="0 0 16 16" fill="none">
+                <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.3"/>
+                <line x1="8" y1="5" x2="8" y2="11" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+                <line x1="5" y1="8" x2="11" y2="8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+              </svg>
+              <svg *ngIf="log.actionType === 'Update'" viewBox="0 0 16 16" fill="none">
+                <path d="M2 8a6 6 0 1 1 1.5 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+                <polyline points="2 12 2 8 6 8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <svg *ngIf="log.actionType === 'Archived'" viewBox="0 0 16 16" fill="none">
+                <rect x="2" y="3" width="12" height="3" rx="1" stroke="currentColor" stroke-width="1.3"/>
+                <path d="M3 6v6a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V6" stroke="currentColor" stroke-width="1.3"/>
+                <line x1="6" y1="9" x2="10" y2="9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+              </svg>
+              <svg *ngIf="log.actionType === 'Restored'" viewBox="0 0 16 16" fill="none">
+                <path d="M13 8A5 5 0 1 1 8 3a5 5 0 0 1 3.5 1.5L13 6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+                <polyline points="13 2 13 6 9 6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+
+            <div class="log-row__text">
+              <span class="log-action">{{ log.actionType }}</span>
+              <span class="log-message">
+                <span class="log-who">{{ log.changedBy }}</span>
+                <span class="log-verb"> {{ getActionVerb(log.actionType) }} </span>
+                <span class="log-subject">{{ log.entityType }}</span>
+                —
+                <span class="log-entity-name">{{ log.entityName }}</span>
+              </span>
+            </div>
+
+          </div>
+
+          <!-- Center: performed by + avatar -->
+          <div class="log-row__user">
+            <div class="user-avatar" [style.background]="getAvatarColor(log.id)">
+              {{ log.changedBy?.charAt(0) }}
+            </div>
+            <div class="user-info">
+              <span class="user-name">{{ log.changedBy }}</span>
+              <span class="user-role">{{ log.ipAddress || 'Unknown IP' }}</span>
+            </div>
+          </div>
+
+          <!-- Right: timestamp + chevron -->
+          <div class="log-row__meta">
+            <span class="log-timestamp">{{ log.changedAt | date:'MMM d, y · h:mm a' }}</span>
+            <svg class="chevron" viewBox="0 0 16 16" fill="none"
+                 [class.rotated]="expandedLogId === log.id">
+              <polyline points="4 6 8 10 12 6" stroke="currentColor" stroke-width="1.3"
+                stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+
+        </div><!-- end .log-row -->
+
+        <!-- Expanded Detail Panel -->
+        <ng-container *ngIf="expandedLogId === log.id">
+          <div class="log-detail">
+            <div class="log-detail__grid">
+
+              <div class="detail-item">
+                <span class="detail-label">Action</span>
+                <span class="detail-value detail-action" [attr.data-type]="log.actionType">
+                  {{ log.actionType }} {{ log.entityType }}
+                </span>
+              </div>
+
+              <div class="detail-item">
+                <span class="detail-label">Record</span>
+                <span class="detail-value">{{ log.entityName }}</span>
+              </div>
+
+              <div class="detail-item">
+                <span class="detail-label">Performed By</span>
+                <span class="detail-value">{{ log.changedBy }}</span>
+              </div>
+
+              <div class="detail-item">
+                <span class="detail-label">IP Address</span>
+                <span class="detail-value">{{ log.ipAddress || '—' }}</span>
+              </div>
+
+              <div class="detail-item">
+                <span class="detail-label">Date</span>
+                <span class="detail-value">{{ log.changedAt | date:'MMMM d, y' }}</span>
+              </div>
+
+              <div class="detail-item">
+                <span class="detail-label">Time</span>
+                <span class="detail-value">{{ log.changedAt | date:'h:mm:ss a' }}</span>
+              </div>
+
+              <div class="detail-item">
+                <span class="detail-label">Full Timestamp</span>
+                <span class="detail-value">{{ log.changedAt | date:'EEEE, MMMM d y · h:mm:ss a' }}</span>
+              </div>
+
+            </div>
+          </div>
+        </ng-container>
+
+      </ng-container>
+
+    </div><!-- end .log-list -->
+
+  </div><!-- end .table-wrap -->
+
+  <!-- ── Pagination ────────────────────────────────────────── -->
+  <div class="pagination" *ngIf="!isLoading && logs.length > 0">
+
+    <span class="pagination__info">
+      Showing {{ rangeStart }}–{{ rangeEnd }} of {{ totalCount }} logs
+    </span>
+
+    <div class="pagination__controls">
+
+      <button class="page-btn" [disabled]="currentPage === 1" (click)="goToPage(currentPage - 1)">
+        <svg viewBox="0 0 16 16" fill="none">
+          <polyline points="10 4 6 8 10 12" stroke="currentColor" stroke-width="1.3"
+            stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+
+      <ng-container *ngFor="let page of pageNumbers">
+        <span class="page-ellipsis" *ngIf="page === -1">…</span>
+        <button
+          *ngIf="page !== -1"
+          class="page-btn"
+          [class.active]="page === currentPage"
+          (click)="goToPage(page)">
+          {{ page }}
+        </button>
+      </ng-container>
+
+      <button class="page-btn" [disabled]="currentPage === totalPages" (click)="goToPage(currentPage + 1)">
+        <svg viewBox="0 0 16 16" fill="none">
+          <polyline points="6 4 10 8 6 12" stroke="currentColor" stroke-width="1.3"
+            stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
