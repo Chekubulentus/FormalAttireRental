@@ -93,7 +93,8 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Services
                 .Where(al =>
                 (searchQueryValidator ||
                 al.ChangedBy.ToLower().Contains(searchQuery.ToLower()) ||
-                al.EntityName.ToLower().Contains(searchQuery.ToLower()))
+                al.EntityName.ToLower().Contains(searchQuery.ToLower())
+                )
                 &&
                 (actionTypeValidator || al.ActionType.ToLower().Equals(actionType.ToLower()))
                 &&

@@ -39,7 +39,7 @@ namespace RentalAttireBackend.Controllers.AuthenticationController
         }
         [HttpPost("google-login")]
         public async Task<IActionResult> GoogleLoginAsync(GoogleLoginCommand command)
-        {
+        { 
             var result = await _mediator.Send(command);
 
             return result.IsSuccess ? Ok(result) : BadRequest(result.ErrorMessage);

@@ -175,6 +175,7 @@ export class CategoryComponent implements OnInit {
       this.toastrService.error(err.error);
     }).finally(() =>  {
       this.isLoading = false;
+      this.isSubmitting = false;
       this.cancelCreate();
     });
   }

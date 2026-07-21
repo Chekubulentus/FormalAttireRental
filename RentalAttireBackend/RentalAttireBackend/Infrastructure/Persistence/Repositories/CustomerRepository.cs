@@ -27,6 +27,7 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
         public async Task<PagedResult<Customer>> FilterCustomersAsync(PaginationParams paginationParams, string? searchQuery, CancellationToken cancellationToken)
         {
             var loweredQuery = searchQuery?.ToLower();
+
             var customers = _context.Customers
                 .AsNoTracking()
                 .Include(c => c.User)
