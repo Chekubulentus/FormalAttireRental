@@ -76,6 +76,8 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
         public async Task<Employee?> GetEmployeeByEmployeeCodeAsync(string employeeCode, CancellationToken cancellationToken)
         {
             return await _context.Employees
+                .Include(e => e.User)
+                    .ThenInclude(u => u.Person)
                 .FirstOrDefaultAsync(e => e.EmployeeCode.Contains(employeeCode) && e.IsActive, cancellationToken);
         }
 

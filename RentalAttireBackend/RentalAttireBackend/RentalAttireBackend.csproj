@@ -8,6 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Application\Rentals\Commands\**" />
+    <Content Remove="Application\Rentals\Commands\**" />
+    <EmbeddedResource Remove="Application\Rentals\Commands\**" />
+    <None Remove="Application\Rentals\Commands\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Remove="appsettings.json" />
   </ItemGroup>
 
@@ -35,7 +42,6 @@
 
   <ItemGroup>
     <Folder Include="Application\Customers\Commands\UpdateCustomer\" />
-    <Folder Include="Application\Rentals\Commands\" />
     <Folder Include="Application\Users\Commands\" />
     <Folder Include="Controllers\CustomerController\" />
     <Folder Include="Controllers\CashierController\" />

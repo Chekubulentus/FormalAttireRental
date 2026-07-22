@@ -62,5 +62,14 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
                 PageSize = itemsPerPage,
             };
         }
+
+        public async Task<List<Rental>> GetAllRentalsAsync(CancellationToken cancellationToken)
+        {
+            return await _context.Rentals
+                .Include(r => r.RentalItems)
+                    .ThenInclude(ri => ri.Clothe)
+                .OrderByDescending(r => r.Id)
+                .ToListAsync(cancellationToken);
+        }
     }
 }

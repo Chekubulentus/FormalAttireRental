@@ -1,11 +1,12 @@
-﻿using RentalAttireBackend.Domain.Entities;
+﻿using RentalAttireBackend.Application.Customers.DTOs;
+using RentalAttireBackend.Domain.Entities;
 
 namespace RentalAttireBackend.Application.Rentals.DTOs
 {
     public class RentalDTO
     {
         public string RentalCode { get; set; } = string.Empty;
-        public int CustomerId { get; set; }
+        public CustomerDTO Customer { get; set; } = new();
         public DateTime RentalDate { get; set; }
         public DateTime ReturnDate { get; set; }
         public int TotalAmount { get; set; }

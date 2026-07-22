@@ -20,6 +20,10 @@ namespace RentalAttireBackend.Domain.Interfaces
             int itemsPerPage,
             CancellationToken ct
             );
+
+        public Task<List<Rental>> GetAllRentalsAsync(
+            CancellationToken cancellationToken
+            );
         #endregion
     }
 }

@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RentalAttireBackend.Application.Rentals.Queries;
+using RentalAttireBackend.Application.Rentals.Queries.FilterRentals;
+using RentalAttireBackend.Application.Rentals.Queries.GetAllRentals;
 
 namespace RentalAttireBackend.Controllers.AdminController
 {
@@ -34,6 +36,14 @@ namespace RentalAttireBackend.Controllers.AdminController
                 StartingDate = startingDate,
                 EndingDate = endingDate
             });
+
+            return result.IsSuccess ? Ok(result) : BadRequest(result.ErrorMessage);
+        }
+
+        [HttpGet("all-rentals")]
+        public async Task<IActionResult> GetAllRentalsAsync(GetAllRentalsQuery query)
+        {
+            var result = await _meaditor.Send(query);
 
             return result.IsSuccess ? Ok(result) : BadRequest(result.ErrorMessage);
         }

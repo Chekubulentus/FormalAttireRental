@@ -329,8 +329,8 @@ namespace RentalAttireBackend.Application.Mapping
             CreateMap<Rental, RentalDTO>()
                 .ForMember(dest => dest.RentalCode,
                 opt => opt.MapFrom(src => src.RentalCode))
-                .ForMember(dest => dest.CustomerId,
-                opt => opt.MapFrom(src => src.CustomerId))
+                .ForMember(dest => dest.Customer,
+                opt => opt.MapFrom(src => src.Customer))
                 .ForMember(dest => dest.RentalDate,
                 opt => opt.MapFrom(src => src.RentalDate))
                 .ForMember(dest => dest.ReturnDate,

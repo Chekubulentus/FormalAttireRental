@@ -2,7 +2,7 @@
 using RentalAttireBackend.Application.Common.Models;
 using RentalAttireBackend.Application.Rentals.DTOs;
 
-namespace RentalAttireBackend.Application.Rentals.Queries
+namespace RentalAttireBackend.Application.Rentals.Queries.FilterRentals
 {
     public class FilterRentalsQuery : IRequest<Result<RentalPageResponse>>
     {
