@@ -16,6 +16,13 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
         {
             _context = context;
         }
+
+        public async Task<bool> CreateRentalAsync(Rental newRental, CancellationToken ct)
+        {
+            await _context.AddAsync(newRental);
+            return await _context.SaveChangesAsync() > 0;
+        }
+
         public async Task<PagedResult<Rental>> FilterRentalItemsAsync(string? categoryType, string? searchQuery, DateTime? startingDate, DateTime? endingDate, int currentPage, int itemsPerPage, CancellationToken ct)
         {
             var categoryTypeValidator = string.IsNullOrEmpty(categoryType);

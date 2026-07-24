@@ -7,7 +7,7 @@ namespace RentalAttireBackend.Domain.Interfaces
     public interface  IRentalRepository
     {
         #region Commands
-
+        public Task<bool> CreateRentalAsync(Rental newRental, CancellationToken ct);
         #endregion
 
         #region Queries

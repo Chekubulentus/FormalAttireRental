@@ -16,6 +16,7 @@ namespace RentalAttireBackend.Domain.Interfaces
         public Task<User?> GetUserModelViewByIdAsync(int id, CancellationToken cancellationToken);
         public Task<bool> ValidateEmailDuplicationAsync(string email, CancellationToken cancellationToken);
         public Task<List<User>> GetAllArchivedUsers(CancellationToken cancellationToken);
+        public Task<User?> GetUserByIdWithCustomerAsync(int id, CancellationToken cancellationToken);
         #endregion
     }
 }

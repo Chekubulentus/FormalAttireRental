@@ -67,6 +67,14 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
                 .FirstOrDefaultAsync(u => u.Email.Equals(email));
         }
 
+        public async Task<User?> GetUserByIdWithCustomerAsync(int id, CancellationToken cancellationToken)
+        {
+            return await _context.Users
+                .Include(u => u.Person)
+                .Include(u => u.Customer)
+                .FirstOrDefaultAsync(u => u.Id == id && u.IsActive && !u.IsDeleted, cancellationToken);
+        }
+
         public async Task<User?> GetUserModelViewByIdAsync(int id, CancellationToken cancellationToken)
         {
             return await _context.Users

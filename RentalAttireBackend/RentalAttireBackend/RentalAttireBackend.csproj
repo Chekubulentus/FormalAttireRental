@@ -8,13 +8,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Application\Rentals\Commands\**" />
-    <Content Remove="Application\Rentals\Commands\**" />
-    <EmbeddedResource Remove="Application\Rentals\Commands\**" />
-    <None Remove="Application\Rentals\Commands\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Content Remove="appsettings.json" />
   </ItemGroup>
 

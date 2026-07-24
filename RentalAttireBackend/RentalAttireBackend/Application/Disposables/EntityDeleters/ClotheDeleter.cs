@@ -1,4 +1,5 @@
-﻿using RentalAttireBackend.Application.Common.Interfaces;
+﻿using RentalAttireBackend.Application.AuditLogs.DTOs;
+using RentalAttireBackend.Application.Common.Interfaces;
 using RentalAttireBackend.Application.Common.Models;
 using RentalAttireBackend.Domain.Interfaces;
 
@@ -17,7 +18,9 @@ namespace RentalAttireBackend.Application.Disposables.EntityDeleters
             ITransactionManager transactionManager
             )
         {
-            
+            _repo = repo;
+            _auditService = auditService;
+            _transactionManager = transactionManager;
         }
         public async Task<Result<bool>> DeleteArchivedRecordAsync(int id, string performedBy, int performedById, CancellationToken ct)
         {
