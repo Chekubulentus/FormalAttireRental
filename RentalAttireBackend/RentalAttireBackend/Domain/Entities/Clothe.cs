@@ -19,6 +19,7 @@ namespace RentalAttireBackend.Domain.Entities
         public int DepositAmount { get; set; }
         public int RentalDurationDays { get; set; }
         public Condition Condition { get; set; }
+        public int ReservedQuantity { get; set; }
         public string ProfileImagePath { get; set; } = string.Empty;
         public bool IsAvailable => AvailableQuantity > 0;
         public int RentalCount { get; set; }

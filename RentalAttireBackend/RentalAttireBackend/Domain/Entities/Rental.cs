@@ -14,6 +14,11 @@ namespace RentalAttireBackend.Domain.Entities
         public string Status { get; set; } = string.Empty;
         public PaymentMethod PaymentMethod { get; set; }
 
+        public override string GetEntityName()
+        {
+            return this.RentalCode;
+        }
+         
         //NavProp
         [JsonIgnore]
         public List<RentalItem> RentalItems { get; set; } = new();

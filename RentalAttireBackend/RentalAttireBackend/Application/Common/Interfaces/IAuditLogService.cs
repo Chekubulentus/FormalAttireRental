@@ -42,5 +42,12 @@ namespace RentalAttireBackend.Application.Common.Interfaces
             int performedById,
             string recordName
             ) where T : BaseEntity;
+
+        public Task<bool> RentalReservationAuditLogAsync<T>(
+            T entity,
+            string reservedBy,
+            int reserverdById,
+            string rentalCode
+            ) where T : BaseEntity;
     }
 }
