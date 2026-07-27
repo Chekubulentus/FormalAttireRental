@@ -1,6 +1,8 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using RentalAttireBackend.Application.Rentals.Commands.RentalTransaction;
 using RentalAttireBackend.Application.Rentals.Queries;
 using RentalAttireBackend.Application.Rentals.Queries.FilterRentals;
 using RentalAttireBackend.Application.Rentals.Queries.GetAllRentals;
@@ -44,6 +46,13 @@ namespace RentalAttireBackend.Controllers.AdminController
         public async Task<IActionResult> GetAllRentalsAsync(GetAllRentalsQuery query)
         {
             var result = await _meaditor.Send(query);
+
+            return result.IsSuccess ? Ok(result) : BadRequest(result.ErrorMessage);
+        }
+        [HttpPost]
+        public async Task<IActionResult> RentalReservationAsync(RentalTransactionCommand command)
+        {
+            var result = await _meaditor.Send(command);
 
             return result.IsSuccess ? Ok(result) : BadRequest(result.ErrorMessage);
         }
