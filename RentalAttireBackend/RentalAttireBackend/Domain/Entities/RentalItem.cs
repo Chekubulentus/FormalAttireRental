@@ -11,7 +11,7 @@ namespace RentalAttireBackend.Domain.Entities
         public int Quantity { get; set; }
         public int DepositAmount { get; set; }
         public int TotalAmount => RentalPrice * Quantity;
-        //NavProp
+        //NavProp  
         public Rental Rental { get; set; } = null!;
         [JsonIgnore]
         public Clothe Clothe { get; set; } = null!;

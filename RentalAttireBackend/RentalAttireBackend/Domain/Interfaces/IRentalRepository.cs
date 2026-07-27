@@ -8,6 +8,7 @@ namespace RentalAttireBackend.Domain.Interfaces
     {
         #region Commands
         public Task<bool> CreateRentalAsync(Rental newRental, CancellationToken ct);
+        public Task<bool> UpdateRentalAsync(Rental rental, CancellationToken cancellationToken);
         #endregion
 
         #region Queries
@@ -22,6 +23,11 @@ namespace RentalAttireBackend.Domain.Interfaces
             );
 
         public Task<List<Rental>> GetAllRentalsAsync(
+            CancellationToken cancellationToken
+            );
+
+        public Task<Rental?> GetRentalByIdAsync(
+            int id,
             CancellationToken cancellationToken
             );
         #endregion

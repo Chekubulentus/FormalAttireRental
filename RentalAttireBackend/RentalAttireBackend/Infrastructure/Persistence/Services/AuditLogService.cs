@@ -323,5 +323,32 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Services
             await _context.AuditLogs.AddAsync(reserveLog);
             return await _context.SaveChangesAsync() > 0;
         }
+
+        public async Task<bool> UpdateRentalReservationAsync<T>(
+            T rental, 
+            string status, 
+            string actionType,
+            string rentalCode, 
+            string performedBy, 
+            int performedById
+            ) where T : BaseEntity
+        {
+            var updateRentalLog = new AuditLog
+            {
+                EntityType = typeof(T).Name,
+                EntityName = rentalCode,
+                EntityId = rental.Id,
+                ActionType = actionType,
+                ChangedAt = DateTime.UtcNow.AddHours(8),
+                ChangedBy = performedBy,
+                ChangedById = performedById,
+                OldValues = null,
+                NewValues = JsonSerializer.Serialize(rental),
+                IpAddress = GetIpAddress()
+            };
+
+            await _context.AuditLogs.AddAsync(updateRentalLog);
+            return await _context.SaveChangesAsync() > 0;
+        }
     }
 }

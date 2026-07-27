@@ -78,5 +78,20 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
                 .OrderByDescending(r => r.Id)
                 .ToListAsync(cancellationToken);
         }
+
+        public async Task<Rental?> GetRentalByIdAsync(int id, CancellationToken cancellationToken)
+        {
+            return await _context.Rentals
+                .Include(r => r.RentalItems)
+                    .ThenInclude(ri => ri.Clothe)
+                .Include(r => r.Customer)
+                .FirstOrDefaultAsync(r => r.Id == id, cancellationToken);
+        }
+
+        public async Task<bool> UpdateRentalAsync(Rental rental, CancellationToken cancellationToken)
+        {
+            _context.Rentals.Update(rental);
+            return await _context.SaveChangesAsync() > 0;
+        }
     }
 }

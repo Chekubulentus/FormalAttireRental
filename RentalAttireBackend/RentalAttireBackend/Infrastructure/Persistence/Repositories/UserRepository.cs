@@ -86,6 +86,15 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
                 .FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
         }
 
+        public async Task<User?> GetUserWithEmployeeAsync(int id, CancellationToken ct)
+        {
+            return await _context.Users
+                .Include(u => u.Employee)
+                    .ThenInclude(e => e.Role)
+                .Include(u => u.Person)
+                .FirstOrDefaultAsync(u => u.Id == id, ct);
+        }
+
         public async Task<bool> UpdateUserAsync(User user, CancellationToken cancellationToken)
         {
             _context.Users.Update(user);

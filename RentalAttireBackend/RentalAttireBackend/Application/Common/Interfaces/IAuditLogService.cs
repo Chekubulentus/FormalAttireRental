@@ -49,5 +49,14 @@ namespace RentalAttireBackend.Application.Common.Interfaces
             int reserverdById,
             string rentalCode
             ) where T : BaseEntity;
+
+        public Task<bool> UpdateRentalReservationAsync<T>(
+            T rental,
+            string status,
+            string rentalCode,
+            string actionType,
+            string performedBy,
+            int performedById
+            ) where T : BaseEntity;
     }
 }

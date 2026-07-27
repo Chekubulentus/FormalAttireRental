@@ -90,7 +90,7 @@ namespace RentalAttireBackend.Application.Rentals.Commands.RentalTransaction
                         return Result<bool>.Failure($"{clothe?.ClotheName} quantity must be greater than zero.");
 
                     if (ri.Quantity > clothe.AvailableQuantity)
-                        return Result<bool>.Failure($"{clothe.ClotheName} does not have enough available stock");
+                        return Result<bool>.Failure($"{clothe.ClotheName} does not have enough available stock for you reservation.");
 
                     ri.RentalPrice = clothe.RentalPrice;
                     clothe.ReservedQuantity += ri.Quantity;
