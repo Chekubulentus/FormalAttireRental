@@ -29,6 +29,14 @@ export const routes: Routes = [
             import('./features/admin/admin.routes').then(m => m.ADMIN_ROUTES)
     },
     {
+        path: 'customer',
+        canActivate: [authGuard],
+        loadComponent: () => {
+            return import('./features/customer/customer-layout/customer-layout.component')
+            .then(m => m.CustomerLayoutComponent)
+        }
+    },
+    {
         path: '',
         redirectTo: 'log-in',
         pathMatch: 'full'

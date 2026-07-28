@@ -54,6 +54,7 @@ namespace RentalAttireBackend.Application.Rentals.Commands.UpdateRentalStatusCom
                     ?.Value;
 
                 if (!int.TryParse(userIdClaim, out int userId))
+
                     return Result<bool>.Failure("Current user does not exist.");
 
                 var currentUser = await _userRepo.GetUserWithEmployeeAsync(userId, cancellationToken);
@@ -71,7 +72,7 @@ namespace RentalAttireBackend.Application.Rentals.Commands.UpdateRentalStatusCom
                 if (!rental.Status.Equals("Pending"))
                     return Result<bool>.Failure("Only pending reservations can be updated.");
 
-                if(request.Status.Equals("Confirmed"))
+                if(request.Status.Equals("Confirmed"))  
                 {
                     foreach(var ri in rental.RentalItems)
                     {

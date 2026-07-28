@@ -1,6 +1,5 @@
 import { Route, Routes } from "@angular/router";
 import { CustomerLayoutComponent } from "./customer-layout/customer-layout.component";
-import { Customer } from "../../data/models/DTOs/Customer/customer";
 
 export const CUSTOMER_ROUTES: Routes = [
     {

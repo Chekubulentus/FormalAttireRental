@@ -13,6 +13,8 @@ import { UserDTO } from '../../../data/models/DTOs/Users/user-dto';
 import { identifierName } from '@angular/compiler';
 import { RegisterCustomerCommand } from '../../../data/models/DTOs/Customer/register-customer';
 import { USER_ID } from '../../../../environments/user-id';
+import { jwtDecode } from 'jwt-decode';
+import { JwtPayload } from '../../../data/models/DTOs/Authentication/jwt-payload';
 
 @Injectable({
   providedIn: 'root',
@@ -63,6 +65,20 @@ export class AuthService {
 
   getCurrentUser() {
     return localStorage.getItem(USER_ID);
+  }
+
+  getCurrentUserRolePosition() : string | null{
+    const token = this.getAccessToken();
+
+    console.log(`IS THERE ANY TOKEN: ${JSON.stringify(token)}`);
+
+    if(!token) {
+      return null;
+    }
+
+    const decoded = jwtDecode<JwtPayload>(token);
+
+    return decoded['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'];
   }
 
   async login(

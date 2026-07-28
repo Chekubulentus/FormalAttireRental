@@ -71,7 +71,13 @@ export class LogInComponent implements OnInit, OnDestroy {
             this.authService.saveTokens(result.data.accessToken, result.data.refreshToken);
             localStorage.setItem(USER_ID, JSON.stringify(result.data.id));
           }
-          this.router.navigateByUrl('/admin');
+          var rolePosition = this.authService.getCurrentUserRolePosition();
+
+          if(rolePosition == 'Administrator')
+            this.router.navigateByUrl('/admin');
+
+          if(rolePosition == 'Customer') 
+            this.router.navigateByUrl('/customer')
         })
         .catch((err) => {
           this.loginError = err?.error?.errorMessage ?? 'Google sign-in failed.';
@@ -113,7 +119,16 @@ export class LogInComponent implements OnInit, OnDestroy {
         if (result.data?.accessToken && result.data?.refreshToken) {
           this.authService.saveTokens(result.data.accessToken, result.data.refreshToken);
         }
-        this.router.navigateByUrl('/admin');
+        var rolePosition = this.authService.getCurrentUserRolePosition();
+
+        if(!rolePosition)
+          this.loginError = 'Invalid role position.';
+
+        if(rolePosition == 'Administrator')
+          this.router.navigateByUrl('/admin');
+
+        if(rolePosition == 'Customer')
+          this.router.navigateByUrl('/customer');
       })
       .catch((err) => {
         this.loginError = err?.error?.errorMessage ?? 'An unexpected error occurred.';

@@ -64,6 +64,7 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
                 .Include(u => u.Person)
                 .Include(u => u.Employee)
                     .ThenInclude(e => e.Role)
+                .Include(u => u.Customer)
                 .FirstOrDefaultAsync(u => u.Email.Equals(email));
         }
 
