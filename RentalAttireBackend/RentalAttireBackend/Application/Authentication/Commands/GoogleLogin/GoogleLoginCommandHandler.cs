@@ -105,8 +105,7 @@ namespace RentalAttireBackend.Application.Authentication.Commands.GoogleLogin
                         RefreshToken = refreshToken,
                         ExpiresAt = DateTime.UtcNow.AddMinutes(60),
                         Id = user.Id,
-                        Email = user.Email,
-                        RolePosition = user.Customer.EntityType
+                        Email = user.Email
                     });
                 } 
 
@@ -171,7 +170,6 @@ namespace RentalAttireBackend.Application.Authentication.Commands.GoogleLogin
                     ExpiresAt = DateTime.UtcNow.AddMinutes(60),
                     Id = newUser.Id,
                     Email = newUser.Email,
-                    RolePosition = newCustomer.EntityType
                 });
             }
             catch (Exception e)

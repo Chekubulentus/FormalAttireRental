@@ -119,7 +119,7 @@ export class LogInComponent implements OnInit, OnDestroy {
         if (result.data?.accessToken && result.data?.refreshToken) {
           this.authService.saveTokens(result.data.accessToken, result.data.refreshToken);
         }
-        var rolePosition = this.authService.getCurrentUserRolePosition();
+        var rolePosition = this.authService.getCurrentUserRolePosition();   
 
         if(!rolePosition)
           this.loginError = 'Invalid role position.';

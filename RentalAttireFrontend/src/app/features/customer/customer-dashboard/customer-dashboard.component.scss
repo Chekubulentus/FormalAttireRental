@@ -1,0 +1,660 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap');
+
+// ============================================================
+// Design Tokens
+// ============================================================
+$surface:      #ffffff;
+$bg:           #f9f7f5;
+$bg-warm:      #f2ede8;
+$border:       #e4ddd6;
+$border-soft:  #ede8e2;
+$gold:         #a07840;
+$gold-dim:     rgba(160, 120, 64, 0.09);
+$gold-border:  rgba(160, 120, 64, 0.22);
+$text:         #1a1917;
+$text-muted:   #9e9590;
+$text-soft:    #6b6560;
+$green:        #27ae60;
+$green-dim:    rgba(39, 174, 96, 0.09);
+$green-border: rgba(39, 174, 96, 0.22);
+$amber:        #d4820a;
+$amber-dim:    rgba(212, 130, 10, 0.09);
+$amber-border: rgba(212, 130, 10, 0.22);
+$blue:         #2980b9;
+$blue-dim:     rgba(41, 128, 185, 0.09);
+$blue-border:  rgba(41, 128, 185, 0.22);
+$red:          #c0392b;
+$red-dim:      rgba(192, 57, 43, 0.09);
+
+:host { display: block; width: 100%; }
+
+
+// ============================================================
+// Dashboard wrapper
+// ============================================================
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  font-family: 'DM Sans', sans-serif;
+  color: $text;
+}
+
+
+// ============================================================
+// Welcome Header
+// ============================================================
+.welcome {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 2rem;
+  padding: 2rem 2.5rem;
+  background: $surface;
+  border: 1px solid $border;
+  border-radius: 16px;
+  overflow: hidden;
+  position: relative;
+
+  // Warm decorative line
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, $gold, rgba(160,120,64,0.3), transparent);
+  }
+}
+
+.welcome__eyebrow {
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: $gold;
+  margin: 0 0 0.4rem;
+}
+
+.welcome__heading {
+  font-family: 'DM Serif Display', serif;
+  font-size: 2rem;
+  font-weight: 400;
+  color: $text;
+  margin: 0 0 0.4rem;
+  line-height: 1.2;
+
+  em { font-style: italic; color: $gold; }
+}
+
+.welcome__sub {
+  font-size: 0.82rem;
+  color: $text-muted;
+  font-weight: 300;
+  margin: 0;
+}
+
+// Stats strip
+.welcome__stats {
+  display: flex;
+  gap: 1px;
+  background: $border;
+  border: 1px solid $border;
+  border-radius: 12px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.stat-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 14px 24px;
+  background: $surface;
+  gap: 3px;
+  min-width: 110px;
+
+  &--gold { background: $gold-dim; }
+
+  &__value {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.5rem;
+    color: $text;
+    line-height: 1;
+
+    .stat-card--gold & { color: $gold; }
+  }
+
+  &__label {
+    font-size: 0.65rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: $text-muted;
+    white-space: nowrap;
+  }
+}
+
+
+// ============================================================
+// Section
+// ============================================================
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+
+  &__header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+  }
+
+  &__eyebrow {
+    font-size: 0.62rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: $gold;
+    margin: 0 0 0.2rem;
+  }
+
+  &__title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.4rem;
+    font-weight: 400;
+    color: $text;
+    margin: 0;
+  }
+
+  &__link {
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: $gold;
+    text-decoration: none;
+    transition: opacity 0.15s;
+    white-space: nowrap;
+    margin-bottom: 4px;
+
+    &:hover { opacity: 0.7; }
+  }
+}
+
+
+// ============================================================
+// Empty States
+// ============================================================
+.empty-orders,
+.empty-clothes {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 3rem 2rem;
+  background: $surface;
+  border: 1px solid $border;
+  border-radius: 12px;
+  color: $text-muted;
+  text-align: center;
+
+  svg { width: 44px; height: 44px; opacity: 0.3; }
+  p   { font-size: 0.84rem; }
+}
+
+.btn-browse {
+  margin-top: 0.25rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: $gold;
+  text-decoration: none;
+  border: 1px solid $gold-border;
+  background: $gold-dim;
+  border-radius: 20px;
+  padding: 6px 16px;
+  transition: background 0.15s;
+  &:hover { background: rgba(160,120,64,0.15); }
+}
+
+
+// ============================================================
+// Skeleton
+// ============================================================
+.order-skeleton-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.order-skeleton {
+  background: $surface;
+  border: 1px solid $border;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  animation: shimmer 1.4s ease infinite;
+}
+
+.clothe-grid--skeleton {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.clothe-skeleton {
+  background: $surface;
+  border: 1px solid $border;
+  border-radius: 12px;
+  overflow: hidden;
+  animation: shimmer 1.4s ease infinite;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 0 0 12px;
+}
+
+.skeleton-image {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  background: $border;
+}
+
+.skeleton-line {
+  height: 11px;
+  background: $border;
+  border-radius: 6px;
+  margin: 0 12px;
+
+  &.wide   { width: 70%; }
+  &.narrow { width: 40%; }
+}
+
+@keyframes shimmer {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.5; }
+}
+
+
+// ============================================================
+// Order Cards
+// ============================================================
+.order-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.order-card {
+  background: $surface;
+  border: 1px solid $border;
+  border-radius: 12px;
+  padding: 18px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  transition: box-shadow 0.15s;
+
+  &:hover {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+
+    > div {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+  }
+
+  &__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 10px;
+    border-top: 1px solid $border-soft;
+  }
+}
+
+.order-code {
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  color: $text-muted;
+  font-family: monospace;
+}
+
+.order-amount {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.1rem;
+  color: $gold;
+}
+
+// Status pill
+.status-pill {
+  font-size: 0.68rem;
+  font-weight: 500;
+  border-radius: 20px;
+  padding: 2px 8px;
+  border: 1px solid transparent;
+
+  &--pending   { color: $amber; background: $amber-dim; border-color: $amber-border; }
+  &--confirmed { color: $blue;  background: $blue-dim;  border-color: $blue-border; }
+  &--ready     { color: $green; background: $green-dim; border-color: $green-border; }
+  &--returned  { color: $text-muted; background: $bg; border-color: $border; }
+}
+
+
+// ============================================================
+// Progress Tracker
+// ============================================================
+.progress-track {
+  display: flex;
+  align-items: flex-start;
+}
+
+.progress-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+
+  &__dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: $border;
+    border: 2px solid $border;
+    transition: background 0.2s, border-color 0.2s;
+  }
+
+  &__label {
+    font-size: 0.62rem;
+    color: $text-muted;
+    white-space: nowrap;
+    text-align: center;
+    max-width: 70px;
+    line-height: 1.3;
+  }
+
+  &--active {
+    .progress-step__dot {
+      background: $gold;
+      border-color: $gold;
+      box-shadow: 0 0 0 3px $gold-dim;
+    }
+    .progress-step__label { color: $gold; font-weight: 500; }
+  }
+
+  &--done {
+    .progress-step__dot { background: $green; border-color: $green; }
+    .progress-step__label { color: $green; }
+  }
+}
+
+.progress-line {
+  flex: 1;
+  height: 2px;
+  background: $border;
+  margin-top: 4px;
+  transition: background 0.2s;
+  min-width: 20px;
+
+  &--done { background: $green; }
+}
+
+
+// ============================================================
+// Order Items
+// ============================================================
+.order-items {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.order-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+
+  &__name  { flex: 1; color: $text; font-weight: 400; }
+  &__code  { font-size: 0.7rem; color: $text-muted; font-family: monospace; }
+  &__price { font-weight: 500; color: $text-soft; white-space: nowrap; }
+}
+
+.order-dates {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.75rem;
+  color: $text-muted;
+
+  svg { width: 13px; height: 13px; }
+}
+
+
+// ============================================================
+// Category Filters
+// ============================================================
+.category-filters {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.filter-pill {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 5px 14px;
+  border-radius: 20px;
+  border: 1px solid $border;
+  background: $surface;
+  color: $text-soft;
+  cursor: pointer;
+  transition: all 0.15s;
+
+  &:hover { background: $bg; color: $text; }
+
+  &--active {
+    background: $gold;
+    border-color: $gold;
+    color: #fff;
+  }
+}
+
+
+// ============================================================
+// Clothe Cards Grid
+// ============================================================
+.clothe-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.clothe-card {
+  background: $surface;
+  border: 1px solid $border;
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  animation: fadeUp 0.28s ease both;
+  transition: box-shadow 0.18s, transform 0.18s;
+
+  &:hover {
+    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    transform: translateY(-2px);
+  }
+
+  &__image {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    background: $bg-warm;
+    overflow: hidden;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s ease;
+    }
+
+    &:hover img { transform: scale(1.04); }
+  }
+
+  &__fallback {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: $text-muted;
+    opacity: 0.3;
+    svg { width: 44px; height: 44px; }
+  }
+
+  &__body {
+    padding: 12px 14px 8px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  &__footer {
+    padding: 0 14px 14px;
+  }
+}
+
+// Badges on image
+.stock-badge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  font-size: 0.62rem;
+  font-weight: 500;
+  border-radius: 6px;
+  padding: 2px 6px;
+  border: 1px solid transparent;
+
+  &--low { color: $amber; background: $amber-dim; border-color: $amber-border; }
+  &--out { color: $red;   background: $red-dim;   border-color: rgba(192,57,43,0.22); }
+}
+
+.condition-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  font-size: 0.62rem;
+  font-weight: 500;
+  border-radius: 6px;
+  padding: 2px 6px;
+  background: rgba(255,255,255,0.9);
+  border: 1px solid $border;
+  color: $text-soft;
+  backdrop-filter: blur(4px);
+}
+
+.clothe-category {
+  font-size: 0.68rem;
+  color: $text-muted;
+  font-weight: 400;
+  margin: 0;
+  letter-spacing: 0.02em;
+}
+
+.clothe-name {
+  font-family: 'DM Serif Display', serif;
+  font-size: 0.95rem;
+  font-weight: 400;
+  color: $text;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.clothe-pricing {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  margin-top: 2px;
+}
+
+.clothe-price {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.05rem;
+  color: $gold;
+}
+
+.clothe-deposit {
+  font-size: 0.65rem;
+  color: $text-muted;
+  font-weight: 300;
+}
+
+.btn-reserve {
+  width: 100%;
+  padding: 8px 0;
+  border-radius: 8px;
+  border: none;
+  background: $text;
+  color: #fff;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  letter-spacing: 0.04em;
+  transition: background 0.15s, transform 0.12s;
+
+  &:hover:not(:disabled) {
+    background: lighten(#1a1917, 10%);
+    transform: translateY(-1px);
+  }
+
+  &:disabled {
+    background: $border;
+    color: $text-muted;
+    cursor: not-allowed;
+    transform: none;
+  }
+}
+
+
+// ============================================================
+// Animations
+// ============================================================
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+
+// ============================================================
+// Responsive
+// ============================================================
+@media (max-width: 768px) {
+  .welcome {
+    flex-direction: column;
+    padding: 1.5rem;
+  }
+
+  .welcome__stats {
+    width: 100%;
+    .stat-card { flex: 1; padding: 12px 8px; min-width: 0; }
+  }
+
+  .welcome__heading { font-size: 1.6rem; }
+
+  .clothe-grid {
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  }
+}

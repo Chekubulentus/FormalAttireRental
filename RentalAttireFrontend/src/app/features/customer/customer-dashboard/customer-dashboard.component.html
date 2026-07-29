@@ -1,1 +1,212 @@
-<p>customer-dashboard works!</p>
+<div class="dashboard">
+
+  <!-- ══════════════════════════════════════════════════════════
+       WELCOME HEADER
+  ═══════════════════════════════════════════════════════════ -->
+  <section class="welcome">
+    <div class="welcome__text">
+      <p class="welcome__eyebrow">Good day</p>
+      <h1 class="welcome__heading">Welcome back, <em>{{ customerName }}.</em></h1>
+      <p class="welcome__sub">Here's what's happening with your rentals today.</p>
+    </div>
+
+    <div class="welcome__stats">
+      <div class="stat-card">
+        <span class="stat-card__value">{{ totalRentals }}</span>
+        <span class="stat-card__label">Total Rentals</span>
+      </div>
+      <div class="stat-card stat-card--gold">
+        <span class="stat-card__value">{{ totalSpent | currency:'PHP':'symbol':'1.0-0' }}</span>
+        <span class="stat-card__label">Total Spent</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-card__value">{{ activeRentals }}</span>
+        <span class="stat-card__label">Active Orders</span>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════════════════════════
+       ACTIVE ORDERS
+  ═══════════════════════════════════════════════════════════ -->
+  <section class="section">
+    <div class="section__header">
+      <div>
+        <p class="section__eyebrow">Tracking</p>
+        <h2 class="section__title">Active Orders</h2>
+      </div>
+      <a class="section__link" routerLink="/customer/my-rentals">View all</a>
+    </div>
+
+    <!-- Loading -->
+    <div class="order-skeleton-list" *ngIf="isLoadingRentals">
+      <div class="order-skeleton" *ngFor="let i of [1,2]">
+        <div class="skeleton-line wide"></div>
+        <div class="skeleton-line"></div>
+        <div class="skeleton-line narrow"></div>
+      </div>
+    </div>
+
+    <!-- Empty -->
+    <div class="empty-orders" *ngIf="!isLoadingRentals && activeOrders.length === 0">
+      <svg viewBox="0 0 48 48" fill="none">
+        <rect x="8" y="10" width="32" height="30" rx="3" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M16 22h16M16 28h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M20 10V7M28 10V7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      <p>No active orders right now.</p>
+      <a class="btn-browse" routerLink="/customer/browse">Browse the catalogue</a>
+    </div>
+
+    <!-- Order cards -->
+    <div class="order-list" *ngIf="!isLoadingRentals && activeOrders.length > 0">
+      <div class="order-card" *ngFor="let order of activeOrders">
+
+        <!-- Card header -->
+        <div class="order-card__header">
+          <div>
+            <span class="order-code">{{ order.rentalCode }}</span>
+            <span class="status-pill" [class]="getStatusClass(order.status)">
+              {{ order.status }}
+            </span>
+          </div>
+          <span class="order-amount">{{ order.totalAmount | currency:'PHP':'symbol':'1.0-0' }}</span>
+        </div>
+
+        <!-- Progress tracker -->
+        <div class="progress-track">
+          <ng-container *ngFor="let step of ['Pending', 'Confirmed', 'Ready for Pickup', 'Returned']; let i = index">
+            <div class="progress-step"
+                 [class.progress-step--done]="getStatusStep(order.status) > i + 1"
+                 [class.progress-step--active]="getStatusStep(order.status) === i + 1">
+              <div class="progress-step__dot"></div>
+              <span class="progress-step__label">{{ step }}</span>
+            </div>
+            <div class="progress-line"
+                 *ngIf="i < 3"
+                 [class.progress-line--done]="getStatusStep(order.status) > i + 1">
+            </div>
+          </ng-container>
+        </div>
+
+        <!-- Items -->
+        <div class="order-items">
+          <div class="order-item" *ngFor="let item of order.items">
+            <span class="order-item__name">{{ item.clotheName }}</span>
+            <span class="order-item__code">{{ item.clotheCode }}</span>
+            <span class="order-item__price">{{ item.rentalPrice | currency:'PHP':'symbol':'1.0-0' }}</span>
+          </div>
+        </div>
+
+        <!-- Dates -->
+        <div class="order-card__footer">
+          <span class="order-dates">
+            <svg viewBox="0 0 16 16" fill="none">
+              <rect x="2" y="3" width="12" height="11" rx="1.5" stroke="currentColor" stroke-width="1.3"/>
+              <path d="M5 3V1M11 3V1M2 7h12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+            </svg>
+            {{ order.startDate | date:'MMM d' }} — {{ order.endDate | date:'MMM d, y' }}
+          </span>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ══════════════════════════════════════════════════════════
+       BROWSE CATALOGUE
+  ═══════════════════════════════════════════════════════════ -->
+  <section class="section">
+    <div class="section__header">
+      <div>
+        <p class="section__eyebrow">Catalogue</p>
+        <h2 class="section__title">Available Now</h2>
+      </div>
+      <a class="section__link" routerLink="/customer/browse">Browse all</a>
+    </div>
+
+    <!-- Category filter pills -->
+    <div class="category-filters">
+      <button
+        class="filter-pill"
+        *ngFor="let filter of categoryFilters"
+        [class.filter-pill--active]="activeCategoryFilter === filter"
+        (click)="setFilter(filter)">
+        {{ filter }}
+      </button>
+    </div>
+
+    <!-- Loading skeleton -->
+    <div class="clothe-grid clothe-grid--skeleton" *ngIf="isLoadingClothes">
+      <div class="clothe-skeleton" *ngFor="let i of [1,2,3,4,5,6]">
+        <div class="skeleton-image"></div>
+        <div class="skeleton-line wide"></div>
+        <div class="skeleton-line narrow"></div>
+      </div>
+    </div>
+
+    <!-- Empty -->
+    <div class="empty-clothes" *ngIf="!isLoadingClothes && filteredClothes.length === 0">
+      <p>No items found in this category.</p>
+    </div>
+
+    <!-- Clothe cards grid -->
+    <div class="clothe-grid" *ngIf="!isLoadingClothes && filteredClothes.length > 0">
+      <div class="clothe-card"
+           *ngFor="let clothe of filteredClothes; let i = index"
+           [style.animation-delay]="(i * 0.04) + 's'">
+
+        <!-- Image -->
+        <div class="clothe-card__image">
+          <img
+            *ngIf="clothe.profileImagePath && !hasImgError(clothe.id)"
+            [src]="clothe.profileImagePath"
+            [alt]="clothe.clotheName"
+            (error)="onImgError(clothe.id)"/>
+          <div class="clothe-card__fallback" *ngIf="!clothe.profileImagePath || hasImgError(clothe.id)">
+            <svg viewBox="0 0 48 48" fill="none">
+              <path d="M12 12h24v6l-6 4v16H18V22l-6-4V12z"
+                    stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>
+              <path d="M18 12V9a6 6 0 0 1 12 0v3"
+                    stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+            </svg>
+          </div>
+
+          <!-- Stock badge -->
+          <div class="stock-badge"
+               [class]="'stock-badge--' + getStockStatus(clothe)"
+               *ngIf="getStockStatus(clothe) !== 'available'">
+            {{ getStockStatus(clothe) === 'low' ? 'Low Stock' : 'Unavailable' }}
+          </div>
+
+          <!-- Condition badge -->
+          <div class="condition-badge">{{ clothe.condition }}</div>
+        </div>
+
+        <!-- Info -->
+        <div class="clothe-card__body">
+          <p class="clothe-category">{{ clothe.categoryName }} · {{ clothe.clotheGender }} · Size {{ clothe.size }}</p>
+          <h3 class="clothe-name">{{ clothe.clotheName }}</h3>
+          <div class="clothe-pricing">
+            <span class="clothe-price">{{ clothe.rentalPrice | currency:'PHP':'symbol':'1.0-0' }}</span>
+            <span class="clothe-deposit">+ ₱{{ clothe.depositAmount | number:'1.0-0' }} deposit</span>
+          </div>
+        </div>
+
+        <!-- Reserve button -->
+        <div class="clothe-card__footer">
+          <button
+            class="btn-reserve"
+            [disabled]="getStockStatus(clothe) === 'out'"
+            routerLink="/customer/browse">
+            {{ getStockStatus(clothe) === 'out' ? 'Unavailable' : 'Reserve' }}
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+</div>
