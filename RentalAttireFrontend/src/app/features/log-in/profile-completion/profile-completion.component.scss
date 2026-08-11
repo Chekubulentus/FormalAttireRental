@@ -1,0 +1,560 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap');
+
+// ============================================================
+// Tokens — identical to login / registration
+// ============================================================
+$white:      #ffffff;
+$off-white:  #f9f7f5;
+$cream:      #f2ede8;
+$stone:      #e4ddd6;
+$muted:      #9e9590;
+$text:       #1a1917;
+$text-light: #6b6560;
+$border:     #e0dbd5;
+$gold:       #a07840;
+$gold-dim:   rgba(160, 120, 64, 0.09);
+$gold-border:rgba(160, 120, 64, 0.25);
+$error:      #c0392b;
+$error-bg:   #fdf3f2;
+$green:      #27ae60;
+$green-dim:  rgba(39, 174, 96, 0.09);
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+
+// ============================================================
+// Wrapper
+// ============================================================
+.completion-wrapper {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+  font-family: 'DM Sans', sans-serif;
+  background: $white;
+}
+
+
+// ============================================================
+// LEFT — Visual Panel
+// ============================================================
+.visual-panel {
+  position: relative;
+  flex: 0 0 38%;
+  height: 100vh;
+  background: $off-white;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 2.5rem 3rem;
+  overflow: hidden;
+  border-right: 1px solid $border;
+}
+
+.grid-decoration { position: absolute; inset: 0; pointer-events: none; }
+.grid-line {
+  position: absolute;
+  background: $stone;
+  opacity: 0.5;
+  &.h { left: 0; right: 0; height: 1px; }
+  &.v { top: 0; bottom: 0; width: 1px; }
+}
+
+.visual-top { position: relative; z-index: 1; }
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  animation: fadeDown 0.7s ease both;
+}
+
+.brand-logo {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  svg { width: 100%; height: 100%; }
+}
+
+.brand-name {
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.25em;
+  color: $text;
+  text-transform: uppercase;
+}
+
+.visual-center {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  animation: fadeUp 0.8s ease 0.15s both;
+}
+
+.visual-eyebrow {
+  font-size: 0.72rem;
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: $muted;
+  margin-bottom: 0.9rem;
+}
+
+.visual-headline {
+  font-family: 'DM Serif Display', serif;
+  font-size: 3rem;
+  font-weight: 400;
+  line-height: 1.1;
+  color: $text;
+  letter-spacing: -0.01em;
+
+  em { font-style: italic; color: $text-light; }
+}
+
+.visual-body {
+  margin-top: 1.2rem;
+  font-size: 0.84rem;
+  color: $text-light;
+  line-height: 1.75;
+  font-weight: 300;
+}
+
+.visual-bottom {
+  position: relative;
+  z-index: 1;
+  animation: fadeIn 1s ease 0.4s both;
+}
+
+.visual-tagline {
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: $muted;
+  font-weight: 300;
+}
+
+
+// ============================================================
+// Step Indicators (left panel)
+// ============================================================
+.step-indicators {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.step-indicator {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  &__num {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1.5px solid $border;
+    background: $white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: $muted;
+    flex-shrink: 0;
+    transition: all 0.2s;
+
+    svg { width: 12px; height: 12px; }
+  }
+
+  &__text {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+  }
+
+  &__label {
+    font-size: 0.62rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: $muted;
+  }
+
+  &__desc {
+    font-size: 0.78rem;
+    color: $text-light;
+    font-weight: 400;
+  }
+
+  // Active
+  &--active {
+    .step-indicator__num {
+      background: $gold;
+      border-color: $gold;
+      color: $white;
+    }
+    .step-indicator__label { color: $gold; }
+    .step-indicator__desc  { color: $text; font-weight: 500; }
+  }
+
+  // Done
+  &--done {
+    .step-indicator__num {
+      background: $green;
+      border-color: $green;
+      color: $white;
+    }
+    .step-indicator__label { color: $green; }
+  }
+}
+
+.step-connector {
+  width: 1.5px;
+  height: 28px;
+  background: $border;
+  margin-left: 13px;
+  transition: background 0.2s;
+
+  &--done { background: $green; }
+}
+
+
+// ============================================================
+// RIGHT — Form Panel
+// ============================================================
+.form-panel {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  justify-content: center;
+  padding: 3rem 2.5rem;
+  background: $white;
+}
+
+.form-container {
+  width: 100%;
+  max-width: 520px;
+  animation: fadeUp 0.8s ease 0.1s both;
+}
+
+.form-header {
+  margin-bottom: 1.75rem;
+}
+
+.form-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 2rem;
+  font-weight: 400;
+  color: $text;
+  letter-spacing: -0.01em;
+  margin-bottom: 0.3rem;
+}
+
+.form-subtitle {
+  font-size: 0.84rem;
+  color: $text-light;
+  font-weight: 300;
+  margin-bottom: 1.2rem;
+}
+
+// Progress bar
+.progress-bar {
+  height: 4px;
+  background: $border;
+  border-radius: 99px;
+  overflow: hidden;
+  margin-bottom: 6px;
+
+  &__fill {
+    height: 100%;
+    background: $gold;
+    border-radius: 99px;
+    transition: width 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+}
+
+.progress-label {
+  font-size: 0.68rem;
+  color: $muted;
+  font-weight: 400;
+}
+
+// Google notice
+.google-notice {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: rgba(66, 133, 244, 0.06);
+  border: 1px solid rgba(66, 133, 244, 0.2);
+  border-radius: 8px;
+  font-size: 0.78rem;
+  color: $text-light;
+  margin-bottom: 1.5rem;
+
+  svg { width: 14px; height: 14px; flex-shrink: 0; }
+  strong { color: $text; }
+}
+
+
+// ============================================================
+// Form Steps
+// ============================================================
+.form-step {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  animation: fadeUp 0.22s ease both;
+}
+
+.field-row {
+  display: grid;
+  gap: 0.75rem;
+
+  &.cols-2 { grid-template-columns: 1fr 1fr; }
+  &.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+}
+
+
+// ============================================================
+// Fields
+// ============================================================
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+
+  &.invalid {
+    .field-label { color: $error; }
+    .field-input,
+    .field-input-wrap { border-color: $error; background: $error-bg; }
+  }
+}
+
+.field-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  color: $text;
+  transition: color 0.15s;
+}
+
+.required { color: $error;  font-size: 0.68rem; }
+.optional  { color: $muted; font-size: 0.66rem; font-weight: 300; }
+
+.field-msg {
+  font-size: 0.72rem;
+  color: $error;
+}
+
+.field-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0 0.9rem;
+  border: 1.5px solid $border;
+  border-radius: 8px;
+  background: $off-white;
+  transition: border-color 0.2s, background 0.2s;
+
+  &:focus-within {
+    border-color: $gold-border;
+    background: $white;
+    box-shadow: 0 0 0 3px rgba(26,25,23,0.05);
+  }
+}
+
+.field-icon {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+  color: $muted;
+}
+
+.field-input {
+  height: 40px;
+  padding: 0 0.85rem;
+  border: 1.5px solid $border;
+  border-radius: 8px;
+  background: $off-white;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 300;
+  color: $text;
+  outline: none;
+  width: 100%;
+  transition: border-color 0.2s, background 0.2s;
+  appearance: none;
+
+  &::placeholder { color: $muted; }
+
+  &:focus {
+    border-color: $gold-border;
+    background: $white;
+    box-shadow: 0 0 0 3px rgba(26,25,23,0.05);
+  }
+
+  .field-input-wrap & {
+    height: 40px;
+    border: none;
+    background: transparent;
+    padding: 0;
+    box-shadow: none;
+    flex: 1;
+  }
+
+  &[type=number]::-webkit-inner-spin-button,
+  &[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; }
+  &[type=number] { -moz-appearance: textfield; }
+}
+
+select.field-input {
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolyline points='4 6 8 10 12 6' stroke='%239e9590' stroke-width='1.3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.7rem center;
+  background-size: 13px;
+  padding-right: 2rem;
+}
+
+
+// ============================================================
+// Footer
+// ============================================================
+.form-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.65rem;
+  margin-top: 1.75rem;
+  padding-top: 1.4rem;
+  border-top: 1px solid $border;
+}
+
+.footer-error {
+  font-size: 0.7rem;
+  color: $error;
+  margin-right: auto;
+}
+
+.btn-back {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  height: 40px;
+  padding: 0 1rem;
+  border: 1.5px solid $border;
+  border-radius: 8px;
+  background: transparent;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.84rem;
+  font-weight: 500;
+  color: $text-light;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+
+  svg { width: 13px; height: 13px; }
+  &:hover:not(:disabled) { background: $off-white; color: $text; }
+  &:disabled { opacity: 0.5; cursor: not-allowed; }
+}
+
+.btn-next {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  height: 40px;
+  padding: 0 1.4rem;
+  background: $text;
+  color: $white;
+  border: none;
+  border-radius: 8px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.84rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+
+  svg { width: 13px; height: 13px; }
+  &:hover { background: #333; transform: translateY(-1px); }
+}
+
+.btn-submit {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 40px;
+  padding: 0 1.4rem;
+  background: $gold;
+  color: $white;
+  border: none;
+  border-radius: 8px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.84rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.15s;
+
+  svg { width: 14px; height: 14px; }
+  &:hover:not(:disabled) { opacity: 0.88; transform: translateY(-1px); }
+  &:disabled { opacity: 0.55; cursor: not-allowed; }
+}
+
+.btn-spinner {
+  width: 13px;
+  height: 13px;
+  border: 1.5px solid rgba(255,255,255,0.3);
+  border-top-color: $white;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: inline-block;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.terms-note {
+  margin-top: 1.2rem;
+  font-size: 0.72rem;
+  color: $muted;
+  text-align: center;
+  line-height: 1.6;
+  font-weight: 300;
+}
+
+
+// ============================================================
+// Animations
+// ============================================================
+@keyframes fadeDown {
+  from { opacity: 0; transform: translateY(-12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+
+// ============================================================
+// Responsive
+// ============================================================
+@media (max-width: 900px) {
+  .completion-wrapper { flex-direction: column; height: auto; overflow: auto; }
+  .visual-panel       { flex: 0 0 auto; height: auto; min-height: 200px; border-right: none; border-bottom: 1px solid $border; padding: 2rem; }
+  .visual-headline    { font-size: 2.2rem; }
+  .step-indicators    { display: none; }
+  .form-panel         { padding: 2rem 1.5rem; overflow-y: visible; }
+}
+
+@media (max-width: 520px) {
+  .field-row.cols-2,
+  .field-row.cols-3 { grid-template-columns: 1fr; }
+  .form-title       { font-size: 1.7rem; }
+}

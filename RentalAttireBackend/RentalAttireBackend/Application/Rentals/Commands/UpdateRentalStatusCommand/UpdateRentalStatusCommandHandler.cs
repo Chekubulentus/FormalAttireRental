@@ -54,13 +54,12 @@ namespace RentalAttireBackend.Application.Rentals.Commands.UpdateRentalStatusCom
                     ?.Value;
 
                 if (!int.TryParse(userIdClaim, out int userId))
-
                     return Result<bool>.Failure("Current user does not exist.");
 
                 var currentUser = await _userRepo.GetUserWithEmployeeAsync(userId, cancellationToken);
 
                 if (currentUser is null)
-                    return Result<bool>.Failure("Current user's could not be found.");
+                    return Result<bool>.Failure("Current user could not be found.");
 
                 var rental = await _rentalRepo.GetRentalByIdAsync(request.RentalId, cancellationToken);
 

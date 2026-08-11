@@ -37,6 +37,13 @@ export const routes: Routes = [
         }
     },
     {
+        path: 'profile-completion',
+        loadComponent: () => {
+            return import('./features/log-in/profile-completion/profile-completion.component')
+            .then(m => m.ProfileCompletionComponent)
+        }
+    },
+    {
         path: '',
         redirectTo: 'log-in',
         pathMatch: 'full'

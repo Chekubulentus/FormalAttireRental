@@ -71,6 +71,10 @@ export class LogInComponent implements OnInit, OnDestroy {
             this.authService.saveTokens(result.data.accessToken, result.data.refreshToken);
             localStorage.setItem(USER_ID, JSON.stringify(result.data.id));
           }
+
+          if(!result.data?.isProfileComplete)
+            this.router.navigateByUrl('/profile-completion');
+
           var rolePosition = this.authService.getCurrentUserRolePosition();
 
           if(rolePosition == 'Administrator')
@@ -119,6 +123,10 @@ export class LogInComponent implements OnInit, OnDestroy {
         if (result.data?.accessToken && result.data?.refreshToken) {
           this.authService.saveTokens(result.data.accessToken, result.data.refreshToken);
         }
+
+        if(!result.data?.isProfileComplete)
+          this.router.navigateByUrl('/profile-completion')
+
         var rolePosition = this.authService.getCurrentUserRolePosition();   
 
         if(!rolePosition)

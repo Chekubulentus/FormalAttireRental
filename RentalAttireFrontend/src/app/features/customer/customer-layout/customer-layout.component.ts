@@ -2,6 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Router, RouterModule, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
+import { AuthService } from '../../../core/services/auth-service/auth.service';
+import { SocialAuthService } from '@abacritt/angularx-social-login';
 // import { UserService } from '../../../core/services/user-service/user.service';
 // import { AuthService } from '../../../core/services/auth-service/auth.service';
 // import { SocialAuthService } from '@abacritt/angularx-social-login';
@@ -37,6 +39,8 @@ export class CustomerLayoutComponent implements OnInit {
     // private userService: UserService,
     // private authService: AuthService,
     // private socialAuthService: SocialAuthService,
+    private socialAuthService: SocialAuthService,
+    private authService : AuthService
   ) {}
 
   ngOnInit(): void {
@@ -76,6 +80,7 @@ export class CustomerLayoutComponent implements OnInit {
     // TODO: wire logout
     // this.socialAuthService.signOut().catch(() => {});
     // this.authService.logout();
-    this.router.navigateByUrl('/log-in');
+    this.socialAuthService.signOut().catch(() => {});
+    this.authService.logout();
   }
 }

@@ -6,4 +6,6 @@ export class AuthenticationResult {
     refreshToken : string = '';
     expiresAt : Date = new Date();
     id: number = 0;
+    email: string = '';
+    isProfileComplete: boolean = false;
 }

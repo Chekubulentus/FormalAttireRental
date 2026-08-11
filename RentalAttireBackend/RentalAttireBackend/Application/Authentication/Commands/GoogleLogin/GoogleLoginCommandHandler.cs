@@ -105,7 +105,8 @@ namespace RentalAttireBackend.Application.Authentication.Commands.GoogleLogin
                         RefreshToken = refreshToken,
                         ExpiresAt = DateTime.UtcNow.AddMinutes(60),
                         Id = user.Id,
-                        Email = user.Email
+                        Email = user.Email,
+                        IsProfileComplete = user.Person.IsProfileComplete
                     });
                 } 
 
@@ -125,6 +126,7 @@ namespace RentalAttireBackend.Application.Authentication.Commands.GoogleLogin
                     Person = newPerson,
                     IsGoogleAccount = true,
                     CreatedBy = payload.Name,
+                    CreatedAt = DateTime.UtcNow.AddHours(8),
                     EntityType = "User",
                 };
 
@@ -135,6 +137,7 @@ namespace RentalAttireBackend.Application.Authentication.Commands.GoogleLogin
                     TotalSpent = 0,
                     User = newUser,
                     CreatedBy = payload.Name,
+                    CreatedAt = DateTime.UtcNow.AddHours(8),
                     EntityType = "Customer"
                 };
 
@@ -170,6 +173,7 @@ namespace RentalAttireBackend.Application.Authentication.Commands.GoogleLogin
                     ExpiresAt = DateTime.UtcNow.AddMinutes(60),
                     Id = newUser.Id,
                     Email = newUser.Email,
+                    IsProfileComplete = newUser.Person.IsProfileComplete
                 });
             }
             catch (Exception e)

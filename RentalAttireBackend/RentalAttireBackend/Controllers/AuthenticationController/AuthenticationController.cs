@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RentalAttireBackend.Application.Authentication.Commands.GoogleLogin;
 using RentalAttireBackend.Application.Authentication.Commands.Login;
+using RentalAttireBackend.Application.Authentication.Commands.ProfileCompletion;
 using RentalAttireBackend.Application.Authentication.Commands.RefreshToken;
 using RentalAttireBackend.Application.Authentication.Commands.RegistrationCommand;
 using RentalAttireBackend.Application.Common.Interfaces;
@@ -50,6 +51,13 @@ namespace RentalAttireBackend.Controllers.AuthenticationController
             var result = await _mediator.Send(command);
 
              return result.IsSuccess ? Ok(result) : BadRequest(result.ErrorMessage);
+        }
+        [HttpPut("profile-completion")]
+        public async Task<IActionResult> ProfileCompletionAsync(ProfileCompletionCommand command)
+        {
+            var result = await _mediator.Send(command);
+
+            return result.IsSuccess ? Ok(result.SuccessMessage) : BadRequest(result.ErrorMessage);
         }
     }
 }

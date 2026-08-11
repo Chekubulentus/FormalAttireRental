@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Infrastructure.Internal;
 using RentalAttireBackend.Application.AuditLogs.DTOs;
+using RentalAttireBackend.Application.Authentication.Commands.ProfileCompletion;
 using RentalAttireBackend.Application.Authentication.Commands.RegistrationCommand;
 using RentalAttireBackend.Application.Categories.Commands.CreateCategory;
 using RentalAttireBackend.Application.Categories.Commands.UpdateCategory;
@@ -378,6 +379,28 @@ namespace RentalAttireBackend.Application.Mapping
                 opt => opt.Ignore())
                 .ForMember(dest => dest.PaymentMethod,
                 opt => opt.MapFrom(src => Enum.Parse<PaymentMethod>(src.PaymentMethod, true)));
+            #endregion
+
+            #region ProfileCompletionComamnd -> Person
+            CreateMap<ProfileCompletionCommand, Person>()
+                .ForMember(dest => dest.Age,
+                opt => opt.MapFrom(src => src.Age))
+                .ForMember(dest => dest.Gender,
+                opt => opt.MapFrom(src => Enum.Parse<Gender>(src.Gender, true)))
+                .ForMember(dest => dest.MaritalStatus,
+                opt => opt.MapFrom(src => Enum.Parse<MaritalStatus>(src.MaritalStatus, true)))
+                .ForMember(dest => dest.PhoneNumber,
+                opt => opt.MapFrom(src => src.PhoneNumber))
+                .ForMember(dest => dest.Street,
+                opt => opt.MapFrom(src => src.Street))
+                .ForMember(dest => dest.Barangay,
+                opt => opt.MapFrom(src => src.Barangay))
+                .ForMember(dest => dest.City,
+                opt => opt.MapFrom(src => src.City))
+                .ForMember(dest => dest.Province,
+                opt => opt.MapFrom(src => src.Province))
+                .ForMember(dest => dest.PostalCode,
+                opt => opt.MapFrom(src => src.PostalCode));
             #endregion
         }
     }

@@ -18,16 +18,19 @@ namespace RentalAttireBackend.Domain.Entities
         public string Province { get; set; } = string.Empty;
         public string PostalCode { get; set; } = string.Empty;
         public string? ProfileImagePath { get; set; }
-        public bool IsProfileComplete => string.IsNullOrEmpty(PhoneNumber) ||
-            string.IsNullOrEmpty(Street) ||
-            Age == 0 ||
-            Gender == 0 ||
-            MaritalStatus == 0 ||
-            string.IsNullOrEmpty(Barangay) ||
-            string.IsNullOrEmpty(City) ||
-            string.IsNullOrEmpty(Province) ||
-            string.IsNullOrEmpty(PostalCode) ||
-            string.IsNullOrEmpty(ProfileImagePath);
+        public bool IsProfileComplete => 
+            !string.IsNullOrEmpty(LastName) &&
+            !string.IsNullOrEmpty(FirstName) &&
+            !string.IsNullOrEmpty(PhoneNumber) &&
+            !string.IsNullOrEmpty(Street) &&
+            Age == 0 &&
+            Gender == 0 &&
+            MaritalStatus == 0 &&
+            !string.IsNullOrEmpty(Barangay) &&
+            !string.IsNullOrEmpty(City) &&
+            !string.IsNullOrEmpty(Province) &&
+            !string.IsNullOrEmpty(PostalCode) &&
+            !string.IsNullOrEmpty(ProfileImagePath);
 
         public string FullName
         {

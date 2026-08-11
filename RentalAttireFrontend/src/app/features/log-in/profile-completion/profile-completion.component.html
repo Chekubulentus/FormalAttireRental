@@ -1,0 +1,259 @@
+<div class="completion-wrapper">
+
+  <!-- LEFT PANEL -->
+  <div class="visual-panel">
+    <div class="visual-top">
+      <div class="brand">
+        <div class="brand-logo">
+          <svg viewBox="0 0 40 40" fill="none">
+            <rect x="1" y="1" width="38" height="38" rx="2" stroke="#1a1a1a" stroke-width="1.2"/>
+            <path d="M20 10 C20 10 20 14 20 14 L9 26 Q8 27 9 28 L31 28 Q32 27 31 26 Z"
+                  stroke="#1a1a1a" stroke-width="1.2" fill="none" stroke-linejoin="round"/>
+            <circle cx="20" cy="9" r="1.5" fill="#1a1a1a"/>
+            <line x1="20" y1="7.5" x2="20" y2="5" stroke="#1a1a1a" stroke-width="1.2"/>
+            <path d="M18 5 Q20 3.5 22 5" stroke="#1a1a1a" stroke-width="1.2" fill="none"/>
+          </svg>
+        </div>
+        <span class="brand-name">ÉLÉGANCE</span>
+      </div>
+    </div>
+
+    <div class="visual-center">
+      <p class="visual-eyebrow">Almost there</p>
+      <h1 class="visual-headline">
+        Complete<br/>
+        your<br/>
+        <em>profile.</em>
+      </h1>
+      <p class="visual-body">
+        We need a few more details to<br/>
+        personalise your rental experience.
+      </p>
+
+      <!-- Step indicators on the left panel -->
+      <div class="step-indicators">
+        <div class="step-indicator" [class.step-indicator--active]="currentStep === 1"
+             [class.step-indicator--done]="currentStep > 1">
+          <div class="step-indicator__num">
+            <svg *ngIf="currentStep > 1" viewBox="0 0 16 16" fill="none">
+              <polyline points="3 8 6.5 11.5 13 4.5" stroke="currentColor" stroke-width="1.5"
+                        stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span *ngIf="currentStep <= 1">1</span>
+          </div>
+          <div class="step-indicator__text">
+            <span class="step-indicator__label">Step 1</span>
+            <span class="step-indicator__desc">Personal Information</span>
+          </div>
+        </div>
+        <div class="step-connector" [class.step-connector--done]="currentStep > 1"></div>
+        <div class="step-indicator" [class.step-indicator--active]="currentStep === 2">
+          <div class="step-indicator__num">2</div>
+          <div class="step-indicator__text">
+            <span class="step-indicator__label">Step 2</span>
+            <span class="step-indicator__desc">Address</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="visual-bottom">
+      <p class="visual-tagline">Est. 2010 &nbsp;·&nbsp; Nationwide Delivery</p>
+    </div>
+
+    <div class="grid-decoration">
+      <div class="grid-line h" style="top: 33%"></div>
+      <div class="grid-line h" style="top: 66%"></div>
+      <div class="grid-line v" style="left: 33%"></div>
+      <div class="grid-line v" style="left: 66%"></div>
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="form-panel">
+    <div class="form-container">
+
+      <!-- Header -->
+      <div class="form-header">
+        <h2 class="form-title">
+          {{ currentStep === 1 ? 'Personal Information' : 'Your Address' }}
+        </h2>
+        <p class="form-subtitle">
+          {{ currentStep === 1
+            ? 'Tell us a bit about yourself.'
+            : 'Where should we deliver your rentals?' }}
+        </p>
+
+        <!-- Progress bar -->
+        <div class="progress-bar">
+          <div class="progress-bar__fill" [style.width.%]="(currentStep / totalSteps) * 100"></div>
+        </div>
+        <p class="progress-label">Step {{ currentStep }} of {{ totalSteps }}</p>
+      </div>
+
+      <!-- Google account notice -->
+      <div class="google-notice" *ngIf="googleEmail">
+        <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+          <path d="M14.9 8.16c0-.52-.05-1.02-.13-1.5H8v2.84h3.95c-.17.91-.69 1.68-1.47 2.2v1.85h2.38c1.39-1.28 2.19-3.16 2.19-5.39z" fill="#4285F4"/>
+          <path d="M8 15c1.98 0 3.64-.66 4.85-1.78l-2.38-1.85c-.65.44-1.49.7-2.47.7-1.9 0-3.51-1.28-4.09-3.01H1.46v1.9C2.66 13.27 5.17 15 8 15z" fill="#34A853"/>
+          <path d="M3.91 9.06A4.45 4.45 0 0 1 3.68 8c0-.37.06-.72.16-1.06V5.04H1.46A7.01 7.01 0 0 0 1 8c0 1.13.27 2.2.75 3.13l2.16-1.89-.02.82z" fill="#FBBC05"/>
+          <path d="M8 3.58c1.07 0 2.03.37 2.79 1.09l2.09-2.09C11.63 1.39 9.97.67 8 .67 5.17.67 2.66 2.4 1.46 4.87l2.45 1.9C4.49 5.04 6.1 3.58 8 3.58z" fill="#EA4335"/>
+        </svg>
+        Signed in as <strong>{{ googleEmail }}</strong>
+      </div>
+
+      <!-- ══ STEP 1: Personal Information ══ -->
+      <div class="form-step" *ngIf="currentStep === 1">
+
+        <div class="field-row cols-3">
+          <div class="field" [class.invalid]="hasError('lastName')">
+            <label class="field-label">Last Name <span class="required">*</span></label>
+            <input class="field-input" type="text" placeholder="e.g. Santos"
+                   [(ngModel)]="form.lastName"/>
+            <span class="field-msg" *ngIf="hasError('lastName')">{{ errorMsg('lastName') }}</span>
+          </div>
+          <div class="field" [class.invalid]="hasError('firstName')">
+            <label class="field-label">First Name <span class="required">*</span></label>
+            <input class="field-input" type="text" placeholder="e.g. Maria"
+                   [(ngModel)]="form.firstName"/>
+            <span class="field-msg" *ngIf="hasError('firstName')">{{ errorMsg('firstName') }}</span>
+          </div>
+          <div class="field">
+            <label class="field-label">Middle Name <span class="optional">optional</span></label>
+            <input class="field-input" type="text" placeholder="e.g. Cruz"
+                   [(ngModel)]="form.middleName"/>
+          </div>
+        </div>
+
+        <div class="field-row cols-3">
+          <div class="field" [class.invalid]="hasError('age')">
+            <label class="field-label">Age <span class="required">*</span></label>
+            <input class="field-input" type="number" placeholder="e.g. 25"
+                   min="1" max="120" [(ngModel)]="form.age"/>
+            <span class="field-msg" *ngIf="hasError('age')">{{ errorMsg('age') }}</span>
+          </div>
+          <div class="field" [class.invalid]="hasError('gender')">
+            <label class="field-label">Gender <span class="required">*</span></label>
+            <select class="field-input" [(ngModel)]="form.gender">
+              <option value="" disabled>Select</option>
+              <option *ngFor="let g of genders" [value]="g">{{ g }}</option>
+            </select>
+            <span class="field-msg" *ngIf="hasError('gender')">{{ errorMsg('gender') }}</span>
+          </div>
+          <div class="field" [class.invalid]="hasError('maritalStatus')">
+            <label class="field-label">Marital Status <span class="required">*</span></label>
+            <select class="field-input" [(ngModel)]="form.maritalStatus">
+              <option value="" disabled>Select</option>
+              <option *ngFor="let m of maritalStatuses" [value]="m">{{ m }}</option>
+            </select>
+            <span class="field-msg" *ngIf="hasError('maritalStatus')">{{ errorMsg('maritalStatus') }}</span>
+          </div>
+        </div>
+
+        <div class="field" [class.invalid]="hasError('phoneNumber')">
+          <label class="field-label">Phone Number <span class="required">*</span></label>
+          <div class="field-input-wrap">
+            <svg class="field-icon" viewBox="0 0 20 20" fill="none">
+              <path d="M3 3.5A1.5 1.5 0 014.5 2h.879a1 1 0 01.948.684l.879 2.637a1 1 0 01-.23 1.04L5.5 7.5s1 2.5 3 4.5 4.5 3 4.5 3l1.139-1.476a1 1 0 011.04-.23l2.637.879A1 1 0 0118.5 15.12v.879A1.5 1.5 0 0117 17.5C9.5 17.5 2.5 10.5 3 3.5z"
+                    stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/>
+            </svg>
+            <input class="field-input" type="tel" placeholder="09XXXXXXXXX"
+                   [(ngModel)]="form.phoneNumber"/>
+          </div>
+          <span class="field-msg" *ngIf="hasError('phoneNumber')">{{ errorMsg('phoneNumber') }}</span>
+        </div>
+
+      </div>
+
+      <!-- ══ STEP 2: Address ══ -->
+      <div class="form-step" *ngIf="currentStep === 2">
+
+        <div class="field" [class.invalid]="hasError('street')">
+          <label class="field-label">Street / House No. <span class="required">*</span></label>
+          <input class="field-input" type="text" placeholder="e.g. 123 Rizal Street"
+                 [(ngModel)]="form.street"/>
+          <span class="field-msg" *ngIf="hasError('street')">{{ errorMsg('street') }}</span>
+        </div>
+
+        <div class="field-row cols-2">
+          <div class="field" [class.invalid]="hasError('barangay')">
+            <label class="field-label">Barangay <span class="required">*</span></label>
+            <input class="field-input" type="text" placeholder="e.g. Barangay 1"
+                   [(ngModel)]="form.barangay"/>
+            <span class="field-msg" *ngIf="hasError('barangay')">{{ errorMsg('barangay') }}</span>
+          </div>
+          <div class="field" [class.invalid]="hasError('city')">
+            <label class="field-label">City / Municipality <span class="required">*</span></label>
+            <input class="field-input" type="text" placeholder="e.g. Manila"
+                   [(ngModel)]="form.city"/>
+            <span class="field-msg" *ngIf="hasError('city')">{{ errorMsg('city') }}</span>
+          </div>
+        </div>
+
+        <div class="field-row cols-2">
+          <div class="field" [class.invalid]="hasError('province')">
+            <label class="field-label">Province <span class="required">*</span></label>
+            <input class="field-input" type="text" placeholder="e.g. Metro Manila"
+                   [(ngModel)]="form.province"/>
+            <span class="field-msg" *ngIf="hasError('province')">{{ errorMsg('province') }}</span>
+          </div>
+          <div class="field" [class.invalid]="hasError('postalCode')">
+            <label class="field-label">Postal Code <span class="required">*</span></label>
+            <input class="field-input" type="text" placeholder="e.g. 1000"
+                   [(ngModel)]="form.postalCode"/>
+            <span class="field-msg" *ngIf="hasError('postalCode')">{{ errorMsg('postalCode') }}</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Footer actions -->
+      <div class="form-footer">
+        <span class="footer-error" *ngIf="touched && !isCurrentStepValid">
+          Please fix the errors above.
+        </span>
+
+        <button class="btn-back" *ngIf="currentStep > 1"
+                (click)="prevStep()" [disabled]="isSubmitting">
+          <svg viewBox="0 0 16 16" fill="none">
+            <polyline points="10 4 6 8 10 12" stroke="currentColor" stroke-width="1.3"
+                      stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Back
+        </button>
+
+        <!-- Step 1 → Next -->
+        <button class="btn-next" *ngIf="currentStep === 1"
+                (click)="nextStep()">
+          Next
+          <svg viewBox="0 0 16 16" fill="none">
+            <polyline points="6 4 10 8 6 12" stroke="currentColor" stroke-width="1.3"
+                      stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+
+        <!-- Step 2 → Submit -->
+        <button class="btn-submit" *ngIf="currentStep === 2"
+                (click)="submit()" [disabled]="isSubmitting">
+          <ng-container *ngIf="!isSubmitting">
+            <svg viewBox="0 0 16 16" fill="none">
+              <polyline points="3 8 6.5 11.5 13 4.5" stroke="currentColor" stroke-width="1.5"
+                        stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Complete Profile
+          </ng-container>
+          <ng-container *ngIf="isSubmitting">
+            <span class="btn-spinner"></span>
+            Saving...
+          </ng-container>
+        </button>
+      </div>
+
+      <p class="terms-note">
+        Your information is kept private and used only for rental purposes.
+      </p>
+
+    </div>
+  </div>
+
+</div>

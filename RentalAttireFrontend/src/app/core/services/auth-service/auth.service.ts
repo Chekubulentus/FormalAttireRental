@@ -32,8 +32,13 @@ export class AuthService {
   private isLoggingOut = false;
 
   logout() {
+    console.log("LOGOUT CLICKED!");
+
     this.isLoggingOut = true;
     this.removeTokens();
+
+    console.log(`ACCESS TOKEN AFTER LOGOUT: ${this.getAccessToken()}`);
+
     this.router.navigateByUrl('/log-in').then(() => {
       this.isLoggingOut = false;
     });

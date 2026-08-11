@@ -1,8 +1,11 @@
+using FluentValidation;
+using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using RentalAttireBackend.Application;
+using RentalAttireBackend.Application.Common.Behaviors;
 using RentalAttireBackend.Application.Common.Interfaces;
 using RentalAttireBackend.Application.Common.Models;
 using RentalAttireBackend.Application.Disposables.EntityDeleters;
@@ -65,6 +68,14 @@ builder.Services.AddDbContext<FormalAttireContext>(x => x.UseNpgsql(builder.Conf
 
 //MediatR
 builder.Services.AddMediatR(x => x.RegisterServicesFromAssembly(typeof(AssemblyMarker).Assembly));
+
+//Validator
+builder.Services.AddValidatorsFromAssemblyContaining<AssemblyMarker>();
+
+// Makes MediatR execute ValidationBehavior before handlers
+builder.Services.AddTransient(
+    typeof(IPipelineBehavior<,>),
+    typeof(ValidationBehavior<,>));
 
 //Add Scopes
 builder.Services.AddScoped<IPersonRepository, PersonRepository>();
