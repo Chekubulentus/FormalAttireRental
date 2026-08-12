@@ -31,10 +31,8 @@ export const routes: Routes = [
     {
         path: 'customer',
         canActivate: [authGuard],
-        loadComponent: () => {
-            return import('./features/customer/customer-layout/customer-layout.component')
-            .then(m => m.CustomerLayoutComponent)
-        }
+        loadChildren: () => 
+            import('./features/customer/customer.routes').then(m => m.CUSTOMER_ROUTES)
     },
     {
         path: 'profile-completion',

@@ -20,6 +20,12 @@ $navbar-height: 60px;
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
+// ============================================================
+// FIX: Ensure html and body never clip the page
+// ============================================================
+:host {
+  display: block;
+}
 
 // ============================================================
 // Shell
@@ -27,7 +33,9 @@ $navbar-height: 60px;
 .customer-shell {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  min-height: 100vh;       // grows with content — never clips
+  height: auto;            // FIX: override any inherited height: 100vh
+  overflow: visible;       // FIX: never hide overflow at shell level
   background: $bg;
   font-family: 'DM Sans', sans-serif;
   color: $text;
@@ -345,9 +353,12 @@ $navbar-height: 60px;
 
 // ============================================================
 // Main Content
+// FIX: flex: 1 alone is not enough when the parent has a
+//      fixed height. Using flex-grow + width ensures the
+//      content area expands downward naturally.
 // ============================================================
 .customer-main {
-  flex: 1;
+  flex: 1 0 auto;          // FIX: flex-shrink: 0 prevents content from being squished
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
@@ -359,6 +370,7 @@ $navbar-height: 60px;
 // Footer
 // ============================================================
 .customer-footer {
+  flex-shrink: 0;          // FIX: footer stays at the bottom, never grows into content
   border-top: 1px solid $border;
   background: $surface;
   padding: 1.5rem 2rem;
