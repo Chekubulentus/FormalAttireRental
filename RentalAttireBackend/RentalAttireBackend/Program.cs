@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using RentalAttireBackend.Application;
 using RentalAttireBackend.Application.Common.Behaviors;
+using RentalAttireBackend.Application.Common.Exceptions;
 using RentalAttireBackend.Application.Common.Interfaces;
 using RentalAttireBackend.Application.Common.Models;
 using RentalAttireBackend.Application.Disposables.EntityDeleters;
@@ -62,6 +63,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 //AutoMapper
 builder.Services.AddAutoMapper(x => x.AddProfile<MappingProfile>());
+
+//Exception Handler
+builder.Services.AddProblemDetails();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+
 
 //DbContext
 builder.Services.AddDbContext<FormalAttireContext>(x => x.UseNpgsql(builder.Configuration.GetConnectionString("FormalAttireDb")));
@@ -126,6 +132,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseCors("AllowAll");
+
+app.UseExceptionHandler();
 
 app.UseStaticFiles();
 
