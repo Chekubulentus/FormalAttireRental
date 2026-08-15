@@ -1,9 +1,13 @@
+using System.Security.Claims;
+using System.Text;
+
 using FluentValidation;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+
 using RentalAttireBackend.Application;
 using RentalAttireBackend.Application.Common.Behaviors;
 using RentalAttireBackend.Application.Common.Exceptions;
@@ -18,31 +22,47 @@ using RentalAttireBackend.Application.Disposables.ViewArchivedRecords.ViewClothe
 using RentalAttireBackend.Application.Disposables.ViewArchivedRecords.ViewCustomerRecord;
 using RentalAttireBackend.Application.Disposables.ViewArchivedRecords.ViewEmployeeRecord;
 using RentalAttireBackend.Application.Mapping;
+
 using RentalAttireBackend.Domain.Interfaces;
+
 using RentalAttireBackend.Infrastructure.Authentication;
 using RentalAttireBackend.Infrastructure.Persistence.DataContext;
 using RentalAttireBackend.Infrastructure.Persistence.Repositories;
 using RentalAttireBackend.Infrastructure.Persistence.Services;
-using System.Security.Claims;
-using System.Text;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+
+// ============================================================
+// ASP.NET Core Services
+// ============================================================
 
 builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
-//Jwt Settings
-builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
 
-//Image Upload Settings
-builder.Services.Configure<ImageUploadSettings>(builder.Configuration.GetSection("ImageUploadSettings"));
+// ============================================================
+// Configuration / Settings
+// ============================================================
 
-builder.Services.Configure<GoogleAuthSettings>(builder.Configuration.GetSection("Authentication:Google"));
+builder.Services.Configure<JwtSettings>(
+    builder.Configuration.GetSection("JwtSettings"));
 
-var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<JwtSettings>();
+builder.Services.Configure<ImageUploadSettings>(
+    builder.Configuration.GetSection("ImageUploadSettings"));
+
+builder.Services.Configure<GoogleAuthSettings>(
+    builder.Configuration.GetSection("Authentication:Google"));
+
+var jwtSettings = builder.Configuration
+    .GetSection("JwtSettings")
+    .Get<JwtSettings>();
+
+
+// ============================================================
+// Authentication
+// ============================================================
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(x =>
@@ -51,65 +71,99 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         {
             ValidateIssuer = true,
             ValidIssuer = jwtSettings.Issuer,
+
             ValidateAudience = true,
             ValidAudience = jwtSettings.Audience,
+
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecretKey)),
+            IssuerSigningKey = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(jwtSettings.SecretKey)),
+
             ClockSkew = TimeSpan.Zero,
             RoleClaimType = ClaimTypes.Role
         };
     });
 
 
-//AutoMapper
-builder.Services.AddAutoMapper(x => x.AddProfile<MappingProfile>());
+// ============================================================
+// Application Services
+// ============================================================
 
-//Exception Handler
-builder.Services.AddProblemDetails();
-builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+// AutoMapper
+builder.Services.AddAutoMapper(
+    x => x.AddProfile<MappingProfile>());
 
+// MediatR
+builder.Services.AddMediatR(
+    x => x.RegisterServicesFromAssembly(typeof(AssemblyMarker).Assembly));
 
-//DbContext
-builder.Services.AddDbContext<FormalAttireContext>(x => x.UseNpgsql(builder.Configuration.GetConnectionString("FormalAttireDb")));
-
-//MediatR
-builder.Services.AddMediatR(x => x.RegisterServicesFromAssembly(typeof(AssemblyMarker).Assembly));
-
-//Validator
+// FluentValidation
 builder.Services.AddValidatorsFromAssemblyContaining<AssemblyMarker>();
 
-// Makes MediatR execute ValidationBehavior before handlers
+// MediatR Validation Pipeline Behavior
 builder.Services.AddTransient(
     typeof(IPipelineBehavior<,>),
     typeof(ValidationBehavior<,>));
 
-//Add Scopes
+
+// ============================================================
+// Exception Handling / ProblemDetails
+// ============================================================
+
+builder.Services.AddProblemDetails();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+
+
+// ============================================================
+// Database
+// ============================================================
+
+builder.Services.AddDbContext<FormalAttireContext>(
+    x => x.UseNpgsql(
+        builder.Configuration.GetConnectionString("FormalAttireDb")));
+
+
+// ============================================================
+// Repository / Application Dependencies
+// ============================================================
+
+// Repositories
 builder.Services.AddScoped<IPersonRepository, PersonRepository>();
 builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
-builder.Services.AddScoped<ITransactionManager, TransactionManager>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
-builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
-builder.Services.AddScoped<IFileUploadService, FileUploadService>();
-builder.Services.AddScoped<IAuditLogService, AuditLogService>();
 builder.Services.AddScoped<IClotheRepository, ClotheRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<IRentalRepository, RentalRepository>();
 
+// Services
+builder.Services.AddScoped<ITransactionManager, TransactionManager>();
+builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
+builder.Services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
+builder.Services.AddScoped<IFileUploadService, FileUploadService>();
+builder.Services.AddScoped<IAuditLogService, AuditLogService>();
+
+// Entity Restorers
 builder.Services.AddScoped<IEntityRestorer, CustomerRestorer>();
 builder.Services.AddScoped<IEntityRestorer, ClotheRestorer>();
 builder.Services.AddScoped<IEntityRestorer, EmployeeRestorer>();
 
+// Archived Record Viewers
 builder.Services.AddScoped<IViewArchivedEntity, ViewCategoryRecord>();
 builder.Services.AddScoped<IViewArchivedEntity, ViewClotheRecord>();
 builder.Services.AddScoped<IViewArchivedEntity, ViewCustomerRecord>();
 builder.Services.AddScoped<IViewArchivedEntity, ViewEmployeeRecord>();
 
+// Archived Entity Deleters
 builder.Services.AddScoped<IDeleteArchivedEntity, CategoryDeleter>();
 builder.Services.AddScoped<IDeleteArchivedEntity, ClotheDeleter>();
 builder.Services.AddScoped<IDeleteArchivedEntity, EmployeeDeleter>();
 builder.Services.AddScoped<IDeleteArchivedEntity, CustomerDeleter>();
+
+
+// ============================================================
+// HTTP / Web Services
+// ============================================================
 
 builder.Services.AddHttpContextAccessor();
 
@@ -123,9 +177,14 @@ builder.Services.AddCors(options =>
     });
 });
 
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+
+// ============================================================
+// HTTP Request Pipeline
+// ============================================================
+
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
