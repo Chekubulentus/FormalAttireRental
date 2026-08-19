@@ -16,6 +16,7 @@ namespace RentalAttireBackend.Application.Rentals.Commands.RentalTransaction
         private readonly IAuditLogService _auditService;
         private readonly IRentalRepository _rentalRepo;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly ICurrentUserService _currentUserService;
         private readonly ITransactionManager _transactionManager;
         private readonly IClotheRepository _clotheRepo;
         private readonly IUserRepository _userRepo;
@@ -23,55 +24,36 @@ namespace RentalAttireBackend.Application.Rentals.Commands.RentalTransaction
             IMapper mapper,
             IAuditLogService auditService,
             IRentalRepository rentalRepo,
-            IHttpContextAccessor httpContextAccessor,
             ITransactionManager transactionManager,
             IClotheRepository clotheRepo,
-            IUserRepository userRepo
+            IUserRepository userRepo,
+            ICurrentUserService currentUserService
             )
         {
             _mapper = mapper;
             _auditService = auditService;
             _rentalRepo = rentalRepo;
-            _httpContextAccessor = httpContextAccessor;
             _clotheRepo = clotheRepo;
             _userRepo = userRepo;
             _transactionManager = transactionManager;
+            _currentUserService = currentUserService;
         }
         public async Task<Result<bool>> Handle(RentalTransactionCommand request, CancellationToken cancellationToken)
         {
             if (request is null)
                 return Result<bool>.Failure("Invalid request.");
-
-            if (!request.RentalItems.Any())
-                return Result<bool>.Failure("No items currently selected.");
-
-            if (string.IsNullOrEmpty(request.PaymentMethod))
-                return Result<bool>.Failure("Please choose a payment method.");
-
-            if (string.IsNullOrEmpty(request.GcashRefNum) || string.IsNullOrEmpty(request.GcashRefName))
-                return Result<bool>.Failure("Please proceed first with payment.");
-
-            if (request.PickupDate.Date < DateTime.UtcNow.Date)
-                return Result<bool>.Failure("Pickup date cannot be in the past.");
-
-            if (request.ReturnDate.Date <= request.PickupDate)
-                return Result<bool>.Failure("Return date must be after pickup date.");
             
             try
             {
-                var userIdClaim = _httpContextAccessor
-                    .HttpContext?
-                    .User
-                    .FindFirst("userId")?
-                    .Value;
+                var userIdClaim = _currentUserService.UserId;
 
-                if (!int.TryParse(userIdClaim, out var userId))
-                    return Result<bool>.Failure("Unable to identify current user.");
+                if (userIdClaim is null || userIdClaim == 0)
+                    return Result<bool>.FailureWithErrorType("User does not exist.", ErrorType.NotFound);
 
-                var customerUser = await _userRepo.GetUserByIdWithCustomerAsync(userId, cancellationToken);
+                var customerUser = await _userRepo.GetUserByIdWithCustomerAsync(userIdClaim.Value, cancellationToken);
 
                 if (customerUser is null || customerUser.Customer is null)
-                    return Result<bool>.Failure("Customer record does not exist.");
+                    return Result<bool>.FailureWithErrorType("Customer record does not exist.", ErrorType.NotFound);
 
                 var rentalItems = _mapper.Map<List<RentalItem>>(request.RentalItems);
 
@@ -84,13 +66,13 @@ namespace RentalAttireBackend.Application.Rentals.Commands.RentalTransaction
                     var clothe = await _clotheRepo.GetClotheByIdAsync(ri.ClotheId, cancellationToken);
 
                     if (clothe is null)
-                        return Result<bool>.Failure("One or more selected items are no longer available.");
+                        return Result<bool>.FailureWithErrorType("One or more selected items are no longer available.", ErrorType.BadRequest);
 
                     if (ri.Quantity <= 0)
-                        return Result<bool>.Failure($"{clothe?.ClotheName} quantity must be greater than zero.");
+                        return Result<bool>.FailureWithErrorType($"{clothe?.ClotheName} quantity must be greater than zero.", ErrorType.BadRequest);
 
                     if (ri.Quantity > clothe.AvailableQuantity)
-                        return Result<bool>.Failure($"{clothe.ClotheName} does not have enough available stock for you reservation.");
+                        return Result<bool>.FailureWithErrorType($"{clothe.ClotheName} does not have enough available stock for you reservation.", ErrorType.BadRequest);
 
                     ri.RentalPrice = clothe.RentalPrice;
                     clothe.ReservedQuantity += ri.Quantity;
@@ -112,7 +94,7 @@ namespace RentalAttireBackend.Application.Rentals.Commands.RentalTransaction
                 if(!createRental)
                 {
                     await _transactionManager.RollbackTransactionAsync(cancellationToken);
-                    return Result<bool>.Failure("Reservation failed. Please try again.");
+                    return Result<bool>.FailureWithErrorType("Reservation failed. Please try again.", ErrorType.BadRequest);
                 }
 
                 foreach(var item in clothesToUpdate)
@@ -122,7 +104,7 @@ namespace RentalAttireBackend.Application.Rentals.Commands.RentalTransaction
                     if(!updateClothe)
                     {
                         await _transactionManager.RollbackTransactionAsync(cancellationToken);
-                        return Result<bool>.Failure("Failed to update clothe availability.");
+                        return Result<bool>.FailureWithErrorType("Failed to update clothe availability.", ErrorType.BadRequest);
                     }
                 }
 
@@ -136,7 +118,7 @@ namespace RentalAttireBackend.Application.Rentals.Commands.RentalTransaction
                 if (!reservationLogging)
                 {
                     await _transactionManager.RollbackTransactionAsync(cancellationToken);
-                    return Result<bool>.Failure("Failed to create audit log for this action. No changes were saved.");
+                    return Result<bool>.FailureWithErrorType("Failed to create audit log for this action. No changes were saved.", ErrorType.BadRequest);
                 }
 
                 await _transactionManager.CommitTransacionAsync(cancellationToken);
@@ -144,7 +126,7 @@ namespace RentalAttireBackend.Application.Rentals.Commands.RentalTransaction
             }catch(Exception e)
             {
                 await _transactionManager.RollbackTransactionAsync(cancellationToken);
-                return Result<bool>.Failure(e.Message);
+                return Result<bool>.FailureWithErrorType(e.Message, ErrorType.BadRequest);
             }
         }
     }

@@ -7,8 +7,11 @@ using RentalAttireBackend.Application.Authentication.Commands.Login;
 using RentalAttireBackend.Application.Authentication.Commands.ProfileCompletion;
 using RentalAttireBackend.Application.Authentication.Commands.RefreshToken;
 using RentalAttireBackend.Application.Authentication.Commands.RegistrationCommand;
+using RentalAttireBackend.Application.Common.Extensions;
 using RentalAttireBackend.Application.Common.Interfaces;
+using RentalAttireBackend.Application.Common.Models;
 using RentalAttireBackend.Domain.Entities;
+using System.Reflection.Metadata.Ecma335;
 
 namespace RentalAttireBackend.Controllers.AuthenticationController
 {
@@ -18,11 +21,17 @@ namespace RentalAttireBackend.Controllers.AuthenticationController
     {
         private readonly IMediator _mediator;
         private readonly IJwtTokenGenerator _jwtTokenGenerator;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public AuthenticationController(IMediator mediator, IJwtTokenGenerator jwtTokenGenerator)
+        public AuthenticationController(
+            IMediator mediator, 
+            IJwtTokenGenerator jwtTokenGenerator,
+            IHttpContextAccessor httpContextAccessor
+            )
         {
             _mediator = mediator;
             _jwtTokenGenerator = jwtTokenGenerator;
+            _httpContextAccessor = httpContextAccessor;
         }
         [HttpPost]
         public async Task<IActionResult> LoginAsync(LoginCommand command)
@@ -57,7 +66,7 @@ namespace RentalAttireBackend.Controllers.AuthenticationController
         {
             var result = await _mediator.Send(command);
 
-            return result.IsSuccess ? Ok(result.SuccessMessage) : BadRequest(result.ErrorMessage);
+            return result.ToActionResult(this, _httpContextAccessor);
         }
     }
 }

@@ -6,8 +6,19 @@
         public bool IsSuccess { get; set; }
         public string SuccessMessage { get; set; } = string.Empty;
         public string ErrorMessage { get; set; } = string.Empty;
+        public ErrorType ErrorType { get; set; } = ErrorType.BadRequest;
         public static Result<T> Success(T data) => new() { Data = data, IsSuccess = true };
         public static Result<T> Failure(string message) => new() { IsSuccess = false, ErrorMessage = message };
         public static Result<T> SuccessWithMessage(string message) => new() { IsSuccess = true, SuccessMessage = message };
+        public static Result<T> FailureWithErrorType(string message, ErrorType errorType) => new() { IsSuccess = false, ErrorType = errorType, ErrorMessage = message };
+    }
+
+    public enum ErrorType
+    {
+        BadRequest,
+        NotFound,
+        Conflict,
+        Unauthorized,
+        Forbidden
     }
 }

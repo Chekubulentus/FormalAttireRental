@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
-using System.CodeDom;
 using FluentValidation;
 
 namespace RentalAttireBackend.Application.Common.Exceptions
@@ -47,12 +45,22 @@ namespace RentalAttireBackend.Application.Common.Exceptions
                     Detail = "One or more validation errors occured.",
                     Instance = httpContext.Request.Path
                 };
-            }else
+            }else if(exception is KeyNotFoundException)
+            {
+                problemDetails = new ProblemDetails
+                {
+                    Status  = statusCode,
+                    Title = "Invalid user identifier.",
+                    Detail = exception.Message,
+                    Instance = httpContext.Request.Path
+                };
+            }
+            else
             {
                 problemDetails = new ProblemDetails
                 {
                     Status = statusCode,
-                    Title = "An error occured.",
+                    Title = "An unexpected error occurred.",
                     Detail = exception.Message,
                     Instance = httpContext.Request.Path
                 };

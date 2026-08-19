@@ -35,13 +35,7 @@ namespace RentalAttireBackend.Application.Rentals.Commands.UpdateRentalStatusCom
         public async Task<Result<bool>> Handle(UpdateRentalStatusCommmand request, CancellationToken cancellationToken)
         {
             if (request is null)
-                return Result<bool>.Failure("Invalid request. Please try again.");
-
-            if (request.RentalId <= 0)
-                return Result<bool>.Failure("Rental reservation could not be found.");
-
-            if (request.Status != "Confirmed" && request.Status != "Declined")
-                return Result<bool>.Failure("Invalid rental status.");
+                return Result<bool>.FailureWithErrorType("Invalid request. Please try again.", ErrorType.BadRequest);
 
             try
             {
@@ -54,7 +48,7 @@ namespace RentalAttireBackend.Application.Rentals.Commands.UpdateRentalStatusCom
                     ?.Value;
 
                 if (!int.TryParse(userIdClaim, out int userId))
-                    return Result<bool>.Failure("Current user does not exist.");
+                    return Result<bool>.FailureWithErrorType("Current user does not exist.", ErrorType.NotFound);
 
                 var currentUser = await _userRepo.GetUserWithEmployeeAsync(userId, cancellationToken);
 

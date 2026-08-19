@@ -36,14 +36,14 @@ namespace RentalAttireBackend.Application.Authentication.Commands.ProfileComplet
                 ?.Value;
 
             if (!int.TryParse(userIdClaim, out var userId))
-                return Result<bool>.Failure("Current user does not exist.");
+                return Result<bool>.FailureWithErrorType("Current user does not exist.", ErrorType.NotFound);
 
             try
             {
                 var user = await _userRepo.GetUserByIdWithCustomerAsync(userId, cancellationToken);
 
                 if (user is null)
-                    return Result<bool>.Failure("Current user could not be found.");
+                    return Result<bool>.FailureWithErrorType("Current user could not be found.", ErrorType.NotFound);
 
                 await _transactionManager.BeginTransactionAsync(cancellationToken);
 
@@ -54,7 +54,7 @@ namespace RentalAttireBackend.Application.Authentication.Commands.ProfileComplet
                 if(!updateProfile)
                 {
                     await _transactionManager.RollbackTransactionAsync(cancellationToken);
-                    return Result<bool>.Failure("Profile cannot be updated. Please try again.");
+                    return Result<bool>.FailureWithErrorType("Profile cannot be updated. Please try again.", ErrorType.BadRequest);
                 }
 
                 await _transactionManager.CommitTransacionAsync(cancellationToken);
@@ -62,7 +62,7 @@ namespace RentalAttireBackend.Application.Authentication.Commands.ProfileComplet
             }catch(Exception e)
             {
                 await _transactionManager.RollbackTransactionAsync(cancellationToken);
-                return Result<bool>.Failure(e.Message);
+                return Result<bool>.FailureWithErrorType(e.Message, ErrorType.BadRequest);
             }
         }
     }

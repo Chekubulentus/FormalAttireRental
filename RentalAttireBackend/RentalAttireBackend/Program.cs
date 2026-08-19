@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-
+using RentalAttireBackend.Api.Services;
 using RentalAttireBackend.Application;
 using RentalAttireBackend.Application.Common.Behaviors;
 using RentalAttireBackend.Application.Common.Exceptions;
@@ -159,6 +159,9 @@ builder.Services.AddScoped<IDeleteArchivedEntity, CategoryDeleter>();
 builder.Services.AddScoped<IDeleteArchivedEntity, ClotheDeleter>();
 builder.Services.AddScoped<IDeleteArchivedEntity, EmployeeDeleter>();
 builder.Services.AddScoped<IDeleteArchivedEntity, CustomerDeleter>();
+
+//Current User Service
+builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 
 
 // ============================================================

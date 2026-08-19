@@ -28,8 +28,8 @@ namespace RentalAttireBackend.Application.Authentication.Commands.ProfileComplet
             RuleFor(x => x.PhoneNumber)
                 .NotEmpty()
                 .WithMessage("Phone number is required.")
-                .MinimumLength(10)
-                .WithMessage("Invalid phone number");
+                .Length(11)
+                .WithMessage("Phone number is invalid.");
 
             RuleFor(x => x.Street)
             .NotEmpty()

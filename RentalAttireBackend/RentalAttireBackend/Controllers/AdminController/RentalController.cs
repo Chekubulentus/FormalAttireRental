@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using RentalAttireBackend.Application.Common.Extensions;
 using RentalAttireBackend.Application.Rentals.Commands.RentalTransaction;
+using RentalAttireBackend.Application.Rentals.Commands.UpdateRentalStatusCommand;
 using RentalAttireBackend.Application.Rentals.Queries;
 using RentalAttireBackend.Application.Rentals.Queries.FilterRentals;
 using RentalAttireBackend.Application.Rentals.Queries.GetAllRentals;
@@ -14,10 +16,12 @@ namespace RentalAttireBackend.Controllers.AdminController
     public class RentalController : ControllerBase
     {
         private readonly IMediator _meaditor;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public RentalController(IMediator mediator)
+        public RentalController(IMediator mediator, IHttpContextAccessor httpContextAccessor)
         {
             _meaditor = mediator;
+            _httpContextAccessor = httpContextAccessor;
         }
         [HttpGet]
         public async Task<IActionResult> FilterRentalsAsync(
@@ -49,12 +53,21 @@ namespace RentalAttireBackend.Controllers.AdminController
 
             return result.IsSuccess ? Ok(result) : BadRequest(result.ErrorMessage);
         }
+
         [HttpPost]
         public async Task<IActionResult> RentalReservationAsync(RentalTransactionCommand command)
         {
             var result = await _meaditor.Send(command);
 
-            return result.IsSuccess ? Ok(result) : BadRequest(result.ErrorMessage);
+            return result.ToActionResult(this, _httpContextAccessor);
+        }
+
+        [HttpPatch]
+        public async Task<IActionResult> UpdateRentalStatusAsync(UpdateRentalStatusCommmand command)
+        {
+            var result = await _meaditor.Send(command);
+
+            return result.ToActionResult(this, _httpContextAccessor);
         }
     }
 }
