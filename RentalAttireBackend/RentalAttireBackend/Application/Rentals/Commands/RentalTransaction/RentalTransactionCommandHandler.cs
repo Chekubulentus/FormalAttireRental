@@ -2,11 +2,8 @@
 using MediatR;
 using RentalAttireBackend.Application.Common.Interfaces;
 using RentalAttireBackend.Application.Common.Models;
-using RentalAttireBackend.Application.Rentals.DTOs;
 using RentalAttireBackend.Domain.Entities;
 using RentalAttireBackend.Domain.Interfaces;
-using System.Runtime.InteropServices.Marshalling;
-using System.Security.Claims;
 
 namespace RentalAttireBackend.Application.Rentals.Commands.RentalTransaction
 {
@@ -15,7 +12,6 @@ namespace RentalAttireBackend.Application.Rentals.Commands.RentalTransaction
         private readonly IMapper _mapper;
         private readonly IAuditLogService _auditService;
         private readonly IRentalRepository _rentalRepo;
-        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ICurrentUserService _currentUserService;
         private readonly ITransactionManager _transactionManager;
         private readonly IClotheRepository _clotheRepo;
@@ -75,6 +71,7 @@ namespace RentalAttireBackend.Application.Rentals.Commands.RentalTransaction
                         return Result<bool>.FailureWithErrorType($"{clothe.ClotheName} does not have enough available stock for you reservation.", ErrorType.BadRequest);
 
                     ri.RentalPrice = clothe.RentalPrice;
+                    ri.DepositAmount = clothe.DepositAmount;
                     clothe.ReservedQuantity += ri.Quantity;
                     clothe.AvailableQuantity = clothe.StockQuantity - clothe.ReservedQuantity;
 

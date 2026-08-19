@@ -1,0 +1,268 @@
+<div class="browse-page">
+
+  <!-- ============================================================ -->
+  <!-- Body: Sidebar + Main -->
+  <!-- ============================================================ -->
+  <div class="browse-body">
+
+    <!-- ── Sidebar Filters ──────────────────────────────────── -->
+    <aside class="filter-sidebar">
+
+      <div class="sidebar-section">
+        <p class="sidebar-label">Category</p>
+        <div class="filter-options">
+          <label class="filter-check" [class.active]="filterCategory === ''" (click)="setCategory('')">
+            <span class="check-box" [class.checked]="filterCategory === ''"></span>
+            All
+          </label>
+          <label
+            *ngFor="let cat of categories"
+            class="filter-check"
+            [class.active]="filterCategory === cat.categoryName"
+            (click)="setCategory(cat.categoryName)"
+          >
+            <span class="check-box" [class.checked]="filterCategory === cat.categoryName"></span>
+            {{ cat.categoryName }}
+          </label>
+        </div>
+      </div>
+
+      <div class="sidebar-divider"></div>
+
+      <div class="sidebar-section">
+        <p class="sidebar-label">Gender</p>
+        <div class="filter-options">
+          <label class="filter-check" [class.active]="filterGender === ''" (click)="setGender('')">
+            <span class="check-box" [class.checked]="filterGender === ''"></span>
+            All
+          </label>
+          <label
+            *ngFor="let g of genders"
+            class="filter-check"
+            [class.active]="filterGender === g"
+            (click)="setGender(g)"
+          >
+            <span class="check-box" [class.checked]="filterGender === g"></span>
+            {{ g }}
+          </label>
+        </div>
+      </div>
+
+      <div class="sidebar-divider"></div>
+
+      <button *ngIf="hasActiveFilters" class="clear-btn" (click)="clearFilters()">
+        Clear All Filters
+      </button>
+
+    </aside>
+
+    <!-- ── Main Content ─────────────────────────────────────── -->
+    <div class="browse-main">
+
+      <!-- Page Header -->
+      <div class="page-header">
+        <div class="page-header__left">
+          <span class="eyebrow">Our Collection</span>
+          <h1>Browse Formal Wear</h1>
+          <p class="page-subtitle">Find the perfect attire for your occasion.</p>
+        </div>
+      </div>
+
+      <!-- Toolbar -->
+      <div class="toolbar">
+        <div class="search-wrap">
+          <svg class="search-icon" viewBox="0 0 20 20" fill="none">
+            <circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.5"/>
+            <line x1="13.5" y1="13.5" x2="17" y2="17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <input
+            class="search-input"
+            type="text"
+            placeholder="Search by name, brand, or code..."
+            [(ngModel)]="searchQuery"
+            (keyup.enter)="onSearch()"/>
+        </div>
+        <button class="btn-search" (click)="onSearch()">Search</button>
+      </div>
+
+      <!-- Results count -->
+      <p class="results-count" *ngIf="!isLoading">
+        {{ totalCount }} item{{ totalCount !== 1 ? 's' : '' }} found
+      </p>
+
+      <!-- Loading Skeleton -->
+      <div class="card-grid" *ngIf="isLoading">
+        <div class="skeleton-card" *ngFor="let i of [1,2,3,4,5,6,7,8]">
+          <div class="skeleton-img"></div>
+          <div class="skeleton-body">
+            <div class="skeleton-line wide"></div>
+            <div class="skeleton-line"></div>
+            <div class="skeleton-line narrow"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div class="empty-state" *ngIf="!isLoading && clothes.length === 0">
+        <svg viewBox="0 0 64 64" fill="none">
+          <rect x="8" y="20" width="48" height="36" rx="3" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M20 20V16a12 12 0 0 1 24 0v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          <circle cx="32" cy="38" r="4" stroke="currentColor" stroke-width="1.5"/>
+        </svg>
+        <p class="empty-title">No items found</p>
+        <p class="empty-sub">Try adjusting your search or filters.</p>
+        <button class="btn-clear-empty" *ngIf="hasActiveFilters" (click)="clearFilters()">
+          Clear Filters
+        </button>
+      </div>
+
+      <!-- Card Grid -->
+      <div class="card-grid" *ngIf="!isLoading && clothes.length > 0">
+
+        <div class="clothe-card" *ngFor="let clothe of clothes; let i = index"
+             [style.animation-delay]="(i * 0.04) + 's'"
+             (click)="openViewModal(clothe)">
+
+          <!-- Image area -->
+          <div class="card-image-wrap">
+
+            <img
+              *ngIf="clothe.profileImagePath"
+              [src]="clothe.profileImagePath"
+              [alt]="clothe.clotheName"
+              class="card-image"
+              (error)="onImgError($event)"/>
+
+            <div class="card-image-fallback" *ngIf="!clothe.profileImagePath">
+              <svg viewBox="0 0 32 32" fill="none">
+                <path d="M8 8h16v3l-3 2v11H11V13L8 11V8z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>
+                <path d="M12 8V6a4 4 0 0 1 8 0v2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+              </svg>
+            </div>
+
+            <!-- Stock status badge -->
+            <div class="stock-badge" [class]="'stock-badge--' + getStockStatus(clothe)">
+              <span class="stock-dot"></span>
+              <span *ngIf="getStockStatus(clothe) === 'available'">{{ clothe.availableQuantity }} Available</span>
+              <span *ngIf="getStockStatus(clothe) === 'low'">Low Stock</span>
+              <span *ngIf="getStockStatus(clothe) === 'out'">Out of Stock</span>
+            </div>
+
+            <!-- In cart badge -->
+            <span *ngIf="isInCart(clothe.id)" class="in-cart-badge">In Cart</span>
+
+            <!-- Hover action overlay -->
+            <div class="card-actions-overlay">
+              <button class="overlay-btn" title="View Details" (click)="openViewModal(clothe); $event.stopPropagation()">
+                <svg viewBox="0 0 16 16" fill="none">
+                  <circle cx="8" cy="8" r="3" stroke="currentColor" stroke-width="1.3"/>
+                  <path d="M1 8s2.5-5 7-5 7 5 7 5-2.5 5-7 5-7-5-7-5z" stroke="currentColor" stroke-width="1.3"/>
+                </svg>
+              </button>
+            </div>
+
+          </div><!-- end .card-image-wrap -->
+
+          <!-- Card Body -->
+          <div class="card-body">
+
+            <div class="card-meta-row">
+              <span class="clothe-code">{{ clothe.clotheCode }}</span>
+            </div>
+
+            <h3 class="clothe-name">{{ clothe.clotheName }}</h3>
+
+            <div class="chip-row">
+              <span class="chip">{{ clothe.categoryName }}</span>
+              <span class="chip">{{ clothe.clotheGender }}</span>
+              <span class="chip">{{ clothe.size }}</span>
+            </div>
+
+            <div class="card-details">
+              <div class="detail">
+                <span class="detail-label">Brand</span>
+                <span class="detail-value">{{ clothe.brand }}</span>
+              </div>
+              <div class="detail">
+                <span class="detail-label">Material</span>
+                <span class="detail-value">{{ clothe.material }}</span>
+              </div>
+              <div class="detail">
+                <span class="detail-label">Color</span>
+                <span class="detail-value">{{ clothe.color }}</span>
+              </div>
+              <div class="detail">
+                <span class="detail-label">Duration</span>
+                <span class="detail-value">{{ clothe.rentalDurationDays }}d</span>
+              </div>
+            </div>
+
+            <div class="card-pricing">
+              <div class="pricing-main">
+                <span class="price-label">Rental</span>
+                <span class="price-value">₱{{ clothe.rentalPrice | number }}</span>
+              </div>
+              <div class="pricing-deposit">
+                <span class="price-label">Deposit</span>
+                <span class="price-value muted">₱{{ clothe.depositAmount | number }}</span>
+              </div>
+            </div>
+
+            <button
+              class="btn-rent"
+              [disabled]="getStockStatus(clothe) === 'out'"
+              (click)="onAddToCart(clothe); $event.stopPropagation()">
+              <svg viewBox="0 0 16 16" fill="none">
+                <path d="M2 3h1.5l2 8h7l1.5-6H5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="8"  cy="13" r="1" fill="currentColor"/>
+                <circle cx="11" cy="13" r="1" fill="currentColor"/>
+              </svg>
+              {{ getStockStatus(clothe) === 'out' ? 'Out of Stock' : (isInCart(clothe.id) ? 'In Cart' : 'Add to Cart') }}
+            </button>
+
+          </div><!-- end .card-body -->
+
+        </div><!-- end .clothe-card -->
+
+      </div><!-- end .card-grid -->
+
+      <!-- Pagination -->
+      <div class="pagination" *ngIf="!isLoading && clothes.length > 0">
+        <span class="pagination__info">
+          Showing {{ rangeStart }}–{{ rangeEnd }} of {{ totalCount }} items
+        </span>
+        <div class="pagination__controls">
+          <button class="page-btn" [disabled]="currentPage === 1" (click)="goToPage(currentPage - 1)">
+            <svg viewBox="0 0 16 16" fill="none">
+              <polyline points="10 4 6 8 10 12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+          <ng-container *ngFor="let page of pageNumbers">
+            <span class="page-ellipsis" *ngIf="page === -1">…</span>
+            <button *ngIf="page !== -1" class="page-btn" [class.active]="page === currentPage" (click)="goToPage(page)">
+              {{ page }}
+            </button>
+          </ng-container>
+          <button class="page-btn" [disabled]="currentPage === totalPages" (click)="goToPage(currentPage + 1)">
+            <svg viewBox="0 0 16 16" fill="none">
+              <polyline points="6 4 10 8 6 12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+    </div><!-- end .browse-main -->
+  </div><!-- end .browse-body -->
+
+  <!-- View Modal (uncomment when ready) -->
+  <!--
+  <div class="modal-overlay" *ngIf="clotheToView">
+    <app-view-clothe-modal
+      [clothe]="clotheToView"
+      (closed)="closeViewModal()"
+      (addToCart)="onAddToCart($event)"
+    ></app-view-clothe-modal>
+  </div>
+  -->
+
+</div>

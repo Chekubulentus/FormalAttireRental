@@ -125,9 +125,11 @@ export class LogInComponent implements OnInit, OnDestroy {
         }
 
         if(!result.data?.isProfileComplete)
-          this.router.navigateByUrl('/profile-completion')
+          this.router.navigateByUrl('/profile-completion');
 
         var rolePosition = this.authService.getCurrentUserRolePosition();   
+
+        console.log(`ROLE POSITION: ${rolePosition}`);
 
         if(!rolePosition)
           this.loginError = 'Invalid role position.';

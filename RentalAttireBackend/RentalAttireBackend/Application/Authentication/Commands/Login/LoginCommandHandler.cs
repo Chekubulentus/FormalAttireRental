@@ -68,6 +68,7 @@ namespace RentalAttireBackend.Application.Authentication.Commands.Login
                     RefreshToken = refreshToken,
                     ExpiresAt = DateTime.UtcNow.AddMinutes(60),
                     Email = user.Email,
+                    IsProfileComplete = user.Person.IsProfileComplete
                 });
             }catch(Exception e)
             {

@@ -67,7 +67,7 @@ namespace RentalAttireBackend.Controllers.AdminController
         {
             var result = await _meaditor.Send(command);
 
-            return result.ToActionResult(this, _httpContextAccessor);
+            return result.ToActionResult(this, _httpContextAccessor); 
         }
     }
 }

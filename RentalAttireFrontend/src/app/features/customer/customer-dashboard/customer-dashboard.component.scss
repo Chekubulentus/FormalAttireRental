@@ -31,6 +31,8 @@ $red-dim:      rgba(192, 57, 43, 0.09);
 
 // ============================================================
 // Dashboard wrapper
+// FIX: page now owns its own width/padding since
+//      .customer-main (layout) no longer constrains it.
 // ============================================================
 .dashboard {
   display: flex;
@@ -38,6 +40,9 @@ $red-dim:      rgba(192, 57, 43, 0.09);
   gap: 2.5rem;
   font-family: 'DM Sans', sans-serif;
   color: $text;
+  padding: 2rem 2.5rem;
+  max-width: 1440px;
+  margin: 0 auto;
 }
 
 
@@ -642,6 +647,10 @@ $red-dim:      rgba(192, 57, 43, 0.09);
 // Responsive
 // ============================================================
 @media (max-width: 768px) {
+  .dashboard {
+    padding: 1.25rem 1rem;
+  }
+
   .welcome {
     flex-direction: column;
     padding: 1.5rem;

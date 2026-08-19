@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using RentalAttireBackend.Infrastructure.Persistence.DataContext;
@@ -11,9 +12,11 @@ using RentalAttireBackend.Infrastructure.Persistence.DataContext;
 namespace RentalAttireBackend.Migrations
 {
     [DbContext(typeof(FormalAttireContext))]
-    partial class FormalAttireContextModelSnapshot : ModelSnapshot
+    [Migration("20260819191456_adding main admin initial data")]
+    partial class addingmainadmininitialdata
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -454,7 +457,7 @@ namespace RentalAttireBackend.Migrations
                             RoleId = 1,
                             Salary = 0.0,
                             UpdatedBy = "",
-                            UserId = 2
+                            UserId = 1
                         });
                 });
 

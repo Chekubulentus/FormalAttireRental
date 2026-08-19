@@ -157,6 +157,118 @@ namespace RentalAttireBackend.Infrastructure.Persistence.DataContext
                 });
             #endregion
 
+            #region Main Administrator Data
+
+            // Person
+            modelBuilder.Entity<Person>()
+                .HasData(new Person
+                {
+                    Id = 2,
+
+                    LastName = "Administrator",
+                    FirstName = "Main",
+                    MiddleName = "System",
+
+                    Age = 30,
+                    Gender = Gender.Others,
+                    MaritalStatus = MaritalStatus.Single,
+
+                    PhoneNumber = "09000000000",
+
+                    Street = "System Street",
+                    Barangay = "System Barangay",
+                    City = "System City",
+                    Province = "System Province",
+                    PostalCode = "0000",
+
+                    ProfileImagePath = null,
+
+                    CreatedBy = "System",
+                    CreatedAt = new DateTime(2026, 8, 20, 0, 0, 0, DateTimeKind.Utc),
+
+                    UpdatedBy = string.Empty,
+                    UpdatedAt = null,
+
+                    ArchivedBy = string.Empty,
+                    ArchivedAt = null,
+
+                    RestoredBy = string.Empty,
+                    RestoredAt = null,
+
+                    IsActive = true,
+                    IsDeleted = false,
+
+                    EntityType = "Person"
+                });
+
+
+            // User
+            modelBuilder.Entity<User>()
+                .HasData(new User
+                {
+                    Id = 2,
+
+                    Email = "admin",
+                    HashedPassword = "admin",
+                    RefreshToken = string.Empty,
+                    RefreshTokenExpiryTime = null,
+
+                    PersonId = 2,
+
+                    IsGoogleAccount = false,
+
+                    CreatedBy = "System",
+                    CreatedAt = new DateTime(2026, 8, 20, 0, 0, 0, DateTimeKind.Utc),
+
+                    UpdatedBy = string.Empty,
+                    UpdatedAt = null,
+
+                    ArchivedBy = string.Empty,
+                    ArchivedAt = null,
+
+                    RestoredBy = string.Empty,
+                    RestoredAt = null,
+
+                    IsActive = true,
+                    IsDeleted = false,
+
+                    EntityType = "User",
+                });
+
+
+            // Employee
+            modelBuilder.Entity<Employee>()
+                .HasData(new Employee
+                {
+                    Id = 1,
+
+                    EmployeeCode = "EMP-000001",
+                    Department = "Administration",
+                    Salary = 0.00,
+
+                    RoleId = 1,
+                    UserId = 2,
+
+                    CreatedBy = "System",
+                    CreatedAt = new DateTime(2026, 8, 20, 0, 0, 0, DateTimeKind.Utc),
+
+                    UpdatedBy = string.Empty,
+                    UpdatedAt = null,
+
+                    ArchivedBy = string.Empty,
+                    ArchivedAt = null,
+
+                    RestoredBy = string.Empty,
+                    RestoredAt = null,
+
+                    IsActive = true,
+                    IsDeleted = false,
+
+                    EntityType = "Employee"
+                });
+
+            #endregion
+
             #region AuditLog
             modelBuilder.Entity<AuditLog>(e =>
             {

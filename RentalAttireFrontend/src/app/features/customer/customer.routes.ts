@@ -16,6 +16,13 @@ export const CUSTOMER_ROUTES: Routes = [
                 loadComponent: () => 
                     import('./customer-dashboard/customer-dashboard.component')
                 .then(m => m.CustomerDashboardComponent)
+            },
+            {
+                path: 'browse',
+                loadComponent: () => {
+                    return import('./browse/browse/browse.component')
+                    .then(m => m.BrowseComponent)
+                }
             }
         ]
     }

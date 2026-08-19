@@ -29,8 +29,7 @@ namespace RentalAttireBackend.Domain.Entities
             !string.IsNullOrEmpty(Barangay) &&
             !string.IsNullOrEmpty(City) &&
             !string.IsNullOrEmpty(Province) &&
-            !string.IsNullOrEmpty(PostalCode) &&
-            !string.IsNullOrEmpty(ProfileImagePath);
+            !string.IsNullOrEmpty(PostalCode);
 
         public string FullName
         {
