@@ -208,18 +208,6 @@
           </div>
         </div>
 
-        <button
-          class="btn-rent"
-          [disabled]="getStockStatus(clothe) === 'out'"
-          (click)="onAddToRental(clothe)">
-          <svg viewBox="0 0 16 16" fill="none">
-            <path d="M2 3h1.5l2 8h7l1.5-6H5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
-            <circle cx="8"  cy="13" r="1" fill="currentColor"/>
-            <circle cx="11" cy="13" r="1" fill="currentColor"/>
-          </svg>
-          {{ getStockStatus(clothe) === 'out' ? 'Out of Stock' : 'Add to Rental' }}
-        </button>
-
       </div><!-- end .card-body -->
 
     </div><!-- end .clothe-card -->

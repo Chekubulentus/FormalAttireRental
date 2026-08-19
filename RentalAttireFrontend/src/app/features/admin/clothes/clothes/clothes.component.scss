@@ -576,42 +576,6 @@ $amber-border:rgba(230, 126, 34, 0.25);
   &.muted { font-size: 0.85rem; color: $text-soft; }
 }
 
-// Add to Rental button
-.btn-rent {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.45rem;
-  width: 100%;
-  padding: 0.6rem;
-  background: $gold-dim;
-  color: $gold;
-  border: 1px solid $gold-border;
-  border-radius: 9px;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 0.78rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.18s;
-  margin-top: auto;
-
-  svg { width: 13px; height: 13px; }
-
-  &:hover:not(:disabled) {
-    background: $gold;
-    color: #fff;
-    border-color: $gold;
-  }
-
-  &:disabled {
-    opacity: 0.45;
-    cursor: not-allowed;
-    background: $bg;
-    color: $text-muted;
-    border-color: $border;
-  }
-}
-
 // ============================================================
 // Pagination
 // ============================================================
