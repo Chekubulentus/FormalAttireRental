@@ -1,0 +1,74 @@
+<div class="modal-overlay" (click)="onOverlayClick()">
+  <div class="modal-card" (click)="$event.stopPropagation()">
+
+    <button class="close-btn" (click)="onClose()">&times;</button>
+
+    <div class="modal-body">
+
+      <!-- ── Left: Image ─────────────────────────────────────── -->
+      <div class="image-panel">
+        <img
+          *ngIf="clothe.profileImagePath"
+          [src]="clothe.profileImagePath"
+          [alt]="clothe.clotheName"
+          (error)="onImgError($event)"
+        />
+        <div *ngIf="!clothe.profileImagePath" class="no-image">No Image Available</div>
+      </div>
+
+      <!-- ── Right: Details ──────────────────────────────────── -->
+      <div class="details-panel">
+        <p class="clothe-category">{{ clothe.categoryName }}</p>
+        <h2 class="clothe-name">{{ clothe.clotheName }}</h2>
+
+        <p class="clothe-price">₱{{ clothe.rentalPrice }} <span>/ rental</span></p>
+        <p class="deposit-note">+ ₱{{ clothe.depositAmount }} refundable deposit</p>
+
+        <div class="detail-grid">
+          <div class="detail-item">
+            <span class="detail-label">Size</span>
+            <span class="detail-value">{{ clothe.size }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Color</span>
+            <span class="detail-value">{{ clothe.color }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Brand</span>
+            <span class="detail-value">{{ clothe.brand || '—' }}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Material</span>
+            <span class="detail-value">{{ clothe.material || '—' }}</span>
+          </div>
+        </div>
+
+        <div class="stock-note" *ngIf="!isOutOfStock">
+          {{ remainingStock }} available<span *ngIf="alreadyInCart > 0"> ({{ alreadyInCart }} already in your cart)</span>
+        </div>
+        <div class="stock-note stock-note--out" *ngIf="isOutOfStock">
+          Out of stock<span *ngIf="alreadyInCart > 0"> — you already have the max in your cart</span>
+        </div>
+
+        <!-- Quantity Stepper -->
+        <div class="quantity-row" *ngIf="!isOutOfStock">
+          <span class="quantity-label">Quantity</span>
+          <div class="stepper">
+            <button (click)="decreaseQuantity()" [disabled]="quantity <= 1">−</button>
+            <span class="stepper-value">{{ quantity }}</span>
+            <button (click)="increaseQuantity()" [disabled]="quantity >= remainingStock">+</button>
+          </div>
+        </div>
+
+        <button
+          class="add-to-cart-btn"
+          [disabled]="isOutOfStock"
+          (click)="onAddToCart()"
+        >
+          {{ isOutOfStock ? 'Out of Stock' : 'Add to Cart' }}
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>

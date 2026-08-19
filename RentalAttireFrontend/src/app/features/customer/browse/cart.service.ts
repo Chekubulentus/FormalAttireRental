@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
 import { ClotheDTO } from '../../../data/models/DTOs/Clothes/clothes';
-import { AppToastrService } from '../../../core/services/toastr-service/app-toastr.service';
 import { CartItem } from '../../../data/models/DTOs/Clothes/cart-item';
 
 const CART_STORAGE_KEY = 'rental_cart';
@@ -13,7 +13,7 @@ export class CartService {
   private cartItemsSubject = new BehaviorSubject<CartItem[]>(this.loadFromStorage());
   cartItems$ = this.cartItemsSubject.asObservable();
 
-  constructor(private toastr: AppToastrService) {}
+  constructor(private toastr: ToastrService) {}
 
   private loadFromStorage(): CartItem[] {
     try {
@@ -43,6 +43,11 @@ export class CartService {
 
   isInCart(clotheId: number): boolean {
     return this.cartItemsSubject.value.some(item => item.clothe.id === clotheId);
+  }
+
+  getQuantityInCart(clotheId: number): number {
+    const existing = this.cartItemsSubject.value.find(item => item.clothe.id === clotheId);
+    return existing ? existing.quantity : 0;
   }
 
   addToCart(clothe: ClotheDTO, quantity: number): void {

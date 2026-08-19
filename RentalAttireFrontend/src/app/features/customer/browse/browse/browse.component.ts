@@ -7,6 +7,7 @@ import { Category } from '../../../../data/models/DTOs/Category/category';
 import { ClotheService } from '../../../admin/clothes/clothe-service/clothe.service';
 import { CategoryService } from '../../../admin/categories/category-service/category.service';
 import { CartService } from '../cart.service';
+import { ViewClotheModalComponent } from '../view-clothe-modal/view-clothe-modal.component';
 
 @Component({
   selector: 'app-browse',
@@ -14,6 +15,7 @@ import { CartService } from '../cart.service';
   imports: [
     CommonModule,
     FormsModule,
+    ViewClotheModalComponent
   ],
   templateUrl: './browse.component.html',
   styleUrl: './browse.component.scss',
@@ -172,6 +174,11 @@ export class BrowseComponent implements OnInit {
     this.cartService.addToCart(c, 1);
     this.toastr.success(`${c.clotheName} added to cart.`);
   }
+
+  onAddToCartFromModal(payload: { clothe: ClotheDTO; quantity: number }): void {
+  this.cartService.addToCart(payload.clothe, payload.quantity);
+  this.closeViewModal();
+}
 
   isInCart(clotheId: number): boolean {
     return this.cartService.isInCart(clotheId);

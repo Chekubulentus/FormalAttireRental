@@ -255,14 +255,12 @@
   </div><!-- end .browse-body -->
 
   <!-- View Modal (uncomment when ready) -->
-  <!--
   <div class="modal-overlay" *ngIf="clotheToView">
     <app-view-clothe-modal
       [clothe]="clotheToView"
       (closed)="closeViewModal()"
-      (addToCart)="onAddToCart($event)"
+      (addToCart)="onAddToCartFromModal($event)"
     ></app-view-clothe-modal>
   </div>
-  -->
 
 </div>
