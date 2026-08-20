@@ -14,25 +14,39 @@
           (error)="onImgError($event)"
         />
         <div *ngIf="!clothe.profileImagePath" class="no-image">No Image Available</div>
+
+        <span class="condition-badge">{{ clothe.condition }}</span>
       </div>
 
       <!-- ── Right: Details ──────────────────────────────────── -->
       <div class="details-panel">
-        <p class="clothe-category">{{ clothe.categoryName }}</p>
-        <h2 class="clothe-name">{{ clothe.clotheName }}</h2>
 
-        <p class="clothe-price">₱{{ clothe.rentalPrice }} <span>/ rental</span></p>
+        <p class="breadcrumb">
+          {{ clothe.categoryName }} <span class="crumb-sep">/</span> {{ clothe.clotheGender }}
+        </p>
+
+        <h2 class="clothe-name">{{ clothe.clotheName }}</h2>
+        <p class="clothe-code">SKU: {{ clothe.clotheCode }}</p>
+
+        <div class="pricing-block">
+          <span class="clothe-price">₱{{ clothe.rentalPrice }}</span>
+          <span class="price-unit">/ rental</span>
+        </div>
         <p class="deposit-note">+ ₱{{ clothe.depositAmount }} refundable deposit</p>
 
+        <!-- Color / Size — static info, single value each (no swatches/pills to select) -->
+        <div class="info-row">
+          <div class="info-item">
+            <span class="info-label">Color</span>
+            <span class="info-value">{{ clothe.color }}</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Size</span>
+            <span class="info-value info-value--tag">{{ clothe.size }}</span>
+          </div>
+        </div>
+
         <div class="detail-grid">
-          <div class="detail-item">
-            <span class="detail-label">Size</span>
-            <span class="detail-value">{{ clothe.size }}</span>
-          </div>
-          <div class="detail-item">
-            <span class="detail-label">Color</span>
-            <span class="detail-value">{{ clothe.color }}</span>
-          </div>
           <div class="detail-item">
             <span class="detail-label">Brand</span>
             <span class="detail-value">{{ clothe.brand || '—' }}</span>
@@ -43,21 +57,26 @@
           </div>
         </div>
 
-        <div class="stock-note" *ngIf="!isOutOfStock">
-          {{ remainingStock }} available<span *ngIf="alreadyInCart > 0"> ({{ alreadyInCart }} already in your cart)</span>
-        </div>
-        <div class="stock-note stock-note--out" *ngIf="isOutOfStock">
-          Out of stock<span *ngIf="alreadyInCart > 0"> — you already have the max in your cart</span>
-        </div>
+        <div class="quantity-section" *ngIf="!isOutOfStock">
+          <span class="quantity-label">Qty</span>
 
-        <!-- Quantity Stepper -->
-        <div class="quantity-row" *ngIf="!isOutOfStock">
-          <span class="quantity-label">Quantity</span>
           <div class="stepper">
             <button (click)="decreaseQuantity()" [disabled]="quantity <= 1">−</button>
             <span class="stepper-value">{{ quantity }}</span>
             <button (click)="increaseQuantity()" [disabled]="quantity >= remainingStock">+</button>
           </div>
+
+          <span class="urgency-badge" *ngIf="isLowStock">
+            Only {{ remainingStock }} left!
+          </span>
+        </div>
+
+        <div class="stock-note stock-note--out" *ngIf="isOutOfStock">
+          Out of stock<span *ngIf="alreadyInCart > 0"> — you already have the max in your cart</span>
+        </div>
+
+        <div class="cart-note" *ngIf="!isOutOfStock && alreadyInCart > 0">
+          {{ alreadyInCart }} already in your cart
         </div>
 
         <button
@@ -65,8 +84,33 @@
           [disabled]="isOutOfStock"
           (click)="onAddToCart()"
         >
-          {{ isOutOfStock ? 'Out of Stock' : 'Add to Cart' }}
+          {{ isOutOfStock ? 'OUT OF STOCK' : 'ADD TO CART' }}
         </button>
+
+        <!-- Rental info box — same visual weight as a shipping-info card -->
+        <div class="rental-info-box">
+          <div class="rental-info-row">
+            <svg class="rental-info-icon" viewBox="0 0 20 20" fill="none">
+              <rect x="3" y="4" width="14" height="13" rx="1.5" stroke="currentColor" stroke-width="1.3"/>
+              <path d="M6 4V2M14 4V2M3 8h14" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+            </svg>
+            <div class="rental-info-text">
+              <span class="rental-info-title">Suggested Duration</span>
+              <span class="rental-info-sub">{{ clothe.rentalDurationDays }} days — pickup &amp; return dates are flexible</span>
+            </div>
+          </div>
+          <div class="rental-info-row">
+            <svg class="rental-info-icon" viewBox="0 0 20 20" fill="none">
+              <path d="M10 2l6.5 3v5c0 4.2-2.8 7.6-6.5 8.5-3.7-.9-6.5-4.3-6.5-8.5V5L10 2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>
+              <path d="M7.5 10l1.8 1.8L12.5 8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <div class="rental-info-text">
+              <span class="rental-info-title">Refundable Deposit</span>
+              <span class="rental-info-sub">Returned in full if the item comes back undamaged</span>
+            </div>
+          </div>
+        </div>
+
       </div>
 
     </div>

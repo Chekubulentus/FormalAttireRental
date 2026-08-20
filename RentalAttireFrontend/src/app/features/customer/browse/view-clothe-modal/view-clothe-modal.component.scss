@@ -12,6 +12,7 @@ $text-muted:  #9e9590;
 $text-soft:   #6b6560;
 $red:         #c0392b;
 $green:       #27ae60;
+$amber:       #b8552e;
 
 // ============================================================
 // Overlay & Card
@@ -31,7 +32,7 @@ $green:       #27ae60;
 .modal-card {
   position: relative;
   width: 100%;
-  max-width: 760px;
+  max-width: 860px;
   max-height: 90vh;
   overflow-y: auto;
   background: $surface;
@@ -57,7 +58,7 @@ $green:       #27ae60;
   line-height: 1;
   color: $text-soft;
   cursor: pointer;
-  z-index: 1;
+  z-index: 2;
 
   &:hover {
     background: $gold-dim;
@@ -70,22 +71,25 @@ $green:       #27ae60;
 // ============================================================
 .modal-body {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1.05fr 1fr;
 
   @media (max-width: 620px) {
     grid-template-columns: 1fr;
   }
 }
 
-// ── Image Panel ──────────────────────────────────────────
+// ============================================================
+// Left: Image Panel
+// ============================================================
 .image-panel {
   position: relative;
   background: $bg;
-  min-height: 320px;
+  min-height: 420px;
   border-radius: 16px 0 0 16px;
   overflow: hidden;
 
   @media (max-width: 620px) {
+    min-height: 320px;
     border-radius: 16px 16px 0 0;
   }
 
@@ -105,41 +109,78 @@ $green:       #27ae60;
     font-family: 'DM Sans', sans-serif;
     font-size: 13px;
   }
+
+  .condition-badge {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    padding: 5px 12px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(4px);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: $text;
+  }
 }
 
-// ── Details Panel ────────────────────────────────────────
+// ============================================================
+// Right: Details Panel
+// ============================================================
 .details-panel {
   padding: 32px 28px;
   display: flex;
   flex-direction: column;
 
-  .clothe-category {
+  // Breadcrumb trail
+  .breadcrumb {
     font-family: 'DM Sans', sans-serif;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 500;
-    color: $gold;
+    color: $text-muted;
     text-transform: uppercase;
     letter-spacing: 0.06em;
-    margin: 0 0 6px;
+    margin: 0 0 10px;
+
+    .crumb-sep {
+      margin: 0 4px;
+      color: $border;
+    }
   }
 
   .clothe-name {
     font-family: 'DM Serif Display', serif;
     font-size: 26px;
     color: $text;
-    margin: 0 0 14px;
+    margin: 0 0 4px;
   }
 
-  .clothe-price {
+  .clothe-code {
     font-family: 'DM Sans', sans-serif;
-    font-size: 20px;
-    font-weight: 500;
-    color: $text;
-    margin: 0 0 2px;
+    font-size: 12px;
+    color: $text-muted;
+    margin: 0 0 18px;
+  }
 
-    span {
+  .pricing-block {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 2px;
+
+    .clothe-price {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 28px;
+      font-weight: 500;
+      color: $gold;
+    }
+
+    .price-unit {
+      font-family: 'DM Sans', sans-serif;
       font-size: 13px;
-      font-weight: 400;
       color: $text-muted;
     }
   }
@@ -151,14 +192,55 @@ $green:       #27ae60;
     margin: 0 0 20px;
   }
 
+  // Color / Size static info row
+  .info-row {
+    display: flex;
+    gap: 28px;
+    padding-bottom: 16px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid $border;
+
+    .info-item {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+
+      .info-label {
+        font-family: 'DM Sans', sans-serif;
+        font-size: 11px;
+        color: $text-muted;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .info-value {
+        font-family: 'DM Sans', sans-serif;
+        font-size: 14px;
+        font-weight: 500;
+        color: $text;
+
+        &--tag {
+          display: inline-flex;
+          align-items: center;
+          padding: 4px 12px;
+          border: 1px solid $gold-border;
+          border-radius: 6px;
+          background: $gold-dim;
+          color: $gold;
+          font-size: 13px;
+          width: fit-content;
+        }
+      }
+    }
+  }
+
   .detail-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 14px;
-    padding: 16px 0;
-    border-top: 1px solid $border;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
     border-bottom: 1px solid $border;
-    margin-bottom: 18px;
 
     .detail-item {
       display: flex;
@@ -181,22 +263,11 @@ $green:       #27ae60;
     }
   }
 
-  .stock-note {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px;
-    color: $green;
-    margin: 0 0 16px;
-
-    &.stock-note--out {
-      color: $red;
-    }
-  }
-
-  .quantity-row {
+  .quantity-section {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    margin-bottom: 20px;
+    gap: 14px;
+    margin-bottom: 12px;
 
     .quantity-label {
       font-family: 'DM Sans', sans-serif;
@@ -236,28 +307,101 @@ $green:       #27ae60;
         text-align: center;
       }
     }
+
+    .urgency-badge {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      color: $amber;
+      background: rgba(184, 85, 46, 0.08);
+      padding: 4px 10px;
+      border-radius: 6px;
+      white-space: nowrap;
+    }
   }
 
+  .stock-note {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: $red;
+    margin: 0 0 16px;
+  }
+
+  .cart-note {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    color: $text-muted;
+    margin: 0 0 16px;
+  }
+
+  // Bold, high-contrast CTA — the one deliberate departure from the gold
+  // accent, matching the visual weight of the reference layout's button.
   .add-to-cart-btn {
-    margin-top: auto;
-    padding: 13px;
+    padding: 14px;
     border: none;
     border-radius: 8px;
-    background: $gold;
+    background: $text;
     color: $surface;
     font-family: 'DM Sans', sans-serif;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
     cursor: pointer;
     transition: background 0.2s ease;
 
     &:hover:not(:disabled) {
-      background: darken($gold, 8%);
+      background: lighten($text, 12%);
     }
 
     &:disabled {
       background: $text-muted;
       cursor: not-allowed;
+    }
+  }
+
+  // Rental info box — same structural role as a shipping-info card
+  .rental-info-box {
+    margin-top: 20px;
+    padding: 16px 18px;
+    background: $bg;
+    border: 1px solid $border;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+
+    .rental-info-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .rental-info-icon {
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      margin-top: 1px;
+      color: $gold;
+    }
+
+    .rental-info-text {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .rental-info-title {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      color: $text;
+    }
+
+    .rental-info-sub {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      color: $text-soft;
     }
   }
 }

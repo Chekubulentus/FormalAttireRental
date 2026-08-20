@@ -14,7 +14,7 @@
                 stroke="currentColor" stroke-width="1.2" fill="none" stroke-linejoin="round"/>
           <circle cx="20" cy="9" r="1.5" fill="currentColor"/>
           <line x1="20" y1="7.5" x2="20" y2="5" stroke="currentColor" stroke-width="1.2"/>
-          <path d="M18 5 Q20 3.5 22 5" stroke="currentColor" stroke-width="1.2" fill="none"/>
+          <path d="M18 5 Q20 3.5 22 5" stroke="currentColor" fill="none"/>
         </svg>
       </div>
       <span class="brand-name">ÉLÉGANCE</span>
@@ -32,8 +32,19 @@
       </ng-container>
     </nav>
 
-    <!-- Right — user menu -->
+    <!-- Right — cart + user menu -->
     <div class="navbar__right">
+
+      <!-- Cart trigger -->
+      <button class="cart-trigger" (click)="toggleCart()" aria-label="Open cart">
+        <svg viewBox="0 0 20 20" fill="none">
+          <path d="M4 6h13l-1.4 8.4a1.5 1.5 0 0 1-1.5 1.25H6.9a1.5 1.5 0 0 1-1.5-1.25L4 6z"
+                stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+          <path d="M7 6V4.5a3 3 0 0 1 6 0V6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+        </svg>
+        <span class="cart-badge" *ngIf="cartCount > 0">{{ cartCount }}</span>
+      </button>
+
       <div class="user-menu" (click)="toggleMenu()" [class.user-menu--open]="menuOpen">
         <div class="user-avatar">{{ customerInitials }}</div>
         <div class="user-info">
@@ -135,6 +146,9 @@
   </footer>
 
 </div>
+
+<!-- Cart drawer -->
+<app-cart [isOpen]="cartOpen" (closed)="cartOpen = false"></app-cart>
 
 <!-- Click outside to close dropdown -->
 <div class="backdrop" *ngIf="menuOpen" (click)="menuOpen = false"></div>

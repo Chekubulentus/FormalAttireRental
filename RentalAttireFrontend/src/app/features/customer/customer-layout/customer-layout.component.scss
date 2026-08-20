@@ -114,8 +114,58 @@ $navbar-height: 60px;
 // Right side
 .navbar__right {
   position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
   flex-shrink: 0;
   margin-left: auto;
+}
+
+// Cart trigger
+.cart-trigger {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid $gold-border;
+  background: $gold-dim;
+  border-radius: 50%;
+  cursor: pointer;
+  color: $gold;
+  transition: background 0.15s, border-color 0.15s, color 0.15s, transform 0.15s;
+
+  svg {
+    width: 19px;
+    height: 19px;
+  }
+
+  &:hover {
+    background: $gold;
+    border-color: $gold;
+    color: #fff;
+    transform: translateY(-1px);
+  }
+}
+
+.cart-badge {
+  position: absolute;
+  top: -3px;
+  right: -3px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: $red;
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  border: 2px solid $surface;
 }
 
 // User menu trigger
@@ -415,10 +465,14 @@ $navbar-height: 60px;
 
 // ============================================================
 // Responsive
+// FIX: only hide the user-menu (avatar/dropdown) on mobile —
+//      profile/my-rentals/logout are still reachable via the
+//      hamburger drawer. The cart trigger stays visible so
+//      customers can reach their cart on mobile too.
 // ============================================================
 @media (max-width: 768px) {
   .navbar__links { display: none; }
-  .navbar__right  { display: none; }
+  .user-menu      { display: none; }
   .hamburger      { display: flex; }
 
   .customer-main { padding: 1.25rem 1rem; }

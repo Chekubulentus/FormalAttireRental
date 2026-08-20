@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
-import { ClotheDTO } from '../../../../data/models/DTOs/Clothes/clothes';
 import { CartService } from '../cart.service';
+import { ClotheDTO } from '../../../../data/models/DTOs/Clothes/clothes';
 
 @Component({
   selector: 'app-view-clothe-modal',
@@ -21,7 +21,6 @@ export class ViewClotheModalComponent implements OnChanges {
   constructor(private cartService: CartService) {}
 
   ngOnChanges(changes: SimpleChanges): void {
-    // Reset quantity back to 1 (or lower, if remaining stock is less) every time a new clothe is viewed
     if (changes['clothe']) {
       this.quantity = this.remainingStock > 0 ? 1 : 0;
     }
@@ -40,6 +39,10 @@ export class ViewClotheModalComponent implements OnChanges {
 
   get isOutOfStock(): boolean {
     return this.remainingStock <= 0;
+  }
+
+  get isLowStock(): boolean {
+    return !this.isOutOfStock && this.clothe.availableQuantity <= this.clothe.stockQuantity * 0.2;
   }
 
   // ============================================================

@@ -30,6 +30,13 @@ export const CUSTOMER_ROUTES: Routes = [
                     return import('./browse/view-clothe-modal/view-clothe-modal.component')
                     .then(m => m.ViewClotheModalComponent)
                 }
+            },
+            {
+                path: 'cart',
+                loadComponent() {
+                    return import('./browse/cart/cart.component')
+                    .then(m => m.CartComponent)
+                },
             }
         ]
     }
