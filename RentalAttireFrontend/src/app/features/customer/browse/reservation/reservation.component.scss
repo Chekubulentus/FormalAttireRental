@@ -1,0 +1,296 @@
+// ============================================================
+// Design Tokens
+// ============================================================
+$surface:     #ffffff;
+$bg:          #f9f7f5;
+$border:      #e4ddd6;
+$gold:        #a07840;
+$gold-dim:    rgba(160, 120, 64, 0.08);
+$gold-border: rgba(160, 120, 64, 0.22);
+$text:        #1a1917;
+$text-muted:  #9e9590;
+$text-soft:   #6b6560;
+$red:         #c0392b;
+
+.reservation-page {
+  padding: 32px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+// ============================================================
+// Header
+// ============================================================
+.reservation-header {
+  margin-bottom: 32px;
+
+  .eyebrow {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.68rem;
+    font-weight: 500;
+    color: $gold;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    margin: 0 0 6px;
+  }
+
+  h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2rem;
+    font-weight: 400;
+    color: $text;
+    margin: 0 0 6px;
+  }
+
+  .page-subtitle {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    color: $text-soft;
+    margin: 0;
+  }
+}
+
+// ============================================================
+// Body Layout
+// ============================================================
+.reservation-body {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 32px;
+  align-items: start;
+
+  @media (max-width: 800px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// ============================================================
+// Left: Form
+// ============================================================
+.reservation-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.form-section {
+  background: $surface;
+  border: 1px solid $border;
+  border-radius: 14px;
+  padding: 24px 26px;
+
+  .section-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.15rem;
+    font-weight: 400;
+    color: $text;
+    margin: 0 0 6px;
+  }
+
+  .section-hint {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.8rem;
+    color: $text-muted;
+    margin: 0 0 18px;
+    line-height: 1.5;
+  }
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: $text-soft;
+  }
+
+  input {
+    padding: 10px 12px;
+    border: 1px solid $border;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    color: $text;
+    outline: none;
+    transition: border-color 0.15s;
+
+    &:focus {
+      border-color: $gold-border;
+    }
+
+    &.invalid {
+      border-color: $red;
+    }
+  }
+
+  .field-error {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.72rem;
+    color: $red;
+  }
+}
+
+// ============================================================
+// Right: Order Summary
+// ============================================================
+.order-summary {
+  position: sticky;
+  top: 84px;
+  background: $surface;
+  border: 1px solid $border;
+  border-radius: 14px;
+  padding: 24px;
+
+  .summary-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.1rem;
+    font-weight: 400;
+    color: $text;
+    margin: 0 0 16px;
+  }
+}
+
+.summary-items {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-height: 280px;
+  overflow-y: auto;
+  margin-bottom: 14px;
+}
+
+.summary-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  &__image {
+    width: 46px;
+    height: 60px;
+    flex-shrink: 0;
+    background: $bg;
+    border-radius: 6px;
+    overflow: hidden;
+
+    img { width: 100%; height: 100%; object-fit: cover; }
+
+    .no-image {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      color: $text-muted;
+      font-size: 8px;
+      text-align: center;
+      font-family: 'DM Sans', sans-serif;
+    }
+  }
+
+  &__body {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__name {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: $text;
+    margin: 0 0 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__meta {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.72rem;
+    color: $text-muted;
+    margin: 0;
+  }
+
+  &__price {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: $gold;
+    white-space: nowrap;
+  }
+}
+
+.edit-cart-link {
+  display: inline-block;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.75rem;
+  color: $gold;
+  text-decoration: none;
+  margin-bottom: 18px;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.summary-totals {
+  border-top: 1px solid $border;
+  padding-top: 14px;
+  margin-bottom: 18px;
+}
+
+.totals-row {
+  display: flex;
+  justify-content: space-between;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.8rem;
+  color: $text-soft;
+  margin-bottom: 8px;
+
+  &--grand {
+    font-size: 1rem;
+    font-weight: 500;
+    color: $text;
+    padding-top: 10px;
+    margin-top: 2px;
+    border-top: 1px solid $border;
+  }
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 8px;
+  background: $text;
+  color: $surface;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.2s ease;
+
+  &:hover:not(:disabled) {
+    background: lighten($text, 12%);
+  }
+
+  &:disabled {
+    background: $text-muted;
+    cursor: not-allowed;
+  }
+}

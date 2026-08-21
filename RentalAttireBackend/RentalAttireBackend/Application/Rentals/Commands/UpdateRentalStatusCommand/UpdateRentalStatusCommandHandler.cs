@@ -54,7 +54,7 @@ namespace RentalAttireBackend.Application.Rentals.Commands.UpdateRentalStatusCom
 
                 if (currentUser is null)
                     return Result<bool>.Failure("Current user could not be found.");
-
+     
                 var rental = await _rentalRepo.GetRentalByIdAsync(request.RentalId, cancellationToken);
 
                 if (rental is null)

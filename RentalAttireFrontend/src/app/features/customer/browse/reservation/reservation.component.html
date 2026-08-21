@@ -1,0 +1,128 @@
+<div class="reservation-page">
+
+  <div class="reservation-header">
+    <p class="eyebrow">Checkout</p>
+    <h1>Confirm Your Reservation</h1>
+    <p class="page-subtitle">Review your items, pick your dates, and confirm payment via GCash.</p>
+  </div>
+
+  <div class="reservation-body">
+
+    <!-- ── Left: Form ─────────────────────────────────────── -->
+    <div class="reservation-form">
+
+      <section class="form-section">
+        <h2 class="section-title">Rental Dates</h2>
+        <p class="section-hint">Pick up and return dates are flexible — choose what works for you.</p>
+
+        <div class="form-grid">
+          <div class="form-field">
+            <label>Pickup Date</label>
+            <input
+              type="date"
+              [(ngModel)]="form.pickupDate"
+              [min]="minPickupDate"
+              [class.invalid]="hasError('pickupDate')"
+            />
+            <span class="field-error" *ngIf="hasError('pickupDate')">{{ errorMsg('pickupDate') }}</span>
+          </div>
+
+          <div class="form-field">
+            <label>Return Date</label>
+            <input
+              type="date"
+              [(ngModel)]="form.returnDate"
+              [min]="form.pickupDate || minPickupDate"
+              [class.invalid]="hasError('returnDate')"
+            />
+            <span class="field-error" *ngIf="hasError('returnDate')">{{ errorMsg('returnDate') }}</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="form-section">
+        <h2 class="section-title">Payment</h2>
+        <p class="section-hint">
+          Send the total amount to our GCash account, then enter your reference details below.
+          No screenshot needed — just the reference number and the name on the transaction.
+        </p>
+
+        <div class="form-grid">
+          <div class="form-field">
+            <label>GCash Reference Number</label>
+            <input
+              type="text"
+              [(ngModel)]="form.gcashRefNum"
+              placeholder="e.g. 1234567890123"
+              [class.invalid]="hasError('gcashRefNum')"
+            />
+            <span class="field-error" *ngIf="hasError('gcashRefNum')">{{ errorMsg('gcashRefNum') }}</span>
+          </div>
+
+          <div class="form-field">
+            <label>Name on GCash Account</label>
+            <input
+              type="text"
+              [(ngModel)]="form.gcashRefName"
+              placeholder="e.g. Juan Dela Cruz"
+              [class.invalid]="hasError('gcashRefName')"
+            />
+            <span class="field-error" *ngIf="hasError('gcashRefName')">{{ errorMsg('gcashRefName') }}</span>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- ── Right: Order Summary ─────────────────────────────── -->
+    <aside class="order-summary">
+      <h2 class="summary-title">Order Summary</h2>
+
+      <div class="summary-items">
+        <div class="summary-item" *ngFor="let item of items">
+          <div class="summary-item__image">
+            <img
+              *ngIf="item.clothe.profileImagePath"
+              [src]="item.clothe.profileImagePath"
+              [alt]="item.clothe.clotheName"
+              (error)="onImgError($event)"
+            />
+            <div class="no-image" *ngIf="!item.clothe.profileImagePath">No Image</div>
+          </div>
+          <div class="summary-item__body">
+            <p class="summary-item__name">{{ item.clothe.clotheName }}</p>
+            <p class="summary-item__meta">Qty {{ item.quantity }} · {{ item.clothe.size }}</p>
+          </div>
+          <span class="summary-item__price">₱{{ item.clothe.rentalPrice * item.quantity }}</span>
+        </div>
+      </div>
+
+      <a class="edit-cart-link" routerLink="/customer/browse">Edit Cart</a>
+
+      <div class="summary-totals">
+        <div class="totals-row">
+          <span>Subtotal</span>
+          <span>₱{{ subtotal }}</span>
+        </div>
+        <div class="totals-row">
+          <span>Refundable Deposit</span>
+          <span>₱{{ depositTotal }}</span>
+        </div>
+        <div class="totals-row totals-row--grand">
+          <span>Total to Pay</span>
+          <span>₱{{ grandTotal }}</span>
+        </div>
+      </div>
+
+      <button
+        class="submit-btn"
+        [disabled]="isSubmitting"
+        (click)="onSubmit()"
+      >
+        {{ isSubmitting ? 'Submitting...' : 'Confirm Reservation' }}
+      </button>
+    </aside>
+
+  </div>
+
+</div>

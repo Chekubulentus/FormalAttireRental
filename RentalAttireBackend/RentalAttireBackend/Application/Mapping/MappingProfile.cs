@@ -340,10 +340,10 @@ namespace RentalAttireBackend.Application.Mapping
                 .ForMember(dest => dest.TotalAmount,
                 opt => opt.MapFrom(src => src.TotalAmount))
                 .ForMember(dest => dest.DepositAmount,
-                opt => opt.MapFrom(dest => dest.Status))
+                opt => opt.MapFrom(dest => dest.DepositAmount))
                 .ForMember(dest => dest.PaymentMethod,
                 opt => opt.MapFrom(src => src.PaymentMethod.ToString()))
-                .ForMember(dest => dest.RentalItems,
+                .ForPath(dest => dest.RentalItems,
                 opt => opt.MapFrom(src => src.RentalItems));
             #endregion
 

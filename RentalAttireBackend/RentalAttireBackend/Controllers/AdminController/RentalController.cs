@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -54,6 +55,7 @@ namespace RentalAttireBackend.Controllers.AdminController
             return result.IsSuccess ? Ok(result) : BadRequest(result.ErrorMessage);
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> RentalReservationAsync(RentalTransactionCommand command)
         {

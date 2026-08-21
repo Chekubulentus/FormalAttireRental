@@ -48,11 +48,11 @@ namespace RentalAttireBackend.Application.Rentals.Queries.FilterRentals
 
                 var totalCount = rentals.TotalCount;
 
-                var rentalsDto = _mapper.Map<List<RentalDTO>>(rentals);
+                var rentalsDto = _mapper.Map<PagedResult<RentalDTO>>(rentals);
 
                 return Result<RentalPageResponse>.Success(new RentalPageResponse
                 { 
-                    Items = rentalsDto,
+                    Items = rentalsDto.Items,
                     CurrentPage = request.CurrentPage,
                     ItemsPerPage = request.ItemsPerPage,
                     TotalCount = totalCount,

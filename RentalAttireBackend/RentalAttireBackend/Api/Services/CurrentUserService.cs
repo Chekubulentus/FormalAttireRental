@@ -15,7 +15,7 @@ namespace RentalAttireBackend.Api.Services
         {
             get
             {
-                var userIdClaim = _httpContextAccessor.HttpContext?.User.FindFirst("userId")?.Value;
+                var userIdClaim = _httpContextAccessor.HttpContext?.User?.FindFirst("userId")?.Value;
 
                 return int.TryParse(userIdClaim, out var userId) ? userId : 0;
             }
