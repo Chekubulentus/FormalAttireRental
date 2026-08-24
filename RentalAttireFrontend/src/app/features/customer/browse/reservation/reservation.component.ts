@@ -7,11 +7,17 @@ import { CartService } from '../cart.service';
 import { CartItem } from '../../../../data/models/DTOs/Clothes/cart-item';
 import { RentalTransactionRequest } from '../../../../data/models/DTOs/Rentals/rental-transaction-request';
 import { ReservationService } from '../reservation-service/reservation.service';
+import { MessageModalComponent } from '../../../../shared/components/message-modal/message-modal.component';
 
 @Component({
   selector: 'app-reservation',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [
+    CommonModule, 
+    FormsModule, 
+    RouterModule,
+    MessageModalComponent
+  ],
   templateUrl: './reservation.component.html',
   styleUrl: './reservation.component.scss',
 })
@@ -20,6 +26,9 @@ export class ReservationComponent implements OnInit {
   items: CartItem[] = [];
   isSubmitting = false;
   touched = false;
+  showMessageModal : boolean = false;
+  messageModalTitle : string = '';
+  messageModalMessage: string = '';
 
   form = {
     pickupDate: '',
@@ -127,14 +136,22 @@ export class ReservationComponent implements OnInit {
       }
 
       this.cartService.clearCart();
-      this.toastr.success('Reservation submitted! We\'ll confirm it shortly.');
-      this.router.navigateByUrl('/customer/customer-dashboard');
+
+      this.showMessageModal = true;
+      this.messageModalMessage = res.successMessage ?? "";
+      this.messageModalTitle = 'Rental Reservation Submitted';
+
 
     } catch {
       this.toastr.error('Something went wrong. Please try again.');
     } finally {
       this.isSubmitting = false;
     }
+  }
+
+  messageModalConfirmation() {
+    this.showMessageModal = false;
+    this.router.navigateByUrl('/customer/customer-dashboard');
   }
 
   // ============================================================

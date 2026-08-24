@@ -299,12 +299,24 @@ $amber:       #b8552e;
         }
       }
 
-      .stepper-value {
+      .stepper-input {
+        width: 32px;
+        border: none;
+        outline: none;
+        background: transparent;
         font-family: 'DM Sans', sans-serif;
         font-size: 14px;
         color: $text;
-        min-width: 16px;
         text-align: center;
+        -moz-appearance: textfield;
+
+        // Hide native number-input spin arrows — the stepper's own
+        // −/+ buttons already do that job.
+        &::-webkit-outer-spin-button,
+        &::-webkit-inner-spin-button {
+          -webkit-appearance: none;
+          margin: 0;
+        }
       }
     }
 

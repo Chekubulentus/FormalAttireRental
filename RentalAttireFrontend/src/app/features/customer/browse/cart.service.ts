@@ -53,6 +53,20 @@ export class CartService {
   addToCart(clothe: ClotheDTO, quantity: number): void {
     const currentItems = this.cartItemsSubject.value;
     const existingIndex = currentItems.findIndex(item => item.clothe.id === clothe.id);
+    const existingQuantity = existingIndex > -1 ? currentItems[existingIndex].quantity : 0;
+
+    // Stock guard: reject entirely if this request would push the item's
+    // cart quantity past what's actually available.
+    if (existingQuantity + quantity > clothe.availableQuantity) {
+      const remaining = clothe.availableQuantity - existingQuantity;
+
+      if (remaining <= 0) {
+        this.toastr.warning(`${clothe.clotheName} is already at the maximum available quantity in your cart.`);
+      } else {
+        this.toastr.warning(`Only ${remaining} more ${clothe.clotheName} available.`);
+      }
+      return;
+    }
 
     let updatedItems: CartItem[];
 
@@ -76,7 +90,15 @@ export class CartService {
       return;
     }
 
-    const updatedItems = this.cartItemsSubject.value.map(item =>
+    const currentItems = this.cartItemsSubject.value;
+    const existing = currentItems.find(item => item.clothe.id === clotheId);
+
+    if (existing && quantity > existing.clothe.availableQuantity) {
+      this.toastr.warning(`Only ${existing.clothe.availableQuantity} ${existing.clothe.clotheName} available.`);
+      return;
+    }
+
+    const updatedItems = currentItems.map(item =>
       item.clothe.id === clotheId ? { ...item, quantity } : item
     );
 
