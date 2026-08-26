@@ -24,7 +24,6 @@ export class ReservationService {
 
       return result;
     }catch(err: any) {
-      console.log(`RESERVATION ERROR LOG: ${JSON.stringify(err)}`);
       return Result.failure(err.error.detail);
     }
   }

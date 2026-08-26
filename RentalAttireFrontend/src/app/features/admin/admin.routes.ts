@@ -57,6 +57,13 @@ export const ADMIN_ROUTES: Routes = [
           return import('./disposables/disposables/disposables.component')
           .then(m => m.DisposablesComponent)
         }
+      },
+      {
+        path: 'rentals',
+        loadComponent: () => {
+          return import('./rentals/rentals/rentals.component')
+          .then(m => m.RentalsComponent);
+        }
       }
     ],
   },

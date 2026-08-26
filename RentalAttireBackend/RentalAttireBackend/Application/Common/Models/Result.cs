@@ -19,6 +19,7 @@
         NotFound,
         Conflict,
         Unauthorized,
-        Forbidden
+        Forbidden,
+        InternalServerError
     }
 }

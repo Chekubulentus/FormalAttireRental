@@ -30,7 +30,7 @@ namespace RentalAttireBackend.Application.Common.Extensions
                 ErrorType.Conflict => "Conflict.",
                 ErrorType.Unauthorized => "Unauthorized.",
                 ErrorType.BadRequest => "Request Failed",
-                ErrorType.NotFound => "User does not exist.",
+                ErrorType.NotFound => "Resource not found.",
                 _ => "An unexpected error occured."
             };
 

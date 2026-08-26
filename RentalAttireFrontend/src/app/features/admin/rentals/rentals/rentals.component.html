@@ -1,0 +1,161 @@
+<div class="rentals-page">
+
+  <div class="page-header">
+    <div>
+      <span class="eyebrow">Admin</span>
+      <h1>Rentals</h1>
+      <p class="page-subtitle">Track and manage every customer reservation.</p>
+    </div>
+  </div>
+
+  <div class="stat-bar" *ngIf="!isLoading">
+    <div class="stat">
+      <span class="stat-value">₱{{ totalRevenue | number: '1.2-2' }}</span>
+      <span class="stat-label">Confirmed Revenue</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat">
+      <span class="stat-value">{{ totalCount }}</span>
+      <span class="stat-label">Total Rentals</span>
+    </div>
+    <div class="stat-divider"></div>
+    <button
+      *ngFor="let status of statusOptions"
+      class="stat stat-clickable"
+      [class.active]="statusFilter === status"
+      (click)="filterByStatus(status)">
+      <span class="stat-value">{{ statusCounts[status] ?? 0 }}</span>
+      <span class="stat-label">{{ status }}</span>
+    </button>
+    <ng-container *ngIf="overdueCount > 0 || dueSoonCount > 0">
+      <div class="stat-divider"></div>
+      <div class="stat alert-stat overdue" *ngIf="overdueCount > 0">
+        <span class="stat-value">{{ overdueCount }}</span>
+        <span class="stat-label">Overdue</span>
+      </div>
+      <div class="stat alert-stat due-soon" *ngIf="dueSoonCount > 0">
+        <span class="stat-value">{{ dueSoonCount }}</span>
+        <span class="stat-label">Due Soon</span>
+      </div>
+    </ng-container>
+  </div>
+
+  <div class="toolbar">
+    <div class="search-wrap">
+      <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="11" cy="11" r="8" />
+        <line x1="21" y1="21" x2="16.65" y2="16.65" />
+      </svg>
+      <input
+        type="text"
+        placeholder="Search rental code or customer..."
+        [(ngModel)]="searchQuery"
+        (ngModelChange)="onSearchChange()"
+        (keyup.enter)="onSearchEnter()" />
+    </div>
+
+    <select [(ngModel)]="statusFilter" (ngModelChange)="onFilterChange()">
+      <option value="">All Statuses</option>
+      <option *ngFor="let status of statusOptions" [value]="status">{{ status }}</option>
+    </select>
+
+    <input type="date" [(ngModel)]="startingDate" (ngModelChange)="onFilterChange()" />
+    <span class="date-separator">to</span>
+    <input type="date" [(ngModel)]="endingDate" (ngModelChange)="onFilterChange()" />
+
+    <button class="btn-clear" *ngIf="hasActiveFilters" (click)="clearFilters()">✕ Clear</button>
+  </div>
+
+  <div class="table-wrapper">
+    <table *ngIf="!isLoading && rentals.length > 0">
+      <thead>
+        <tr>
+          <th>Rental Code</th>
+          <th>Customer</th>
+          <th>Pickup</th>
+          <th>Return</th>
+          <th>Items</th>
+          <th>Total</th>
+          <th>Status</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          *ngFor="let rental of rentals; let i = index"
+          class="row-animate"
+          [style.animation-delay.s]="i * 0.04"
+          [class.row-overdue]="isOverdue(rental)">
+          <td class="mono">{{ rental.rentalCode }}</td>
+          <td>{{ rental.customer.person.fullName}}</td>
+          <td>{{ rental.pickupDate | date: 'MMM d, y' }}</td>
+          <td>
+            {{ rental.returnDate ? (rental.returnDate | date: 'MMM d, y') : '—' }}
+            <span class="mini-flag overdue" *ngIf="isOverdue(rental)">Overdue</span>
+            <span class="mini-flag due-soon" *ngIf="isDueSoon(rental)">Due Soon</span>
+          </td>
+          <td>{{ rental.rentalItems.length }} pc{{ rental.rentalItems.length === 1 ? '' : 's' }}</td>
+          <td class="mono">₱{{ rental.totalAmount | number: '1.2-2' }}</td>
+          <td><span class="status-badge" [ngClass]="statusClass(rental.status)">{{ rental.status }}</span></td>
+          <td class="actions-cell">
+            <button
+              *ngFor="let next of nextStatusOptions(rental)"
+              class="action-btn"
+              [ngClass]="next === 'Declined' ? 'action-decline' : 'action-confirm'"
+              [disabled]="updatingRentalId === rental.id"
+              (click)="promptStatusChange(rental, next)">
+              {{ next }}
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="skeleton-state" *ngIf="isLoading">
+      <div class="skeleton-row" *ngFor="let i of [1,2,3,4,5,6]"></div>
+    </div>
+
+    <div class="empty-state" *ngIf="!isLoading && rentals.length === 0">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+        <polyline points="14 2 14 8 20 8" />
+      </svg>
+      <h3>No rentals found</h3>
+      <p>Try adjusting your search or filters.</p>
+      <button class="btn-clear" *ngIf="hasActiveFilters" (click)="clearFilters()">Clear Filters</button>
+    </div>
+  </div>
+
+  <div class="pagination" *ngIf="!isLoading && totalCount > 0">
+    <span class="range-label">Showing {{ rangeStart }}–{{ rangeEnd }} of {{ totalCount }} rentals</span>
+    <div class="page-controls">
+      <button [disabled]="currentPage === 1" (click)="goToPage(currentPage - 1)">‹</button>
+      <ng-container *ngFor="let page of pageNumbers">
+        <span *ngIf="page === -1" class="ellipsis">…</span>
+        <button *ngIf="page !== -1" class="page-btn" [class.active]="page === currentPage" (click)="goToPage(page)">{{ page }}</button>
+      </ng-container>
+      <button [disabled]="currentPage === totalPages" (click)="goToPage(currentPage + 1)">›</button>
+    </div>
+  </div>
+
+</div>
+
+<app-message-modal
+  [isOpen]="modalOpen"
+  [type]="modalType"
+  [variant]="modalVariant"
+  [title]="modalTitle"
+  [message]="modalMessage"
+  (confirmed)="onModalConfirmed()"
+  (closed)="onModalClosed()">
+</app-message-modal>
+
+<app-message-modal
+  [isOpen]="feedbackOpen"
+  type="info"
+  [variant]="feedbackVariant"
+  [title]="feedbackTitle"
+  [message]="feedbackMessage"
+  (confirmed)="onFeedbackClosed()"
+  (closed)="onFeedbackClosed()">
+</app-message-modal>

@@ -6,7 +6,7 @@ namespace RentalAttireBackend.Application.Rentals.Queries.FilterRentals
 {
     public class FilterRentalsQuery : IRequest<Result<RentalPageResponse>>
     {
-        public string? CategoryType { get; set; } = string.Empty;
+        public string? Status { get; set; } = string.Empty;
         public string? SearchQuery { get; set; } = string.Empty;
         public int CurrentPage { get; set; }
         public int ItemsPerPage { get; set; }

@@ -23,10 +23,25 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
             return await _context.SaveChangesAsync() > 0;
         }
 
-        public async Task<PagedResult<Rental>> FilterRentalItemsAsync(string? categoryType, string? searchQuery, DateTime? startingDate, DateTime? endingDate, int currentPage, int itemsPerPage, CancellationToken ct)
+        public async Task<PagedResult<Rental>> FilterRentalItemsAsync(
+            string? status, 
+            string? searchQuery,
+            DateTime? startingDate, 
+            DateTime? endingDate, 
+            int currentPage, 
+            int itemsPerPage, 
+            CancellationToken ct)
         {
-            var categoryTypeValidator = string.IsNullOrEmpty(categoryType);
+            var statusValidator = string.IsNullOrEmpty(status);
             var searchQueryValidator = string.IsNullOrEmpty(searchQuery);
+
+            var startingDateUtc = startingDate.HasValue
+                ? DateTime.SpecifyKind(startingDate.Value, DateTimeKind.Utc)
+                : (DateTime?)null;
+
+            var endingDateUtc = endingDate.HasValue
+                ? DateTime.SpecifyKind(endingDate.Value, DateTimeKind.Utc)
+                : (DateTime?)null;
 
             var rentals = _context.Rentals
                 .Include(r => r.Customer)
@@ -34,27 +49,31 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
                         .ThenInclude(u => u.Person)
                 .Include(r => r.RentalItems)
                     .ThenInclude(ri => ri.Clothe)
-                        .ThenInclude(cl => cl.Category)
+                        .ThenInclude(c => c.Category)
                 .OrderByDescending(r => r.RentalDate)
                 .Where(r =>
                     (
-                        searchQueryValidator ||
-                        r.Customer.User.Person.FullName.ToLower().Contains(searchQuery.ToLower())
-                    ) &&
+                    searchQueryValidator || 
+                    r.Customer.User.Person.LastName.ToLower().Contains(searchQuery.ToLower()) ||
+                    r.Customer.User.Person.FirstName.ToLower().Contains(searchQuery.ToLower())
+                    ) 
+                    &&
                     (
-                        categoryTypeValidator ||
-                        r.RentalItems.Any(ri => ri.Clothe.Category.CategoryName.ToLower().Contains(categoryType.ToLower()))
-                    ) &&
+                    statusValidator || r.Status.ToLower().Equals(status.ToLower())
+                    )
+                    &&
                     (
-                        !startingDate.HasValue || r.RentalDate >= startingDate
-                    ) &&
+                    !startingDate.HasValue || r.RentalDate >= startingDateUtc
+                    )
+                    &&
                     (
-                        !endingDate.HasValue || r.RentalDate <= endingDate
-                    ) &&
+                    !endingDate.HasValue || r.RentalDate <= endingDateUtc
+                    )
+                    &&
                     r.IsActive
                 );
 
-            var totalCount = await rentals.CountAsync();
+            var totalCount = await rentals.CountAsync(ct);
 
             var paginatedRentals = await rentals
                 .Skip((currentPage - 1) * itemsPerPage)
@@ -66,7 +85,7 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
                 Items = paginatedRentals,
                 TotalCount = totalCount,
                 PageNumber = currentPage,
-                PageSize = itemsPerPage,
+                PageSize = itemsPerPage
             };
         }
 
@@ -77,6 +96,46 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
                     .ThenInclude(ri => ri.Clothe)
                 .OrderByDescending(r => r.Id)
                 .ToListAsync(cancellationToken);
+        }
+
+        public async Task<double> GetAllRentalsTotalRevenue(CancellationToken cancellationToken)
+        {
+            return await _context.Rentals
+                .SumAsync(r => r.TotalAmount);
+        }
+
+        public async Task<RentalAnalytics> GetRentalAnalyticsAsync(CancellationToken cancellationToken)
+        {
+            var dateToday = DateTime.UtcNow.Date;
+            var dueSoonThreshHold = DateTime.UtcNow.Date.AddDays(7);
+
+            var statusCounts = await _context.Rentals
+                .GroupBy(r => r.Status)
+                .Select(g => new { Status = g.Key, Count = g.Count() })
+                .ToListAsync(cancellationToken);
+
+            var overDueSoonCount = await _context.Rentals
+                .Where(r =>
+                    r.IsActive &&
+                    r.Status != "Returned" &&
+                    r.Status != "Declined" &&
+                    r.ReturnDate < dateToday
+                ).CountAsync(cancellationToken);
+
+            var dueSoonCounts = await _context.Rentals
+                .Where(r =>
+                    r.IsActive &&
+                    r.Status != "Returned" &&
+                    r.Status != "Declined" &&
+                    r.ReturnDate <= dueSoonThreshHold
+                ).CountAsync(cancellationToken);
+
+            return new RentalAnalytics
+            {
+                StatusCounts = statusCounts.ToDictionary(x => x.Status, x => x.Count),
+                OverdueCount = overDueSoonCount,
+                DueSoonCount = dueSoonCounts
+            };
         }
 
         public async Task<Rental?> GetRentalByIdAsync(int id, CancellationToken cancellationToken)

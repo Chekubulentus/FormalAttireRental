@@ -344,7 +344,9 @@ namespace RentalAttireBackend.Application.Mapping
                 .ForMember(dest => dest.PaymentMethod,
                 opt => opt.MapFrom(src => src.PaymentMethod.ToString()))
                 .ForPath(dest => dest.RentalItems,
-                opt => opt.MapFrom(src => src.RentalItems));
+                opt => opt.MapFrom(src => src.RentalItems))
+                .ForMember(dest => dest.Status,
+                opt => opt.MapFrom(src => src.Status));
             #endregion
 
             #region RentalItemRequest -> RentalItem 

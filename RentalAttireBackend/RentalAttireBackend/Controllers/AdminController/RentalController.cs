@@ -26,7 +26,7 @@ namespace RentalAttireBackend.Controllers.AdminController
         }
         [HttpGet]
         public async Task<IActionResult> FilterRentalsAsync(
-            string? categoryType,
+            string? status,
             string? searchQuery,
             int currentPage,
             int itemsPerPage,
@@ -36,7 +36,7 @@ namespace RentalAttireBackend.Controllers.AdminController
         {
             var result = await _meaditor.Send(new FilterRentalsQuery
             {
-                CategoryType = categoryType,
+                Status = status,
                 SearchQuery = searchQuery,
                 CurrentPage = currentPage,
                 ItemsPerPage = itemsPerPage,
@@ -44,7 +44,7 @@ namespace RentalAttireBackend.Controllers.AdminController
                 EndingDate = endingDate
             });
 
-            return result.IsSuccess ? Ok(result) : BadRequest(result.ErrorMessage);
+            return result.ToActionResult(this, _httpContextAccessor);
         }
 
         [HttpGet("all-rentals")]

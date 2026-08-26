@@ -75,8 +75,6 @@ export class AuthService {
   getCurrentUserRolePosition() : string | null{
     const token = this.getAccessToken();
 
-    console.log(`IS THERE ANY TOKEN: ${JSON.stringify(token)}`);
-
     if(!token) {
       return null;
     }

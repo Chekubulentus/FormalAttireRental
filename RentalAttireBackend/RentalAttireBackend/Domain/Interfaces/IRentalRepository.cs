@@ -13,7 +13,7 @@ namespace RentalAttireBackend.Domain.Interfaces
 
         #region Queries
         public Task<PagedResult<Rental>> FilterRentalItemsAsync(
-            string? categoryType,
+            string? status,
             string? searchQuery,
             DateTime? startingDate,
             DateTime? endingDate,
@@ -30,6 +30,12 @@ namespace RentalAttireBackend.Domain.Interfaces
             int id,
             CancellationToken cancellationToken
             );
+
+        public Task<double> GetAllRentalsTotalRevenue(
+            CancellationToken cancellationToken
+            );
+
+        public Task<RentalAnalytics> GetRentalAnalyticsAsync(CancellationToken cancellationToken);
         #endregion
     }
 }

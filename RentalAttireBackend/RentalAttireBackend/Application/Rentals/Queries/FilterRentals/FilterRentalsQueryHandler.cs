@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Google.Apis.Upload;
 using MediatR;
 using RentalAttireBackend.Application.Common.Models;
 using RentalAttireBackend.Application.Rentals.DTOs;
@@ -24,44 +23,35 @@ namespace RentalAttireBackend.Application.Rentals.Queries.FilterRentals
         public async Task<Result<RentalPageResponse>> Handle(FilterRentalsQuery request, CancellationToken cancellationToken)
         {
             if (request is null)
-                return Result<RentalPageResponse>.Failure("Invalid request.");
+                return Result<RentalPageResponse>.FailureWithErrorType("Invalid request.", ErrorType.BadRequest);
 
-            if (request.CurrentPage == 0 || request.ItemsPerPage == 0)
-                return Result<RentalPageResponse>.Failure("Current & Items Per Page is invalid.");
-            try
+            var rentals = await _rentalRepo.FilterRentalItemsAsync(
+                request.Status,
+                request.SearchQuery,
+                request.StartingDate,
+                request.EndingDate,
+                request.CurrentPage,
+                request.ItemsPerPage,
+                cancellationToken
+                );
+
+            var totalRevenue = await _rentalRepo.GetAllRentalsTotalRevenue(cancellationToken);
+            var analytics = await _rentalRepo.GetRentalAnalyticsAsync(cancellationToken);
+
+
+            var rentalsDto = _mapper.Map<PagedResult<RentalDTO>>(rentals);
+
+            return Result<RentalPageResponse>.Success(new RentalPageResponse
             {
-                var rentals = await _rentalRepo.FilterRentalItemsAsync(
-                    request.CategoryType,
-                    request.SearchQuery,
-                    request.StartingDate,
-                    request.EndingDate,
-                    request.CurrentPage,
-                    request.ItemsPerPage,
-                    cancellationToken
-                    );
-
-                if (rentals.TotalCount == 0)
-                    return Result<RentalPageResponse>.Failure("No rentals currently registered.");
-
-                var totalRevenue = rentals.Items.SelectMany(r => r.RentalItems)
-                    .Sum(ri => ri.TotalAmount);
-
-                var totalCount = rentals.TotalCount;
-
-                var rentalsDto = _mapper.Map<PagedResult<RentalDTO>>(rentals);
-
-                return Result<RentalPageResponse>.Success(new RentalPageResponse
-                { 
-                    Items = rentalsDto.Items,
-                    CurrentPage = request.CurrentPage,
-                    ItemsPerPage = request.ItemsPerPage,
-                    TotalCount = totalCount,
-                    TotalRevenue = totalRevenue
-                });
-            }catch(Exception e)
-            {
-                return Result<RentalPageResponse>.Failure(e.Message);
-            }
+                Items = rentalsDto.Items,
+                CurrentPage = request.CurrentPage,
+                ItemsPerPage = request.ItemsPerPage,
+                TotalCount = rentals.TotalCount,
+                TotalRevenue = totalRevenue,
+                StatusCounts = analytics.StatusCounts,
+                OverdueCount = analytics.OverdueCount,
+                DueSoonCout = analytics.DueSoonCount
+            });
         }
     }
 }

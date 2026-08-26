@@ -13,5 +13,6 @@ namespace RentalAttireBackend.Application.Rentals.DTOs
         public int DepositAmount { get; set; }
         public PaymentMethod PaymentMethod { get; set; }
         public List<RentalItemDTO> RentalItems { get; set; } = new();
+        public string Status { get; set; } = string.Empty;
     }
 }
