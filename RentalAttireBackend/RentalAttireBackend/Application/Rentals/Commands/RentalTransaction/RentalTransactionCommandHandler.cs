@@ -80,6 +80,7 @@ namespace RentalAttireBackend.Application.Rentals.Commands.RentalTransaction
 
                 var rental = _mapper.Map<Rental>(request);
 
+                rental.RentalCode = GenerateRentalCode(customerUser.Person.LastName);
                 rental.CustomerId = customerUser.Customer.Id;
                 rental.TotalAmount = rentalItems.Sum(ri => ri.TotalAmount);
                 rental.DepositAmount = rentalItems.Sum(ri => ri.DepositAmount * ri.Quantity);
@@ -125,6 +126,12 @@ namespace RentalAttireBackend.Application.Rentals.Commands.RentalTransaction
                 await _transactionManager.RollbackTransactionAsync(cancellationToken);
                 return Result<bool>.FailureWithErrorType(e.Message, ErrorType.BadRequest);
             }
+        }
+        private static string GenerateRentalCode(string lastName)
+        {
+            var prefix = lastName[..Math.Min(4, lastName.Length)].ToUpper();
+            var suffix = Guid.NewGuid().ToString("N")[..6].ToUpper();
+            return $"RENT-{prefix}-{suffix}";
         }
     }
 }

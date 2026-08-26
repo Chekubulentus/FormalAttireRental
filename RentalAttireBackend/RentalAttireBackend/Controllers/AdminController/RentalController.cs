@@ -14,6 +14,7 @@ namespace RentalAttireBackend.Controllers.AdminController
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class RentalController : ControllerBase
     {
         private readonly IMediator _meaditor;
@@ -55,7 +56,6 @@ namespace RentalAttireBackend.Controllers.AdminController
             return result.IsSuccess ? Ok(result) : BadRequest(result.ErrorMessage);
         }
 
-        [Authorize]
         [HttpPost]
         public async Task<IActionResult> RentalReservationAsync(RentalTransactionCommand command)
         {

@@ -5,6 +5,7 @@ namespace RentalAttireBackend.Application.Rentals.DTOs
 {
     public class RentalDTO
     {
+        public int Id { get; set; }
         public string RentalCode { get; set; } = string.Empty;
         public CustomerDTO Customer { get; set; } = new();
         public DateTime PickupDate { get; set; } 

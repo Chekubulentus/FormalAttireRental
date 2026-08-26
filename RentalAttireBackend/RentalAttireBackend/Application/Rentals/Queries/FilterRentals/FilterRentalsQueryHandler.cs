@@ -38,6 +38,9 @@ namespace RentalAttireBackend.Application.Rentals.Queries.FilterRentals
             var totalRevenue = await _rentalRepo.GetAllRentalsTotalRevenue(cancellationToken);
             var analytics = await _rentalRepo.GetRentalAnalyticsAsync(cancellationToken);
 
+            if (rentals.Items.Count() == 0)
+                return Result<RentalPageResponse>.FailureWithErrorType("No rentals currently registered.", ErrorType.NotFound);
+
 
             var rentalsDto = _mapper.Map<PagedResult<RentalDTO>>(rentals);
 

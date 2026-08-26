@@ -5,14 +5,21 @@ import { RentalsService } from '../rentals.service';
 import { RentalDTO } from '../../../../data/models/DTOs/Rentals/rental';
 import { RentalStatus } from '../../../../data/models/DTOs/Rentals/rental-status';
 import { MessageModalComponent, MessageModalType, MessageModalVariant } from '../../../../shared/components/message-modal/message-modal.component';
+import { ViewRentalComponent } from '../view-rental/view-rental.component';
 
-const STATUS_OPTIONS: RentalStatus[] = ['Pending', 'Confirmed', 'Ready for Pickup', 'Returned', 'Declined'];
+const STATUS_OPTIONS: RentalStatus[] = [
+  'Pending', 
+  'Confirmed', 
+  'Ready for pickup', 
+  'Returned', 'Declined', 
+  'Overdue'
+];
 
 // Only these transitions are allowed from a given current status
 const NEXT_STATUS: Partial<Record<RentalStatus, RentalStatus[]>> = {
   Pending: ['Confirmed', 'Declined'],
-  Confirmed: ['Ready for Pickup'],
-  'Ready for Pickup': ['Returned'],
+  Confirmed: ['Ready for pickup'],
+  'Ready for pickup': ['Returned'],
 };
 
 type PendingAction = { rental: RentalDTO; nextStatus: RentalStatus } | null;
@@ -20,7 +27,7 @@ type PendingAction = { rental: RentalDTO; nextStatus: RentalStatus } | null;
 @Component({
   selector: 'app-rentals',
   standalone: true,
-  imports: [CommonModule, FormsModule, MessageModalComponent],
+  imports: [CommonModule, FormsModule, MessageModalComponent, ViewRentalComponent],
   templateUrl: './rentals.component.html',
   styleUrl: './rentals.component.scss',
 })
@@ -64,6 +71,9 @@ export class RentalsComponent implements OnInit {
   feedbackTitle = '';
   feedbackMessage = '';
 
+  // view-rental modal
+  rentalToView: RentalDTO | null = null;
+
   constructor(private rentalService: RentalsService) {}
 
   ngOnInit(): void {
@@ -89,6 +99,7 @@ export class RentalsComponent implements OnInit {
       this.totalCount = 0;
       this.totalPages = 1;
       this.showFeedback('error', 'Failed to Load', result.errorMessage ?? 'Failed to load rentals.');
+      this.clearFilters();
       return;
     }
 
@@ -183,7 +194,7 @@ export class RentalsComponent implements OnInit {
         return `Confirm rental ${rental.rentalCode}? This will deduct stock for the reserved items.`;
       case 'Declined':
         return `Decline rental ${rental.rentalCode}? Reserved stock will be released.`;
-      case 'Ready for Pickup':
+      case 'Ready for pickup':
         return `Mark rental ${rental.rentalCode} as ready for pickup?`;
       case 'Returned':
         return `Mark rental ${rental.rentalCode} as returned? The deposit will be considered settled.`;
@@ -228,6 +239,21 @@ export class RentalsComponent implements OnInit {
 
   onFeedbackClosed(): void {
     this.feedbackOpen = false;
+  }
+
+  // === view-rental modal ===
+  openViewModal(rental: RentalDTO): void {
+    this.rentalToView = rental;
+  }
+
+  closeViewModal(): void {
+    this.rentalToView = null;
+  }
+
+  onViewRentalUpdated(): void {
+    // ViewRentalComponent already emits (closed) alongside this on success,
+    // so we only need to refresh the table's data + stats here.
+    this.loadRentals();
   }
 
   // === display helpers ===

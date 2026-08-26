@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using RentalAttireBackend.Application.Common.Interfaces;
 using RentalAttireBackend.Application.Common.Models;
+using RentalAttireBackend.Domain.Entities;
 using RentalAttireBackend.Domain.Interfaces;
 using System.Runtime.InteropServices;
 using System.Transactions;
@@ -62,43 +63,17 @@ namespace RentalAttireBackend.Application.Rentals.Commands.UpdateRentalStatusCom
 
                 var oldStatus = rental.Status;
 
-                if (!rental.Status.Equals("Pending"))
-                    return Result<bool>.Failure("Only pending reservations can be updated.");
+                var updateRentalStatus = await ProcessRentalStatusConditionAsync(rental, request.Status, cancellationToken);
 
-                if(request.Status.Equals("Confirmed"))  
+                if(!updateRentalStatus)
                 {
-                    foreach(var ri in rental.RentalItems)
-                    {
-                        var clothe = ri.Clothe;
-
-                        clothe.ReservedQuantity -= ri.Quantity;
-                        clothe.StockQuantity -= ri.Quantity;
-                        clothe.AvailableQuantity = clothe.StockQuantity - clothe.ReservedQuantity;
-
-                        await _clotheRepo.UpdateClotheAsync(clothe, cancellationToken);
-                    }
-                    rental.Status = "Confirmed";
+                    await _transactionManager.RollbackTransactionAsync(cancellationToken);
+                    return Result<bool>.FailureWithErrorType("Invalid rental status condition.", ErrorType.BadRequest);
                 }
 
-                if(request.Status.Equals("Declined"))
-                {
-                    foreach(var ri in rental.RentalItems)
-                    {
-                        var clothe = ri.Clothe;
+                var updateRental = await _rentalRepo.UpdateRentalAsync(rental, cancellationToken);
 
-                        clothe.ReservedQuantity -= ri.Quantity;
-
-                        clothe.AvailableQuantity = clothe.StockQuantity - clothe.ReservedQuantity;
-
-                        await _clotheRepo.UpdateClotheAsync(clothe, cancellationToken);
-                    }
-
-                    rental.Status = "Declined";
-                }
-
-                var updateStatus = await _rentalRepo.UpdateRentalAsync(rental, cancellationToken);
-
-                if(!updateStatus)
+                if(!updateRental)
                 {
                     await _transactionManager.RollbackTransactionAsync(cancellationToken);
                     return Result<bool>.Failure("Rental reservation status cannot be updated.");
@@ -126,6 +101,59 @@ namespace RentalAttireBackend.Application.Rentals.Commands.UpdateRentalStatusCom
                 await _transactionManager.RollbackTransactionAsync(cancellationToken);
                 return Result<bool>.Failure(e.Message);
             }
+        }
+
+        private async Task<bool> ProcessRentalStatusConditionAsync(Rental rental, string currentStatus, CancellationToken ct)
+        {
+            switch(currentStatus)
+            {
+                case "Confirmed":
+                    foreach(var ri in rental.RentalItems)
+                    {
+                        var clothe = ri.Clothe;
+
+                        clothe.AvailableQuantity = clothe.StockQuantity - clothe.ReservedQuantity;
+
+                        await _clotheRepo.UpdateClotheAsync(clothe, ct);
+                    }
+                    rental.Status = "Confirmed";
+                    return true;
+                case "Declined":
+                    rental.Status = "Declined";
+
+                    foreach(var ri in rental.RentalItems)
+                    {
+                        var clothe = ri.Clothe;
+
+                        clothe.ReservedQuantity -= ri.Quantity;
+                        clothe.AvailableQuantity = clothe.StockQuantity - clothe.ReservedQuantity;
+
+                        await _clotheRepo.UpdateClotheAsync(clothe, ct);
+                    }
+                    rental.Status = "Declined";
+                    return true;
+                case "Ready for pickup":
+                    rental.Status = "Ready for pickup";
+                    return true;
+
+                case "Returned":
+
+                    foreach(var ri in rental.RentalItems)
+                    {
+                        var clothe = ri.Clothe;
+
+                        clothe.ReservedQuantity -= ri.Quantity;
+                        clothe.AvailableQuantity = clothe.StockQuantity - clothe.ReservedQuantity;
+
+                        await _clotheRepo.UpdateClotheAsync(clothe, ct);
+                    }
+
+                    rental.Status = "Returned";
+                    return true;
+
+                default:
+                    return false;
+            };
         }
     }
 }

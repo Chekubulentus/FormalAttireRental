@@ -64,6 +64,13 @@ export const ADMIN_ROUTES: Routes = [
           return import('./rentals/rentals/rentals.component')
           .then(m => m.RentalsComponent);
         }
+      },
+      {
+        path: 'view-rental',
+        loadComponent: () => {
+          return import('./rentals/view-rental/view-rental.component')
+          .then(m => m.ViewRentalComponent);
+        }
       }
     ],
   },

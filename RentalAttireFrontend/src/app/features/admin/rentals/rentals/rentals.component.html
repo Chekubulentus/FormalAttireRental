@@ -98,6 +98,9 @@
           <td class="mono">₱{{ rental.totalAmount | number: '1.2-2' }}</td>
           <td><span class="status-badge" [ngClass]="statusClass(rental.status)">{{ rental.status }}</span></td>
           <td class="actions-cell">
+            <button class="action-btn action-view" (click)="openViewModal(rental)">
+              View
+            </button>
             <button
               *ngFor="let next of nextStatusOptions(rental)"
               class="action-btn"
@@ -140,6 +143,15 @@
 
 </div>
 
+<!-- View Rental modal -->
+<app-view-rental
+  *ngIf="rentalToView"
+  [rental]="rentalToView"
+  (closed)="closeViewModal()"
+  (statusUpdated)="onViewRentalUpdated()">
+</app-view-rental>
+
+<!-- For Status -->
 <app-message-modal
   [isOpen]="modalOpen"
   [type]="modalType"
@@ -156,6 +168,5 @@
   [variant]="feedbackVariant"
   [title]="feedbackTitle"
   [message]="feedbackMessage"
-  (confirmed)="onFeedbackClosed()"
-  (closed)="onFeedbackClosed()">
+  (confirmed)="onFeedbackClosed()">
 </app-message-modal>

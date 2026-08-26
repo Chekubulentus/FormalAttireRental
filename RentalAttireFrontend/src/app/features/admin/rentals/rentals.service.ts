@@ -37,24 +37,26 @@ export class RentalsService {
         }),
       );
 
-      console.log('params:', params.toString()); // e.g. "currentPage=1&itemsPerPage=10"
-      console.log('params keys:', params.keys()); // e.g. ["currentPage", "itemsPerPage"]
-
       return result;
     } catch (err: any) {
-      return Result.failure(extractErrorMessage(err.error));
+      const error = Result.failure<RentalPageResponse>(extractErrorMessage(err.error));
+      console.error('Rental fetch failed:', error);
+      return error;
     }
   }
 
   async updateRentalStatus(
     rentalId: number,
-    newStatus: string,
+    status: string,
   ): Promise<Result<boolean>> {
     try {
+      console.log(`Rental Identifier: ${rentalId}`);
+      console.log(`New status: ${status}`);
+
       const result = await firstValueFrom(
         this.httpClient.patch<Result<boolean>>(`${this.baseUrl}`, {
           rentalId,
-          newStatus,
+          status
         }),
       );
 
