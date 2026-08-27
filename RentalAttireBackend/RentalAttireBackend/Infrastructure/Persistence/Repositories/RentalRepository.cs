@@ -50,7 +50,7 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
                 .Include(r => r.RentalItems)
                     .ThenInclude(ri => ri.Clothe)
                         .ThenInclude(c => c.Category)
-                .OrderByDescending(r => r.RentalDate)
+                .OrderByDescending(r => r.Id)
                 .Where(r =>
                     (
                     searchQueryValidator || 
@@ -101,40 +101,42 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
         public async Task<double> GetAllRentalsTotalRevenue(CancellationToken cancellationToken)
         {
             return await _context.Rentals
+                .Where(r => AllowedStatusConditions.RevenueStatuses.Contains(r.Status))
                 .SumAsync(r => r.TotalAmount);
         }
 
         public async Task<RentalAnalytics> GetRentalAnalyticsAsync(CancellationToken cancellationToken)
         {
             var dateToday = DateTime.UtcNow.Date;
-            var dueSoonThreshHold = DateTime.UtcNow.Date.AddDays(7);
+            var dueSoonThreshold = DateTime.UtcNow.Date.AddDays(7);
 
             var statusCounts = await _context.Rentals
                 .GroupBy(r => r.Status)
                 .Select(g => new { Status = g.Key, Count = g.Count() })
                 .ToListAsync(cancellationToken);
 
-            var overDueSoonCount = await _context.Rentals
+            var overdueCount = await _context.Rentals
                 .Where(r =>
                     r.IsActive &&
-                    r.Status != "Returned" &&
-                    r.Status != "Declined" &&
+                    r.ReturnDate != null &&
+                    (r.Status == "Confirmed" || r.Status == "Ready for pickup") &&
                     r.ReturnDate < dateToday
                 ).CountAsync(cancellationToken);
 
-            var dueSoonCounts = await _context.Rentals
+            var dueSoonCount = await _context.Rentals
                 .Where(r =>
                     r.IsActive &&
-                    r.Status != "Returned" &&
-                    r.Status != "Declined" &&
-                    r.ReturnDate <= dueSoonThreshHold
+                    r.ReturnDate != null &&
+                    (r.Status == "Confirmed" || r.Status == "Ready for pickup") &&
+                    r.ReturnDate >= dateToday &&
+                    r.ReturnDate <= dueSoonThreshold
                 ).CountAsync(cancellationToken);
 
             return new RentalAnalytics
             {
                 StatusCounts = statusCounts.ToDictionary(x => x.Status, x => x.Count),
-                OverdueCount = overDueSoonCount,
-                DueSoonCount = dueSoonCounts
+                OverdueCount = overdueCount,
+                DueSoonCount = dueSoonCount
             };
         }
 

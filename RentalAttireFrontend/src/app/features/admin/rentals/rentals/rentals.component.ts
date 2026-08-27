@@ -184,22 +184,22 @@ export class RentalsComponent implements OnInit {
     this.modalType = 'confirm';
     this.modalVariant = nextStatus === 'Declined' ? 'error' : 'success';
     this.modalTitle = `Mark as ${nextStatus}?`;
-    this.modalMessage = this.confirmMessageFor(rental, nextStatus);
+    this.modalMessage = this.confirmMessageFor(rental.rentalCode, nextStatus);
     this.modalOpen = true;
   }
 
-  private confirmMessageFor(rental: RentalDTO, nextStatus: RentalStatus): string {
+  private confirmMessageFor(rentalCode: string, nextStatus: RentalStatus): string {
     switch (nextStatus) {
       case 'Confirmed':
-        return `Confirm rental ${rental.rentalCode}? This will deduct stock for the reserved items.`;
+        return `Confirm rental ${rentalCode}? This will deduct stock for the reserved items.`;
       case 'Declined':
-        return `Decline rental ${rental.rentalCode}? Reserved stock will be released.`;
+        return `Decline rental ${rentalCode}? Reserved stock will be released.`;
       case 'Ready for pickup':
-        return `Mark rental ${rental.rentalCode} as ready for pickup?`;
+        return `Mark rental ${rentalCode} as ready for pickup?`;
       case 'Returned':
-        return `Mark rental ${rental.rentalCode} as returned? The deposit will be considered settled.`;
+        return `Mark rental ${rentalCode} as returned? The deposit will be considered settled.`;
       default:
-        return `Update rental ${rental.rentalCode} to ${nextStatus}?`;
+        return `Update rental ${rentalCode} to ${nextStatus}?`;
     }
   }
 
@@ -262,13 +262,14 @@ export class RentalsComponent implements OnInit {
   }
 
   isOverdue(rental: RentalDTO): boolean {
-    if (!rental.returnDate || rental.status === 'Returned' || rental.status === 'Declined') return false;
+    if (!rental.returnDate) return false;
+    if (rental.status !== 'Confirmed' && rental.status !== 'Ready for pickup') return false;
     return new Date(rental.returnDate) < new Date(new Date().toDateString());
   }
 
   isDueSoon(rental: RentalDTO): boolean {
     if (this.isOverdue(rental) || !rental.returnDate) return false;
-    if (rental.status === 'Returned' || rental.status === 'Declined') return false;
+    if (rental.status !== 'Confirmed' && rental.status !== 'Ready for pickup') return false;
     const today = new Date(new Date().toDateString());
     const edge = new Date(today);
     edge.setDate(today.getDate() + 7);
