@@ -12,11 +12,20 @@ namespace RentalAttireBackend.Application.Rentals.DTOs
             "Ready for pickup",
             "Returned",
         };
+
+
         public static readonly List<string> RevenueStatuses = new()
         {
             "Confirmed",
             "Ready for pickup",
             "Returned"
+        };
+
+        public static readonly Dictionary<string, List<string>> MyRentalFilters = new()
+        {
+            {"active", new List<string> {"Pending", "Confirmed", "Ready for pickup"} },
+            { "declined", new List<string>  { "Declined" } },
+            { "completed", new List<string> { "Returned" } }
         };
     }
 }

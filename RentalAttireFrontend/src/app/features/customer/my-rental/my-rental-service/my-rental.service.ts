@@ -1,0 +1,49 @@
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { BaseApiUrl } from '../../../../../environments/base-api-url';
+import { PagedResult } from '../../../../data/models/Results/pagedResult';
+import { RentalDTO } from '../../../../data/models/DTOs/Rentals/rental';
+import { Result } from '../../../../data/models/Results/result';
+import { extractErrorMessage } from '../../../../data/utils/error-response-util';
+import { filter, firstValueFrom } from 'rxjs';
+import { BaseRouteReuseStrategy } from '@angular/router';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class MyRentalService {
+  private baseUrl = `${BaseApiUrl}/Rental`;
+  constructor(
+    private httpClient: HttpClient
+  ) { }
+
+  async getCustomerRentalsAsync(
+    searchQuery : string,
+    rentalStatus : string,
+    currentPage : number,
+    itemsPerPage : number,
+    startingDate ?: string,
+    endingdate ?: string,
+  ) : Promise<Result<PagedResult<RentalDTO>>> {
+    try {
+      var params = new HttpParams()
+      .set('currentPage', currentPage)
+      .set('itemsPerPage', itemsPerPage)
+      .set('rentalStatus', rentalStatus);
+
+      if(searchQuery) params = params.set('searchQuery', searchQuery);
+      if(startingDate) params = params.set('startingDate', startingDate);
+      if(endingdate) params = params.set('endingDate', endingdate);
+
+      const result = await firstValueFrom(
+        this.httpClient.get<Result<PagedResult<RentalDTO>>>(`${this.baseUrl}/my-rentals`, { params : params})
+      );
+
+      console.log(`GetCustomerRentals Reponse: ${JSON.stringify(result.data)}`);
+
+      return result;
+    }catch(err : any) {
+      return Result.failure(extractErrorMessage(err.error));
+    }
+  }
+}

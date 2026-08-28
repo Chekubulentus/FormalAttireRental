@@ -95,7 +95,7 @@ namespace RentalAttireBackend.Application.Rentals.Commands.UpdateRentalStatusCom
                 }
 
                 await _transactionManager.CommitTransacionAsync(cancellationToken);
-                return Result<bool>.SuccessWithMessage($"Rental reservation ${request.Status.ToLower()} successfully.");
+                return Result<bool>.SuccessWithMessage($"Rental reservation {request.Status.ToLower()} successfully.");
             }catch(Exception e)
             {
                 await _transactionManager.RollbackTransactionAsync(cancellationToken);

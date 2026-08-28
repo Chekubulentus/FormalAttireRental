@@ -44,6 +44,13 @@ export const CUSTOMER_ROUTES: Routes = [
                     return import ('./browse/reservation/reservation.component')
                     .then(m => m.ReservationComponent)
                 }
+            },
+            {
+                path: 'my-rentals',
+                loadComponent: () => {
+                    return import('./my-rental/my-rental/my-rental.component')
+                    .then(m => m.MyRentalsComponent)
+                }
             }
         ]
     }

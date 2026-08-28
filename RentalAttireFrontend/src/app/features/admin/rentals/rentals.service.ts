@@ -50,9 +50,6 @@ export class RentalsService {
     status: string,
   ): Promise<Result<boolean>> {
     try {
-      console.log(`Rental Identifier: ${rentalId}`);
-      console.log(`New status: ${status}`);
-
       const result = await firstValueFrom(
         this.httpClient.patch<Result<boolean>>(`${this.baseUrl}`, {
           rentalId,

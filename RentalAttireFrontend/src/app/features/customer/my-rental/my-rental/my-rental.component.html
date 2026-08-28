@@ -1,0 +1,184 @@
+<div class="my-rentals">
+
+  <!-- ── Page Header ─────────────────────────────────────── -->
+  <div class="page-header">
+    <span class="eyebrow">My Account</span>
+    <h1 class="page-title">My Rentals</h1>
+    <p class="page-subtitle">Track every reservation, from pickup to return.</p>
+  </div>
+
+  <!-- ── Tabs — sliding segmented control ──────────────────── -->
+  <div class="tab-bar">
+    <div class="tab-indicator" [ngClass]="'tab-indicator--' + activeTab"></div>
+    <button class="tab-btn" [class.tab-btn--active]="activeTab === 'active'" (click)="setTab('active')">
+      Active
+    </button>
+    <button class="tab-btn" [class.tab-btn--active]="activeTab === 'completed'" (click)="setTab('completed')">
+      Completed
+    </button>
+    <button class="tab-btn" [class.tab-btn--active]="activeTab === 'declined'" (click)="setTab('declined')">
+      Declined
+    </button>
+  </div>
+
+  <!-- ── Filter Toolbar ──────────────────────────────────── -->
+  <div class="toolbar">
+    <div class="search-wrap">
+      <svg class="search-icon" viewBox="0 0 20 20" fill="none">
+        <circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.5"/>
+        <line x1="13.5" y1="13.5" x2="17" y2="17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      <input
+        class="search-input"
+        type="text"
+        placeholder="Search by rental code..."
+        [(ngModel)]="searchQuery"
+        (keyup.enter)="onSearch()"/>
+    </div>
+
+    <div class="date-filters">
+      <input type="date" class="date-input" [(ngModel)]="startingDate" (change)="onSearch()" />
+      <span class="date-sep">to</span>
+      <input type="date" class="date-input" [(ngModel)]="endingDate" (change)="onSearch()" />
+    </div>
+
+    <button class="btn-search" (click)="onSearch()">Search</button>
+    <button class="btn-clear" *ngIf="hasActiveFilters" (click)="clearFilters()">Clear</button>
+  </div>
+
+  <!-- ── Skeleton Loading ────────────────────────────────── -->
+  <div class="rental-grid" *ngIf="isLoading">
+    <div class="order-card order-card--skeleton" *ngFor="let i of [1,2,3,4]">
+      <div class="skeleton-row">
+        <div class="skeleton-avatars"></div>
+        <div class="skeleton-lines">
+          <div class="skeleton-line skeleton-line--short"></div>
+          <div class="skeleton-line"></div>
+        </div>
+      </div>
+      <div class="skeleton-track"></div>
+      <div class="skeleton-line skeleton-line--btn"></div>
+    </div>
+  </div>
+
+  <!-- ── Empty State ─────────────────────────────────────── -->
+  <div class="empty-state" *ngIf="isEmpty">
+    <svg viewBox="0 0 48 48" fill="none">
+      <rect x="8" y="10" width="32" height="30" rx="3" stroke="currentColor" stroke-width="1.5"/>
+      <path d="M16 22h16M16 28h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      <path d="M20 10V7M28 10V7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+    <p class="empty-title">{{ emptyStateTitle }}</p>
+    <p class="empty-subtitle">{{ emptyStateSubtitle }}</p>
+    <a class="btn-browse" routerLink="/customer/browse" *ngIf="activeTab === 'active'">
+      Browse the Catalogue
+    </a>
+  </div>
+
+  <!-- ── Order Card Grid ───────────────────────────────────── -->
+  <div class="rental-grid" *ngIf="!isLoading && !isEmpty">
+    <div
+      class="order-card"
+      *ngFor="let rental of paginatedRentals; let i = index; trackBy: trackByRental"
+      [style.animation-delay.s]="i * 0.05">
+
+      <!-- Header row: code + status badge -->
+      <div class="order-card__header">
+        <span class="rental-code">{{ rental.rentalCode }}</span>
+        <span class="status-badge" [ngClass]="badgeClass(rental)">
+          <span class="status-dot" *ngIf="isPending(rental)"></span>
+          {{ rental.status }}
+        </span>
+      </div>
+
+      <!-- Item avatar stack -->
+      <div class="item-stack" *ngIf="getThumbnailItems(rental).length > 0">
+        <img
+          *ngFor="let item of getThumbnailItems(rental)"
+          class="item-stack__avatar"
+          [src]="item.clothe.profileImagePath"
+          [alt]="item.clothe.clotheName" />
+        <div class="item-stack__extra" *ngIf="getExtraItemsCount(rental) > 0">
+          +{{ getExtraItemsCount(rental) }}
+        </div>
+      </div>
+      <div class="item-stack item-stack--empty" *ngIf="getThumbnailItems(rental).length === 0">
+        <svg viewBox="0 0 32 32" fill="none">
+          <path d="M8 8h16v3l-3 2v11H11V13L8 11V8z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>
+          <path d="M12 8V6a4 4 0 0 1 8 0v2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+        </svg>
+        <span>No image</span>
+      </div>
+
+      <!-- Progress tracker (skipped for declined) -->
+      <div class="progress-track" *ngIf="!isDeclined(rental)">
+        <ng-container *ngFor="let step of statusSteps; let s = index">
+          <div class="progress-step"
+               [class.progress-step--done]="getStatusStep(rental.status) > s + 1"
+               [class.progress-step--active]="getStatusStep(rental.status) === s + 1">
+            <div class="progress-step__dot"></div>
+            <span class="progress-step__label">{{ step }}</span>
+          </div>
+          <div class="progress-line"
+               *ngIf="s < statusSteps.length - 1"
+               [class.progress-line--done]="getStatusStep(rental.status) > s + 1">
+          </div>
+        </ng-container>
+      </div>
+
+      <div class="declined-banner" *ngIf="isDeclined(rental)">
+        This reservation was declined.
+      </div>
+
+      <!-- Dates -->
+      <div class="date-row">
+        <svg viewBox="0 0 16 16" fill="none">
+          <rect x="2" y="3" width="12" height="11" rx="1.5" stroke="currentColor" stroke-width="1.3"/>
+          <path d="M5 3V1M11 3V1M2 7h12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+        </svg>
+        {{ rental.pickupDate | date:'MMM d' }} — {{ rental.returnDate | date:'MMM d, y' }}
+      </div>
+
+      <!-- Total + action -->
+      <div class="order-card__footer">
+        <span class="rental-total">₱{{ rental.totalAmount | number }}</span>
+        <button class="btn-view-details" (click)="viewDetails(rental)">
+          View Details
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── Pagination ──────────────────────────────────────── -->
+  <div class="pagination" *ngIf="!isLoading && !isEmpty && totalPages > 1">
+    <button class="page-btn" [disabled]="currentPage === 1" (click)="goToPage(currentPage - 1)">
+      <svg viewBox="0 0 16 16" fill="none">
+        <polyline points="10 4 6 8 10 12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+    <ng-container *ngFor="let page of pageNumbers">
+      <span class="page-ellipsis" *ngIf="page === -1">…</span>
+      <button *ngIf="page !== -1" class="page-btn" [class.active]="page === currentPage" (click)="goToPage(page)">
+        {{ page }}
+      </button>
+    </ng-container>
+    <button class="page-btn" [disabled]="currentPage === totalPages" (click)="goToPage(currentPage + 1)">
+      <svg viewBox="0 0 16 16" fill="none">
+        <polyline points="6 4 10 8 6 12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+  </div>
+
+</div>
+
+<app-message-modal
+  *ngIf="openMessageModal"
+  [isOpen]="openMessageModal"
+  [type]="type"
+  [variant]="variant"
+  [message]="message"
+  [title]="title"
+  (closed)="closeMessageModal()"
+  (confirmed)="closeMessageModal()">
+</app-message-modal>

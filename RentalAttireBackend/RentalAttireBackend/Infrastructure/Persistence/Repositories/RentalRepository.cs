@@ -1,10 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.MicrosoftExtensions;
 using RentalAttireBackend.Application.Common.Models;
 using RentalAttireBackend.Application.Rentals.DTOs;
 using RentalAttireBackend.Domain.Entities;
 using RentalAttireBackend.Domain.Interfaces;
 using RentalAttireBackend.Infrastructure.Persistence.DataContext;
+using System.Reflection.Metadata.Ecma335;
 
 namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
 {
@@ -103,6 +105,70 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
             return await _context.Rentals
                 .Where(r => AllowedStatusConditions.RevenueStatuses.Contains(r.Status))
                 .SumAsync(r => r.TotalAmount);
+        }
+
+        public async Task<PagedResult<Rental>> GetCustomerRentalsAsync(
+            int customerId,
+            string? searchQuery,
+            string rentalStatus,
+            DateTime? startingDate,
+            DateTime? endingDate,
+            int currentPage,
+            int itemsPerPage,
+            CancellationToken cancellationToken)
+        {
+            var searchQueryValidator = string.IsNullOrWhiteSpace(searchQuery);
+            var rentalStatusValidator = string.IsNullOrWhiteSpace(rentalStatus);
+
+            if (!AllowedStatusConditions.MyRentalFilters.TryGetValue(rentalStatus.ToLower(), out var statusConditions))
+                throw new ArgumentException("Invalid rental status condition.");
+
+
+              var query = _context.Rentals
+                .Include(r => r.Customer)
+                    .ThenInclude(c => c.User)
+                        .ThenInclude(u => u.Person)
+                .Include(r => r.RentalItems)
+                    .ThenInclude(ri => ri.Clothe)
+                .OrderByDescending(r => r.Id)
+                .Where(r =>
+                    (
+                    searchQueryValidator ||
+                    r.RentalCode.ToLower().Contains(searchQuery.ToLower())
+                    ) &&
+                    (
+                    !startingDate.HasValue || r.RentalDate >= startingDate
+                    ) &&
+                    (
+                    !endingDate.HasValue || r.ReturnDate <= endingDate
+                    ) &&
+                    r.IsActive &&
+                    r.Customer.Id == customerId
+                )
+                .AsQueryable();
+
+            var rentals = rentalStatus switch
+            {
+                "active" => query.Where(r => statusConditions.Contains(r.Status)),
+                "declined" => query.Where(r => statusConditions.Contains(r.Status)),
+                "completed" => query.Where(r => statusConditions.Contains(r.Status)),
+                _ => throw new ArgumentException("Invalid rental status condition.")
+            };
+
+            var paginatedRentals = await rentals
+                .Skip((currentPage - 1) * itemsPerPage)
+                .Take(itemsPerPage)
+                .ToListAsync(cancellationToken);
+
+            var totalCount = await rentals.CountAsync(cancellationToken);
+
+            return new PagedResult<Rental>
+            {
+                Items = paginatedRentals,
+                TotalCount = totalCount,
+                PageNumber = currentPage,
+                PageSize = itemsPerPage
+            };
         }
 
         public async Task<RentalAnalytics> GetRentalAnalyticsAsync(CancellationToken cancellationToken)

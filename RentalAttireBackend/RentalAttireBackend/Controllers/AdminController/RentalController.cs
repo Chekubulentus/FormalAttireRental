@@ -7,6 +7,7 @@ using RentalAttireBackend.Application.Common.Extensions;
 using RentalAttireBackend.Application.Rentals.Commands.RentalTransaction;
 using RentalAttireBackend.Application.Rentals.Commands.UpdateRentalStatusCommand;
 using RentalAttireBackend.Application.Rentals.Queries;
+using RentalAttireBackend.Application.Rentals.Queries.CustomerRentals;
 using RentalAttireBackend.Application.Rentals.Queries.FilterRentals;
 using RentalAttireBackend.Application.Rentals.Queries.GetAllRentals;
 
@@ -17,7 +18,7 @@ namespace RentalAttireBackend.Controllers.AdminController
     [Authorize]
     public class RentalController : ControllerBase
     {
-        private readonly IMediator _meaditor;
+        private readonly IMediator _meaditor; //Mediator
         private readonly IHttpContextAccessor _httpContextAccessor;
 
         public RentalController(IMediator mediator, IHttpContextAccessor httpContextAccessor)
@@ -70,6 +71,29 @@ namespace RentalAttireBackend.Controllers.AdminController
             var result = await _meaditor.Send(command);
 
             return result.ToActionResult(this, _httpContextAccessor); 
+        }
+
+        [HttpGet("my-rentals")]
+        public async Task<IActionResult> GetCustomersRentalsAsync(
+            string? searchQuery,
+            string? rentalStatus,
+            DateTime? startingDate,
+            DateTime? endingDate,
+            int currentPage,
+            int itemsPerPage
+            )
+        {
+            var result = await _meaditor.Send(new CustomerRentalsQuery
+            {
+                SearchQuery =  searchQuery,
+                RentalStatus = rentalStatus,
+                StartingDate = startingDate,
+                EndingDate = endingDate,
+                CurrentPage = currentPage,
+                ItemsPerPage = itemsPerPage
+            });
+
+            return result.ToActionResult(this, _httpContextAccessor);
         }
     }
 }

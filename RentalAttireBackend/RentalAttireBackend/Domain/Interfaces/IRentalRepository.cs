@@ -37,5 +37,15 @@ namespace RentalAttireBackend.Domain.Interfaces
 
         public Task<RentalAnalytics> GetRentalAnalyticsAsync(CancellationToken cancellationToken);
         #endregion
+
+        public Task<PagedResult<Rental>> GetCustomerRentalsAsync(
+            int customerId,
+            string searchQuery,
+            string rentalStatus,
+            DateTime? startingDate,
+            DateTime? endingDate,
+            int currentPage,
+            int itemsPerPage,
+            CancellationToken cancellationToken);
     }
 }
