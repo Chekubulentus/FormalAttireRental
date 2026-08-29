@@ -123,6 +123,14 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
             if (!AllowedStatusConditions.MyRentalFilters.TryGetValue(rentalStatus.ToLower(), out var statusConditions))
                 throw new ArgumentException("Invalid rental status condition.");
 
+            var startingDateUtc = startingDate.HasValue
+                ? DateTime.SpecifyKind(startingDate.Value, DateTimeKind.Utc)
+                : (DateTime?)null;
+
+            var endingDateUtc = endingDate.HasValue
+                ? DateTime.SpecifyKind(endingDate.Value, DateTimeKind.Utc)
+                : (DateTime?)null;
+
 
               var query = _context.Rentals
                 .Include(r => r.Customer)
@@ -137,10 +145,10 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
                     r.RentalCode.ToLower().Contains(searchQuery.ToLower())
                     ) &&
                     (
-                    !startingDate.HasValue || r.RentalDate >= startingDate
+                    !startingDate.HasValue || r.RentalDate >= startingDateUtc
                     ) &&
                     (
-                    !endingDate.HasValue || r.ReturnDate <= endingDate
+                    !endingDate.HasValue || r.ReturnDate <= endingDateUtc
                     ) &&
                     r.IsActive &&
                     r.Customer.Id == customerId

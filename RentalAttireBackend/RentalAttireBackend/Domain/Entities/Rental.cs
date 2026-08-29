@@ -12,6 +12,8 @@ namespace RentalAttireBackend.Domain.Entities
         public int TotalAmount { get; set; }
         public int DepositAmount { get; set; }
         public string Status { get; set; } = string.Empty;
+        public string GcashReferenceNumber { get; set; } = string.Empty;
+        public string GcashReferenceName { get; set; } = string.Empty;
         public PaymentMethod PaymentMethod { get; set; }
          
         //NavProp

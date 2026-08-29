@@ -32,7 +32,8 @@
         class="search-input"
         type="text"
         placeholder="Search by rental code..."
-        [(ngModel)]="searchQuery"
+        [(ngModel)]="this.searchQuery"
+        (ngModelChange)="onSearch()"
         (keyup.enter)="onSearch()"/>
     </div>
 
@@ -136,7 +137,7 @@
           <rect x="2" y="3" width="12" height="11" rx="1.5" stroke="currentColor" stroke-width="1.3"/>
           <path d="M5 3V1M11 3V1M2 7h12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
         </svg>
-        {{ rental.pickupDate | date:'MMM d' }} — {{ rental.returnDate | date:'MMM d, y' }}
+        {{ rental.pickupDate | date:'MMM d' }} — {{ rental.returnDate | date:'MMMM d, y' }}
       </div>
 
       <!-- Total + action -->
@@ -182,3 +183,11 @@
   (closed)="closeMessageModal()"
   (confirmed)="closeMessageModal()">
 </app-message-modal>
+
+<app-view-rental
+*ngIf="openViewRental"
+[isOpen]="openViewRental"
+[rental]="rentalToView"
+(closed)="closeViewRentalModal()"
+>  
+</app-view-rental>

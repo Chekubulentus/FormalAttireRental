@@ -38,9 +38,7 @@ export class MyRentalService {
       const result = await firstValueFrom(
         this.httpClient.get<Result<PagedResult<RentalDTO>>>(`${this.baseUrl}/my-rentals`, { params : params})
       );
-
-      console.log(`GetCustomerRentals Reponse: ${JSON.stringify(result.data)}`);
-
+      
       return result;
     }catch(err : any) {
       return Result.failure(extractErrorMessage(err.error));

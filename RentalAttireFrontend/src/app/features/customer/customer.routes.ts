@@ -56,7 +56,14 @@ export const CUSTOMER_ROUTES: Routes = [
                 path: 'customer-profile',
                 loadComponent: () => {
                     return import('./my-profile/customer-profile/customer-profile.component')
-                    .then(m => m.CustomerProfileComponent);
+                    .then(m => m.CustomerProfileComponent)
+                }
+            },
+            {
+                path: 'view-rental',
+                loadComponent: () => {
+                    return import('./my-rental/view-rental/view-rental.component')
+                    .then(m => m.ViewRentalComponent)
                 }
             }
         ]

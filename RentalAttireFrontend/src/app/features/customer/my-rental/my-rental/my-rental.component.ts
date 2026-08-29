@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgIf } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -7,13 +7,14 @@ import { MyRentalService } from '../my-rental-service/my-rental.service';
 import { ToastrService } from 'ngx-toastr';
 import { MessageModalComponent, MessageModalType, MessageModalVariant } from '../../../../shared/components/message-modal/message-modal.component';
 import { RentalItemDTO } from '../../../../data/models/DTOs/Rentals/rental-item';
+import { ViewRentalComponent } from "../view-rental/view-rental.component";
 
 type RentalTab = 'active' | 'completed' | 'declined';
 
 @Component({
   selector: 'app-my-rentals',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink, MessageModalComponent],
+  imports: [CommonModule, FormsModule, RouterLink, MessageModalComponent, ViewRentalComponent, NgIf],
   templateUrl: './my-rental.component.html',
   styleUrl: './my-rental.component.scss',
 })
@@ -25,6 +26,9 @@ export class MyRentalsComponent implements OnInit {
   totalCount: number = 0;
 
   activeTab: RentalTab = 'active';
+
+  openViewRental = false;
+  rentalToView : RentalDTO | null = null;
 
   // ── Pagination ──
   currentPage = 1;
@@ -83,7 +87,6 @@ export class MyRentalsComponent implements OnInit {
       this.totalCount = res.data?.totalCount ?? 0;
     }).catch(err => {
       this.isLoading = false;
-      console.log(`CustomerRentals Response: ${JSON.stringify(err)}`);
       this.type = 'info';
       this.variant = 'error';
       this.title = err?.detail?.title ?? 'Something went wrong';
@@ -202,9 +205,14 @@ export class MyRentalsComponent implements OnInit {
   // Actions
   // ============================================================
   viewDetails(rental: RentalDTO): void {
-    // TODO: open a read-only detail modal for the customer, or navigate
-    // to a dedicated rental detail route — not yet built.
+    this.rentalToView = rental;
+    this.openViewRental = true;
     console.log('View details for:', rental.rentalCode);
+  }
+
+  closeViewRentalModal() {
+    this.openViewRental = false;
+    this.rentalToView = null;
   }
 
   trackByRental(index: number, rental: RentalDTO): number {

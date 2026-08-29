@@ -13,4 +13,6 @@ export interface RentalDTO {
   depositAmount: number;
   paymentMethod: 'Cash' | 'Gcash';
   rentalItems : RentalItemDTO[];
+  gcashReferenceNumber: string;
+  gcashReferenceName: string;
 }

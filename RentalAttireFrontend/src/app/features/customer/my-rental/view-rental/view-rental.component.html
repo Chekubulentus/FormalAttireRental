@@ -1,0 +1,113 @@
+<div class="modal-overlay" *ngIf="isOpen" (click)="onOverlayClick()">
+  <div class="modal-card" (click)="$event.stopPropagation()" *ngIf="rental">
+
+    <!-- ── Header ─────────────────────────────────────────── -->
+    <div class="modal-header">
+      <div class="modal-header__titles">
+        <span class="eyebrow">Rental Details</span>
+        <h2 class="rental-code">{{ rental.rentalCode }}</h2>
+      </div>
+      <div class="modal-header__right">
+        <span class="status-badge" [ngClass]="badgeClass()">
+          <span class="status-dot" *ngIf="isPending()"></span>
+          {{ rental.status }}
+        </span>
+        <button class="btn-close" (click)="onOverlayClick()" aria-label="Close">
+          <svg viewBox="0 0 16 16" fill="none">
+            <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="modal-body">
+
+      <!-- ── Progress tracker (skipped for declined) ────────── -->
+      <div class="progress-track" *ngIf="!isDeclined()">
+        <ng-container *ngFor="let step of statusSteps; let s = index">
+          <div class="progress-step"
+               [class.progress-step--done]="getStatusStep() > s + 1"
+               [class.progress-step--active]="getStatusStep() === s + 1">
+            <div class="progress-step__dot"></div>
+            <span class="progress-step__label">{{ step }}</span>
+          </div>
+          <div class="progress-line"
+               *ngIf="s < statusSteps.length - 1"
+               [class.progress-line--done]="getStatusStep() > s + 1">
+          </div>
+        </ng-container>
+      </div>
+
+      <div class="declined-banner" *ngIf="isDeclined()">
+        This reservation was declined.
+      </div>
+
+      <!-- ── Dates + Payment ──────────────────────────────────── -->
+      <div class="detail-grid">
+        <div class="detail-cell">
+          <span class="detail-label">Pickup Date</span>
+          <span class="detail-value">{{ rental.pickupDate | date:'MMM d, y' }}</span>
+        </div>
+        <div class="detail-cell">
+          <span class="detail-label">Return Date</span>
+          <span class="detail-value">{{ rental.returnDate | date:'MMM d, y' }}</span>
+        </div>
+        <div class="detail-cell">
+          <span class="detail-label">Payment Method</span>
+          <span class="detail-value">{{ rental.paymentMethod }}</span>
+        </div>
+        <div class="detail-cell" *ngIf="isGcash()">
+          <span class="detail-label">GCash Reference No.</span>
+          <span class="detail-value detail-value--mono">{{ rental.gcashReferenceNumber || '—' }}</span>
+        </div>
+        <div class="detail-cell" *ngIf="isGcash()">
+          <span class="detail-label">GCash Reference Name</span>
+          <span class="detail-value detail-value--mono">{{ rental.gcashReferenceName || '—' }}</span>
+        </div>
+      </div>
+
+      <!-- ── Items ─────────────────────────────────────────────── -->
+      <div class="items-section">
+        <span class="section-label">Items ({{ items.length }})</span>
+        <div class="item-row" *ngFor="let item of items; trackBy: trackByItem">
+          <img
+            class="item-row__image"
+            *ngIf="item.clothe.profileImagePath"
+            [src]="item.clothe.profileImagePath"
+            [alt]="item.clothe.clotheName" />
+          <div class="item-row__image item-row__image--placeholder" *ngIf="!item.clothe.profileImagePath">
+            <svg viewBox="0 0 32 32" fill="none">
+              <path d="M8 8h16v3l-3 2v11H11V13L8 11V8z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/>
+              <path d="M12 8V6a4 4 0 0 1 8 0v2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+            </svg>
+          </div>
+
+          <div class="item-row__info">
+            <span class="item-row__name">{{ item.clothe.clotheName }}</span>
+            <span class="item-row__meta">{{ item.clothe.size }} · {{ item.clothe.color }} · {{ item.clothe.brand }}</span>
+          </div>
+
+          <div class="item-row__pricing">
+            <span class="item-row__qty">×{{ item.quantity }}</span>
+            <span class="item-row__price">₱{{ item.rentalPrice | number }}</span>
+            <span class="item-row__total">₱{{ item.totalAmount | number }}</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── Footer: totals ───────────────────────────────────── -->
+    <div class="modal-footer">
+      <div class="totals-row">
+        <span class="totals-label">Deposit</span>
+        <span class="totals-value">₱{{ rental.depositAmount | number }}</span>
+      </div>
+      <div class="totals-row totals-row--main">
+        <span class="totals-label">Total Paid</span>
+        <span class="totals-value">₱{{ rental.totalAmount | number }}</span>
+      </div>
+    </div>
+
+  </div>
+</div>

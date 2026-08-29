@@ -376,7 +376,7 @@ namespace RentalAttireBackend.Application.Mapping
                 opt => opt.Ignore())
                 .ForMember(dest => dest.RentalDate,
                 opt => opt.MapFrom(src => src.PickupDate))
-                .ForMember(dest => dest.RentalDate,
+                .ForMember(dest => dest.ReturnDate,
                 opt => opt.MapFrom(src => src.ReturnDate))
                 .ForMember(dest => dest.TotalAmount,
                 opt => opt.Ignore())
@@ -385,7 +385,11 @@ namespace RentalAttireBackend.Application.Mapping
                 .ForMember(dest => dest.Status,
                 opt => opt.Ignore())
                 .ForMember(dest => dest.PaymentMethod,
-                opt => opt.MapFrom(src => Enum.Parse<PaymentMethod>(src.PaymentMethod, true)));
+                opt => opt.MapFrom(src => Enum.Parse<PaymentMethod>(src.PaymentMethod, true)))
+                .ForMember(dest => dest.GcashReferenceNumber,
+                opt => opt.MapFrom(src => src.GcashRefNum))
+                .ForMember(dest => dest.GcashReferenceName,
+                opt => opt.MapFrom(src => src.GcashRefName));
             #endregion
 
             #region ProfileCompletionComamnd -> Person
