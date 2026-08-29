@@ -43,7 +43,7 @@ export class CustomerLayoutComponent implements OnInit, OnDestroy {
     { label: 'Dashboard',   path: '/customer/customer-dashboard', icon: 'dashboard' },
     { label: 'Browse',      path: '/customer/browse',             icon: 'browse'    },
     { label: 'My Rentals',  path: '/customer/my-rentals',         icon: 'rentals'   },
-    { label: 'Profile',     path: '/customer/profile',            icon: 'profile'   },
+    { label: 'Profile',     path: '/customer/customer-profile',            icon: 'profile'   },
   ];
 
   constructor(

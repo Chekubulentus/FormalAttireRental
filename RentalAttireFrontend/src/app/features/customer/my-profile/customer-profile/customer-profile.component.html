@@ -146,6 +146,7 @@
         <div class="field field--wide" *ngIf="requiresCurrentPassword">
           <label>Current Password</label>
           <input type="password" [(ngModel)]="form.currentPassword" name="currentPassword"
+                 autocomplete="off"
                  [class.invalid]="hasError('currentPassword')" />
           <span class="field-error" *ngIf="hasError('currentPassword')">{{ errorMsg('currentPassword') }}</span>
         </div>
@@ -153,6 +154,7 @@
         <div class="field">
           <label>New Password</label>
           <input type="password" [(ngModel)]="form.newPassword" name="newPassword"
+                 autocomplete="new-password"
                  [class.invalid]="hasError('newPassword')" />
           <span class="field-error" *ngIf="hasError('newPassword')">{{ errorMsg('newPassword') }}</span>
         </div>
@@ -160,6 +162,7 @@
         <div class="field">
           <label>Confirm New Password</label>
           <input type="password" [(ngModel)]="form.confirmPassword" name="confirmPassword"
+                 autocomplete="new-password"
                  [class.invalid]="hasError('confirmPassword')" />
           <span class="field-error" *ngIf="hasError('confirmPassword')">{{ errorMsg('confirmPassword') }}</span>
         </div>

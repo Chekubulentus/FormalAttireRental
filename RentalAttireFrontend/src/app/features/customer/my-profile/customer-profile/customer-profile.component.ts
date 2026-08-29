@@ -83,6 +83,11 @@ export class CustomerProfileComponent implements OnInit {
       city: p.city,
       province: p.province,
       postalCode: p.postalCode,
+      // Explicitly re-blank password fields after load, in case
+      // the browser tries to autofill them before this runs.
+      currentPassword: '',
+      newPassword: '',
+      confirmPassword: '',
     };
 
     this.imagePreviewUrl = p.profileImagePath || null;
@@ -93,7 +98,7 @@ export class CustomerProfileComponent implements OnInit {
   // current-password field. Everyone else (normal accounts, and
   // Google accounts that already set one) must enter it.
   get requiresCurrentPassword(): boolean {
-    return !!this.profile?.hasPassword;
+    return this.isChangingPassword && !!this.profile?.hasPassword;
   }
 
   get isChangingPassword(): boolean {

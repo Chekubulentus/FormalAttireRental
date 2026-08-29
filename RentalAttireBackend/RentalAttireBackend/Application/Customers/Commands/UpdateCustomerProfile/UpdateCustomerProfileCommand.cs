@@ -7,7 +7,7 @@ namespace RentalAttireBackend.Application.Customers.Commands.UpdateCustomerProfi
     public class UpdateCustomerProfileCommand : PersonDTO, IRequest<Result<bool>>
     {
         public string NewUserName { get; set; } = string.Empty;
-        public string CurrentPassword { get; set; } = string.Empty;
+        public string? CurrentPassword { get; set; } = string.Empty;
         public string? NewPassword { get; set; }
         public string? ConfirmPassword { get; set; }
         public bool isPasswordMatched => string.Equals(NewPassword, ConfirmPassword);
