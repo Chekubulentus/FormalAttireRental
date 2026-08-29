@@ -1,0 +1,177 @@
+<!-- customer-profile.component.html -->
+<div class="profile-page">
+
+  <!-- Header -->
+  <div class="page-header">
+    <p class="eyebrow">Account</p>
+    <h1>My Profile</h1>
+    <p class="subtitle">Manage your personal details, address, and password.</p>
+  </div>
+
+  <!-- Loading skeleton -->
+  <div class="profile-skeleton" *ngIf="loading">
+    <div class="skeleton-card"></div>
+    <div class="skeleton-card"></div>
+  </div>
+
+  <form class="profile-form" *ngIf="!loading && profile" (ngSubmit)="onSubmit()">
+
+    <!-- ═══════════ Photo + identity card ═══════════ -->
+    <section class="form-card photo-card">
+      <div class="avatar-upload">
+        <div class="avatar-preview">
+          <img *ngIf="imagePreviewUrl" [src]="imagePreviewUrl" alt="Profile photo" />
+          <span *ngIf="!imagePreviewUrl">{{ form.firstName?.[0] }}{{ form.lastName?.[0] }}</span>
+        </div>
+        <label class="avatar-edit-btn">
+          <input type="file" accept="image/*" (change)="onImageSelected($event)" hidden />
+          Change Photo
+        </label>
+      </div>
+
+      <div class="identity-meta">
+        <h2>{{ form.firstName }} {{ form.lastName }}</h2>
+        <p class="customer-code">{{ profile.customerCode }}</p>
+        <p class="email-readonly">
+          {{ profile.email }}
+          <span class="badge" *ngIf="profile.isGoogleAccount">Google Account</span>
+        </p>
+      </div>
+    </section>
+
+    <!-- ═══════════ Personal details ═══════════ -->
+    <section class="form-card">
+      <h3 class="section-title">Personal Details</h3>
+
+      <div class="field-grid">
+        <div class="field">
+          <label>First Name</label>
+          <input type="text" [(ngModel)]="form.firstName" name="firstName"
+                 [class.invalid]="hasError('firstName')" />
+          <span class="field-error" *ngIf="hasError('firstName')">{{ errorMsg('firstName') }}</span>
+        </div>
+
+        <div class="field">
+          <label>Last Name</label>
+          <input type="text" [(ngModel)]="form.lastName" name="lastName"
+                 [class.invalid]="hasError('lastName')" />
+          <span class="field-error" *ngIf="hasError('lastName')">{{ errorMsg('lastName') }}</span>
+        </div>
+
+        <div class="field">
+          <label>Middle Name</label>
+          <input type="text" [(ngModel)]="form.middleName" name="middleName" />
+        </div>
+
+        <div class="field">
+          <label>Age</label>
+          <input type="number" min="0" [(ngModel)]="form.age" name="age"
+                 [class.invalid]="hasError('age')" />
+          <span class="field-error" *ngIf="hasError('age')">{{ errorMsg('age') }}</span>
+        </div>
+
+        <div class="field">
+          <label>Gender</label>
+          <select [(ngModel)]="form.gender" name="gender">
+            <option *ngFor="let g of genders" [value]="g">{{ g }}</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Marital Status</label>
+          <select [(ngModel)]="form.maritalStatus" name="maritalStatus">
+            <option *ngFor="let m of maritalStatuses" [value]="m">{{ m }}</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Phone Number</label>
+          <input type="text" [(ngModel)]="form.phoneNumber" name="phoneNumber"
+                 [class.invalid]="hasError('phoneNumber')" />
+          <span class="field-error" *ngIf="hasError('phoneNumber')">{{ errorMsg('phoneNumber') }}</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════ Address ═══════════ -->
+    <section class="form-card">
+      <h3 class="section-title">Address</h3>
+
+      <div class="field-grid">
+        <div class="field field--wide">
+          <label>Street</label>
+          <input type="text" [(ngModel)]="form.street" name="street"
+                 [class.invalid]="hasError('street')" />
+          <span class="field-error" *ngIf="hasError('street')">{{ errorMsg('street') }}</span>
+        </div>
+
+        <div class="field">
+          <label>Barangay</label>
+          <input type="text" [(ngModel)]="form.barangay" name="barangay"
+                 [class.invalid]="hasError('barangay')" />
+          <span class="field-error" *ngIf="hasError('barangay')">{{ errorMsg('barangay') }}</span>
+        </div>
+
+        <div class="field">
+          <label>City</label>
+          <input type="text" [(ngModel)]="form.city" name="city"
+                 [class.invalid]="hasError('city')" />
+          <span class="field-error" *ngIf="hasError('city')">{{ errorMsg('city') }}</span>
+        </div>
+
+        <div class="field">
+          <label>Province</label>
+          <input type="text" [(ngModel)]="form.province" name="province"
+                 [class.invalid]="hasError('province')" />
+          <span class="field-error" *ngIf="hasError('province')">{{ errorMsg('province') }}</span>
+        </div>
+
+        <div class="field">
+          <label>Postal Code</label>
+          <input type="text" [(ngModel)]="form.postalCode" name="postalCode"
+                 [class.invalid]="hasError('postalCode')" />
+          <span class="field-error" *ngIf="hasError('postalCode')">{{ errorMsg('postalCode') }}</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════ Password ═══════════ -->
+    <section class="form-card">
+      <h3 class="section-title">Password</h3>
+      <p class="section-hint" *ngIf="profile.isGoogleAccount && !profile.hasPassword">
+        You signed in with Google and haven't set a password yet. Set one below if you'd like to log in with a password too.
+      </p>
+
+      <div class="field-grid">
+        <div class="field field--wide" *ngIf="requiresCurrentPassword">
+          <label>Current Password</label>
+          <input type="password" [(ngModel)]="form.currentPassword" name="currentPassword"
+                 [class.invalid]="hasError('currentPassword')" />
+          <span class="field-error" *ngIf="hasError('currentPassword')">{{ errorMsg('currentPassword') }}</span>
+        </div>
+
+        <div class="field">
+          <label>New Password</label>
+          <input type="password" [(ngModel)]="form.newPassword" name="newPassword"
+                 [class.invalid]="hasError('newPassword')" />
+          <span class="field-error" *ngIf="hasError('newPassword')">{{ errorMsg('newPassword') }}</span>
+        </div>
+
+        <div class="field">
+          <label>Confirm New Password</label>
+          <input type="password" [(ngModel)]="form.confirmPassword" name="confirmPassword"
+                 [class.invalid]="hasError('confirmPassword')" />
+          <span class="field-error" *ngIf="hasError('confirmPassword')">{{ errorMsg('confirmPassword') }}</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════ Actions ═══════════ -->
+    <div class="form-actions">
+      <button type="submit" class="btn-primary" [disabled]="saving">
+        {{ saving ? 'Saving...' : 'Save Changes' }}
+      </button>
+    </div>
+
+  </form>
+</div>

@@ -12,6 +12,7 @@ using RentalAttireBackend.Application.Clothes.DTOs;
 using RentalAttireBackend.Application.Common.Interfaces;
 using RentalAttireBackend.Application.Common.Models;
 using RentalAttireBackend.Application.Customers.Commands.CustomerRegistration;
+using RentalAttireBackend.Application.Customers.Commands.UpdateCustomerProfile;
 using RentalAttireBackend.Application.Customers.DTOs;
 using RentalAttireBackend.Application.Employees.Commands.CreateEmployee;
 using RentalAttireBackend.Application.Employees.Commands.UpdateEmployee;
@@ -290,7 +291,9 @@ namespace RentalAttireBackend.Application.Mapping
                 .ForMember(dest => dest.IsGoogleAccount,
                 opt => opt.MapFrom(src => src.User.IsGoogleAccount))
                 .ForMember(dest => dest.Person,
-                opt => opt.MapFrom(src => src.User.Person));
+                opt => opt.MapFrom(src => src.User.Person))
+                .ForPath(dest => dest.HasPassword,
+                opt => opt.MapFrom(src => !string.IsNullOrEmpty(src.User.HashedPassword) ? true : false));
             #endregion
 
             #region RegistrationCustomerCommnad -> Customer
@@ -405,6 +408,23 @@ namespace RentalAttireBackend.Application.Mapping
                 opt => opt.MapFrom(src => src.Province))
                 .ForMember(dest => dest.PostalCode,
                 opt => opt.MapFrom(src => src.PostalCode));
+            #endregion
+
+            #region UpdateCustomerProfileCommand -> Person
+            CreateMap<UpdateCustomerProfileCommand, Person>()
+                .ForMember(dest => dest.ProfileImagePath,
+                opt => opt.Ignore())
+                .ForMember(dest => dest.Id,
+                opt => opt.Ignore());
+
+            CreateMap<UpdateCustomerProfileCommand, User>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore())
+                .ForMember(dest => dest.RefreshToken, opt => opt.Ignore())
+                .ForMember(dest => dest.RefreshTokenExpiryTime, opt => opt.Ignore())
+                .ForMember(dest => dest.HashedPassword,
+                opt => opt.Ignore())
+                .ForMember(dest => dest.PersonId,
+                opt => opt.Ignore());
             #endregion
         }
     }

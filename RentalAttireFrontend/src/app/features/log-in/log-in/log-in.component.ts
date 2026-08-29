@@ -72,8 +72,12 @@ export class LogInComponent implements OnInit, OnDestroy {
             localStorage.setItem(USER_ID, JSON.stringify(result.data.id));
           }
 
-          if(!result.data?.isProfileComplete)
+          console.log(`IsProfileComplet VALUE: ${result.data?.isProfileComplete}`);
+
+          if (!result.data?.isProfileComplete) {
             this.router.navigateByUrl('/profile-completion');
+            return;   // ← add this
+          }
 
           var rolePosition = this.authService.getCurrentUserRolePosition();
 
@@ -124,12 +128,12 @@ export class LogInComponent implements OnInit, OnDestroy {
           this.authService.saveTokens(result.data.accessToken, result.data.refreshToken);
         }
 
+        console.log(`IsProfileComplete value: ${result.data?.isProfileComplete}`);
+
         if(!result.data?.isProfileComplete)
           this.router.navigateByUrl('/profile-completion');
 
         var rolePosition = this.authService.getCurrentUserRolePosition();   
-
-        console.log(`ROLE POSITION: ${rolePosition}`);
 
         if(!rolePosition)
           this.loginError = 'Invalid role position.';

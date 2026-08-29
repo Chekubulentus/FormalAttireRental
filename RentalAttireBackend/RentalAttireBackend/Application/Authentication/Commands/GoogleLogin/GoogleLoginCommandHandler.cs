@@ -122,7 +122,6 @@ namespace RentalAttireBackend.Application.Authentication.Commands.GoogleLogin
                 var newUser = new User
                 {
                     Email = payload.Email,
-                    HashedPassword = _passwordHasher.HashPassword("defaultpassword123"),
                     Person = newPerson,
                     IsGoogleAccount = true,
                     CreatedBy = payload.Name,

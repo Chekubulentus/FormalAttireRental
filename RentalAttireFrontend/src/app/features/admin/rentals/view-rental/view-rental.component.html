@@ -93,12 +93,12 @@
             </div>
 
             <div class="item-details">
-              <p class="item-name">{{ item.clotheName }}</p>
+              <p class="item-name">{{ item.clothe.clotheName }}</p>
               <p class="item-qty-price">Qty {{ item.quantity }} · ₱{{ item.rentalPrice | number }} each</p>
             </div>
 
             <div class="item-pricing">
-              <span class="item-deposit">+₱{{ item.depositAmount | number }} deposit</span>
+              <span class="item-deposit">+₱{{ item.clothe.depositAmount| number }} deposit</span>
               <span class="item-total">₱{{ item.totalAmount | number }}</span>
             </div>
 

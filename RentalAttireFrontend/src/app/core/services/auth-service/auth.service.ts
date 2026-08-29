@@ -15,6 +15,9 @@ import { RegisterCustomerCommand } from '../../../data/models/DTOs/Customer/regi
 import { USER_ID } from '../../../../environments/user-id';
 import { jwtDecode } from 'jwt-decode';
 import { JwtPayload } from '../../../data/models/DTOs/Authentication/jwt-payload';
+import { ProfileCompletionComponent } from '../../../features/log-in/profile-completion/profile-completion.component';
+import { ProfileCompletionRequest } from '../../../data/models/DTOs/Authentication/profile-completion';
+import { extractErrorMessage } from '../../../data/utils/error-response-util';
 
 @Injectable({
   providedIn: 'root',
@@ -155,6 +158,20 @@ export class AuthService {
       return result;
     }catch(err : any) {
       return Result.failure(err.error);
+    }
+  }
+
+  async profileCompletionAsync(
+    request : ProfileCompletionRequest
+  ) : Promise<Result<boolean>> {
+    try {
+      const result = await firstValueFrom(
+        this.httpClient.put<Result<boolean>>(`${this.baseUrl}/profile-completion`, request)
+      );
+
+      return result;
+    }catch(err : any) {
+      return Result.failure(extractErrorMessage(err.error));
     }
   }
 }

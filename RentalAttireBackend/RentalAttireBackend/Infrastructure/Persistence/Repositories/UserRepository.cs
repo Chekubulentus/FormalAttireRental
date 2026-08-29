@@ -96,6 +96,30 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
                 .FirstOrDefaultAsync(u => u.Id == id, ct);
         }
 
+        public async Task<User?> GetUserWithPersonAsync(int id, CancellationToken cancellationToken)
+        {
+            return await _context.Users
+                .Include(u => u.Person)
+                .FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
+        }
+
+        public async Task<User?> GetUserWithPersonNoTrackingAsync(int id, CancellationToken cancellationToken)
+        {
+            return await _context.Users
+                .Include(u => u.Person)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
+        }
+
+        public async Task<User?> GetUserWithCustomerAsync(int id, CancellationToken cancellationToken)
+        {
+            return await _context.Users
+                .Include(u => u.Customer)
+                .Include(u => u.Person)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(u => u.Id == id, cancellationToken);
+        }
+
         public async Task<bool> UpdateUserAsync(User user, CancellationToken cancellationToken)
         {
             _context.Users.Update(user);

@@ -6,6 +6,7 @@ export class Customer {
     totalRentals : number = 0;
     totalSpent : number = 0;
     email : string = '';
+    hasPassword : boolean = false;
     isGoogleAccount : boolean = true;
     person : PersonDTO = new PersonDTO();
 }

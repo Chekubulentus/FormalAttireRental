@@ -19,8 +19,14 @@ import { CartComponent } from '../browse/cart/cart.component';
 export class CustomerLayoutComponent implements OnInit, OnDestroy {
 
   // ── Nav state ──────────────────────────────────────────────
-  menuOpen    = false;
-  currentPath = '';
+  // NOTE: these are two SEPARATE flags on purpose — the desktop
+  // user dropdown and the mobile hamburger drawer are different
+  // pieces of UI and must not share one boolean, or opening one
+  // silently opens the other's (invisible-on-desktop) full-screen
+  // overlay elements too, which then fight the dropdown for clicks.
+  menuOpen       = false; // desktop user-avatar dropdown
+  mobileMenuOpen = false; // mobile hamburger drawer
+  currentPath    = '';
 
   // ── Cart state ─────────────────────────────────────────────
   cartOpen  = false;
@@ -54,8 +60,9 @@ export class CustomerLayoutComponent implements OnInit, OnDestroy {
     this.router.events
       .pipe(filter(e => e instanceof NavigationEnd))
       .subscribe((e: any) => {
-        this.currentPath = e.urlAfterRedirects;
-        this.menuOpen    = false;
+        this.currentPath    = e.urlAfterRedirects;
+        this.menuOpen       = false;
+        this.mobileMenuOpen = false;
       });
 
     this.cartSub = this.cartService.cartItems$.subscribe(items => {
@@ -81,6 +88,10 @@ export class CustomerLayoutComponent implements OnInit, OnDestroy {
 
   toggleMenu(): void {
     this.menuOpen = !this.menuOpen;
+  }
+
+  toggleMobileMenu(): void {
+    this.mobileMenuOpen = !this.mobileMenuOpen;
   }
 
   toggleCart(): void {

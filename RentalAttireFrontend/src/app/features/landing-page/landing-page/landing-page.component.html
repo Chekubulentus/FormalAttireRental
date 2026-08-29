@@ -1,0 +1,89 @@
+<main class="landing">
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero__content">
+      <span class="hero__eyebrow">Formal Wear Rentals</span>
+      <h1 class="hero__title">Look Your Best, Without the Closet Commitment</h1>
+      <p class="hero__subtitle">
+        Browse curated barongs, gowns, suits, and accessories — reserve online,
+        pay a simple deposit, and pick up ready to go.
+      </p>
+      <div class="hero__actions">
+        <a routerLink="/customer/browse" class="btn btn--primary">Browse the Collection</a>
+        <a routerLink="/log-in" class="btn btn--secondary">Sign In</a>
+      </div>
+    </div>
+    <div class="hero__image">
+      <img src="assets/images/landing/hero-formalwear.jpg" alt="Model wearing a formal tuxedo and evening gown" />
+    </div>
+  </section>
+
+  <!-- Category shortcuts -->
+  <section class="categories">
+    <h2 class="section-title">Find Your Next Look</h2>
+    <div class="categories__grid">
+      <a
+        *ngFor="let category of categoryShortcuts"
+        [routerLink]="category.routerLink"
+        class="category-card"
+      >
+        <img [src]="category.imageUrl" [alt]="category.label" class="category-card__image" />
+        <span class="category-card__label">{{ category.label }}</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- Brand story -->
+  <section class="story">
+    <div class="story__text">
+      <h2 class="section-title">Dress for the Occasion, Not the Closet Space</h2>
+      <p>
+        Formal events don't happen every week — so why pay full price and store
+        a piece you'll wear once? We make renting formal attire as simple as
+        browsing, reserving, and picking up, with the quality and fit you'd
+        expect from buying new.
+      </p>
+    </div>
+    <div class="story__values">
+      <div class="value-card" *ngFor="let value of brandValues">
+        <h3 class="value-card__title">{{ value.title }}</h3>
+        <p class="value-card__description">{{ value.description }}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured items (Card Grid pattern) -->
+  <section class="featured">
+    <h2 class="section-title">Popular Right Now</h2>
+
+    <div class="card-grid">
+      <div class="clothe-card" *ngFor="let item of featuredClothes">
+        <div class="clothe-card__image-wrapper">
+          <img [src]="item.imageUrl" [alt]="item.name" class="clothe-card__image" />
+          <div class="clothe-card__overlay">
+            <a routerLink="/customer/browse" class="btn btn--overlay">View Details</a>
+          </div>
+        </div>
+        <div class="clothe-card__body">
+          <span class="clothe-card__category">{{ item.category }}</span>
+          <h3 class="clothe-card__name">{{ item.name }}</h3>
+          <div class="clothe-card__pricing">
+            <span class="clothe-card__price">₱{{ item.rentalPrice }}</span>
+            <span class="clothe-card__deposit">+ ₱{{ item.depositAmount }} deposit</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <a routerLink="/customer/browse" class="btn btn--primary featured__cta">See the Full Collection</a>
+  </section>
+
+  <!-- Closing CTA -->
+  <section class="cta-banner">
+    <h2 class="cta-banner__title">Ready to Reserve Your Look?</h2>
+    <p class="cta-banner__subtitle">Create an account and reserve in minutes.</p>
+    <a routerLink="/register" class="btn btn--primary">Get Started</a>
+  </section>
+
+</main>
