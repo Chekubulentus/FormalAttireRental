@@ -23,10 +23,18 @@ namespace RentalAttireBackend.Domain.Entities
         public string ProfileImagePath { get; set; } = string.Empty;
         public bool IsAvailable => AvailableQuantity > 0;
         public int RentalCount { get; set; }
+        public double UnitCost { get; set; }
+        public int SupplierId { get; set; }
+
         //NavProp
+        [JsonIgnore]
         public Category Category { get; set; } = null!;
         [JsonIgnore]
         public List<RentalItem> RentalItems { get; set; } = new();
+        [JsonIgnore]
+        public Supplier Supplier { get; set; } = null!;
+        [JsonIgnore]
+        public List<PurchaseOrderItem> PurchaseOrderItems { get; set; } = new();
     }
     public enum ClotheGender    
     {

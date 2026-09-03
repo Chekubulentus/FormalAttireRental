@@ -74,6 +74,7 @@ namespace RentalAttireBackend.Application.Rentals.Commands.RentalTransaction
                     ri.DepositAmount = clothe.DepositAmount;
                     clothe.ReservedQuantity += ri.Quantity;
                     clothe.AvailableQuantity = clothe.StockQuantity - clothe.ReservedQuantity;
+                    clothe.RentalCount += ri.Quantity;
 
                     clothesToUpdate.Add(clothe);
                 }

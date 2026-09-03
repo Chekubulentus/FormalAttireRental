@@ -16,12 +16,17 @@ namespace RentalAttireBackend.Infrastructure.Persistence.DataContext
         public DbSet<Category> Categories { get; set; }
         public DbSet<Rental> Rentals { get; set; }
         public DbSet<RentalItem> RentalItems { get; set; }
+        public DbSet<PurchaseOrder> PurchaseOrders { get; set; }
+        public DbSet<PurchaseOrderItem> PurchaseOrderItems { get; set; }
+        public DbSet<ReceivingBatch> ReceivingBatches { get; set; }
+        public DbSet<ReceivingBatchItem> ReceivingBatchItems { get; set; }
+        public DbSet<Supplier> Suppliers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            #region Customer
+            #region Customer Constraints
             modelBuilder.Entity<Customer>(e =>
             {
                 e.HasKey(c => c.Id);
@@ -35,7 +40,7 @@ namespace RentalAttireBackend.Infrastructure.Persistence.DataContext
             });
             #endregion
 
-            #region Employee
+            #region Employee Constraints
             modelBuilder.Entity<Employee>(e =>
             {
                 e.HasKey(e => e.Id);
@@ -55,7 +60,7 @@ namespace RentalAttireBackend.Infrastructure.Persistence.DataContext
             });
             #endregion
 
-            #region Person
+            #region Person Constraints
             modelBuilder.Entity<Person>(e =>
             {
                 e.HasKey(p => p.Id);
@@ -63,7 +68,7 @@ namespace RentalAttireBackend.Infrastructure.Persistence.DataContext
             });
             #endregion
 
-            #region User
+            #region User Constraints
             modelBuilder.Entity<User>(e =>
             {
                 e.HasKey(u => u.Id);
@@ -269,7 +274,7 @@ namespace RentalAttireBackend.Infrastructure.Persistence.DataContext
 
             #endregion
 
-            #region AuditLog
+            #region AuditLog Constraints
             modelBuilder.Entity<AuditLog>(e =>
             {
                 e.HasKey(a => a.Id);
@@ -280,7 +285,7 @@ namespace RentalAttireBackend.Infrastructure.Persistence.DataContext
             });
             #endregion
 
-            #region Clothes
+            #region Clothes Constraints
             modelBuilder.Entity<Clothe>(e =>
             {
                 e.HasKey(c => c.Id);
@@ -301,7 +306,7 @@ namespace RentalAttireBackend.Infrastructure.Persistence.DataContext
             });
             #endregion
 
-            #region Rental  
+            #region Rental Constraints
             modelBuilder.Entity<Rental>(e =>
             {
                 e.HasKey(r => r.Id);
@@ -315,6 +320,73 @@ namespace RentalAttireBackend.Infrastructure.Persistence.DataContext
                 e.HasOne(r => r.Customer)
                 .WithMany(c => c.Rentals)
                 .HasForeignKey(r => r.CustomerId)
+                .OnDelete(DeleteBehavior.Restrict);
+            });
+            #endregion
+
+            #region PurchaseOrder Constraints
+            modelBuilder.Entity<PurchaseOrder>(e =>
+            {
+                e.HasKey(po => po.Id);
+                e.HasIndex(po => po.PurchaseOrderCode);
+
+
+                //PurchaseOrderItem Relationship
+                e.HasMany(po => po.PurchaseOrderItems)
+                .WithOne(poi => poi.PurchaseOrder)
+                .HasForeignKey(poi => poi.PurchaseOrderId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+                //Supplier Relationship
+                e.HasOne(po => po.Supplier)
+                .WithOne(s => s.PurchaseOrder)
+                .HasForeignKey<PurchaseOrder>(po => po.SupplierId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+                //Employee Relationship
+                e.HasOne(po => po.Employee)
+                .WithMany(e => e.PurchaseOrders)
+                .HasForeignKey(po => po.EmployeeId)
+                .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<PurchaseOrderItem>(e =>
+            {
+                e.HasKey(poi => poi.Id);
+
+                //Clothe Relationship
+                e.HasOne(poi => poi.Clothe)
+                .WithMany(c => c.PurchaseOrderItems)
+                .HasForeignKey(poi => poi.ClotheId)
+                .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<ReceivingBatch>(e =>
+            {
+                e.HasKey(r => r.Id);
+                e.HasIndex(r => r.ReceivingBatchCode);
+
+                //PurchaseOrder Relationship
+                e.HasOne(r => r.PurchaseOrder)
+                .WithOne()
+                .HasForeignKey<ReceivingBatch>(r => r.PurchaseOrderId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+                //Employee Relationship
+                e.HasOne(r => r.Employee)
+                .WithMany(e => e.ReceivingBatches)
+                .HasForeignKey(r => r.EmployeeId)
+                .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<ReceivingBatchItem>(e =>
+            {
+                e.HasKey(ri => ri.Id);
+
+                //PurchaseOrderItem Relationship
+                e.HasOne(ri => ri.PurchaseOrderItem)
+                .WithMany(poi => poi.ReceivingBatchItems)
+                .HasForeignKey(ri => ri.PurchaseOrderItemId)
                 .OnDelete(DeleteBehavior.Restrict);
             });
             #endregion
