@@ -303,6 +303,11 @@ namespace RentalAttireBackend.Infrastructure.Persistence.DataContext
                 .WithOne(ri => ri.Clothe)
                 .HasForeignKey(ri => ri.ClotheId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+                e.HasOne(c => c.Supplier)
+                .WithMany(s => s.ClothesAvailable)
+                .HasForeignKey(c => c.SupplierId)
+                .OnDelete(DeleteBehavior.Restrict);
             });
             #endregion
 
@@ -339,8 +344,8 @@ namespace RentalAttireBackend.Infrastructure.Persistence.DataContext
 
                 //Supplier Relationship
                 e.HasOne(po => po.Supplier)
-                .WithOne(s => s.PurchaseOrder)
-                .HasForeignKey<PurchaseOrder>(po => po.SupplierId)
+                .WithMany(s => s.PurchaseOrders)
+                .HasForeignKey(po => po.SupplierId)
                 .OnDelete(DeleteBehavior.Restrict);
 
                 //Employee Relationship
@@ -368,8 +373,8 @@ namespace RentalAttireBackend.Infrastructure.Persistence.DataContext
 
                 //PurchaseOrder Relationship
                 e.HasOne(r => r.PurchaseOrder)
-                .WithOne()
-                .HasForeignKey<ReceivingBatch>(r => r.PurchaseOrderId)
+                .WithMany()
+                .HasForeignKey(r => r.PurchaseOrderId)
                 .OnDelete(DeleteBehavior.Restrict);
 
                 //Employee Relationship
@@ -387,6 +392,18 @@ namespace RentalAttireBackend.Infrastructure.Persistence.DataContext
                 e.HasOne(ri => ri.PurchaseOrderItem)
                 .WithMany(poi => poi.ReceivingBatchItems)
                 .HasForeignKey(ri => ri.PurchaseOrderItemId)
+                .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<Supplier>(e =>
+            {
+                e.HasKey(s => s.Id);
+                e.HasIndex(s => s.SupplierCode);
+
+                //Employee Relationship
+                e.HasOne(s => s.Employee)
+                .WithMany(e => e.Suppliers)
+                .HasForeignKey(s => s.EmployeeId)
                 .OnDelete(DeleteBehavior.Restrict);
             });
             #endregion

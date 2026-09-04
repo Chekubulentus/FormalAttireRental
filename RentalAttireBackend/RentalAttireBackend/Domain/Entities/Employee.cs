@@ -22,5 +22,7 @@ namespace RentalAttireBackend.Domain.Entities
         public List<PurchaseOrder> PurchaseOrders { get; set; } = new();
         [JsonIgnore]
         public List<ReceivingBatch> ReceivingBatches { get; set; } = new();
+        [JsonIgnore]
+        public List<Supplier> Suppliers { get; set; } = new();
     }
 }

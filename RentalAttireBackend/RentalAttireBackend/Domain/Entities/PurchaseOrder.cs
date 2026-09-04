@@ -12,7 +12,7 @@ namespace RentalAttireBackend.Domain.Entities
         public OrderStatus OrderStatus { get; set; } = OrderStatus.Draft;
         public List<PurchaseOrderItem> PurchaseOrderItems { get; set; } = new();
         public int EmployeeId { get; set; } // So the admins can view who issued the PO
-        public double TotalAmount => PurchaseOrderItems.Sum(x => x.TotalAmount);
+        public double TotalAmount => PurchaseOrderItems.Any() ? PurchaseOrderItems.Sum(x => x.TotalAmount) : 0.00;
 
         //Nav Prop
         [JsonIgnore]

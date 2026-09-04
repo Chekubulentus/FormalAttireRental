@@ -12,11 +12,11 @@ namespace RentalAttireBackend.Domain.Entities
         public string Email { get; set; } = string.Empty;
         public string Address { get; set; } = string.Empty;
         public List<Clothe> ClothesAvailable { get; set; } = new();
-        public int EmployeeId { get; set; } 
+        public int EmployeeId { get; set; }
 
         // Nav Prop
         [JsonIgnore]
-        public PurchaseOrder PurchaseOrder { get; set; } = null!;
+        public List<PurchaseOrder> PurchaseOrders { get; set; } = new();
         [JsonIgnore]
         public Employee Employee { get; set; } = null!;
     }
