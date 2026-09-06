@@ -21,6 +21,7 @@ using RentalAttireBackend.Application.Persons.Commands.UpdatePerson;
 using RentalAttireBackend.Application.Persons.DTO;
 using RentalAttireBackend.Application.Rentals.Commands.RentalTransaction;
 using RentalAttireBackend.Application.Rentals.DTOs;
+using RentalAttireBackend.Application.Suppliers.DTOs;
 using RentalAttireBackend.Application.Users.DTO;
 using RentalAttireBackend.Domain.Entities;
 using System.CodeDom;
@@ -429,6 +430,12 @@ namespace RentalAttireBackend.Application.Mapping
                 opt => opt.Ignore())
                 .ForMember(dest => dest.PersonId,
                 opt => opt.Ignore());
+            #endregion
+
+            #region Supplier -> SupplierDTO 
+            CreateMap<Supplier, SupplierDTO>()
+                .ForMember(dest => dest.CreatedByEmployee,
+                opt => opt.MapFrom(src => src.Employee.User.Person.FullName));
             #endregion
         }
     }

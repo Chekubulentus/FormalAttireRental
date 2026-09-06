@@ -135,6 +135,7 @@ builder.Services.AddScoped<IClotheRepository, ClotheRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<IRentalRepository, RentalRepository>();
+builder.Services.AddScoped<ISupplierRepository, SupplierRepository>();
 
 // Services
 builder.Services.AddScoped<ITransactionManager, TransactionManager>();

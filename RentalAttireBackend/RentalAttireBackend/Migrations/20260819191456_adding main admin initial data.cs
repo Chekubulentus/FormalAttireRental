@@ -11,20 +11,23 @@ namespace RentalAttireBackend.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.InsertData(
-                table: "Employees",
-                columns: new[] { "Id", "ArchivedAt", "ArchivedBy", "CreatedAt", "CreatedBy", "Department", "EmployeeCode", "EntityType", "IsActive", "IsDeleted", "RestoredAt", "RestoredBy", "RoleId", "Salary", "UpdatedAt", "UpdatedBy", "UserId" },
-                values: new object[] { 1, null, "", new DateTime(2026, 8, 20, 0, 0, 0, 0, DateTimeKind.Utc), "System", "Administration", "EMP-000001", "Employee", true, false, null, "", 1, 0.0, null, "", 1 });
+            migrationBuilder.Sql(@"
+                INSERT INTO ""Employees"" (""Id"", ""ArchivedAt"", ""ArchivedBy"", ""CreatedAt"", ""CreatedBy"", ""Department"", ""EmployeeCode"", ""EntityType"", ""IsActive"", ""IsDeleted"", ""RestoredAt"", ""RestoredBy"", ""RoleId"", ""Salary"", ""UpdatedAt"", ""UpdatedBy"", ""UserId"")
+                VALUES (1, NULL, '', TIMESTAMPTZ '2026-08-20T00:00:00Z', 'System', 'Administration', 'EMP-000001', 'Employee', TRUE, FALSE, NULL, '', 1, 0.0, NULL, '', 1)
+                ON CONFLICT (""Id"") DO NOTHING;
+            ");
 
-            migrationBuilder.InsertData(
-                table: "People",
-                columns: new[] { "Id", "Age", "ArchivedAt", "ArchivedBy", "Barangay", "City", "CreatedAt", "CreatedBy", "EntityType", "FirstName", "Gender", "IsActive", "IsDeleted", "LastName", "MaritalStatus", "MiddleName", "PhoneNumber", "PostalCode", "ProfileImagePath", "Province", "RestoredAt", "RestoredBy", "Street", "UpdatedAt", "UpdatedBy" },
-                values: new object[] { 2, 30, null, "", "System Barangay", "System City", new DateTime(2026, 8, 20, 0, 0, 0, 0, DateTimeKind.Utc), "System", "Person", "Main", 2, true, false, "Administrator", 0, "System", "09000000000", "0000", null, "System Province", null, "", "System Street", null, "" });
+                    migrationBuilder.Sql(@"
+                INSERT INTO ""People"" (""Id"", ""Age"", ""ArchivedAt"", ""ArchivedBy"", ""Barangay"", ""City"", ""CreatedAt"", ""CreatedBy"", ""EntityType"", ""FirstName"", ""Gender"", ""IsActive"", ""IsDeleted"", ""LastName"", ""MaritalStatus"", ""MiddleName"", ""PhoneNumber"", ""PostalCode"", ""ProfileImagePath"", ""Province"", ""RestoredAt"", ""RestoredBy"", ""Street"", ""UpdatedAt"", ""UpdatedBy"")
+                VALUES (2, 30, NULL, '', 'System Barangay', 'System City', TIMESTAMPTZ '2026-08-20T00:00:00Z', 'System', 'Person', 'Main', 2, TRUE, FALSE, 'Administrator', 0, 'System', '09000000000', '0000', NULL, 'System Province', NULL, '', 'System Street', NULL, '')
+                ON CONFLICT (""Id"") DO NOTHING;
+            ");
 
-            migrationBuilder.InsertData(
-                table: "Users",
-                columns: new[] { "Id", "ArchivedAt", "ArchivedBy", "CreatedAt", "CreatedBy", "Email", "EntityType", "HashedPassword", "IsActive", "IsDeleted", "IsGoogleAccount", "PersonId", "RefreshToken", "RefreshTokenExpiryTime", "RestoredAt", "RestoredBy", "UpdatedAt", "UpdatedBy" },
-                values: new object[] { 2, null, "", new DateTime(2026, 8, 20, 0, 0, 0, 0, DateTimeKind.Utc), "System", "admin", "User", "admin", true, false, false, 2, "", null, null, "", null, "" });
+                    migrationBuilder.Sql(@"
+                INSERT INTO ""Users"" (""Id"", ""ArchivedAt"", ""ArchivedBy"", ""CreatedAt"", ""CreatedBy"", ""Email"", ""EntityType"", ""HashedPassword"", ""IsActive"", ""IsDeleted"", ""IsGoogleAccount"", ""PersonId"", ""RefreshToken"", ""RefreshTokenExpiryTime"", ""RestoredAt"", ""RestoredBy"", ""UpdatedAt"", ""UpdatedBy"")
+                VALUES (2, NULL, '', TIMESTAMPTZ '2026-08-20T00:00:00Z', 'System', 'admin', 'User', 'admin', TRUE, FALSE, FALSE, 2, '', NULL, NULL, '', NULL, '')
+                ON CONFLICT (""Id"") DO NOTHING;
+            ");
         }
 
         /// <inheritdoc />
