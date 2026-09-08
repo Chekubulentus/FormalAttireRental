@@ -24,7 +24,7 @@ namespace RentalAttireBackend.Domain.Entities
         public bool IsAvailable => AvailableQuantity > 0;
         public int RentalCount { get; set; }
         public double UnitCost { get; set; }
-        public int SupplierId { get; set; }
+        public int? SupplierId { get; set; }
 
         //NavProp
         [JsonIgnore]

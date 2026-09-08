@@ -45,7 +45,7 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
                 s.SupplierCode.ToLower().Contains(searchQuery.ToLower())
                 );
 
-            var totalCount = await _context.Suppliers.CountAsync(cancellationToken);
+            var totalCount = await baseQuery.CountAsync();
 
             var paginatedItems = await baseQuery
                 .Skip((currentPage - 1) * itemsPerPage)
@@ -65,6 +65,7 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
         {
             return await _context.Suppliers
                 .Include(s => s.ClothesAvailable)
+                    .ThenInclude(c => c.Category)
                 .FirstOrDefaultAsync(s => s.Id == id, cancellationToken);
         }
 
@@ -73,6 +74,7 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
             return await _context.Suppliers
                 .AsNoTracking()
                 .Include(s => s.ClothesAvailable)
+                    .ThenInclude(c => c.Category)
                 .FirstOrDefaultAsync(s => s.Id == id, cancellationToken);
         }
 

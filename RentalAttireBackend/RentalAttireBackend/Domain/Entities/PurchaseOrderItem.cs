@@ -10,6 +10,7 @@ namespace RentalAttireBackend.Domain.Entities
         public int OrderedQuantity { get; set; }
         public int ReceivedQuantity { get; set; }
         public double UnitCost { get; set; }
+        public int OriginalSupplierId { get; set; }
         public double TotalAmount => OrderedQuantity * UnitCost;
 
         //Nav Prop

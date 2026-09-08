@@ -7,10 +7,10 @@ namespace RentalAttireBackend.Domain.Entities
     public class Supplier : BaseEntity
     {
         public string SupplierCode { get; set; } = string.Empty;
-        public string SupplierName { get; set; } = string.Empty;
-        public string PhoneNumber { get; set; } = string.Empty;
-        public string Email { get; set; } = string.Empty;
-        public string Address { get; set; } = string.Empty;
+        public string SupplierName { get; set; } = string.Empty; // Required
+        public string? PhoneNumber { get; set; } = string.Empty;
+        public string? Email { get; set; } = string.Empty;
+        public string Address { get; set; } = string.Empty; // Required
         public List<Clothe> ClothesAvailable { get; set; } = new();
         public int EmployeeId { get; set; }
 

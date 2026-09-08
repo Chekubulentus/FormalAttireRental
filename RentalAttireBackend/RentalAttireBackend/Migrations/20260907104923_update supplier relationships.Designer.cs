@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using RentalAttireBackend.Infrastructure.Persistence.DataContext;
@@ -11,9 +12,11 @@ using RentalAttireBackend.Infrastructure.Persistence.DataContext;
 namespace RentalAttireBackend.Migrations
 {
     [DbContext(typeof(FormalAttireContext))]
-    partial class FormalAttireContextModelSnapshot : ModelSnapshot
+    [Migration("20260907104923_update supplier relationships")]
+    partial class updatesupplierrelationships
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -703,9 +706,6 @@ namespace RentalAttireBackend.Migrations
                     b.Property<int>("OrderedQuantity")
                         .HasColumnType("integer");
 
-                    b.Property<int>("OriginalSupplierId")
-                        .HasColumnType("integer");
-
                     b.Property<int>("PurchaseOrderId")
                         .HasColumnType("integer");
 
@@ -718,6 +718,9 @@ namespace RentalAttireBackend.Migrations
                     b.Property<string>("RestoredBy")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<int>("SupplierId")
+                        .HasColumnType("integer");
 
                     b.Property<double>("UnitCost")
                         .HasColumnType("double precision");
@@ -1115,6 +1118,7 @@ namespace RentalAttireBackend.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<int>("EmployeeId")
@@ -1130,6 +1134,7 @@ namespace RentalAttireBackend.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<string>("PhoneNumber")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<DateTime?>("RestoredAt")

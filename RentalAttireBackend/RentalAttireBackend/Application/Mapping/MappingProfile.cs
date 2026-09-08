@@ -21,6 +21,8 @@ using RentalAttireBackend.Application.Persons.Commands.UpdatePerson;
 using RentalAttireBackend.Application.Persons.DTO;
 using RentalAttireBackend.Application.Rentals.Commands.RentalTransaction;
 using RentalAttireBackend.Application.Rentals.DTOs;
+using RentalAttireBackend.Application.Suppliers.Commands.CreateSupplier;
+using RentalAttireBackend.Application.Suppliers.Commands.UpdateSupplier;
 using RentalAttireBackend.Application.Suppliers.DTOs;
 using RentalAttireBackend.Application.Users.DTO;
 using RentalAttireBackend.Domain.Entities;
@@ -215,7 +217,7 @@ namespace RentalAttireBackend.Application.Mapping
             CreateMap<Employee, Employee>();
             #endregion
 
-            #region Clothe -> ClotheDTO
+            #region Clothe ->   
             CreateMap<Clothe, ClotheDTO>()
                 .ForMember(dest => dest.CategoryName,
                 opt => opt.MapFrom(src => src.Category.CategoryName))
@@ -225,6 +227,14 @@ namespace RentalAttireBackend.Application.Mapping
                 opt => opt.MapFrom(src => src.Condition.ToString()))
                 .ForMember(dest => dest.ProfileImagePath,
                 opt => opt.MapFrom(src => src.ProfileImagePath));
+            #endregion
+
+            #region ClotheDTO -> Clothe
+            CreateMap<ClotheDTO, Clothe>()
+                .ForMember(dest => dest.Gender,
+                opt => opt.MapFrom(src => Enum.Parse<ClotheGender>(src.ClotheGender, true)))
+                .ForMember(dest => dest.Condition,
+                opt => opt.MapFrom(src => Enum.Parse<Condition>(src.Condition, true)));
             #endregion
 
             #region CreateClotheCommand -> Clothe
@@ -436,6 +446,26 @@ namespace RentalAttireBackend.Application.Mapping
             CreateMap<Supplier, SupplierDTO>()
                 .ForMember(dest => dest.CreatedByEmployee,
                 opt => opt.MapFrom(src => src.Employee.User.Person.FullName));
+            #endregion
+
+            #region CreateSupplierCommand -> Supplier
+            CreateMap<CreateSupplierCommand, Supplier>()
+                .ForMember(dest => dest.ClothesAvailable,
+                opt => opt.Ignore())
+                .ForMember(dest => dest.EmployeeId,
+                opt => opt.Ignore())
+                .ForMember(dest => dest.SupplierCode,
+                opt => opt.Ignore());
+            #endregion
+
+            #region UpdateSupplierCommand -> Supplier
+            CreateMap<UpdateSupplierCommand, Supplier>()
+                .ForMember(dest => dest.ClothesAvailable,
+                opt => opt.Ignore())
+                .ForMember(dest => dest.EmployeeId,
+                opt => opt.Ignore())
+                .ForMember(dest => dest.SupplierCode,
+                opt => opt.Ignore());
             #endregion
         }
     }

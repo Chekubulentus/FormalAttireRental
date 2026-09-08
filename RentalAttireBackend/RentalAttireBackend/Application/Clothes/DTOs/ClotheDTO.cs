@@ -1,4 +1,6 @@
-﻿namespace RentalAttireBackend.Application.Clothes.DTOs
+﻿using RentalAttireBackend.Application.Suppliers.DTOs;
+
+namespace RentalAttireBackend.Application.Clothes.DTOs
 {
     public class ClotheDTO
     {
@@ -17,6 +19,11 @@
         public int DepositAmount { get; set; }
         public int RentalDurationDays { get; set; }
         public string Condition { get; set; } = string.Empty;
+        public int ReservedQuantity { get; set; } 
         public string? ProfileImagePath { get; set; } = string.Empty;
+        public bool IsAvailable { get; set; }
+        public int RentalCount { get; set; }
+        public double UnitCost { get; set; }
+        public SupplierDTO Supplier { get; set; } = new();
     }
 }
