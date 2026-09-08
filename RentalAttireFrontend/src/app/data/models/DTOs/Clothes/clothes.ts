@@ -1,3 +1,5 @@
+import { SupplierDTO } from "../Supplier/supplier";
+
 export class ClotheDTO {
   id : number = 0;
   clotheCode: string = '';
@@ -14,5 +16,10 @@ export class ClotheDTO {
   depositAmount: number = 0;
   rentalDurationDays: number = 0;
   condition: string = '';
+  reservedQuantity: number = 0;
+  isAvailable: boolean = false;
+  rentalCount: number = 0;
+  unitCost: number = 0;
   profileImagePath?: string = '';
+  supplier : SupplierDTO | null = null;
 }

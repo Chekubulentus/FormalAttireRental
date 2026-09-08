@@ -34,6 +34,13 @@ namespace RentalAttireBackend.Domain.Interfaces
             int id,
             CancellationToken cancellationToken
             );
+
+        public Task<PagedResult<Clothe>> GetSupplierClothesByIdAsync(
+            int id,
+            int currentPage,
+            int itemsPerPage,
+            CancellationToken cancellationToken
+            );
         #endregion
     }
 }

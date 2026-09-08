@@ -78,6 +78,28 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
                 .FirstOrDefaultAsync(s => s.Id == id, cancellationToken);
         }
 
+        public async Task<PagedResult<Clothe>> GetSupplierClothesByIdAsync(int id, int currentPage, int itemsPerPage, CancellationToken cancellationToken)
+        {
+            var baseQuery = _context.Clothes
+                .Where(c => c.SupplierId == id)
+                .OrderBy(c => c.Id);
+
+            var totalCount = await baseQuery.CountAsync(cancellationToken);
+
+            var paginatedClothes = await baseQuery
+                .Skip((currentPage - 1) * itemsPerPage)
+                .Take(itemsPerPage)
+                .ToListAsync(cancellationToken);
+
+            return new PagedResult<Clothe>
+            {
+                Items = paginatedClothes,
+                TotalCount = totalCount,
+                PageNumber = currentPage,
+                PageSize = itemsPerPage
+            };
+        }
+
         public async Task<bool> UpdateSupplieAsync(Supplier supplier, CancellationToken cancellationToken)
         {
             _context.Suppliers.Update(supplier);

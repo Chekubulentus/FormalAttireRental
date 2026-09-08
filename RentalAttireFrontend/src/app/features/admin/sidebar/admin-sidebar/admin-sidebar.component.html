@@ -91,6 +91,19 @@
           <span class="nav-label" *ngIf="!isCollapsed">Rentals</span>
         </a>
 
+        <a class="nav-item" routerLink="/admin/suppliers" routerLinkActive="active"
+           [title]="isCollapsed ? 'Supplier' : ''">
+          <span class="nav-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <line x1="16" y1="13" x2="8" y2="13"/>
+              <line x1="16" y1="17" x2="8" y2="17"/>
+            </svg>
+          </span>
+          <span class="nav-label" *ngIf="!isCollapsed">Supplier</span>
+        </a>
+
         <a class="nav-item" routerLink="/admin/customer" routerLinkActive="active"
            [title]="isCollapsed ? 'Customers' : ''">
           <span class="nav-icon">

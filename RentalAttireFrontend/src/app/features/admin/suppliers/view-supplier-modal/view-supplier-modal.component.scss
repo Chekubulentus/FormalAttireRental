@@ -1,0 +1,254 @@
+// ─── Design Tokens ────────────────────────────────────────────────────────────
+$surface:     #ffffff;
+$bg:          #f9f7f5;
+$border:      #e4ddd6;
+$gold:        #a07840;
+$gold-border: #d4b896;
+$text:        #1a1917;
+$text-muted:  #6b6560;
+$text-soft:   #9c948e;
+
+// ─── Overlay ──────────────────────────────────────────────────────────────────
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(26, 25, 23, 0.45);
+  backdrop-filter: blur(3px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 24px;
+  animation: fadeIn 0.18s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+// ─── Modal Card ───────────────────────────────────────────────────────────────
+.modal {
+  background: $surface;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 520px;
+  box-shadow: 0 8px 40px rgba(26, 25, 23, 0.14);
+  display: flex;
+  flex-direction: column;
+  animation: slideUp 0.2s ease;
+  overflow: hidden;
+}
+
+// ─── Header ───────────────────────────────────────────────────────────────────
+.modal__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 24px 24px 20px;
+  border-bottom: 1px solid $border;
+
+  &-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+}
+
+.modal__eyebrow {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: $gold;
+}
+
+.modal__title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 22px;
+  font-weight: 400;
+  color: $text;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.modal__close {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid $border;
+  border-radius: 8px;
+  background: transparent;
+  color: $text-soft;
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s;
+
+  &:hover {
+    background: $bg;
+    color: $text;
+  }
+}
+
+// ─── Code Badge ───────────────────────────────────────────────────────────────
+.code-badge {
+  display: inline-block;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  color: $gold;
+  background: rgba($gold, 0.08);
+  border: 1px solid rgba($gold, 0.2);
+  border-radius: 5px;
+  padding: 3px 8px;
+  letter-spacing: 0.04em;
+  width: fit-content;
+}
+
+// ─── Body ─────────────────────────────────────────────────────────────────────
+.modal__body {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  overflow-y: auto;
+  max-height: calc(80vh - 160px);
+}
+
+// ─── Detail Sections ──────────────────────────────────────────────────────────
+.detail-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  &__title {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    color: $text-soft;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin: 0;
+  }
+
+  &__subtitle {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: $text-muted;
+    margin: 2px 0 0;
+  }
+
+  &__row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+  }
+}
+
+.divider {
+  height: 1px;
+  background: $border;
+}
+
+// ─── Detail Grid ──────────────────────────────────────────────────────────────
+.detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  &--full {
+    grid-column: 1 / -1;
+  }
+
+  &__label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    color: $text-soft;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  &__value {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: $text;
+    line-height: 1.4;
+  }
+}
+
+// ─── Footer ───────────────────────────────────────────────────────────────────
+.modal__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  border-top: 1px solid $border;
+  background: $bg;
+
+  &-meta {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    color: $text-soft;
+  }
+}
+
+// ─── Buttons ──────────────────────────────────────────────────────────────────
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 8px;
+  padding: 8px 16px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background 0.12s, border-color 0.12s, color 0.12s;
+  white-space: nowrap;
+
+  &--ghost {
+    background: transparent;
+    color: $text-muted;
+    border-color: $border;
+
+    &:hover:not(:disabled) {
+      background: $bg;
+      color: $text;
+      border-color: darken($border, 6%);
+    }
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+  }
+
+  &--outline {
+    background: transparent;
+    color: $text-muted;
+    border-color: $border;
+
+    &:hover {
+      background: $bg;
+      color: $text;
+    }
+  }
+}

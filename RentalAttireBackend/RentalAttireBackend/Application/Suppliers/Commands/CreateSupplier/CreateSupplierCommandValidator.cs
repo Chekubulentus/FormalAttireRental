@@ -20,10 +20,13 @@ namespace RentalAttireBackend.Application.Suppliers.Commands.CreateSupplier
 
             RuleFor(x => x.PhoneNumber)
                 .Length(11)
+                .When(x => !string.IsNullOrEmpty(x.PhoneNumber))
                 .WithMessage("Invalid phone number digits");
 
             RuleFor(x => x.Email)
-                .EmailAddress();
+                .EmailAddress()
+                .When(x => !string.IsNullOrEmpty(x.Email))
+                .WithMessage("Invalid email format");
         }
     }
 }

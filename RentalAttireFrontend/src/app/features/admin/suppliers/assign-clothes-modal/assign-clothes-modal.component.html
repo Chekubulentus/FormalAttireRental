@@ -1,0 +1,110 @@
+<div class="modal-overlay" (click)="onOverlayClick($event)">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+
+    <!-- Header -->
+    <div class="modal__header">
+      <div class="modal__header-meta">
+        <span class="modal__eyebrow">Procurement</span>
+        <h2 class="modal__title" id="modal-title">{{ title }}</h2>
+        <p class="modal__subtitle">{{ subtitle }}</p>
+      </div>
+      <button class="modal__close" (click)="close()" aria-label="Close">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="modal__toolbar">
+      <div class="search">
+        <svg class="search__icon" width="15" height="15" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input
+          type="text"
+          class="search__input"
+          placeholder="Search by name or code…"
+          [(ngModel)]="searchQuery"
+        />
+      </div>
+
+      <div class="selected-count" *ngIf="selectedCount > 0">
+        <ng-container *ngIf="newlyUnassignedCount === 0">
+          {{ selectedCount }} selected
+        </ng-container>
+        <ng-container *ngIf="newlyUnassignedCount > 0">
+          +{{ newlyAssignedCount }} assign &middot; &minus;{{ newlyUnassignedCount }} unassign
+        </ng-container>
+        <button class="selected-count__clear" (click)="clearSelection()" type="button">Clear</button>
+      </div>
+    </div>
+
+    <!-- Body -->
+    <div class="modal__body">
+
+      <!-- Empty state: nothing in the picker pool at all -->
+      <div class="empty-state" *ngIf="pickerClothes.length === 0">
+        <p class="empty-state__title">No clothes available</p>
+        <p class="empty-state__subtitle">There are no clothes to assign right now.</p>
+      </div>
+
+      <!-- Empty state: search matched nothing -->
+      <div class="empty-state" *ngIf="pickerClothes.length > 0 && filteredClothes.length === 0">
+        <p class="empty-state__title">No matches</p>
+        <p class="empty-state__subtitle">Try a different search term.</p>
+      </div>
+
+      <!-- Picker list -->
+      <div class="picker-list" *ngIf="filteredClothes.length > 0">
+        <label
+          class="picker-row"
+          *ngFor="let clothe of filteredClothes"
+          [class.picker-row--selected]="isSelected(clothe.id)"
+        >
+          <input
+            type="checkbox"
+            class="picker-row__checkbox"
+            [checked]="isSelected(clothe.id)"
+            (change)="toggleClothe(clothe.id)"
+          />
+
+          <div class="picker-row__thumb">
+            <img *ngIf="clothe.profileImagePath" [src]="clothe.profileImagePath" [alt]="clothe.clotheName" />
+            <span *ngIf="!clothe.profileImagePath" class="picker-row__thumb-fallback">{{ clothe.clotheName.charAt(0) }}</span>
+          </div>
+
+          <div class="picker-row__info">
+            <span class="picker-row__name">
+              {{ clothe.clotheName }}
+              <span class="picker-row__assigned-badge" *ngIf="wasOriginallyAssigned(clothe.id)">Currently assigned</span>
+            </span>
+            <span class="picker-row__meta">
+              <span class="picker-row__code">{{ clothe.clotheCode }}</span>
+              <span class="picker-row__dot">&middot;</span>
+              <span>{{ clothe.categoryName }}</span>
+              <span class="picker-row__dot">&middot;</span>
+              <span>{{ clothe.size }}</span>
+            </span>
+          </div>
+
+          <div class="picker-row__price">₱{{ clothe.rentalPrice }}</div>
+        </label>
+      </div>
+
+    </div>
+
+    <!-- Footer -->
+    <div class="modal__footer">
+      <button class="btn btn--outline" (click)="close()" type="button">
+        Cancel
+      </button>
+      <button class="btn btn--primary" (click)="confirm()" type="button">
+        Confirm Selection
+      </button>
+    </div>
+
+  </div>
+</div>

@@ -71,6 +71,27 @@ export const ADMIN_ROUTES: Routes = [
           return import('./rentals/view-rental/view-rental.component')
           .then(m => m.ViewRentalComponent);
         }
+      },
+      {
+        path: 'suppliers',
+        loadComponent: () => {
+          return import('./suppliers/suppliers/suppliers.component')
+          .then(m => m.SuppliersComponent)
+        }
+      },
+      {
+        path: 'create-supplier',
+        loadComponent: () => {
+          return import('./suppliers/create-supplier-modal/create-supplier-modal.component')
+          .then(m => m.CreateSupplierModalComponent)
+        }
+      }, 
+      {
+        path: 'view-supplier',
+        loadComponent: () => {
+          return import('./suppliers/view-supplier-modal/view-supplier-modal.component')
+          .then(m => m.ViewSupplierModalComponent)
+        }
       }
     ],
   },

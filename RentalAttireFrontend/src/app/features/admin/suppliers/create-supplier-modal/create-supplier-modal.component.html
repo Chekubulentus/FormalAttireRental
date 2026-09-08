@@ -1,0 +1,120 @@
+<div class="modal-overlay" (click)="onOverlayClick($event)">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+
+    <!-- Header -->
+    <div class="modal__header">
+      <div class="modal__header-meta">
+        <span class="modal__eyebrow">Procurement</span>
+        <h2 class="modal__title" id="modal-title">Add Supplier</h2>
+        <p class="modal__subtitle">Fill in the details to register a new supplier.</p>
+      </div>
+      <button class="modal__close" (click)="close()" aria-label="Close">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Body -->
+    <div class="modal__body">
+
+      <!-- Supplier Name -->
+      <div class="field" [class.field--error]="hasError('supplierName')">
+        <label class="field__label" for="supplierName">
+          Supplier Name
+          <span class="field__required">*</span>
+        </label>
+        <input
+          id="supplierName"
+          type="text"
+          class="field__input"
+          placeholder="e.g. Santos Formal Wear"
+          [(ngModel)]="form.supplierName"
+          (blur)="onBlur('supplierName')"
+        />
+        <span class="field__error" *ngIf="hasError('supplierName')">
+          {{ errorMsg('supplierName') }}
+        </span>
+      </div>
+
+      <!-- Address -->
+      <div class="field" [class.field--error]="hasError('address')">
+        <label class="field__label" for="address">
+          Address
+          <span class="field__required">*</span>
+        </label>
+        <textarea
+          id="address"
+          class="field__textarea"
+          placeholder="e.g. 123 Rizal St., Quezon City"
+          rows="3"
+          [(ngModel)]="form.address"
+          (blur)="onBlur('address')"
+        ></textarea>
+        <span class="field__error" *ngIf="hasError('address')">
+          {{ errorMsg('address') }}
+        </span>
+      </div>
+
+      <!-- Phone + Email side by side -->
+      <div class="field-row">
+
+        <div class="field" [class.field--error]="hasError('phoneNumber')">
+          <label class="field__label" for="phoneNumber">
+            Phone Number
+            <span class="field__optional">Optional</span>
+          </label>
+          <input
+            id="phoneNumber"
+            type="tel"
+            class="field__input"
+            placeholder="e.g. 09171234567"
+            [(ngModel)]="form.phoneNumber"
+            (blur)="onBlur('phoneNumber')"
+          />
+          <span class="field__error" *ngIf="hasError('phoneNumber')">
+            {{ errorMsg('phoneNumber') }}
+          </span>
+        </div>
+
+        <div class="field" [class.field--error]="hasError('email')">
+          <label class="field__label" for="email">
+            Email Address
+            <span class="field__optional">Optional</span>
+          </label>
+          <input
+            id="email"
+            type="email"
+            class="field__input"
+            placeholder="e.g. supplier@email.com"
+            [(ngModel)]="form.email"
+            (blur)="onBlur('email')"
+          />
+          <span class="field__error" *ngIf="hasError('email')">
+            {{ errorMsg('email') }}
+          </span>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Footer -->
+    <div class="modal__footer">
+      <button class="btn btn--outline" (click)="close()" [disabled]="isSubmitting">
+        Cancel
+      </button>
+      <button class="btn btn--primary" (click)="onSubmit()" [disabled]="isSubmitting">
+        <span class="btn__spinner" *ngIf="isSubmitting">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+            <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+          </svg>
+        </span>
+        {{ isSubmitting ? 'Saving…' : 'Add Supplier' }}
+      </button>
+    </div>
+
+  </div>
+</div>

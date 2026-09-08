@@ -1,0 +1,392 @@
+// ─── Design Tokens ────────────────────────────────────────────────────────────
+$surface:     #ffffff;
+$bg:          #f9f7f5;
+$border:      #e4ddd6;
+$gold:        #a07840;
+$gold-dim:    #b8975a;
+$gold-border: #d4b896;
+$text:        #1a1917;
+$text-muted:  #6b6560;
+$text-soft:   #9c948e;
+
+// ─── Overlay ──────────────────────────────────────────────────────────────────
+// Second-layer modal — stacks above CreateSupplierModalComponent (z-index 1000).
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(26, 25, 23, 0.45);
+  backdrop-filter: blur(3px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100;
+  padding: 24px;
+  animation: fadeIn 0.18s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+// ─── Modal Card ───────────────────────────────────────────────────────────────
+.modal {
+  background: $surface;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 560px;
+  max-height: 82vh;
+  box-shadow: 0 8px 40px rgba(26, 25, 23, 0.14);
+  display: flex;
+  flex-direction: column;
+  animation: slideUp 0.2s ease;
+  overflow: hidden;
+}
+
+// ─── Header ───────────────────────────────────────────────────────────────────
+.modal__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 24px 24px 20px;
+  border-bottom: 1px solid $border;
+  flex-shrink: 0;
+
+  &-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+}
+
+.modal__eyebrow {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: $gold;
+}
+
+.modal__title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 22px;
+  font-weight: 400;
+  color: $text;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.modal__subtitle {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  color: $text-muted;
+  margin: 0;
+}
+
+.modal__close {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid $border;
+  border-radius: 8px;
+  background: transparent;
+  color: $text-soft;
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s;
+
+  &:hover {
+    background: $bg;
+    color: $text;
+  }
+}
+
+// ─── Toolbar ──────────────────────────────────────────────────────────────────
+.modal__toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 24px;
+  border-bottom: 1px solid $border;
+  flex-shrink: 0;
+}
+
+.search {
+  position: relative;
+  flex: 1;
+  max-width: 320px;
+
+  &__icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: $text-soft;
+    pointer-events: none;
+  }
+
+  &__input {
+    width: 100%;
+    box-sizing: border-box;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: $text;
+    background: $bg;
+    border: 1px solid $border;
+    border-radius: 8px;
+    padding: 9px 12px 9px 34px;
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+
+    &::placeholder {
+      color: $text-soft;
+    }
+
+    &:focus {
+      border-color: $gold-border;
+      box-shadow: 0 0 0 3px rgba($gold, 0.08);
+      background: $surface;
+    }
+  }
+}
+
+.selected-count {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: $gold;
+  white-space: nowrap;
+
+  &__clear {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    color: $text-soft;
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-decoration: underline;
+    padding: 0;
+
+    &:hover {
+      color: $text-muted;
+    }
+  }
+}
+
+// ─── Body ─────────────────────────────────────────────────────────────────────
+.modal__body {
+  padding: 8px 16px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+// ─── Empty State ──────────────────────────────────────────────────────────────
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 48px 24px;
+  gap: 4px;
+
+  &__title {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: $text;
+    margin: 0;
+  }
+
+  &__subtitle {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: $text-soft;
+    margin: 0;
+  }
+}
+
+// ─── Picker List ──────────────────────────────────────────────────────────────
+.picker-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.picker-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.12s;
+
+  &:hover {
+    background: $bg;
+  }
+
+  &--selected {
+    background: rgba($gold, 0.06);
+
+    &:hover {
+      background: rgba($gold, 0.09);
+    }
+  }
+
+  &__checkbox {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    accent-color: $gold;
+    cursor: pointer;
+  }
+
+  &__thumb {
+    flex-shrink: 0;
+    width: 38px;
+    height: 38px;
+    border-radius: 6px;
+    overflow: hidden;
+    background: $bg;
+    border: 1px solid $border;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    &-fallback {
+      font-family: 'DM Serif Display', serif;
+      font-size: 15px;
+      color: $text-soft;
+      text-transform: uppercase;
+    }
+  }
+
+  &__info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  &__name {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: $text;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  &__assigned-badge {
+    flex-shrink: 0;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    color: $gold;
+    background: rgba($gold, 0.08);
+    border: 1px solid $gold-border;
+    border-radius: 4px;
+    padding: 1px 6px;
+    white-space: nowrap;
+  }
+
+  &__meta {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    color: $text-soft;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__code {
+    color: $text-muted;
+  }
+
+  &__dot {
+    margin: 0 2px;
+  }
+
+  &__price {
+    flex-shrink: 0;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: $text-muted;
+  }
+}
+
+// ─── Footer ───────────────────────────────────────────────────────────────────
+.modal__footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 16px 24px;
+  border-top: 1px solid $border;
+  background: $bg;
+  flex-shrink: 0;
+}
+
+// ─── Buttons ──────────────────────────────────────────────────────────────────
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 8px;
+  padding: 9px 18px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background 0.12s, border-color 0.12s, color 0.12s, opacity 0.12s;
+  white-space: nowrap;
+
+  &--primary {
+    background: $gold;
+    color: #fff;
+    border-color: $gold;
+
+    &:hover {
+      background: $gold-dim;
+      border-color: $gold-dim;
+    }
+  }
+
+  &--outline {
+    background: transparent;
+    color: $text-muted;
+    border-color: $border;
+
+    &:hover {
+      background: darken($bg, 2%);
+      color: $text;
+    }
+  }
+}
