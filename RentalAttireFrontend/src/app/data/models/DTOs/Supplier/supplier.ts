@@ -8,5 +8,6 @@ export interface SupplierDTO {
     email : string;
     address : string;
     clothesAvailable : ClotheDTO[];
+    assignClothesCount : number;
     createdByEmployee : string;
 }

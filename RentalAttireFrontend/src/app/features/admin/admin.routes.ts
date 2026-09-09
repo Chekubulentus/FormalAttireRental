@@ -92,6 +92,13 @@ export const ADMIN_ROUTES: Routes = [
           return import('./suppliers/view-supplier-modal/view-supplier-modal.component')
           .then(m => m.ViewSupplierModalComponent)
         }
+      },
+      {
+        path: 'edit-supplier',
+        loadComponent: () => {
+          return import('./suppliers/edit-supplier-modal/edit-supplier-modal.component')
+          .then(m => m.EditSupplierModalComponent)
+        }
       }
     ],
   },

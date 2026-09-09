@@ -1,1 +1,158 @@
-<p>edit-supplier-modal works!</p>
+<div class="modal-overlay" (click)="onOverlayClick($event)">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+
+    <!-- Header -->
+    <div class="modal__header">
+      <div class="modal__header-meta">
+        <span class="modal__eyebrow">Procurement</span>
+        <h2 class="modal__title" id="modal-title">Edit Supplier</h2>
+        <p class="modal__subtitle">Update the details for {{ supplier.supplierName }}.</p>
+      </div>
+      <button class="modal__close" (click)="close()" aria-label="Close">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Body -->
+    <div class="modal__body">
+
+      <!-- Supplier Name -->
+      <div class="field" [class.field--error]="hasError('supplierName')">
+        <label class="field__label" for="supplierName">
+          Supplier Name
+          <span class="field__required">*</span>
+        </label>
+        <input
+          id="supplierName"
+          type="text"
+          class="field__input"
+          placeholder="e.g. Santos Formal Wear"
+          [(ngModel)]="form.supplierName"
+          (blur)="onBlur('supplierName')"
+        />
+        <span class="field__error" *ngIf="hasError('supplierName')">
+          {{ errorMsg('supplierName') }}
+        </span>
+      </div>
+
+      <!-- Address -->
+      <div class="field" [class.field--error]="hasError('address')">
+        <label class="field__label" for="address">
+          Address
+          <span class="field__required">*</span>
+        </label>
+        <textarea
+          id="address"
+          class="field__textarea"
+          placeholder="e.g. 123 Rizal St., Quezon City"
+          rows="3"
+          [(ngModel)]="form.address"
+          (blur)="onBlur('address')"
+        ></textarea>
+        <span class="field__error" *ngIf="hasError('address')">
+          {{ errorMsg('address') }}
+        </span>
+      </div>
+
+      <!-- Phone + Email side by side -->
+      <div class="field-row">
+
+        <div class="field" [class.field--error]="hasError('phoneNumber')">
+          <label class="field__label" for="phoneNumber">
+            Phone Number
+            <span class="field__optional">Optional</span>
+          </label>
+          <input
+            id="phoneNumber"
+            type="tel"
+            class="field__input"
+            placeholder="e.g. 09171234567"
+            [(ngModel)]="form.phoneNumber"
+            (blur)="onBlur('phoneNumber')"
+          />
+          <span class="field__error" *ngIf="hasError('phoneNumber')">
+            {{ errorMsg('phoneNumber') }}
+          </span>
+        </div>
+
+        <div class="field" [class.field--error]="hasError('email')">
+          <label class="field__label" for="email">
+            Email Address
+            <span class="field__optional">Optional</span>
+          </label>
+          <input
+            id="email"
+            type="email"
+            class="field__input"
+            placeholder="e.g. supplier@email.com"
+            [(ngModel)]="form.email"
+            (blur)="onBlur('email')"
+          />
+          <span class="field__error" *ngIf="hasError('email')">
+            {{ errorMsg('email') }}
+          </span>
+        </div>
+
+      </div>
+
+      <!-- Divider -->
+      <div class="divider"></div>
+
+      <!-- Assign / Unassign Clothes -->
+      <div class="field">
+        <label class="field__label">
+          Clothes
+          <span class="field__optional">Optional</span>
+        </label>
+        <button type="button" class="assign-clothes-btn" (click)="openAssignClothesModal()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <path d="M20.38 3.46L16 2a4 4 0 01-8 0L3.62 3.46a2 2 0 00-1.34 2.23l.58 3.57a1 1 0 00.99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 002-2V10h2.15a1 1 0 00.99-.84l.58-3.57a2 2 0 00-1.34-2.23z"/>
+          </svg>
+          <span *ngIf="pendingAssignCount === 0 && pendingUnassignCount === 0">
+            {{ pickerClothes.length === 0 ? 'Manage Clothes' : currentlySelectedIds.size + ' clothe' + (currentlySelectedIds.size === 1 ? '' : 's') + ' assigned' }}
+          </span>
+          <span *ngIf="pendingAssignCount > 0 || pendingUnassignCount > 0" class="assign-clothes-btn__delta">
+            <ng-container *ngIf="pendingAssignCount > 0">
+              <span class="delta delta--assign">+{{ pendingAssignCount }} assign</span>
+            </ng-container>
+            <ng-container *ngIf="pendingUnassignCount > 0">
+              <span class="delta delta--unassign">−{{ pendingUnassignCount }} unassign</span>
+            </ng-container>
+          </span>
+          <span class="assign-clothes-btn__chevron">→</span>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Footer -->
+    <div class="modal__footer">
+      <button class="btn btn--outline" (click)="close()" [disabled]="isSubmitting">
+        Cancel
+      </button>
+      <button class="btn btn--primary" (click)="onSubmit()" [disabled]="isSubmitting">
+        <span class="btn__spinner" *ngIf="isSubmitting">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+            <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+          </svg>
+        </span>
+        {{ isSubmitting ? 'Saving…' : 'Save Changes' }}
+      </button>
+    </div>
+
+  </div>
+</div>
+
+<app-assign-clothes-modal
+  *ngIf="isAssignClothesModalOpen"
+  [pickerClothes]="pickerClothes"
+  [preSelectedIds]="preSelectedIdsSnapshot"
+  title="Manage Clothes"
+  subtitle="Assign or unassign clothes for this supplier."
+  (closeModal)="isAssignClothesModalOpen = false"
+  (confirmSelection)="onClothesSelected($event)"
+></app-assign-clothes-modal>
