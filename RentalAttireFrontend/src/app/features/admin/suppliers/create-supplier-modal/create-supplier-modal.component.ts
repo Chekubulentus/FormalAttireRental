@@ -1,6 +1,8 @@
 import { Component, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { AssignClothesModalComponent, AssignClothesResult } from '../assign-clothes-modal/assign-clothes-modal.component';
+import { ClotheDTO } from '../../../../data/models/DTOs/Clothes/clothes'; // ASSUMPTION — confirm relative depth matches your folder structure
 
 interface CreateSupplierForm {
   supplierName: string;
@@ -12,7 +14,7 @@ interface CreateSupplierForm {
 @Component({
   selector: 'app-create-supplier-modal',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, AssignClothesModalComponent],
   templateUrl: './create-supplier-modal.component.html',
   styleUrl: './create-supplier-modal.component.scss'
 })
@@ -31,6 +33,34 @@ export class CreateSupplierModalComponent {
 
   isSubmitting = false;
   touched = false;
+
+  // ── Assign Clothes State ───────────────────────────────────────────────────
+  isAssignClothesModalOpen = false;
+  availableClothes: ClotheDTO[] = [];
+  selectedClotheIds: number[] = [];
+
+  constructor() {
+    this.loadAvailableClothes();
+  }
+
+  // TODO: replace with real ClotheService call once the "unassigned clothes"
+  // query/endpoint exists on the backend (SupplierId == null filter).
+  loadAvailableClothes(): void {
+    // const result = await this.clotheService.getUnassignedClothesAsync();
+    // if (result.isSuccess) this.availableClothes = result.data;
+    this.availableClothes = [];
+  }
+
+  openAssignClothesModal(): void {
+    this.isAssignClothesModalOpen = true;
+  }
+
+  // Create only ever has something to assign — originalIds inside the picker
+  // starts empty, so unassignClotheIds will always come back [] here.
+  onClothesSelected(result: AssignClothesResult): void {
+    this.selectedClotheIds = result.assignClotheIds;
+    this.isAssignClothesModalOpen = false;
+  }
 
   // ── Validation ─────────────────────────────────────────────────────────────
   get errors(): Record<string, string> {
@@ -88,8 +118,8 @@ export class CreateSupplierModalComponent {
     this.isSubmitting = true;
 
     try {
-      // TODO: call SupplierService.createSupplierAsync(this.form)
-      // const result = await this.supplierService.createSupplierAsync(this.form);
+      // TODO: call SupplierService.createSupplierAsync({ ...this.form, clotheIds: this.selectedClotheIds })
+      // const result = await this.supplierService.createSupplierAsync({ ...this.form, clotheIds: this.selectedClotheIds });
       // if (result.isSuccess) {
       //   this.supplierCreated.emit();  // parent shows toast + reloads table
       //   this.close();

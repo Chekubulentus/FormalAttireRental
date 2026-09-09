@@ -98,7 +98,7 @@ namespace RentalAttireBackend.Application.Suppliers.Commands.CreateSupplier
             }catch(Exception e)
             {
                 await _transactionManager.RollbackTransactionAsync(cancellationToken);
-                return Result<bool>.FailureWithErrorType(e.Message, ErrorType.InternalServerError);
+                throw;
             }
         }
     }

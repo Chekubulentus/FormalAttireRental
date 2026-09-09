@@ -13,6 +13,7 @@ namespace RentalAttireBackend.Domain.Entities
         public string Address { get; set; } = string.Empty; // Required
         public List<Clothe> ClothesAvailable { get; set; } = new();
         public int EmployeeId { get; set; }
+        public int AssignedClothesCount => ClothesAvailable.Count();
 
         // Nav Prop
         [JsonIgnore]

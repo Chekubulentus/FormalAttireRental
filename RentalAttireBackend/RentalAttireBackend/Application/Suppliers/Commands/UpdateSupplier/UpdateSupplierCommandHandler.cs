@@ -119,7 +119,7 @@ namespace RentalAttireBackend.Application.Suppliers.Commands.UpdateSupplier
             }catch(Exception e)
             {
                 await _transactionManager.RollbackTransactionAsync(cancellationToken);
-                return Result<bool>.FailureWithErrorType("An unexpected error occured.", ErrorType.InternalServerError);
+                throw;
             }
         }
     }

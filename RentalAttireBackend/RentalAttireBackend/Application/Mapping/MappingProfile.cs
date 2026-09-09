@@ -467,6 +467,10 @@ namespace RentalAttireBackend.Application.Mapping
                 .ForMember(dest => dest.SupplierCode,
                 opt => opt.Ignore());
             #endregion
+
+            #region Supplier -> SupplierSummaryDTO
+            CreateMap<Supplier, SupplierSummaryDTO>();
+            #endregion
         }
     }
 }

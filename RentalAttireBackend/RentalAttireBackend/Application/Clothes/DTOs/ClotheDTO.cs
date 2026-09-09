@@ -24,6 +24,6 @@ namespace RentalAttireBackend.Application.Clothes.DTOs
         public bool IsAvailable { get; set; }
         public int RentalCount { get; set; }
         public double UnitCost { get; set; }
-        public SupplierDTO Supplier { get; set; } = new();
+        public SupplierSummaryDTO Supplier { get; set; } = new();
     }
 }

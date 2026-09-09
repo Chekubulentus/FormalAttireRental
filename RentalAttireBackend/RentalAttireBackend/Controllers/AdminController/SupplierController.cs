@@ -12,7 +12,6 @@ namespace RentalAttireBackend.Controllers.AdminController
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
     public class SupplierController : ControllerBase
     {
         private readonly IMediator _mediator;

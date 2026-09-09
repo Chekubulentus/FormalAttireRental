@@ -222,6 +222,7 @@
 <!-- Modals — skeletons, wired up later -->
  <app-create-supplier-modal
  *ngIf="openCreateSupplierModal"
+ (closeModal)="closeAddModal()"
  ></app-create-supplier-modal>
 <!-- <app-add-supplier-modal ...></app-add-supplier-modal> -->
 <!-- <app-edit-supplier-modal ...></app-edit-supplier-modal> -->

@@ -104,6 +104,10 @@ export class SuppliersComponent implements OnInit {
     this.openCreateSupplierModal = true;
   }
 
+  closeAddModal(): void {
+    this.openCreateSupplierModal = false;
+  }
+
   openEditModal(supplier: SupplierDTO): void {
     // TODO: open EditSupplierModalComponent with supplier
   }

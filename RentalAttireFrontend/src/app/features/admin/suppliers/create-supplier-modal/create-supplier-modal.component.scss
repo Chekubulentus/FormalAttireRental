@@ -230,6 +230,36 @@ $red-border:  #f0c4c0;
   }
 }
 
+// ─── Assign Clothes Button ─────────────────────────────────────────────────────
+.assign-clothes-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  box-sizing: border-box;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13.5px;
+  color: $text;
+  background: $bg;
+  border: 1px dashed $border;
+  border-radius: 8px;
+  padding: 12px 14px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+
+  svg { flex-shrink: 0; color: $gold; }
+
+  &:hover {
+    background: darken($bg, 2%);
+    border-color: $gold-border;
+  }
+
+  &__chevron {
+    margin-left: auto;
+    color: $text-soft;
+  }
+}
+
 // ─── Footer ───────────────────────────────────────────────────────────────────
 .modal__footer {
   display: flex;
