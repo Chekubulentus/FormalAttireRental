@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RentalAttireBackend.Application.Common.Extensions;
 using RentalAttireBackend.Application.Suppliers.Commands.CreateSupplier;
+using RentalAttireBackend.Application.Suppliers.Commands.UpdateSupplier;
 using RentalAttireBackend.Application.Suppliers.Queries.FilterSuppliers;
 using RentalAttireBackend.Application.Suppliers.Queries.GetSupplierById;
 using RentalAttireBackend.Application.Suppliers.Queries.GetSupplierClothesById;
@@ -53,6 +54,14 @@ namespace RentalAttireBackend.Controllers.AdminController
 
         [HttpPost]
         public async Task<IActionResult> CreateSupplierAsync(CreateSupplierCommand command)
+        {
+            var result = await _mediator.Send(command);
+
+            return result.ToActionResult(this, _httpContextAccessor);
+        }
+
+        [HttpPut] 
+        public async Task<IActionResult> UpdateSupplierAsync(UpdateSupplierCommand command)
         {
             var result = await _mediator.Send(command);
 

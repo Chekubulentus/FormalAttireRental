@@ -82,6 +82,46 @@ $amber-bg:      #fdf6ec;
   }
 }
 
+// ─── Stats Bar ───────────────────────────────────────────────────────────────
+.stats-bar {
+  display: flex;
+  gap: 0;
+  border: 1px solid $border;
+  border-radius: 10px;
+  background: $surface;
+  overflow: hidden;
+  width: fit-content;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 28px;
+  border-right: 1px solid $border;
+
+  &:last-child {
+    border-right: none;
+  }
+
+  &__value {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    color: $text;
+    line-height: 1;
+  }
+
+  &__label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    color: $text-soft;
+    margin-top: 3px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+}
+
 // ─── Toolbar ─────────────────────────────────────────────────────────────────
 .toolbar {
   display: flex;
@@ -126,73 +166,6 @@ $amber-bg:      #fdf6ec;
       border-color: $gold-border;
       box-shadow: 0 0 0 3px rgba($gold, 0.08);
     }
-  }
-
-  &__filters {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-  }
-
-  &__select {
-    padding: 9px 32px 9px 12px;
-    border: 1px solid $border;
-    border-radius: 8px;
-    background: $surface;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px;
-    color: $text;
-    outline: none;
-    cursor: pointer;
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239c948e' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 10px center;
-    transition: border-color 0.15s;
-
-    &:focus {
-      border-color: $gold-border;
-    }
-  }
-}
-
-// ─── Stats Bar ───────────────────────────────────────────────────────────────
-.stats-bar {
-  display: flex;
-  gap: 0;
-  border: 1px solid $border;
-  border-radius: 10px;
-  background: $surface;
-  overflow: hidden;
-  width: fit-content;
-}
-
-.stat {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 12px 28px;
-  border-right: 1px solid $border;
-
-  &:last-child {
-    border-right: none;
-  }
-
-  &__value {
-    font-family: 'DM Serif Display', serif;
-    font-size: 22px;
-    color: $text;
-    line-height: 1;
-  }
-
-  &__label {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 11px;
-    font-weight: 500;
-    color: $text-soft;
-    margin-top: 3px;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
   }
 }
 
@@ -321,10 +294,6 @@ $amber-bg:      #fdf6ec;
       &:hover {
         background: $bg;
       }
-
-      &.row--archived {
-        opacity: 0.6;
-      }
     }
 
     td {
@@ -364,26 +333,10 @@ $amber-bg:      #fdf6ec;
   letter-spacing: 0.04em;
 }
 
-// ─── Supplier Name + Archived Badge ──────────────────────────────────────────
+// ─── Supplier Name ────────────────────────────────────────────────────────────
 .supplier-name {
   font-weight: 500;
   color: $text;
-}
-
-.badge {
-  display: inline-block;
-  font-size: 10px;
-  font-weight: 500;
-  border-radius: 4px;
-  padding: 2px 7px;
-  margin-left: 8px;
-  vertical-align: middle;
-
-  &--archived {
-    background: $amber-bg;
-    color: $amber;
-    border: 1px solid rgba($amber, 0.2);
-  }
 }
 
 // ─── Clothes Count ────────────────────────────────────────────────────────────
@@ -451,17 +404,6 @@ $amber-bg:      #fdf6ec;
       border-color: $red;
     }
   }
-
-  &--restore {
-    background: transparent;
-    color: $green;
-    border-color: rgba($green, 0.25);
-
-    &:hover {
-      background: $green-bg;
-      border-color: $green;
-    }
-  }
 }
 
 // ─── Pagination ───────────────────────────────────────────────────────────────
@@ -519,4 +461,16 @@ $amber-bg:      #fdf6ec;
     font-size: 12px;
     color: $text-soft;
   }
+}
+
+// ─── Modal Overlay (Archive Confirmation) ─────────────────────────────────────
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(26, 25, 23, 0.45);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

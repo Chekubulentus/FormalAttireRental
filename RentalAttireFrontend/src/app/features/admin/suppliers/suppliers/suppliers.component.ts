@@ -2,18 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CreateSupplierModalComponent } from '../create-supplier-modal/create-supplier-modal.component';
-
-// TODO: Replace with real DTO from src/app/data/models/DTOs/Supplier/supplier.ts
-interface SupplierDTO {
-  id: number;
-  supplierCode: string;
-  supplierName: string;
-  phoneNumber: string;
-  email: string;
-  address: string;
-  clothesAvailable: any[];
-  isArchived: boolean;
-}
+import { SupplierDTO } from '../../../../data/models/DTOs/Supplier/supplier';
+import { ArchiveConfirmationComponent } from '../../../../shared/components/archive-confirmation/archive-confirmation/archive-confirmation.component';
+import { SupplierService } from '../suppliers-service/supplier.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-suppliers',
@@ -21,7 +13,8 @@ interface SupplierDTO {
   imports: [
     CommonModule, 
     FormsModule,
-    CreateSupplierModalComponent
+    CreateSupplierModalComponent,
+    ArchiveConfirmationComponent
   ],
   templateUrl: './suppliers.component.html',
   styleUrl: './suppliers.component.scss'
@@ -48,6 +41,15 @@ export class SuppliersComponent implements OnInit {
 
   //Create Supplier Modal Properties
   openCreateSupplierModal : boolean = false;
+
+  //Archive Confirmation Properties
+  supplierToArchive : SupplierDTO | null = null;
+  isArchiving: boolean = false;
+
+  constructor(
+    private supplierService : SupplierService,
+    private toastrService : ToastrService
+  ) {}
 
   get rangeStart(): number {
     return (this.currentPage - 1) * this.itemsPerPage + 1;
@@ -79,13 +81,13 @@ export class SuppliersComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // TODO: wire up SupplierService.getSuppliersAsync(...)
+    this.filterSuppliers();
   }
 
   // ── Filter Handlers ────────────────────────────────────────────────────────
   onSearchChange(): void {
     this.currentPage = 1;
-    // TODO: call loadSuppliers()
+    this.filterSuppliers();
   }
 
   onFilterChange(): void {
@@ -128,4 +130,42 @@ export class SuppliersComponent implements OnInit {
   restoreSupplier(supplier: SupplierDTO): void {
     // TODO: call SupplierService.restoreSupplier(supplier.id)
   }
+
+  filterSuppliers() {
+    this.isLoading = true;
+    this.supplierService.filterSuppliersAsync(
+      this.currentPage,
+      this.itemsPerPage,
+      this.searchQuery
+    ).then(res => {
+      if(!res.isSuccess) {
+        this.suppliers = [];
+        this.totalCount = 0;
+        this.archivedCount = 0;
+        this.activeCount = 0;
+      }
+
+      this.suppliers = res.data?.items ?? [];
+      this.totalCount = res.data?.totalCount ?? 0;
+      this.archivedCount = 0; //REMOVE ARCHIVED COUNT.
+      this.activeCount = this.suppliers.length;
+    }).catch(err => {
+      this.toastrService.error(err.error);
+    }).finally(() => {
+      this.isLoading = false;
+    })
+  }
+
+  openArchiveModal(supplier : SupplierDTO) {
+
+  }
+
+  closeArchiveModal() {
+
+  }
+
+  onArchiveConfirmed() {
+
+  }
+
 }

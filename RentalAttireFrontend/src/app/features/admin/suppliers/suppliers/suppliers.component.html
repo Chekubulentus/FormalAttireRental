@@ -12,6 +12,14 @@
     </button>
   </div>
 
+  <!-- Stats Bar -->
+  <div class="stats-bar">
+    <div class="stat">
+      <span class="stat__value">{{ totalCount }}</span>
+      <span class="stat__label">Total Suppliers</span>
+    </div>
+  </div>
+
   <!-- Toolbar -->
   <div class="toolbar">
     <div class="toolbar__search">
@@ -26,30 +34,6 @@
         [(ngModel)]="searchQuery"
         (ngModelChange)="onSearchChange()"
       />
-    </div>
-
-    <div class="toolbar__filters">
-      <select class="toolbar__select" [(ngModel)]="statusFilter" (ngModelChange)="onFilterChange()">
-        <option value="">All Suppliers</option>
-        <option value="active">Active</option>
-        <option value="archived">Archived</option>
-      </select>
-    </div>
-  </div>
-
-  <!-- Stats Bar -->
-  <div class="stats-bar">
-    <div class="stat">
-      <span class="stat__value">{{ totalCount }}</span>
-      <span class="stat__label">Total</span>
-    </div>
-    <div class="stat">
-      <span class="stat__value">{{ activeCount }}</span>
-      <span class="stat__label">Active</span>
-    </div>
-    <div class="stat">
-      <span class="stat__value">{{ archivedCount }}</span>
-      <span class="stat__label">Archived</span>
     </div>
   </div>
 
@@ -73,13 +57,13 @@
       </svg>
     </div>
     <p class="empty-state__title">No suppliers found</p>
-    <p class="empty-state__subtitle" *ngIf="searchQuery || statusFilter">
-      Try adjusting your search or filters.
+    <p class="empty-state__subtitle" *ngIf="searchQuery">
+      Try adjusting your search.
     </p>
-    <p class="empty-state__subtitle" *ngIf="!searchQuery && !statusFilter">
+    <p class="empty-state__subtitle" *ngIf="!searchQuery">
       Add your first supplier to start managing procurement.
     </p>
-    <button class="btn btn--primary" (click)="openAddModal()" *ngIf="!searchQuery && !statusFilter">
+    <button class="btn btn--primary" (click)="openAddModal()" *ngIf="!searchQuery">
       Add Supplier
     </button>
   </div>
@@ -99,19 +83,18 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let supplier of suppliers" [class.row--archived]="supplier.isArchived">
+        <tr *ngFor="let supplier of suppliers">
           <td>
             <span class="code-badge">{{ supplier.supplierCode }}</span>
           </td>
           <td>
             <span class="supplier-name">{{ supplier.supplierName }}</span>
-            <span class="badge badge--archived" *ngIf="supplier.isArchived">Archived</span>
           </td>
           <td class="text-muted">{{ supplier.phoneNumber || '—' }}</td>
           <td class="text-muted">{{ supplier.email || '—' }}</td>
           <td class="text-muted col-address">{{ supplier.address || '—' }}</td>
           <td class="col-center">
-            <span class="clothes-count">{{ supplier.clothesAvailable?.length ?? 0 }}</span>
+            <span class="clothes-count">{{ supplier.assignedClothesCount }}</span>
           </td>
           <td class="col-center">
             <div class="actions">
@@ -129,20 +112,7 @@
 
               <button
                 class="action-btn action-btn--ghost"
-                title="Assign clothes"
-                [disabled]="supplier.isArchived"
-                (click)="openAssignClothesModal(supplier)">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
-                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.57a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.57a2 2 0 0 0-1.34-2.23z"/>
-                </svg>
-                Assign Clothes
-              </button>
-
-              <button
-                class="action-btn action-btn--ghost"
                 title="Edit supplier"
-                [disabled]="supplier.isArchived"
                 (click)="openEditModal(supplier)">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
                   stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -153,10 +123,9 @@
               </button>
 
               <button
-                *ngIf="!supplier.isArchived"
                 class="action-btn action-btn--danger"
                 title="Archive supplier"
-                (click)="archiveSupplier(supplier)">
+                (click)="openArchiveModal(supplier)">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
                   stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                   <polyline points="21 8 21 21 3 21 3 8"/>
@@ -164,19 +133,6 @@
                   <line x1="10" y1="12" x2="14" y2="12"/>
                 </svg>
                 Archive
-              </button>
-
-              <button
-                *ngIf="supplier.isArchived"
-                class="action-btn action-btn--restore"
-                title="Restore supplier"
-                (click)="restoreSupplier(supplier)">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
-                  stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <polyline points="1 4 1 10 7 10"/>
-                  <path d="M3.51 15a9 9 0 1 0 .49-4.95"/>
-                </svg>
-                Restore
               </button>
             </div>
           </td>
@@ -219,12 +175,24 @@
 
 </div>
 
-<!-- Modals — skeletons, wired up later -->
- <app-create-supplier-modal
- *ngIf="openCreateSupplierModal"
- (closeModal)="closeAddModal()"
- ></app-create-supplier-modal>
-<!-- <app-add-supplier-modal ...></app-add-supplier-modal> -->
+<!-- Create Supplier Modal -->
+<app-create-supplier-modal
+  *ngIf="openCreateSupplierModal"
+  (closeModal)="closeAddModal()"
+></app-create-supplier-modal>
+
+<!-- Archive Confirmation Modal -->
+<div class="modal-overlay" *ngIf="supplierToArchive" (click)="closeArchiveModal()">
+  <app-archive-confirmation
+    [recordName]="supplierToArchive.supplierName"
+    [recordType]="'Supplier'"
+    [isArchiving]="isArchiving"
+    (cancelled)="closeArchiveModal()"
+    (confirmed)="onArchiveConfirmed()"
+    (click)="$event.stopPropagation()">
+  </app-archive-confirmation>
+</div>
+
+<!-- Not yet built -->
 <!-- <app-edit-supplier-modal ...></app-edit-supplier-modal> -->
 <!-- <app-view-supplier-modal ...></app-view-supplier-modal> -->
-<!-- <app-assign-clothes-modal ...></app-assign-clothes-modal> -->

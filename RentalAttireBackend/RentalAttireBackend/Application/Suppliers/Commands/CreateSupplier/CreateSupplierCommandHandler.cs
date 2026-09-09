@@ -60,13 +60,21 @@ namespace RentalAttireBackend.Application.Suppliers.Commands.CreateSupplier
                 var newSupplier = _mapper.Map<Supplier>(request);
                 newSupplier.EmployeeId = userWithEmployee.Employee.Id;
 
-                foreach(var clotheId in request.ClotheIds)
+                var requestedClothes = await _clotheRepo.GetClothesByIdsAsync(request.ClotheIds, cancellationToken);
+
+                var alreadyAssigned = requestedClothes.Where(c => c.SupplierId is not null).ToList();
+
+                if(alreadyAssigned.Any())
                 {
-                    var clothe = await _clotheRepo.GetClotheByIdAsync(clotheId, cancellationToken);
+                    await _transactionManager.RollbackTransactionAsync(cancellationToken);
+                    var names = string.Join(", ", alreadyAssigned.Select(c => c.ClotheName));
+                    return Result<bool>.FailureWithErrorType(
+                        $"The following clothes are already assigned to another supplier: {names}", 
+                        ErrorType.BadRequest);
+                }
 
-                    if (clothe is null)
-                        continue;
-
+                foreach(var clothe in requestedClothes)
+                {
                     clothe.Supplier = newSupplier;
                 }
 
