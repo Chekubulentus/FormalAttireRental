@@ -35,6 +35,11 @@ namespace RentalAttireBackend.Domain.Interfaces
             string clotheName,
             CancellationToken ct
             );
+
+        public Task<List<Clothe>> GetClothesByIdsAsync(
+            List<int> clotheIds,
+            CancellationToken cancellationToken
+            );
         #endregion
 
         #region Commands
