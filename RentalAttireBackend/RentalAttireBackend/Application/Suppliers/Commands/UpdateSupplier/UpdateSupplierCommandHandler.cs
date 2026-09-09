@@ -65,26 +65,41 @@ namespace RentalAttireBackend.Application.Suppliers.Commands.UpdateSupplier
 
                 await _transactionManager.BeginTransactionAsync(cancellationToken);
 
-                foreach (var clotheId in request.AssignClotheIds)
+                var clothesToBeAssigned = await _clotheRepository.GetClothesByIdsAsync(request.AssignClotheIds, cancellationToken);
+
+                var alreadyAssignedClothes = clothesToBeAssigned.Where(c => c.SupplierId is not null).ToList();
+
+                if(alreadyAssignedClothes.Any())
                 {
-                    var clothe = await _clotheRepository.GetClotheByIdAsync(clotheId, cancellationToken);
-
-                    if (clothe is null)
-                        continue;
-
-                    clothe.Supplier = supplierToUpdate;
+                    await _transactionManager.RollbackTransactionAsync(cancellationToken);
+                    var names = string.Join(", ", alreadyAssignedClothes.Select(c => c.ClotheName));
+                    return Result<bool>.FailureWithErrorType(
+                        $"The following clothes are already assigned to another supplier: {names}",
+                        ErrorType.BadRequest
+                        );
                 }
 
-                foreach(var clotheId in request.UnassignClotheIds)
+                foreach(var clothe in clothesToBeAssigned)
                 {
-                    var clothe = await _clotheRepository.GetClotheByIdAsync(clotheId, cancellationToken);
+                    clothe.SupplierId = supplierToUpdate.Id;
+                }
 
-                    if (clothe is null)
-                        continue;
+                var clothesToUnassign = await _clotheRepository.GetClothesByIdsAsync(request.UnassignClotheIds, cancellationToken);
 
-                    if (clothe.SupplierId != request.SupplierId)
-                        continue;
+                var doesntBelongToSupplier = clothesToUnassign.Where(c => c.SupplierId != request.SupplierId).ToList();
 
+                if(doesntBelongToSupplier.Any())
+                {
+                    await _transactionManager.RollbackTransactionAsync(cancellationToken);
+                    var names = string.Join(", ", doesntBelongToSupplier.Select(c => c.ClotheName));
+                    return Result<bool>.FailureWithErrorType(
+                        $"The following clothes does not belong to {oldSupplierDetails.SupplierName}: {names}",
+                        ErrorType.BadRequest
+                        );
+                }
+
+                foreach(var clothe in clothesToUnassign)
+                {
                     clothe.SupplierId = null;
                 }
 
