@@ -12,14 +12,6 @@
     </button>
   </div>
 
-  <!-- Stats Bar -->
-  <div class="stats-bar">
-    <div class="stat">
-      <span class="stat__value">{{ totalCount }}</span>
-      <span class="stat__label">Total Suppliers</span>
-    </div>
-  </div>
-
   <!-- Toolbar -->
   <div class="toolbar">
     <div class="toolbar__search">
@@ -35,6 +27,7 @@
         (ngModelChange)="onSearchChange()"
       />
     </div>
+    <span class="toolbar__count">{{ totalCount }} supplier{{ totalCount === 1 ? '' : 's' }}</span>
   </div>
 
   <!-- Skeleton Loading -->

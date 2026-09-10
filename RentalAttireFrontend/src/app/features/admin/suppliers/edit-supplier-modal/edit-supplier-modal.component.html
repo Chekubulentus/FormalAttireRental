@@ -149,7 +149,7 @@
 
 <app-assign-clothes-modal
   *ngIf="isAssignClothesModalOpen"
-  [pickerClothes]="pickerClothes"
+  [supplierId]="supplier.id"
   [preSelectedIds]="preSelectedIdsSnapshot"
   title="Manage Clothes"
   subtitle="Assign or unassign clothes for this supplier."

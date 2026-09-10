@@ -9,6 +9,7 @@ import { filter, first, firstValueFrom } from 'rxjs';
 import { CreateSupplierCommand } from '../dtos/create-supplier-command';
 import { UpdateSupplierCommand } from '../dtos/update-supplier-command';
 import { ClotheDTO } from '../../../../data/models/DTOs/Clothes/clothes';
+import { AssignSupplierClothesModalResponse } from '../dtos/assign-supplier-clothes-reponse';
 
 @Injectable({
   providedIn: 'root'
@@ -110,6 +111,38 @@ export class SupplierService {
         this.httpClient.get<Result<PagedResult<ClotheDTO>>>(
           `${this.baseUrl}/supplier-clothes`,
           { params : filters }
+        )
+      );
+
+      return result;
+    }catch(err : any) {
+      return Result.failure(extractErrorMessage(err.error));
+    }
+  }
+
+  async filterAssignableClothesAsync(
+    supplierId : number | null = null,
+    searchQuery : string | null = null,
+    category : string | null = null,
+    gender : string | null = null,
+    currentPage : number,
+    itemsPerPage : number
+
+  ) : Promise<Result<AssignSupplierClothesModalResponse>> {
+    try {
+      let params = new HttpParams()
+      .set('currentPage', currentPage)
+      .set('itemsPerPage', itemsPerPage);
+
+      if(supplierId) params = params.set('supplierId', supplierId);
+      if(searchQuery) params = params.set('searchQuery', searchQuery);
+      if(category) params = params.set('category', category);
+      if(gender) params = params.set('gender', gender);
+
+      const result = await firstValueFrom(
+        this.httpClient.get<Result<AssignSupplierClothesModalResponse>>(
+          `${this.baseUrl}/assignable-clothes`,
+          { params }
         )
       );
 

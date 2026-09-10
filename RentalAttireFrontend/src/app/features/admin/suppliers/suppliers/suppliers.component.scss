@@ -82,46 +82,6 @@ $amber-bg:      #fdf6ec;
   }
 }
 
-// ─── Stats Bar ───────────────────────────────────────────────────────────────
-.stats-bar {
-  display: flex;
-  gap: 0;
-  border: 1px solid $border;
-  border-radius: 10px;
-  background: $surface;
-  overflow: hidden;
-  width: fit-content;
-}
-
-.stat {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 12px 28px;
-  border-right: 1px solid $border;
-
-  &:last-child {
-    border-right: none;
-  }
-
-  &__value {
-    font-family: 'DM Serif Display', serif;
-    font-size: 22px;
-    color: $text;
-    line-height: 1;
-  }
-
-  &__label {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 11px;
-    font-weight: 500;
-    color: $text-soft;
-    margin-top: 3px;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-  }
-}
-
 // ─── Toolbar ─────────────────────────────────────────────────────────────────
 .toolbar {
   display: flex;
@@ -166,6 +126,15 @@ $amber-bg:      #fdf6ec;
       border-color: $gold-border;
       box-shadow: 0 0 0 3px rgba($gold, 0.08);
     }
+  }
+
+  &__count {
+    margin-left: auto;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: $text-muted;
+    white-space: nowrap;
   }
 }
 

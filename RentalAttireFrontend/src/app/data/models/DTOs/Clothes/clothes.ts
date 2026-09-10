@@ -1,3 +1,4 @@
+import { SupplierSummaryDTO } from "../../../../features/admin/suppliers/dtos/supplier-summary";
 import { SupplierDTO } from "../Supplier/supplier";
 
 export class ClotheDTO {
@@ -21,5 +22,5 @@ export class ClotheDTO {
   rentalCount: number = 0;
   unitCost: number = 0;
   profileImagePath?: string = '';
-  supplier : SupplierDTO | null = null;
+  supplier : SupplierSummaryDTO | null = null;
 }

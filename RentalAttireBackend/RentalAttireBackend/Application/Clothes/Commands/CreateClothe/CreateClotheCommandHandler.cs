@@ -67,6 +67,7 @@ namespace RentalAttireBackend.Application.Clothes.Commands.CreateClothe
 
                 var clothe = _mapper.Map<Clothe>(command);
                 clothe.CategoryId = category.Id;
+                clothe.SupplierId = null;
 
                 var createClothe = await _clotheRepo.CreateClotheAsync(clothe, cancellationToken);
 

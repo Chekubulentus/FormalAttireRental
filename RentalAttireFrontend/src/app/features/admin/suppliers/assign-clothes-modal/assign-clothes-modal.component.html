@@ -16,7 +16,7 @@
       </button>
     </div>
 
-    <!-- Toolbar -->
+    <!-- Toolbar: Row 1 — search + selection summary -->
     <div class="modal__toolbar">
       <div class="search">
         <svg class="search__icon" width="15" height="15" viewBox="0 0 24 24" fill="none"
@@ -28,6 +28,7 @@
           class="search__input"
           placeholder="Search by name or code…"
           [(ngModel)]="searchQuery"
+          (ngModelChange)="onFiltersChanged()"
         />
       </div>
 
@@ -42,26 +43,47 @@
       </div>
     </div>
 
+    <!-- Toolbar: Row 2 — filters -->
+    <div class="modal__filters">
+      <select class="filter-select" [(ngModel)]="filterCategory" (ngModelChange)="onFiltersChanged()">
+        <option value="">All Categories</option>
+        <option *ngFor="let cat of categories" [value]="cat.categoryName">{{ cat.categoryName }}</option>
+      </select>
+
+      <select class="filter-select" [(ngModel)]="filterGender" (ngModelChange)="onFiltersChanged()">
+        <option value="">All Genders</option>
+        <option *ngFor="let g of genders" [value]="g">{{ g }}</option>
+      </select>
+
+      <button class="btn-clear" *ngIf="hasActiveFilters" (click)="clearFilters()" type="button">
+        <svg width="11" height="11" viewBox="0 0 16 16" fill="none">
+          <line x1="4" y1="4" x2="12" y2="12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+          <line x1="12" y1="4" x2="4"  y2="12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+        </svg>
+        Clear
+      </button>
+    </div>
+
     <!-- Body -->
     <div class="modal__body">
 
-      <!-- Empty state: nothing in the picker pool at all -->
-      <div class="empty-state" *ngIf="pickerClothes.length === 0">
+      <!-- Empty: no clothes in the pool at all -->
+      <div class="empty-state" *ngIf="isPoolEmpty">
         <p class="empty-state__title">No clothes available</p>
         <p class="empty-state__subtitle">There are no clothes to assign right now.</p>
       </div>
 
-      <!-- Empty state: search matched nothing -->
-      <div class="empty-state" *ngIf="pickerClothes.length > 0 && filteredClothes.length === 0">
+      <!-- Empty: filters/search returned nothing -->
+      <div class="empty-state" *ngIf="!isPoolEmpty && isNoResults">
         <p class="empty-state__title">No matches</p>
-        <p class="empty-state__subtitle">Try a different search term.</p>
+        <p class="empty-state__subtitle">Try adjusting your search or filters.</p>
       </div>
 
       <!-- Picker list -->
-      <div class="picker-list" *ngIf="filteredClothes.length > 0">
+      <div class="picker-list" *ngIf="!isNoResults">
         <label
           class="picker-row"
-          *ngFor="let clothe of filteredClothes"
+          *ngFor="let clothe of this.clothes"
           [class.picker-row--selected]="isSelected(clothe.id)"
         >
           <input
@@ -86,7 +108,12 @@
               <span class="picker-row__dot">&middot;</span>
               <span>{{ clothe.categoryName }}</span>
               <span class="picker-row__dot">&middot;</span>
+              <span>{{ clothe.clotheGender }}</span>
+              <span class="picker-row__dot">&middot;</span>
               <span>{{ clothe.size }}</span>
+            </span>
+            <span class="picker-row__condition" [class]="'condition--' + clothe.condition.toLowerCase()">
+              {{ clothe.condition }}
             </span>
           </div>
 

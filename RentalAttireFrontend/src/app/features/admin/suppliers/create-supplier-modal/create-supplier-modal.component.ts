@@ -1,8 +1,11 @@
 import { Component, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
 import { AssignClothesModalComponent, AssignClothesResult } from '../assign-clothes-modal/assign-clothes-modal.component';
-import { ClotheDTO } from '../../../../data/models/DTOs/Clothes/clothes'; // ASSUMPTION — confirm relative depth matches your folder structure
+import { ClotheDTO } from '../../../../data/models/DTOs/Clothes/clothes';
+import { SupplierService } from '../suppliers-service/supplier.service';
+import { CreateSupplierCommand } from '../dtos/create-supplier-command';
 
 interface CreateSupplierForm {
   supplierName: string;
@@ -39,7 +42,10 @@ export class CreateSupplierModalComponent {
   availableClothes: ClotheDTO[] = [];
   selectedClotheIds: number[] = [];
 
-  constructor() {
+  constructor(
+    private supplierService: SupplierService,
+    private toastr: ToastrService
+  ) {
     this.loadAvailableClothes();
   }
 
@@ -118,14 +124,22 @@ export class CreateSupplierModalComponent {
     this.isSubmitting = true;
 
     try {
-      // TODO: call SupplierService.createSupplierAsync({ ...this.form, clotheIds: this.selectedClotheIds })
-      // const result = await this.supplierService.createSupplierAsync({ ...this.form, clotheIds: this.selectedClotheIds });
-      // if (result.isSuccess) {
-      //   this.supplierCreated.emit();  // parent shows toast + reloads table
-      //   this.close();
-      // } else {
-      //   // TODO: show error toast via ToastrService
-      // }
+      const command: CreateSupplierCommand = {
+        supplierName: this.form.supplierName.trim(),
+        address: this.form.address.trim(),
+        phoneNumber: this.form.phoneNumber.trim() || undefined,
+        email: this.form.email.trim() || undefined,
+        clotheIds: this.selectedClotheIds
+      };
+
+      const result = await this.supplierService.createSupplierAsync(command);
+
+      if (result.isSuccess) {
+        this.supplierCreated.emit();  // parent shows toast + reloads table
+        this.close();
+      } else {
+        this.toastr.error(result.errorMessage ?? 'Failed to create supplier.', 'Error');
+      }
     } finally {
       this.isSubmitting = false;
     }

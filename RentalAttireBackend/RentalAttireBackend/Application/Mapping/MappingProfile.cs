@@ -252,7 +252,11 @@ namespace RentalAttireBackend.Application.Mapping
                 .ForMember(dest => dest.EntityType,
                 opt => opt.MapFrom(src => "Clothe"))
                 .ForMember(dest => dest.CreatedBy,
-                opt => opt.MapFrom(src => src.PerformedBy));
+                opt => opt.MapFrom(src => src.PerformedBy))
+                .ForMember(dest => dest.SupplierId,
+                opt => opt.Ignore())
+                .ForMember(dest => dest.Supplier,
+                opt => opt.Ignore());
             #endregion
 
             #region UpdateClotheCommand -> Clothe

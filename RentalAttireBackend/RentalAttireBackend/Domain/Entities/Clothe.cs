@@ -32,7 +32,7 @@ namespace RentalAttireBackend.Domain.Entities
         [JsonIgnore]
         public List<RentalItem> RentalItems { get; set; } = new();
         [JsonIgnore]
-        public Supplier Supplier { get; set; } = null!;
+        public Supplier? Supplier { get; set; } = null;
         [JsonIgnore]
         public List<PurchaseOrderItem> PurchaseOrderItems { get; set; } = new();
     }

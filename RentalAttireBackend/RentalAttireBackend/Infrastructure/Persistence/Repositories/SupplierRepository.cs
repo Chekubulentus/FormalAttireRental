@@ -3,8 +3,10 @@ using RentalAttireBackend.Application.Common.Models;
 using RentalAttireBackend.Domain.Entities;
 using RentalAttireBackend.Domain.Interfaces;
 using RentalAttireBackend.Infrastructure.Persistence.DataContext;
+using System.Collections.Immutable;
 using System.Reflection.Metadata.Ecma335;
 using System.Runtime.InteropServices;
+using System.Transactions;
 
 namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
 {
@@ -23,6 +25,53 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
         {
             await _context.Suppliers.AddAsync(supplier, cancellationToken);
             return await _context.SaveChangesAsync(cancellationToken) > 0;
+        }
+
+        public async Task<List<Clothe>> FilterAssignableClothesAsync(
+            int? supplierId, 
+            string searchQuery, 
+            string category, 
+            string gender, 
+            int currentPage, 
+            int itemsPerPage,
+            CancellationToken cancellationToken
+            )
+        {
+            var searchQueryValidator = string.IsNullOrEmpty(searchQuery);
+            var categoryValidator = string.IsNullOrEmpty(category);
+            var genderValidator = string.IsNullOrEmpty(gender);
+            ClotheGender? clotheGenderEnum = string.IsNullOrEmpty(gender)
+                ? null
+                : Enum.Parse<ClotheGender>(gender, true);
+
+            var baseQuery = _context.Clothes
+                .OrderBy(c => c.ClotheCode)
+                .Where(c =>
+                    (
+                        c.SupplierId == supplierId ||
+                        c.SupplierId == null
+                    ) &&
+                    (
+                        searchQueryValidator ||
+                        c.ClotheCode.ToLower().Contains(searchQuery.ToLower()) ||
+                        c.ClotheName.ToLower().Contains(searchQuery.ToLower())
+                    ) &&
+                    (
+                    categoryValidator ||
+                    c.Category.CategoryName.ToLower().Equals(category.ToLower())
+                    ) &&
+                    (
+                    genderValidator ||
+                    c.Gender == clotheGenderEnum
+                    )
+                );
+
+            var paginatedClothes = await baseQuery
+                .Skip((currentPage -1) * itemsPerPage)
+                .Take(itemsPerPage)
+                .ToListAsync(cancellationToken);
+
+            return paginatedClothes;
         }
 
         public async Task<PagedResult<Supplier>> FilterSuppliersAsync(string searchQuery, 
@@ -59,6 +108,38 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
                 PageNumber = currentPage,
                 PageSize = itemsPerPage,
             };
+        }
+
+        public async Task<int> GetAllUnassignedClothesAsync(CancellationToken cancellationToken)
+        {
+            return await _context.Clothes
+                .Where(c => c.SupplierId == null)
+                .CountAsync(cancellationToken);
+        }
+
+        public async Task<Dictionary<int, int>> GetSupplierActivePOCountByIdAsync(List<int> supplierIds, CancellationToken cancellationToken)
+        {
+            var allowedStatuses = new List<OrderStatus> { 
+                OrderStatus.Draft, 
+                OrderStatus.Ordered, 
+                OrderStatus.PartiallyReceived
+            };
+
+            return await _context.PurchaseOrders
+                .AsNoTracking()
+                .Where(p =>
+                    supplierIds.Contains(p.SupplierId) &&
+                    allowedStatuses.Contains(p.OrderStatus)
+                ).GroupBy(g => g.SupplierId)
+                .Select(g => new { SupplierId = g.Key, Count = g.Count()})
+                .ToDictionaryAsync(x => x.SupplierId, x => x.Count);
+        }
+
+        public async Task<int> GetSupplierAssignClothesCount(int? supplierId, CancellationToken cancellationToken)
+        {
+            return await _context.Clothes
+                .Where(c => c.SupplierId == supplierId)
+                .CountAsync(cancellationToken);
         }
 
         public async Task<Supplier?> GetSupplierByIdAsync(int id, CancellationToken cancellationToken)
@@ -98,6 +179,25 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
                 PageNumber = currentPage,
                 PageSize = itemsPerPage
             };
+        }
+
+        public async Task<Dictionary<int, int>> GetSupplierOverduePOCountByIdAsync(List<int> supplierIds, CancellationToken cancellationToken)
+        {
+            var allowedStatuses = new List<OrderStatus> {
+                OrderStatus.Draft,
+                OrderStatus.Ordered,
+                OrderStatus.PartiallyReceived
+            };
+
+            return await _context.PurchaseOrders
+                .AsNoTracking()
+                .Where(p =>
+                    supplierIds.Contains(p.SupplierId) &&
+                    allowedStatuses.Contains(p.OrderStatus) &&
+                    p.ExpectedDeliveryDate.Date < DateTime.UtcNow.Date
+                ).GroupBy(g => g.SupplierId)
+                .Select(g => new { SupplierId = g.Key, Count = g.Count() })
+                .ToDictionaryAsync(x => x.SupplierId, x => x.Count, cancellationToken);
         }
 
         public async Task<bool> UpdateSupplieAsync(Supplier supplier, CancellationToken cancellationToken)

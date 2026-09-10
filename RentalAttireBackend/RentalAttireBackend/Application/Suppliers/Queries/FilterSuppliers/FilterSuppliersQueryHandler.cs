@@ -1,11 +1,14 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Components.Forms.Mapping;
+using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 using RentalAttireBackend.Application.Common.Interfaces;
 using RentalAttireBackend.Application.Common.Models;
+using RentalAttireBackend.Application.Rentals.DTOs;
 using RentalAttireBackend.Application.Suppliers.DTOs;
 using RentalAttireBackend.Domain.Entities;
 using RentalAttireBackend.Domain.Interfaces;
+using System.Transactions;
 
 namespace RentalAttireBackend.Application.Suppliers.Queries.FilterSuppliers
 {
@@ -36,6 +39,17 @@ namespace RentalAttireBackend.Application.Suppliers.Queries.FilterSuppliers
                 );
 
             var paginatedSuppliersDto = _mapper.Map<PagedResult<SupplierDTO>>(paginatedSuppliers);
+
+            var supplierIds = paginatedSuppliersDto.Items.Select(x => x.Id).ToList();
+
+            var activeCounts = await _supplierRepo.GetSupplierActivePOCountByIdAsync(supplierIds, cancellationToken);
+            var overdueCounts = await _supplierRepo.GetSupplierOverduePOCountByIdAsync(supplierIds, cancellationToken);
+
+            foreach(var supplier in paginatedSuppliersDto.Items)
+            {
+                supplier.ActivePOCount = activeCounts.GetValueOrDefault(supplier.Id, 0);
+                supplier.OverduePOCount = overdueCounts.GetValueOrDefault(supplier.Id, 0);
+            }
 
             return Result<PagedResult<SupplierDTO>>.Success(paginatedSuppliersDto);
         }

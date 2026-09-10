@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using RentalAttireBackend.Application.Common.Extensions;
 using RentalAttireBackend.Application.Suppliers.Commands.CreateSupplier;
 using RentalAttireBackend.Application.Suppliers.Commands.UpdateSupplier;
+using RentalAttireBackend.Application.Suppliers.Queries.AssignClothesModal;
 using RentalAttireBackend.Application.Suppliers.Queries.FilterSuppliers;
 using RentalAttireBackend.Application.Suppliers.Queries.GetSupplierById;
 using RentalAttireBackend.Application.Suppliers.Queries.GetSupplierClothesById;
@@ -74,6 +75,29 @@ namespace RentalAttireBackend.Controllers.AdminController
             var result = await _mediator.Send(new GetSupplierClothesByIdQuery
             {
                 Id = id,
+                CurrentPage = currentPage,
+                ItemsPerPage = itemsPerPage
+            });
+
+            return result.ToActionResult(this, _httpContextAccessor);
+        }
+
+        [HttpGet("assignable-clothes")]
+        public async Task<IActionResult> FilterAssignableClothesAsync(
+            int? supplierId,
+            string? searchQuery,
+            string? category,
+            string? gender,
+            int currentPage,
+            int itemsPerPage
+            )
+        {
+            var result = await _mediator.Send(new AssignClothesModalQuery
+            {
+                SupplierId = supplierId,
+                SearchQuery = searchQuery,
+                Category = category,
+                Gender = gender,
                 CurrentPage = currentPage,
                 ItemsPerPage = itemsPerPage
             });

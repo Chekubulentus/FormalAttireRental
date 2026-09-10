@@ -8,9 +8,17 @@ $gold-border: #d4b896;
 $text:        #1a1917;
 $text-muted:  #6b6560;
 $text-soft:   #9c948e;
+$red:         #c0392b;
+$red-bg:      #fdf2f1;
+$red-border:  #f0c4c0;
+$green:       #2e7d5e;
+$green-bg:    #f0f7f4;
+$green-border:#b2d8cb;
+$amber:       #92600a;
+$amber-bg:    #fdf6ec;
+$amber-border:#e8c98a;
 
 // ─── Overlay ──────────────────────────────────────────────────────────────────
-// Second-layer modal — stacks above CreateSupplierModalComponent (z-index 1000).
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -39,8 +47,8 @@ $text-soft:   #9c948e;
   background: $surface;
   border-radius: 16px;
   width: 100%;
-  max-width: 560px;
-  max-height: 82vh;
+  max-width: 600px;
+  max-height: 84vh;
   box-shadow: 0 8px 40px rgba(26, 25, 23, 0.14);
   display: flex;
   flex-direction: column;
@@ -110,21 +118,19 @@ $text-soft:   #9c948e;
   }
 }
 
-// ─── Toolbar ──────────────────────────────────────────────────────────────────
+// ─── Toolbar Row 1: Search + Selection Summary ────────────────────────────────
 .modal__toolbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 16px 24px;
-  border-bottom: 1px solid $border;
+  padding: 14px 24px 10px;
   flex-shrink: 0;
 }
 
 .search {
   position: relative;
   flex: 1;
-  max-width: 320px;
 
   &__icon {
     position: absolute;
@@ -148,9 +154,7 @@ $text-soft:   #9c948e;
     outline: none;
     transition: border-color 0.15s, box-shadow 0.15s;
 
-    &::placeholder {
-      color: $text-soft;
-    }
+    &::placeholder { color: $text-soft; }
 
     &:focus {
       border-color: $gold-border;
@@ -169,6 +173,7 @@ $text-soft:   #9c948e;
   font-weight: 500;
   color: $gold;
   white-space: nowrap;
+  flex-shrink: 0;
 
   &__clear {
     font-family: 'DM Sans', sans-serif;
@@ -180,10 +185,57 @@ $text-soft:   #9c948e;
     text-decoration: underline;
     padding: 0;
 
-    &:hover {
-      color: $text-muted;
-    }
+    &:hover { color: $text-muted; }
   }
+}
+
+// ─── Toolbar Row 2: Filters ───────────────────────────────────────────────────
+.modal__filters {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 24px 14px;
+  flex-shrink: 0;
+  border-bottom: 1px solid $border;
+  flex-wrap: wrap;
+}
+
+.filter-select {
+  padding: 7px 28px 7px 10px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12.5px;
+  color: $text;
+  background: $surface;
+  border: 1px solid $border;
+  border-radius: 8px;
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239c948e' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  transition: border-color 0.15s;
+
+  &:focus { border-color: $gold-border; }
+}
+
+.btn-clear {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 7px 12px;
+  border: 1px solid $red-border;
+  border-radius: 8px;
+  background: $red-bg;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: $red;
+  cursor: pointer;
+  transition: background 0.12s;
+  white-space: nowrap;
+
+  &:hover { background: darken($red-bg, 3%); }
 }
 
 // ─── Body ─────────────────────────────────────────────────────────────────────
@@ -235,16 +287,11 @@ $text-soft:   #9c948e;
   cursor: pointer;
   transition: background 0.12s;
 
-  &:hover {
-    background: $bg;
-  }
+  &:hover { background: $bg; }
 
   &--selected {
     background: rgba($gold, 0.06);
-
-    &:hover {
-      background: rgba($gold, 0.09);
-    }
+    &:hover { background: rgba($gold, 0.09); }
   }
 
   &__checkbox {
@@ -286,7 +333,7 @@ $text-soft:   #9c948e;
     min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 3px;
   }
 
   &__name {
@@ -324,12 +371,25 @@ $text-soft:   #9c948e;
     text-overflow: ellipsis;
   }
 
-  &__code {
-    color: $text-muted;
-  }
+  &__code { color: $text-muted; }
 
-  &__dot {
-    margin: 0 2px;
+  &__dot { margin: 0 2px; }
+
+  &__condition {
+    display: inline-block;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-radius: 4px;
+    padding: 1px 6px;
+    width: fit-content;
+
+    &.condition--new  { background: $green-bg;  color: $green;  border: 1px solid $green-border; }
+    &.condition--good { background: rgba($gold, 0.08); color: $gold; border: 1px solid $gold-border; }
+    &.condition--fair { background: $amber-bg;  color: $amber;  border: 1px solid $amber-border; }
+    &.condition--poor { background: $red-bg;    color: $red;    border: 1px solid $red-border; }
   }
 
   &__price {
@@ -365,28 +425,20 @@ $text-soft:   #9c948e;
   padding: 9px 18px;
   cursor: pointer;
   border: 1px solid transparent;
-  transition: background 0.12s, border-color 0.12s, color 0.12s, opacity 0.12s;
+  transition: background 0.12s, border-color 0.12s, color 0.12s;
   white-space: nowrap;
 
   &--primary {
     background: $gold;
     color: #fff;
     border-color: $gold;
-
-    &:hover {
-      background: $gold-dim;
-      border-color: $gold-dim;
-    }
+    &:hover { background: $gold-dim; border-color: $gold-dim; }
   }
 
   &--outline {
     background: transparent;
     color: $text-muted;
     border-color: $border;
-
-    &:hover {
-      background: darken($bg, 2%);
-      color: $text;
-    }
+    &:hover { background: darken($bg, 2%); color: $text; }
   }
 }

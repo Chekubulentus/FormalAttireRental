@@ -31,8 +31,6 @@ export class SuppliersComponent implements OnInit {
 
   // ── Stats ──────────────────────────────────────────────────────────────────
   totalCount = 0;
-  activeCount = 0;
-  archivedCount = 0;
 
   // ── Pagination ─────────────────────────────────────────────────────────────
   currentPage = 1;
@@ -92,13 +90,13 @@ export class SuppliersComponent implements OnInit {
 
   onFilterChange(): void {
     this.currentPage = 1;
-    // TODO: call loadSuppliers()
+    // TODO: call filterSuppliers() once a status filter control exists
   }
 
   goToPage(page: number): void {
     if (page < 1 || page > this.totalPages) return;
     this.currentPage = page;
-    // TODO: call loadSuppliers()
+    this.filterSuppliers();
   }
 
   // ── Modal Triggers (wired up when modals are built) ────────────────────────
@@ -138,17 +136,16 @@ export class SuppliersComponent implements OnInit {
       this.itemsPerPage,
       this.searchQuery
     ).then(res => {
-      if(!res.isSuccess) {
+      if (!res.isSuccess) {
         this.suppliers = [];
         this.totalCount = 0;
-        this.archivedCount = 0;
-        this.activeCount = 0;
+        this.totalPages = 0;
+        return;
       }
 
       this.suppliers = res.data?.items ?? [];
       this.totalCount = res.data?.totalCount ?? 0;
-      this.archivedCount = 0; //REMOVE ARCHIVED COUNT.
-      this.activeCount = this.suppliers.length;
+      this.totalPages = res.data?.totalPages ?? 0;
     }).catch(err => {
       this.toastrService.error(err.error);
     }).finally(() => {

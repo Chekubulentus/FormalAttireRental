@@ -13,5 +13,8 @@ namespace RentalAttireBackend.Application.Suppliers.DTOs
         public List<ClotheDTO> ClothesAvailable { get; set; } = new();
         public int AssignedClothesCount { get; set; }
         public string CreatedByEmployee { get; set; } = string.Empty;
+        public DateTime CreatedAt { get; set; } 
+        public int ActivePOCount { get; set; }
+        public int OverduePOCount { get; set; }
     }
 }

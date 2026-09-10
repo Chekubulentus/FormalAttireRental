@@ -258,6 +258,7 @@ export class CreateClotheComponent implements OnInit {
       this.close();
     }).catch(err => {
       this.toastrService.error(err.error);
+      console.log(`ERROR LOG: ${err.error}`);
     }).finally(() => {
       this.isSubmitting = false;
     });
