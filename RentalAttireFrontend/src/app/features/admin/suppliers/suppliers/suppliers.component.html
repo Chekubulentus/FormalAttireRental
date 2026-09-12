@@ -172,6 +172,7 @@
 <app-create-supplier-modal
   *ngIf="openCreateSupplierModal"
   (closeModal)="closeAddModal()"
+  (supplierCreated)="supplierCreated()"
 ></app-create-supplier-modal>
 
 <!-- Archive Confirmation Modal -->
@@ -186,6 +187,12 @@
   </app-archive-confirmation>
 </div>
 
+<app-edit-supplier-modal
+*ngIf="this.supplierToEdit"
+[supplierId]="supplierToEdit.id"
+(closeModal)="closeEditModal()"
+(supplierUpdated)="onSupplierUpdated()"
+></app-edit-supplier-modal>
 <!-- Not yet built -->
 <!-- <app-edit-supplier-modal ...></app-edit-supplier-modal> -->
 <!-- <app-view-supplier-modal ...></app-view-supplier-modal> -->

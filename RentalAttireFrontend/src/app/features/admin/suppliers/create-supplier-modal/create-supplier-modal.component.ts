@@ -135,6 +135,7 @@ export class CreateSupplierModalComponent {
       const result = await this.supplierService.createSupplierAsync(command);
 
       if (result.isSuccess) {
+        this.toastr.success(result.successMessage);
         this.supplierCreated.emit();  // parent shows toast + reloads table
         this.close();
       } else {

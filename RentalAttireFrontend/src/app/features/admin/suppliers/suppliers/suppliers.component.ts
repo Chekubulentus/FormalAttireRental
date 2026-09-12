@@ -6,6 +6,7 @@ import { SupplierDTO } from '../../../../data/models/DTOs/Supplier/supplier';
 import { ArchiveConfirmationComponent } from '../../../../shared/components/archive-confirmation/archive-confirmation/archive-confirmation.component';
 import { SupplierService } from '../suppliers-service/supplier.service';
 import { ToastrService } from 'ngx-toastr';
+import { EditSupplierModalComponent } from '../edit-supplier-modal/edit-supplier-modal.component';
 
 @Component({
   selector: 'app-suppliers',
@@ -14,7 +15,8 @@ import { ToastrService } from 'ngx-toastr';
     CommonModule, 
     FormsModule,
     CreateSupplierModalComponent,
-    ArchiveConfirmationComponent
+    ArchiveConfirmationComponent,
+    EditSupplierModalComponent
   ],
   templateUrl: './suppliers.component.html',
   styleUrl: './suppliers.component.scss'
@@ -43,6 +45,9 @@ export class SuppliersComponent implements OnInit {
   //Archive Confirmation Properties
   supplierToArchive : SupplierDTO | null = null;
   isArchiving: boolean = false;
+
+  //Edit Supplier Properties
+  supplierToEdit : SupplierDTO | null = null;
 
   constructor(
     private supplierService : SupplierService,
@@ -108,8 +113,24 @@ export class SuppliersComponent implements OnInit {
     this.openCreateSupplierModal = false;
   }
 
+  supplierCreated() {
+    this.filterSuppliers();
+    this.openCreateSupplierModal = false;
+  }
+
   openEditModal(supplier: SupplierDTO): void {
     // TODO: open EditSupplierModalComponent with supplier
+    this.supplierToEdit = supplier;
+  }
+
+  closeEditModal() {
+    this.supplierToEdit = null;
+  }
+
+  onSupplierUpdated(): void {
+    this.toastrService.success('Supplier updated successfully.');
+    this.closeEditModal();
+    this.filterSuppliers();
   }
 
   openViewModal(supplier: SupplierDTO): void {
@@ -154,11 +175,11 @@ export class SuppliersComponent implements OnInit {
   }
 
   openArchiveModal(supplier : SupplierDTO) {
-
+    this.supplierToArchive = supplier;
   }
 
   closeArchiveModal() {
-
+    this.supplierToArchive = null;
   }
 
   onArchiveConfirmed() {

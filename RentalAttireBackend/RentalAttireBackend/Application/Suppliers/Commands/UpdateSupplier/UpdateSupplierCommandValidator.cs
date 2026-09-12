@@ -20,7 +20,8 @@ namespace RentalAttireBackend.Application.Suppliers.Commands.UpdateSupplier
 
             RuleFor(x => x.PhoneNumber)
                 .Length(11)
-                .WithMessage("Invalid phone number digits");
+                .WithMessage("Invalid phone number digits")
+                .When(x => !string.IsNullOrEmpty(x.PhoneNumber));
 
             RuleFor(x => x.Address)
                 .NotEmpty()

@@ -6,7 +6,9 @@
       <div class="modal__header-meta">
         <span class="modal__eyebrow">Procurement</span>
         <h2 class="modal__title" id="modal-title">Edit Supplier</h2>
-        <p class="modal__subtitle">Update the details for {{ supplier.supplierName }}.</p>
+        <p class="modal__subtitle">
+          {{ supplier ? 'Update the details for ' + supplier.supplierName + '.' : 'Loading…' }}
+        </p>
       </div>
       <button class="modal__close" (click)="close()" aria-label="Close">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
@@ -16,8 +18,18 @@
       </button>
     </div>
 
+    <!-- Loading skeleton -->
+    <div class="modal__body" *ngIf="isLoading">
+      <div class="skeleton-field"></div>
+      <div class="skeleton-field skeleton-field--tall"></div>
+      <div class="skeleton-row">
+        <div class="skeleton-field"></div>
+        <div class="skeleton-field"></div>
+      </div>
+    </div>
+
     <!-- Body -->
-    <div class="modal__body">
+    <div class="modal__body" *ngIf="!isLoading && supplier">
 
       <!-- Supplier Name -->
       <div class="field" [class.field--error]="hasError('supplierName')">
@@ -112,7 +124,7 @@
             <path d="M20.38 3.46L16 2a4 4 0 01-8 0L3.62 3.46a2 2 0 00-1.34 2.23l.58 3.57a1 1 0 00.99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 002-2V10h2.15a1 1 0 00.99-.84l.58-3.57a2 2 0 00-1.34-2.23z"/>
           </svg>
           <span *ngIf="pendingAssignCount === 0 && pendingUnassignCount === 0">
-            {{ pickerClothes.length === 0 ? 'Manage Clothes' : currentlySelectedIds.size + ' clothe' + (currentlySelectedIds.size === 1 ? '' : 's') + ' assigned' }}
+            {{ currentlySelectedIds.size }} clothe{{ currentlySelectedIds.size === 1 ? '' : 's' }} assigned
           </span>
           <span *ngIf="pendingAssignCount > 0 || pendingUnassignCount > 0" class="assign-clothes-btn__delta">
             <ng-container *ngIf="pendingAssignCount > 0">
@@ -133,7 +145,7 @@
       <button class="btn btn--outline" (click)="close()" [disabled]="isSubmitting">
         Cancel
       </button>
-      <button class="btn btn--primary" (click)="onSubmit()" [disabled]="isSubmitting">
+      <button class="btn btn--primary" (click)="onSubmit()" [disabled]="isSubmitting || isLoading">
         <span class="btn__spinner" *ngIf="isSubmitting">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
             stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
@@ -148,7 +160,7 @@
 </div>
 
 <app-assign-clothes-modal
-  *ngIf="isAssignClothesModalOpen"
+  *ngIf="isAssignClothesModalOpen && supplier"
   [supplierId]="supplier.id"
   [preSelectedIds]="preSelectedIdsSnapshot"
   title="Manage Clothes"
