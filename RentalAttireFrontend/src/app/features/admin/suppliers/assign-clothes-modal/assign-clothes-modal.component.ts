@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ClotheDTO } from '../../../../data/models/DTOs/Clothes/clothes';
 import { Category } from '../../../../data/models/DTOs/Category/category';
-import { CategoryService } from '../../categories/category-service/category.service'; // TODO: confirm this path
+import { CategoryService } from '../../categories/category-service/category.service';
 import { SupplierService } from '../suppliers-service/supplier.service';
 import { AppToastrService } from '../../../../core/services/toastr-service/app-toastr.service';
 
@@ -33,8 +33,8 @@ export class AssignClothesModalComponent implements OnInit {
 
   constructor(
     private categoryService: CategoryService,
-    private supplierService : SupplierService,
-    private toastrService : AppToastrService
+    private supplierService: SupplierService,
+    private toastrService: AppToastrService
   ) {}
 
   // ── Filter State ──────────────────────────────────────────────────────────
@@ -49,15 +49,15 @@ export class AssignClothesModalComponent implements OnInit {
   // ── Data State ────────────────────────────────────────────────────────────
   clothes: ClotheDTO[] = [];
   totalCount = 0;
-  isLoading = false;
+  isLoading  = false;
 
   // ── Selection State ───────────────────────────────────────────────────────
   private originalIds = new Set<number>();
   selectedIds = new Set<number>();
 
-  //Pagination Properties
-  currentPage : number = 1;
-  itemsPerPage : number = 10;
+  // ── Pagination ────────────────────────────────────────────────────────────
+  currentPage  = 1;
+  itemsPerPage = 10;
 
   ngOnInit(): void {
     this.originalIds = new Set(this.preSelectedIds ?? []);
@@ -75,8 +75,9 @@ export class AssignClothesModalComponent implements OnInit {
     });
   }
 
-  // ── Source & Filtering (server-side) ─────────────────────────────────────
+  // ── Data Loading ──────────────────────────────────────────────────────────
   onFiltersChanged(): void {
+    this.currentPage = 1;
     this.loadClothes();
   }
 
@@ -91,26 +92,23 @@ export class AssignClothesModalComponent implements OnInit {
       this.currentPage,
       this.itemsPerPage
     ).then(res => {
-      if(!res.isSuccess) {
+      if (!res.isSuccess) {
         this.toastrService.error(res.errorMessage ?? 'Clothes could not be fetched.');
-        this.clothes = [];
-        this.totalCount = 0;  
+        this.clothes    = [];
+        this.totalCount = 0;
+        return;
       }
-      this.clothes = res.data?.clothes ?? [];
+      console.log(`Assignable Clothes: ${res.data?.clothes}`);
+      this.clothes    = res.data?.clothes ?? [];
       this.totalCount = res.data?.totalCount ?? 0;
     }).catch(err => {
       this.toastrService.error(err.error);
     }).finally(() => {
       this.isLoading = false;
     });
-    
-    //
-    // Stub for now — nothing will show until this is wired up.
-    this.isLoading = false;
-    this.clothes = [];
-    this.totalCount = 0;
   }
 
+  // ── Filters ───────────────────────────────────────────────────────────────
   get hasActiveFilters(): boolean {
     return !!this.searchQuery.trim()
       || !!this.filterCategory
@@ -124,13 +122,8 @@ export class AssignClothesModalComponent implements OnInit {
     this.onFiltersChanged();
   }
 
-  get isNoResults(): boolean {
-    return this.clothes.length === 0 && this.hasActiveFilters;
-  }
-
-  get isPoolEmpty(): boolean {
-    return this.clothes.length === 0 && !this.hasActiveFilters;
-  }
+  get isNoResults(): boolean  { return this.clothes.length === 0 &&  this.hasActiveFilters; }
+  get isPoolEmpty(): boolean  { return this.clothes.length === 0 && !this.hasActiveFilters; }
 
   // ── Selection ─────────────────────────────────────────────────────────────
   isSelected(id: number): boolean            { return this.selectedIds.has(id); }
@@ -156,6 +149,10 @@ export class AssignClothesModalComponent implements OnInit {
     let count = 0;
     this.originalIds.forEach(id => { if (!this.selectedIds.has(id)) count++; });
     return count;
+  }
+
+  get hasPendingChanges(): boolean {
+    return this.newlyAssignedCount > 0 || this.newlyUnassignedCount > 0;
   }
 
   clearSelection(): void { this.selectedIds.clear(); }

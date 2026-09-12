@@ -83,7 +83,7 @@
       <div class="picker-list" *ngIf="!isNoResults">
         <label
           class="picker-row"
-          *ngFor="let clothe of this.clothes"
+          *ngFor="let clothe of clothes"
           [class.picker-row--selected]="isSelected(clothe.id)"
         >
           <input
@@ -125,12 +125,34 @@
 
     <!-- Footer -->
     <div class="modal__footer">
-      <button class="btn btn--outline" (click)="close()" type="button">
-        Cancel
-      </button>
-      <button class="btn btn--primary" (click)="confirm()" type="button">
-        Confirm Selection
-      </button>
+
+      <!-- Pending changes summary — only shown when something has changed -->
+      <div class="footer-summary" *ngIf="hasPendingChanges">
+        <span class="footer-summary__item footer-summary__item--assign" *ngIf="newlyAssignedCount > 0">
+          <svg width="11" height="11" viewBox="0 0 16 16" fill="none">
+            <line x1="8" y1="3" x2="8" y2="13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+            <line x1="3" y1="8" x2="13" y2="8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          </svg>
+          {{ newlyAssignedCount }} to assign
+        </span>
+        <span class="footer-summary__sep" *ngIf="newlyAssignedCount > 0 && newlyUnassignedCount > 0">&middot;</span>
+        <span class="footer-summary__item footer-summary__item--unassign" *ngIf="newlyUnassignedCount > 0">
+          <svg width="11" height="11" viewBox="0 0 16 16" fill="none">
+            <line x1="3" y1="8" x2="13" y2="8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          </svg>
+          {{ newlyUnassignedCount }} to unassign
+        </span>
+      </div>
+
+      <div class="footer-actions">
+        <button class="btn btn--outline" (click)="close()" type="button">
+          Cancel
+        </button>
+        <button class="btn btn--primary" (click)="confirm()" type="button">
+          Confirm Selection
+        </button>
+      </div>
+
     </div>
 
   </div>

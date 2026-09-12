@@ -4,7 +4,7 @@ using RentalAttireBackend.Application.Common.Interfaces;
 using RentalAttireBackend.Application.Common.Models;
 using RentalAttireBackend.Domain.Entities;
 using RentalAttireBackend.Domain.Interfaces;
-using System.Runtime.Versioning;
+using RentalAttireBackend.Application.Clothes.Helper;
 
 namespace RentalAttireBackend.Application.Clothes.Commands.CreateClothe
 {
@@ -47,15 +47,10 @@ namespace RentalAttireBackend.Application.Clothes.Commands.CreateClothe
 
             try
             {
-                await _transaction.BeginTransactionAsync(cancellationToken);
-
                 var category = await _categoryRepo.GetCategoryByNameAsync(command.CategoryName, cancellationToken);
 
                 if (category is null)
-                {
-                    await _transaction.RollbackTransactionAsync(cancellationToken);
-                    return Result<bool>.Failure("Category is required.");
-                }
+                    return Result<bool>.FailureWithErrorType("Category is required.", ErrorType.BadRequest);
 
                 var duplicationValidation = await _clotheRepo.ClotheDuplicationValidationAsync(
                     command.ClotheName,
@@ -63,7 +58,9 @@ namespace RentalAttireBackend.Application.Clothes.Commands.CreateClothe
                     );
 
                 if (duplicationValidation)
-                    return Result<bool>.Failure("Clothe record already exist.");
+                    return Result<bool>.FailureWithErrorType("Clothe record already exist.", ErrorType.BadRequest);
+
+                await _transaction.BeginTransactionAsync(cancellationToken);
 
                 var clothe = _mapper.Map<Clothe>(command);
                 clothe.CategoryId = category.Id;
@@ -71,21 +68,29 @@ namespace RentalAttireBackend.Application.Clothes.Commands.CreateClothe
 
                 var createClothe = await _clotheRepo.CreateClotheAsync(clothe, cancellationToken);
 
+                if (createClothe == 0)
+                {
+                    await _transaction.RollbackTransactionAsync(cancellationToken);
+                    return Result<bool>.FailureWithErrorType("Failed to create clothe record.", ErrorType.BadRequest);
+                }
+
+                clothe.ClotheCode = ClotheCodeGenerator.Generate(category.CategoryName, clothe.Id);
+
                 var uploadImage = await _fileUpload.UploadImageAsync(command.Image, $"clothes/{createClothe}");
 
                 if(!uploadImage.Success)
                 {
                     await _transaction.RollbackTransactionAsync(cancellationToken);
-                    return Result<bool>.Failure("Image cannot be uploaded.");
+                    return Result<bool>.FailureWithErrorType("Image cannot be uploaded.", ErrorType.BadRequest);
                 }
 
                 clothe.ProfileImagePath = uploadImage.FilePath;
-                await _clotheRepo.UpdateClotheAsync(clothe, cancellationToken);
+                var updateClothe = await _clotheRepo.UpdateClotheAsync(clothe, cancellationToken);
 
-                if (createClothe == 0)
+                if (!updateClothe)
                 {
                     await _transaction.RollbackTransactionAsync(cancellationToken);
-                    return Result<bool>.Failure("Failed to create clothe record.");
+                    return Result<bool>.FailureWithErrorType("Failed to update clothe. No changes were saved.", ErrorType.BadRequest);
                 }
 
                 var auditClothe = await _auditService.CreateAuditLogAsync(
@@ -98,7 +103,7 @@ namespace RentalAttireBackend.Application.Clothes.Commands.CreateClothe
                 if (!auditClothe)
                 {
                     await _transaction.RollbackTransactionAsync(cancellationToken);
-                    return Result<bool>.Failure("Clothe cannot be audited.");
+                    return Result<bool>.FailureWithErrorType("Clothe cannot be audited.", ErrorType.BadRequest);
                 }
 
                 await _transaction.CommitTransacionAsync(cancellationToken);
@@ -106,7 +111,7 @@ namespace RentalAttireBackend.Application.Clothes.Commands.CreateClothe
             }catch(Exception e)
             {
                 await _transaction.RollbackTransactionAsync(cancellationToken);
-                return Result<bool>.Failure(e.Message);
+                throw;
             }
         }
     }

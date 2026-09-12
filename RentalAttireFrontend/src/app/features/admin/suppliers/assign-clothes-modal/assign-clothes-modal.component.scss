@@ -442,3 +442,49 @@ $amber-border:#e8c98a;
     &:hover { background: darken($bg, 2%); color: $text; }
   }
 }
+
+// ─── Footer Summary ───────────────────────────────────────────────────────────
+.modal__footer {
+  // Override to space summary + actions apart
+  justify-content: space-between;
+}
+
+.footer-summary {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  &__item {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    border-radius: 5px;
+    padding: 3px 8px;
+
+    &--assign {
+      color: $green;
+      background: $green-bg;
+      border: 1px solid $green-border;
+    }
+
+    &--unassign {
+      color: $red;
+      background: $red-bg;
+      border: 1px solid $red-border;
+    }
+  }
+
+  &__sep {
+    color: $text-soft;
+    font-size: 12px;
+  }
+}
+
+.footer-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}

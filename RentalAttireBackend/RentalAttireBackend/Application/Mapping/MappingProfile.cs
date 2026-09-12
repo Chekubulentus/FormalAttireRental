@@ -256,6 +256,8 @@ namespace RentalAttireBackend.Application.Mapping
                 .ForMember(dest => dest.SupplierId,
                 opt => opt.Ignore())
                 .ForMember(dest => dest.Supplier,
+                opt => opt.Ignore())
+                .ForMember(dest => dest.ClotheCode,
                 opt => opt.Ignore());
             #endregion
 
@@ -268,6 +270,12 @@ namespace RentalAttireBackend.Application.Mapping
                 .ForMember(dest => dest.ProfileImagePath,
                 opt => opt.Ignore())
                 .ForMember(dest => dest.IsAvailable,
+                opt => opt.Ignore())
+                .ForMember(dest => dest.ClotheCode,
+                opt => opt.Ignore())
+                .ForMember(dest => dest.Supplier,
+                opt => opt.Ignore())
+                .ForMember(dest => dest.SupplierId,
                 opt => opt.Ignore());
             #endregion
 

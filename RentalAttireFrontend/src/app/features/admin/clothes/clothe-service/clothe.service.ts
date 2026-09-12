@@ -8,6 +8,7 @@ import { ClotheDTO } from '../../../../data/models/DTOs/Clothes/clothes';
 import { CreateClotheCommand } from '../create-clothe/create-clothe.component';
 import { UpdateClotheCommand } from '../edit-clothe/edit-clothe.component';
 import { ArchiveClotheCommand } from '../../../../data/models/DTOs/Clothes/archive-clothe';
+import { extractErrorMessage } from '../../../../data/utils/error-response-util';
 
 @Injectable({
   providedIn: 'root'
@@ -73,7 +74,8 @@ export class ClotheService {
 
       return result;
     }catch(err : any) {
-      return Result.failure(err.error);
+      console.log(`Error Message ${JSON.stringify(extractErrorMessage(err.error))}`);
+      return Result.failure(extractErrorMessage(err.error));
     }
   }
 

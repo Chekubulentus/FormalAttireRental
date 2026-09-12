@@ -87,7 +87,7 @@ export class CreateClotheComponent implements OnInit {
 
   currentUser: UserViewModel | undefined;
 
-  
+
   constructor(
     private clotheService : ClotheService,
     private toastrService : ToastrService,
@@ -134,7 +134,6 @@ export class CreateClotheComponent implements OnInit {
     const e: Record<string, string> = {};
 
     // Item Info
-    if (!f.clotheCode?.trim())  e['clotheCode']   = 'Item code is required.';
     if (!f.clotheName?.trim())  e['clotheName']   = 'Item name is required.';
     if (!f.categoryName)        e['categoryName'] = 'Select a category.';
     if (!f.clotheGender)        e['clotheGender'] = 'Select a gender.';
@@ -228,7 +227,6 @@ export class CreateClotheComponent implements OnInit {
 
     // Build FormData — maps exactly to CreateClotheCommand on the backend
     const formData = new FormData();
-    formData.append('clotheCode',         this.form.clotheCode);
     formData.append('clotheName',         this.form.clotheName);
     formData.append('categoryName',       this.form.categoryName);
     formData.append('color',              this.form.color);
@@ -258,7 +256,6 @@ export class CreateClotheComponent implements OnInit {
       this.close();
     }).catch(err => {
       this.toastrService.error(err.error);
-      console.log(`ERROR LOG: ${err.error}`);
     }).finally(() => {
       this.isSubmitting = false;
     });

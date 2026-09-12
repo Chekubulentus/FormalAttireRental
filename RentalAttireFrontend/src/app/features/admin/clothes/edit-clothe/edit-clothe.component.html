@@ -110,20 +110,11 @@
     <section class="form-section">
       <div class="section-label"><span class="dot"></span>Item Information</div>
 
-      <div class="field-row cols-2">
-        <div class="field" [class.invalid]="hasError('clotheCode')">
-          <label class="field-label">Item Code <span class="required">*</span></label>
-          <input class="field-input" type="text" placeholder="e.g. CLT-0001"
-                 [(ngModel)]="form.clotheCode"/>
-          <span class="error-msg" *ngIf="hasError('clotheCode')">{{ errorMsg('clotheCode') }}</span>
-        </div>
-
-        <div class="field" [class.invalid]="hasError('clotheName')">
-          <label class="field-label">Item Name <span class="required">*</span></label>
-          <input class="field-input" type="text" placeholder="e.g. Ivory Barong Tagalog"
-                 [(ngModel)]="form.clotheName"/>
-          <span class="error-msg" *ngIf="hasError('clotheName')">{{ errorMsg('clotheName') }}</span>
-        </div>
+      <div class="field" [class.invalid]="hasError('clotheName')">
+        <label class="field-label">Item Name <span class="required">*</span></label>
+        <input class="field-input" type="text" placeholder="e.g. Ivory Barong Tagalog"
+               [(ngModel)]="form.clotheName"/>
+        <span class="error-msg" *ngIf="hasError('clotheName')">{{ errorMsg('clotheName') }}</span>
       </div>
 
       <div class="field-row cols-3">

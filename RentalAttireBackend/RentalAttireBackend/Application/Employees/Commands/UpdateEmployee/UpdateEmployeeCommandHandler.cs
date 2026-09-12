@@ -82,7 +82,8 @@ namespace RentalAttireBackend.Application.Employees.Commands.UpdateEmployee
                 return Result<bool>.SuccessWithMessage("Employee successfully updated!");
             }catch(Exception e)
             {
-                return Result<bool>.Failure(e.Message);
+                await _transaction.RollbackTransactionAsync(cancellationToken);
+                throw;
             }
         }
     }
