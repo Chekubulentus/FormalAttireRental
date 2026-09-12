@@ -1,26 +1,7 @@
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-
-// TODO: Replace with real DTO from src/app/data/models/DTOs/Clothes/clothes.ts
-interface ClotheDTO {
-  id: number;
-  clotheCode: string;
-  clotheName: string;
-  categoryName: string;
-  color: string;
-  brand: string;
-  material: string;
-  size: string;
-  clotheGender: string;
-  stockQuantity: number;
-  availableQuantity: number;
-  rentalPrice: number;
-  depositAmount: number;
-  rentalDurationDays: number;
-  condition: string;
-  profileImagePath?: string;
-}
+import { ClotheDTO } from '../../../../data/models/DTOs/Clothes/clothes';
 
 @Component({
   selector: 'app-view-supplier-clothes-modal',

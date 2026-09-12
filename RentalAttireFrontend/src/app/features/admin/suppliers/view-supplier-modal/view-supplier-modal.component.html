@@ -4,9 +4,13 @@
     <!-- Header -->
     <div class="modal__header">
       <div class="modal__header-meta">
-        <span class="modal__eyebrow">Supplier</span>
-        <h2 class="modal__title" id="modal-title">{{ supplier.supplierName }}</h2>
-        <span class="code-badge">{{ supplier.supplierCode }}</span>
+        <span class="modal__eyebrow">Procurement</span>
+        <h2 class="modal__title" id="modal-title">
+          {{ supplier ? supplier.supplierName : 'Loading…' }}
+        </h2>
+        <p class="modal__subtitle" *ngIf="supplier">
+          <span class="code-badge">{{ supplier.supplierCode }}</span>
+        </p>
       </div>
       <button class="modal__close" (click)="close()" aria-label="Close">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
@@ -16,63 +20,79 @@
       </button>
     </div>
 
-    <!-- Body -->
-    <div class="modal__body">
-
-      <!-- Contact Details -->
-      <section class="detail-section">
-        <h3 class="detail-section__title">Contact Information</h3>
-        <div class="detail-grid">
-
-          <div class="detail-item">
-            <span class="detail-item__label">Phone</span>
-            <span class="detail-item__value">{{ supplier.phoneNumber || '—' }}</span>
-          </div>
-
-          <div class="detail-item">
-            <span class="detail-item__label">Email</span>
-            <span class="detail-item__value">{{ supplier.email || '—' }}</span>
-          </div>
-
-          <div class="detail-item detail-item--full">
-            <span class="detail-item__label">Address</span>
-            <span class="detail-item__value">{{ supplier.address || '—' }}</span>
-          </div>
-
+    <!-- Loading skeleton -->
+    <div class="modal__body" *ngIf="isLoading">
+      <div class="skeleton-section">
+        <div class="skeleton-label"></div>
+        <div class="skeleton-row">
+          <div class="skeleton-field"></div>
+          <div class="skeleton-field"></div>
         </div>
-      </section>
+        <div class="skeleton-field"></div>
+        <div class="skeleton-field skeleton-field--wide"></div>
+      </div>
+      <div class="divider"></div>
+      <div class="skeleton-field skeleton-field--btn"></div>
+    </div>
+
+    <!-- Body -->
+    <div class="modal__body" *ngIf="!isLoading && supplier">
+
+      <!-- Contact Information -->
+      <div class="section">
+        <span class="section__label">Contact Information</span>
+
+        <div class="detail-grid">
+          <div class="detail">
+            <span class="detail__label">Phone</span>
+            <span class="detail__value">{{ supplier.phoneNumber || '—' }}</span>
+          </div>
+          <div class="detail">
+            <span class="detail__label">Email</span>
+            <span class="detail__value">{{ supplier.email || '—' }}</span>
+          </div>
+          <div class="detail detail--full">
+            <span class="detail__label">Address</span>
+            <span class="detail__value">{{ supplier.address || '—' }}</span>
+          </div>
+        </div>
+      </div>
 
       <div class="divider"></div>
 
       <!-- Clothes -->
-      <section class="detail-section">
-        <div class="detail-section__row">
-          <div>
-            <h3 class="detail-section__title">Clothes Available</h3>
-            <p class="detail-section__subtitle">
-              {{ supplier.clothesAvailable.length }}
-              {{ supplier.clothesAvailable.length === 1 ? 'item' : 'items' }} assigned to this supplier
-            </p>
+      <div class="section">
+        <span class="section__label">Clothes Available</span>
+
+        <div class="clothes-summary">
+          <div class="clothes-summary__count">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.57a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.57a2 2 0 0 0-1.34-2.23z"/>
+            </svg>
+            <span>
+              <strong>{{ supplier.assignedClothesCount }}</strong>
+              {{ supplier.assignedClothesCount === 1 ? 'item' : 'items' }} assigned
+            </span>
           </div>
           <button
             class="btn btn--ghost"
-            [disabled]="supplier.clothesAvailable.length === 0"
-            (click)="openClothesModal()">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
-              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-              <circle cx="12" cy="12" r="3"/>
-            </svg>
+            (click)="openClothesModal()"
+            [disabled]="supplier.assignedClothesCount === 0">
             View Clothes
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"/>
+            </svg>
           </button>
         </div>
-      </section>
+      </div>
 
     </div>
 
     <!-- Footer -->
     <div class="modal__footer">
-      <span class="modal__footer-meta">
+      <span class="footer-meta" *ngIf="supplier">
         Added by {{ supplier.createdByEmployee }}
       </span>
       <button class="btn btn--outline" (click)="close()">Close</button>
@@ -81,10 +101,10 @@
   </div>
 </div>
 
-<!-- View Supplier Clothes Modal -->
-<!-- <app-view-supplier-clothes-modal
-  *ngIf="isClothesModalOpen"
-  [clothes]="supplier.clothesAvailable"
+<!-- Clothes Modal (second layer) -->
+<app-view-supplier-clothes-modal
+  *ngIf="isClothesModalOpen && supplier"
+  [clothes]="clothes"
   [supplierName]="supplier.supplierName"
-  (closeModal)="closeClothesModal()">
-</app-view-supplier-clothes-modal> -->
+  (closeModal)="closeClothesModal()"
+></app-view-supplier-clothes-modal>

@@ -7,17 +7,19 @@ import { ArchiveConfirmationComponent } from '../../../../shared/components/arch
 import { SupplierService } from '../suppliers-service/supplier.service';
 import { ToastrService } from 'ngx-toastr';
 import { EditSupplierModalComponent } from '../edit-supplier-modal/edit-supplier-modal.component';
+import { ViewSupplierModalComponent } from '../view-supplier-modal/view-supplier-modal.component';
 
 @Component({
   selector: 'app-suppliers',
   standalone: true,
   imports: [
-    CommonModule, 
+    CommonModule,
     FormsModule,
     CreateSupplierModalComponent,
     ArchiveConfirmationComponent,
-    EditSupplierModalComponent
-  ],
+    EditSupplierModalComponent,
+    ViewSupplierModalComponent
+],
   templateUrl: './suppliers.component.html',
   styleUrl: './suppliers.component.scss'
 })
@@ -48,6 +50,9 @@ export class SuppliersComponent implements OnInit {
 
   //Edit Supplier Properties
   supplierToEdit : SupplierDTO | null = null;
+
+  //View Supplier Properties
+  supplierToView : SupplierDTO | null = null;
 
   constructor(
     private supplierService : SupplierService,
@@ -134,11 +139,11 @@ export class SuppliersComponent implements OnInit {
   }
 
   openViewModal(supplier: SupplierDTO): void {
-    // TODO: open ViewSupplierModalComponent with supplier
+    this.supplierToView = supplier;
   }
 
-  openAssignClothesModal(supplier: SupplierDTO): void {
-    // TODO: open AssignClothesModalComponent with supplier
+  closeViewModal() {
+    this.supplierToView = null;
   }
 
   // ── Archive / Restore ──────────────────────────────────────────────────────

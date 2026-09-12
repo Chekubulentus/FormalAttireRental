@@ -193,6 +193,14 @@
 (closeModal)="closeEditModal()"
 (supplierUpdated)="onSupplierUpdated()"
 ></app-edit-supplier-modal>
+
+<app-view-supplier-modal
+*ngIf="this.supplierToView"
+[supplierId]="this.supplierToView.id"
+(closeModal)="closeViewModal()"
+>
+</app-view-supplier-modal>
+
+
 <!-- Not yet built -->
-<!-- <app-edit-supplier-modal ...></app-edit-supplier-modal> -->
 <!-- <app-view-supplier-modal ...></app-view-supplier-modal> -->

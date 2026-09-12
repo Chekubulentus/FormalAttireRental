@@ -3,10 +3,13 @@ $surface:     #ffffff;
 $bg:          #f9f7f5;
 $border:      #e4ddd6;
 $gold:        #a07840;
+$gold-dim:    #b8975a;
 $gold-border: #d4b896;
 $text:        #1a1917;
 $text-muted:  #6b6560;
 $text-soft:   #9c948e;
+$red:         #c0392b;
+$red-bg:      #fdf2f1;
 
 // ─── Overlay ──────────────────────────────────────────────────────────────────
 .modal-overlay {
@@ -32,12 +35,17 @@ $text-soft:   #9c948e;
   to   { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes shimmer {
+  0%   { background-position: -600px 0; }
+  100% { background-position:  600px 0; }
+}
+
 // ─── Modal Card ───────────────────────────────────────────────────────────────
 .modal {
   background: $surface;
   border-radius: 16px;
   width: 100%;
-  max-width: 520px;
+  max-width: 480px;
   box-shadow: 0 8px 40px rgba(26, 25, 23, 0.14);
   display: flex;
   flex-direction: column;
@@ -79,6 +87,10 @@ $text-soft:   #9c948e;
   line-height: 1.2;
 }
 
+.modal__subtitle {
+  margin: 0;
+}
+
 .modal__close {
   flex-shrink: 0;
   display: flex;
@@ -111,7 +123,6 @@ $text-soft:   #9c948e;
   border-radius: 5px;
   padding: 3px 8px;
   letter-spacing: 0.04em;
-  width: fit-content;
 }
 
 // ─── Body ─────────────────────────────────────────────────────────────────────
@@ -124,53 +135,40 @@ $text-soft:   #9c948e;
   max-height: calc(80vh - 160px);
 }
 
-// ─── Detail Sections ──────────────────────────────────────────────────────────
-.detail-section {
+// ─── Divider ──────────────────────────────────────────────────────────────────
+.divider {
+  height: 1px;
+  background: $border;
+  margin: 0 -24px;
+}
+
+// ─── Section ──────────────────────────────────────────────────────────────────
+.section {
   display: flex;
   flex-direction: column;
   gap: 12px;
 
-  &__title {
+  &__label {
     font-family: 'DM Sans', sans-serif;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 500;
-    color: $text-soft;
     text-transform: uppercase;
-    letter-spacing: 0.07em;
-    margin: 0;
+    letter-spacing: 0.08em;
+    color: $text-soft;
   }
-
-  &__subtitle {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px;
-    color: $text-muted;
-    margin: 2px 0 0;
-  }
-
-  &__row {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 16px;
-  }
-}
-
-.divider {
-  height: 1px;
-  background: $border;
 }
 
 // ─── Detail Grid ──────────────────────────────────────────────────────────────
 .detail-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  gap: 14px 24px;
 }
 
-.detail-item {
+.detail {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 3px;
 
   &--full {
     grid-column: 1 / -1;
@@ -180,16 +178,43 @@ $text-soft:   #9c948e;
     font-family: 'DM Sans', sans-serif;
     font-size: 11px;
     font-weight: 500;
-    color: $text-soft;
     text-transform: uppercase;
     letter-spacing: 0.06em;
+    color: $text-soft;
   }
 
   &__value {
     font-family: 'DM Sans', sans-serif;
-    font-size: 14px;
+    font-size: 13.5px;
     color: $text;
     line-height: 1.4;
+  }
+}
+
+// ─── Clothes Summary ──────────────────────────────────────────────────────────
+.clothes-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  background: $bg;
+  border: 1px solid $border;
+  border-radius: 10px;
+
+  &__count {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: $text-muted;
+
+    svg { flex-shrink: 0; color: $gold; }
+
+    strong {
+      font-weight: 600;
+      color: $text;
+    }
   }
 }
 
@@ -198,15 +223,16 @@ $text-soft:   #9c948e;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 10px;
   padding: 16px 24px;
   border-top: 1px solid $border;
   background: $bg;
+}
 
-  &-meta {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 12px;
-    color: $text-soft;
-  }
+.footer-meta {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  color: $text-soft;
 }
 
 // ─── Buttons ──────────────────────────────────────────────────────────────────
@@ -221,24 +247,12 @@ $text-soft:   #9c948e;
   padding: 8px 16px;
   cursor: pointer;
   border: 1px solid transparent;
-  transition: background 0.12s, border-color 0.12s, color 0.12s;
+  transition: background 0.12s, border-color 0.12s, color 0.12s, opacity 0.12s;
   white-space: nowrap;
 
-  &--ghost {
-    background: transparent;
-    color: $text-muted;
-    border-color: $border;
-
-    &:hover:not(:disabled) {
-      background: $bg;
-      color: $text;
-      border-color: darken($border, 6%);
-    }
-
-    &:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-    }
+  &:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
   }
 
   &--outline {
@@ -246,9 +260,53 @@ $text-soft:   #9c948e;
     color: $text-muted;
     border-color: $border;
 
-    &:hover {
-      background: $bg;
+    &:hover:not(:disabled) {
+      background: darken($bg, 2%);
       color: $text;
     }
   }
+
+  &--ghost {
+    background: $surface;
+    color: $gold;
+    border-color: $gold-border;
+
+    &:hover:not(:disabled) {
+      background: rgba($gold, 0.06);
+    }
+  }
+}
+
+// ─── Loading Skeleton ─────────────────────────────────────────────────────────
+%shimmer {
+  background: linear-gradient(90deg, #ede8e3 25%, #f5f2ef 50%, #ede8e3 75%);
+  background-size: 600px 100%;
+  animation: shimmer 1.4s infinite linear;
+  border-radius: 6px;
+}
+
+.skeleton-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.skeleton-label {
+  @extend %shimmer;
+  height: 10px;
+  width: 120px;
+}
+
+.skeleton-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.skeleton-field {
+  @extend %shimmer;
+  height: 36px;
+
+  &--wide  { width: 100%; }
+  &--btn   { height: 44px; border-radius: 10px; }
 }
