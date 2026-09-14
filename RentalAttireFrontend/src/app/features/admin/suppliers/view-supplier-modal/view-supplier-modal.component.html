@@ -77,7 +77,7 @@
           </div>
           <button
             class="btn btn--ghost"
-            (click)="openClothesModal()"
+            (click)="openClothesModal(supplier.id)"
             [disabled]="supplier.assignedClothesCount === 0">
             View Clothes
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none"
@@ -104,7 +104,7 @@
 <!-- Clothes Modal (second layer) -->
 <app-view-supplier-clothes-modal
   *ngIf="isClothesModalOpen && supplier"
-  [clothes]="clothes"
+  [supplierId]="supplierId"
   [supplierName]="supplier.supplierName"
   (closeModal)="closeClothesModal()"
 ></app-view-supplier-clothes-modal>

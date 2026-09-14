@@ -2,6 +2,10 @@ import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ClotheDTO } from '../../../../data/models/DTOs/Clothes/clothes';
+import { SupplierService } from '../suppliers-service/supplier.service';
+import { CategoryService } from '../../categories/category-service/category.service';
+import { Category } from '../../../../data/models/DTOs/Category/category';
+import { AppToastrService } from '../../../../core/services/toastr-service/app-toastr.service';
 
 @Component({
   selector: 'app-view-supplier-clothes-modal',
@@ -12,37 +16,40 @@ import { ClotheDTO } from '../../../../data/models/DTOs/Clothes/clothes';
 })
 export class ViewSupplierClothesModalComponent implements OnInit {
 
-  @Input() clothes: ClotheDTO[] = [];
+  @Input() supplierId : number | null = null;
   @Input() supplierName = '';
   @Output() closeModal = new EventEmitter<void>();
 
-  // ── Filters ────────────────────────────────────────────────────────────────
+  // ── Filters — all now sent to the backend ───────────────────────────────
   searchQuery = '';
-  genderFilter = '';
-  conditionFilter = '';
+  genderFilter = '';       // '', 'Male', 'Female', 'Unisex'
+  availabilityFilter = ''; // '', 'Available', 'Out of stock'
+  categoryFilter = '';     // '', or a categoryName
 
-  // ── Filtered result ────────────────────────────────────────────────────────
-  filteredClothes: ClotheDTO[] = [];
+  categories: Category[] = [];
 
-  // ── Pagination (client-side — data already loaded via parent) ──────────────
+  // ── Server-filtered, server-paginated result — single source of truth ──
+  clothes: ClotheDTO[] = [];
+  totalCount = 0;
+  totalPages = 0;
+
+  // ── Pagination ───────────────────────────────────────────────────────
   currentPage = 1;
   itemsPerPage = 8;
 
-  get totalPages(): number {
-    return Math.ceil(this.filteredClothes.length / this.itemsPerPage);
-  }
+  constructor(
+    private supplierService : SupplierService,
+    private categoryService : CategoryService,
+    private toastrService : AppToastrService
+  ) {}
 
   get rangeStart(): number {
+    if (this.totalCount === 0) return 0;
     return (this.currentPage - 1) * this.itemsPerPage + 1;
   }
 
   get rangeEnd(): number {
-    return Math.min(this.currentPage * this.itemsPerPage, this.filteredClothes.length);
-  }
-
-  get paginatedClothes(): ClotheDTO[] {
-    const start = (this.currentPage - 1) * this.itemsPerPage;
-    return this.filteredClothes.slice(start, start + this.itemsPerPage);
+    return Math.min(this.currentPage * this.itemsPerPage, this.totalCount);
   }
 
   get pageNumbers(): number[] {
@@ -67,44 +74,63 @@ export class ViewSupplierClothesModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.applyFilters();
+    this.fetchClothes();
+    this.loadCategories();
   }
 
-  // ── Filter Logic ───────────────────────────────────────────────────────────
-  applyFilters(): void {
-    const query = this.searchQuery.trim().toLowerCase();
-
-    this.filteredClothes = this.clothes.filter(c => {
-      const matchesSearch = !query
-        || c.clotheName.toLowerCase().includes(query)
-        || c.clotheCode.toLowerCase().includes(query);
-
-      const matchesGender = !this.genderFilter
-        || c.clotheGender === this.genderFilter;
-
-      const matchesCondition = !this.conditionFilter
-        || c.condition === this.conditionFilter;
-
-      return matchesSearch && matchesGender && matchesCondition;
+  private loadCategories(): void {
+    this.categoryService.getAllCategories().then(res => {
+      if (res.isSuccess && res.data) {
+        this.categories = res.data;
+      }
+    }).catch(err => {
+      this.toastrService.error(err.error);
     });
+  }
 
-    this.currentPage = 1;
+  fetchClothes(): void {
+    this.supplierService.getSupplierClothesByIdAsync(
+      this.supplierId ?? 0,
+      this.currentPage,
+      this.itemsPerPage,
+      this.searchQuery,
+      this.categoryFilter,
+      this.availabilityFilter,
+      this.genderFilter
+    ).then(res => {
+      if (!res.isSuccess || !res.data) {
+        this.clothes = [];
+        this.totalCount = 0;
+        this.totalPages = 0;
+        console.log(`ERROR MESSAGE: ${res.errorMessage}`);
+        return;
+      }
+
+      this.clothes = res.data.items;
+      this.totalCount = res.data.totalCount;
+      this.totalPages = res.data.totalPages;
+    }).catch(err => {
+      this.toastrService.error(err.error);
+    });
   }
 
   onSearchChange(): void {
-    this.applyFilters();
+    this.currentPage = 1;
+    this.fetchClothes();
   }
 
   onFilterChange(): void {
-    this.applyFilters();
+    this.currentPage = 1;
+    this.fetchClothes();
   }
 
   goToPage(page: number): void {
     if (page < 1 || page > this.totalPages) return;
     this.currentPage = page;
+    this.fetchClothes();
   }
 
-  // ── Modal ──────────────────────────────────────────────────────────────────
+  // ── Modal ──────────────────────────────────────────────────────────────
   close(): void {
     this.closeModal.emit();
   }

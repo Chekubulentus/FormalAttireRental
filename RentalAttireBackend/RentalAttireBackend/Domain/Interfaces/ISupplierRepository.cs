@@ -38,6 +38,10 @@ namespace RentalAttireBackend.Domain.Interfaces
 
         public Task<PagedResult<Clothe>> GetSupplierClothesByIdAsync(
             int id,
+            string searchQuery,
+            string category,
+            string availability,
+            string gender,
             int currentPage,
             int itemsPerPage,
             CancellationToken cancellationToken
@@ -69,6 +73,8 @@ namespace RentalAttireBackend.Domain.Interfaces
             );
 
         public Task<int> GetAllUnassignedClothesAsync(CancellationToken cancellationToken);
+
+        public Task<Supplier?> GetSupplierWithNoRelationshipsByIdAsync(int id, CancellationToken cancellationToken);
         #endregion
     }
 }

@@ -98,7 +98,6 @@ export class AssignClothesModalComponent implements OnInit {
         this.totalCount = 0;
         return;
       }
-      console.log(`Assignable Clothes: ${res.data?.clothes}`);
       this.clothes    = res.data?.clothes ?? [];
       this.totalCount = res.data?.totalCount ?? 0;
     }).catch(err => {

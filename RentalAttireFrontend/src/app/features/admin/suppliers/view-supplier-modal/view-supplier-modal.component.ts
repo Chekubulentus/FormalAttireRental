@@ -61,7 +61,10 @@ export class ViewSupplierModalComponent implements OnInit {
   }
 
   // ── Modal ──────────────────────────────────────────────────────────────────
-  openClothesModal(): void  { this.isClothesModalOpen = true; }
+  openClothesModal(supplierId : number): void  { 
+    this.isClothesModalOpen = true; 
+    this.supplierId = supplierId;
+  }
   closeClothesModal(): void { this.isClothesModalOpen = false; }
 
   close(): void { this.closeModal.emit(); }

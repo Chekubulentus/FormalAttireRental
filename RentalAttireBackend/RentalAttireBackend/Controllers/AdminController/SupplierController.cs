@@ -70,11 +70,22 @@ namespace RentalAttireBackend.Controllers.AdminController
         }
 
         [HttpGet("supplier-clothes")]
-        public async Task<IActionResult> GetSupplierClothesByIdAsync(int id, int currentPage, int itemsPerPage)
+        public async Task<IActionResult> GetSupplierClothesByIdAsync(
+            int id, 
+            string? searchQuery,
+            string? category,
+            string? availability,
+            string? gender,
+            int currentPage, 
+            int itemsPerPage)
         {
             var result = await _mediator.Send(new GetSupplierClothesByIdQuery
             {
                 Id = id,
+                SearchQuery = searchQuery,
+                Category = category,
+                Availability = availability,
+                Gender = gender,
                 CurrentPage = currentPage,
                 ItemsPerPage = itemsPerPage
             });
