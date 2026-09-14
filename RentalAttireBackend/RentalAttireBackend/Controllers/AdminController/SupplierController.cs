@@ -88,7 +88,7 @@ namespace RentalAttireBackend.Controllers.AdminController
                 Gender = gender,
                 CurrentPage = currentPage,
                 ItemsPerPage = itemsPerPage
-            });
+            }); 
 
             return result.ToActionResult(this, _httpContextAccessor);
         }

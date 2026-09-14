@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using RentalAttireBackend.Application.Common.Interfaces;
 using RentalAttireBackend.Application.Common.Models;
 using RentalAttireBackend.Application.Rentals.DTOs;
 using RentalAttireBackend.Domain.Interfaces;
@@ -10,14 +11,17 @@ namespace RentalAttireBackend.Application.Rentals.Queries.FilterRentals
     {
         private readonly IMapper _mapper;
         private readonly IRentalRepository _rentalRepo;
+        private readonly IFileUploadService _fileUploadService;
 
         public FilterRentalsQueryHandler(
             IMapper mapper,
-            IRentalRepository rentalRepo
+            IRentalRepository rentalRepo,
+            IFileUploadService fileUploadService
             )
         {
             _mapper = mapper;
             _rentalRepo = rentalRepo;
+            _fileUploadService = fileUploadService;
         }
 
         public async Task<Result<RentalPageResponse>> Handle(FilterRentalsQuery request, CancellationToken cancellationToken)
@@ -43,6 +47,16 @@ namespace RentalAttireBackend.Application.Rentals.Queries.FilterRentals
 
 
             var rentalsDto = _mapper.Map<PagedResult<RentalDTO>>(rentals);
+
+            foreach(var rentalItem in rentalsDto.Items.SelectMany(x => x.RentalItems).ToList())
+            {
+                var clothe = rentalItem.Clothe;
+
+                if (string.IsNullOrEmpty(clothe.ProfileImagePath))
+                    continue;
+
+                clothe.ProfileImagePath = _fileUploadService.GetFileUrl(clothe.ProfileImagePath);
+            }
 
             return Result<RentalPageResponse>.Success(new RentalPageResponse
             {
