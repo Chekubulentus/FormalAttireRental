@@ -1,19 +1,28 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { ClotheService } from '../../admin/clothes/clothe-service/clothe.service';
+// Path assumed to mirror ClotheService's folder convention — adjust if CategoryService lives elsewhere.
+import { CategoryService } from '../../admin/categories/category-service/category.service';
+import { ClotheDTO } from '../../../data/models/DTOs/Clothes/clothes';
+import { Category } from '../../../data/models/DTOs/Category/category';
 
-interface FeaturedClothe {
-  name: string;
-  category: string;
-  imageUrl: string;
-  rentalPrice: number;
-  depositAmount: number;
-}
+type CategoryIcon = 'barong' | 'gown' | 'suit' | 'accessories';
 
 interface CategoryShortcut {
   label: string;
-  imageUrl: string;
+  icon: CategoryIcon;
   routerLink: string;
+}
+
+interface StatItem {
+  label: string;
+  value: string;
+}
+
+interface GenderFilterOption {
+  label: string;
+  value: string; // '' = All
 }
 
 @Component({
@@ -23,62 +32,18 @@ interface CategoryShortcut {
   templateUrl: './landing-page.component.html',
   styleUrl: './landing-page.component.scss'
 })
-export class LandingPageComponent {
+export class LandingPageComponent implements OnInit {
 
-  // Static placeholder data — replace with a real Clothe query
-  // (e.g. a public "featured/best-rented" endpoint) once available.
+  constructor(
+    private clotheService: ClotheService,
+    private categoryService: CategoryService
+  ) {}
+
   readonly categoryShortcuts: CategoryShortcut[] = [
-    {
-      label: 'Barongs',
-      imageUrl: 'assets/images/landing/category-barong.jpg',
-      routerLink: '/customer/browse'
-    },
-    {
-      label: 'Gowns',
-      imageUrl: 'assets/images/landing/category-gown.jpg',
-      routerLink: '/customer/browse'
-    },
-    {
-      label: 'Suits & Tuxedos',
-      imageUrl: 'assets/images/landing/category-suit.jpg',
-      routerLink: '/customer/browse'
-    },
-    {
-      label: 'Accessories',
-      imageUrl: 'assets/images/landing/category-accessories.jpg',
-      routerLink: '/customer/browse'
-    }
-  ];
-
-  readonly featuredClothes: FeaturedClothe[] = [
-    {
-      name: 'Classic Black Tuxedo',
-      category: "Men's Formal",
-      imageUrl: 'assets/images/landing/featured-tuxedo.jpg',
-      rentalPrice: 1500,
-      depositAmount: 2000
-    },
-    {
-      name: 'Modern Barong Tagalog',
-      category: "Men's Formal",
-      imageUrl: 'assets/images/landing/featured-barong.jpg',
-      rentalPrice: 1200,
-      depositAmount: 1500
-    },
-    {
-      name: 'Champagne Evening Gown',
-      category: "Women's Formal",
-      imageUrl: 'assets/images/landing/featured-gown.jpg',
-      rentalPrice: 1800,
-      depositAmount: 2500
-    },
-    {
-      name: 'Slim-Fit Navy Suit',
-      category: "Men's Formal",
-      imageUrl: 'assets/images/landing/featured-navy-suit.jpg',
-      rentalPrice: 1400,
-      depositAmount: 2000
-    }
+    { label: 'Barongs', icon: 'barong', routerLink: '/customer/browse' },
+    { label: 'Gowns', icon: 'gown', routerLink: '/customer/browse' },
+    { label: 'Suits & Tuxedos', icon: 'suit', routerLink: '/customer/browse' },
+    { label: 'Accessories', icon: 'accessories', routerLink: '/customer/browse' }
   ];
 
   readonly brandValues = [
@@ -95,4 +60,104 @@ export class LandingPageComponent {
       description: 'Pick your own dates, confirm with GCash, and track your rental status from browse to return.'
     }
   ];
+
+  // PLACEHOLDER VALUES. Once GET /api/Stats/landing exists, replace this static
+  // array with a fetched StatsDTO mapped into the same { label, value } shape.
+  readonly stats: StatItem[] = [
+    { label: 'Happy Customers', value: '500+' },
+    { label: 'Rentals Completed', value: '1,200+' },
+    { label: 'Curated Pieces', value: '300+' },
+    { label: 'Categories', value: '4' }
+  ];
+
+  readonly genderOptions: GenderFilterOption[] = [
+    { label: 'All', value: '' },
+    { label: 'Male', value: 'Male' },
+    { label: 'Female', value: 'Female' },
+    { label: 'Unisex', value: 'Unisex' },
+  ];
+
+  categories: Category[] = [];
+  selectedGender = '';
+  selectedCategory = ''; // category name, '' = All
+
+  popularClothes: ClotheDTO[] = [];
+  isLoadingPopular = false;
+  loadFailed = false;
+
+  private readonly popularItemsToFetch = 12;
+  // Below this many results, a looping scroll looks broken — show a static row instead.
+  private readonly minItemsToAnimate = 3;
+
+  /** True while the marquee is hovered — pauses the auto-scroll. */
+  isPaused = false;
+
+  ngOnInit(): void {
+    this.loadCategories();
+    this.loadPopularClothes();
+  }
+
+  async loadCategories(): Promise<void> {
+    const result = await this.categoryService.getAllCategories();
+    if (result.isSuccess && result.data) {
+      this.categories = result.data;
+    }
+    // Silent fail here is fine — worst case the Category pill row just stays at "All".
+  }
+
+  async loadPopularClothes(): Promise<void> {
+    this.isLoadingPopular = true;
+    this.loadFailed = false;
+
+    // Condition param intentionally left as '' — no condition filtering on this public section.
+    const result = await this.clotheService.filterClothesAsync(
+      '',
+      '',
+      this.selectedGender,
+      this.selectedCategory,
+      1,
+      this.popularItemsToFetch
+    );
+
+    if (result.isSuccess && result.data) {
+      this.popularClothes = result.data.items ?? [];
+    } else {
+      this.popularClothes = [];
+      this.loadFailed = true;
+    }
+
+    this.isLoadingPopular = false;
+  }
+
+  onGenderFilterChange(value: string): void {
+    if (this.selectedGender === value) return;
+    this.selectedGender = value;
+    this.loadPopularClothes();
+  }
+
+  onCategoryFilterChange(value: string): void {
+    if (this.selectedCategory === value) return;
+    this.selectedCategory = value;
+    this.loadPopularClothes();
+  }
+
+  get shouldAnimate(): boolean {
+    return this.popularClothes.length >= this.minItemsToAnimate;
+  }
+
+  /** Duplicated so the CSS marquee loop is seamless — only when actually animating. */
+  get marqueeClothes(): ClotheDTO[] {
+    return this.shouldAnimate
+      ? [...this.popularClothes, ...this.popularClothes]
+      : this.popularClothes;
+  }
+
+  /** Slower scroll for larger sets so the pace feels consistent regardless of item count. */
+  get marqueeDurationSeconds(): number {
+    return this.popularClothes.length * 4;
+  }
+
+  onImageError(event: Event): void {
+    (event.target as HTMLImageElement).style.display = 'none';
+  }
 }

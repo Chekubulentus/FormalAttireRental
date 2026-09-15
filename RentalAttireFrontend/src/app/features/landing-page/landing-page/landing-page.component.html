@@ -1,89 +1,210 @@
 <main class="landing">
 
   <!-- Hero -->
-  <section class="hero">
-    <div class="hero__content">
-      <span class="hero__eyebrow">Formal Wear Rentals</span>
-      <h1 class="hero__title">Look Your Best, Without the Closet Commitment</h1>
-      <p class="hero__subtitle">
-        Browse curated barongs, gowns, suits, and accessories — reserve online,
-        pay a simple deposit, and pick up ready to go.
-      </p>
-      <div class="hero__actions">
-        <a routerLink="/customer/browse" class="btn btn--primary">Browse the Collection</a>
-        <a routerLink="/log-in" class="btn btn--secondary">Sign In</a>
+  <section class="band band--hero">
+    <div class="container hero">
+      <div class="hero__content">
+        <span class="hero__eyebrow">Formal Wear Rentals</span>
+        <h1 class="hero__title">Look Your Best, Without the Closet Commitment</h1>
+        <p class="hero__subtitle">
+          Browse curated barongs, gowns, suits, and accessories — reserve online,
+          pay a simple deposit, and pick up ready to go.
+        </p>
+        <div class="hero__actions">
+          <a routerLink="/customer/browse" class="btn btn--primary">Browse the Collection</a>
+          <a routerLink="/log-in" class="btn btn--secondary">Sign In</a>
+        </div>
       </div>
-    </div>
-    <div class="hero__image">
-      <img src="assets/images/landing/hero-formalwear.jpg" alt="Model wearing a formal tuxedo and evening gown" />
+      <div class="hero__image">
+        <img src="landingpage model.jpg" alt="Model wearing a formal tuxedo and evening gown" />
+      </div>
     </div>
   </section>
 
-  <!-- Category shortcuts -->
-  <section class="categories">
-    <h2 class="section-title">Find Your Next Look</h2>
-    <div class="categories__grid">
-      <a
-        *ngFor="let category of categoryShortcuts"
-        [routerLink]="category.routerLink"
-        class="category-card"
-      >
-        <img [src]="category.imageUrl" [alt]="category.label" class="category-card__image" />
-        <span class="category-card__label">{{ category.label }}</span>
-      </a>
+  <!-- Stats -->
+  <section class="band band--muted">
+    <div class="container stats">
+      <div class="stats__item" *ngFor="let stat of stats">
+        <span class="stats__value">{{ stat.value }}</span>
+        <span class="stats__label">{{ stat.label }}</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Category shortcuts (icon-based) -->
+  <section class="band">
+    <div class="container">
+      <h2 class="section-title">Find Your Next Look</h2>
+      <div class="category-grid">
+        <a
+          *ngFor="let category of categoryShortcuts"
+          [routerLink]="category.routerLink"
+          class="category-tile"
+        >
+          <span class="category-tile__icon">
+            <ng-container [ngSwitch]="category.icon">
+              <svg *ngSwitchCase="'barong'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M8 3L4 6v3h2v11h12V9h2V6l-4-3-2 2h-4L8 3z"/>
+                <path d="M10 5v3a2 2 0 0 0 4 0V5"/>
+              </svg>
+              <svg *ngSwitchCase="'gown'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 3h6l1 3-2 1v2l4 10H6l4-10V7L8 6l1-3z"/>
+                <path d="M9 3a3 3 0 0 0 6 0"/>
+              </svg>
+              <svg *ngSwitchCase="'suit'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2 9l7 3-7 3V9z"/>
+                <path d="M22 9l-7 3 7 3V9z"/>
+                <circle cx="12" cy="12" r="2"/>
+              </svg>
+              <svg *ngSwitchCase="'accessories'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2l3 4h-6l3-4z"/>
+                <path d="M6 6h12l3 5-9 11L3 11l3-5z"/>
+              </svg>
+            </ng-container>
+          </span>
+          <span class="category-tile__label">{{ category.label }}</span>
+        </a>
+      </div>
     </div>
   </section>
 
   <!-- Brand story -->
-  <section class="story">
-    <div class="story__text">
-      <h2 class="section-title">Dress for the Occasion, Not the Closet Space</h2>
-      <p>
-        Formal events don't happen every week — so why pay full price and store
-        a piece you'll wear once? We make renting formal attire as simple as
-        browsing, reserving, and picking up, with the quality and fit you'd
-        expect from buying new.
-      </p>
-    </div>
-    <div class="story__values">
-      <div class="value-card" *ngFor="let value of brandValues">
-        <h3 class="value-card__title">{{ value.title }}</h3>
-        <p class="value-card__description">{{ value.description }}</p>
+  <section class="band band--muted">
+    <div class="container story">
+      <div class="story__text">
+        <h2 class="section-title section-title--left">Dress for the Occasion, Not the Closet Space</h2>
+        <p>
+          Formal events don't happen every week — so why pay full price and store
+          a piece you'll wear once? We make renting formal attire as simple as
+          browsing, reserving, and picking up, with the quality and fit you'd
+          expect from buying new.
+        </p>
+      </div>
+      <div class="story__values">
+        <div class="value-card" *ngFor="let value of brandValues">
+          <h3 class="value-card__title">{{ value.title }}</h3>
+          <p class="value-card__description">{{ value.description }}</p>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- Featured items (Card Grid pattern) -->
-  <section class="featured">
-    <h2 class="section-title">Popular Right Now</h2>
+  <!-- Featured items -->
+  <section class="band">
+    <div class="container featured">
+      <h2 class="section-title">Popular Right Now</h2>
 
-    <div class="card-grid">
-      <div class="clothe-card" *ngFor="let item of featuredClothes">
-        <div class="clothe-card__image-wrapper">
-          <img [src]="item.imageUrl" [alt]="item.name" class="clothe-card__image" />
-          <div class="clothe-card__overlay">
-            <a routerLink="/customer/browse" class="btn btn--overlay">View Details</a>
+      <div class="featured__filters">
+        <div class="filter-group">
+          <span class="filter-group__label">Gender</span>
+          <div class="filter-pills">
+            <button
+              *ngFor="let option of genderOptions"
+              class="filter-pill"
+              [class.filter-pill--active]="selectedGender === option.value"
+              (click)="onGenderFilterChange(option.value)"
+              type="button"
+            >
+              {{ option.label }}
+            </button>
           </div>
         </div>
-        <div class="clothe-card__body">
-          <span class="clothe-card__category">{{ item.category }}</span>
-          <h3 class="clothe-card__name">{{ item.name }}</h3>
-          <div class="clothe-card__pricing">
-            <span class="clothe-card__price">₱{{ item.rentalPrice }}</span>
-            <span class="clothe-card__deposit">+ ₱{{ item.depositAmount }} deposit</span>
+
+        <div class="filter-group">
+          <span class="filter-group__label">Category</span>
+          <div class="filter-pills">
+            <button
+              class="filter-pill"
+              [class.filter-pill--active]="selectedCategory === ''"
+              (click)="onCategoryFilterChange('')"
+              type="button"
+            >
+              All
+            </button>
+            <button
+              *ngFor="let category of categories"
+              class="filter-pill"
+              [class.filter-pill--active]="selectedCategory === category.categoryName"
+              (click)="onCategoryFilterChange(category.categoryName)"
+              type="button"
+            >
+              {{ category.categoryName }}
+            </button>
           </div>
         </div>
       </div>
-    </div>
 
-    <a routerLink="/customer/browse" class="btn btn--primary featured__cta">See the Full Collection</a>
+      <!-- Skeleton loading state -->
+      <div class="card-grid" *ngIf="isLoadingPopular">
+        <div class="clothe-card clothe-card--skeleton" *ngFor="let i of [1,2,3,4]">
+          <div class="skeleton-block skeleton-block--image"></div>
+          <div class="skeleton-block skeleton-block--line"></div>
+          <div class="skeleton-block skeleton-block--line skeleton-block--short"></div>
+        </div>
+      </div>
+
+      <!-- Empty state -->
+      <div class="empty-state" *ngIf="!isLoadingPopular && popularClothes.length === 0">
+        <p class="empty-state__title" *ngIf="!loadFailed">No clothes match these filters</p>
+        <p class="empty-state__subtitle" *ngIf="!loadFailed">Try a different gender or category, or browse the full collection.</p>
+        <p class="empty-state__title" *ngIf="loadFailed">Couldn't load the collection right now</p>
+        <p class="empty-state__subtitle" *ngIf="loadFailed">Please try again in a moment.</p>
+      </div>
+
+      <!-- Auto-scrolling row -->
+      <div
+        class="marquee"
+        *ngIf="!isLoadingPopular && popularClothes.length > 0"
+        (mouseenter)="isPaused = true"
+        (mouseleave)="isPaused = false"
+      >
+        <div
+          class="marquee__track"
+          [class.marquee__track--animated]="shouldAnimate"
+          [class.marquee__track--paused]="isPaused"
+          [style.animation-duration.s]="marqueeDurationSeconds"
+        >
+          <div class="clothe-card" *ngFor="let item of marqueeClothes">
+            <div class="clothe-card__image-wrapper">
+              <img
+                *ngIf="item.profileImagePath"
+                [src]="item.profileImagePath"
+                [alt]="item.clotheName"
+                class="clothe-card__image"
+                (error)="onImageError($event)"
+              />
+              <div *ngIf="!item.profileImagePath" class="clothe-card__image clothe-card__image--fallback">
+                {{ item.clotheName.charAt(0) }}
+              </div>
+              <div class="clothe-card__overlay">
+                <a routerLink="/customer/browse" class="btn btn--overlay">View Details</a>
+              </div>
+            </div>
+            <div class="clothe-card__body">
+              <span class="clothe-card__category">{{ item.categoryName }}</span>
+              <h3 class="clothe-card__name">{{ item.clotheName }}</h3>
+              <div class="clothe-card__pricing">
+                <span class="clothe-card__price">₱{{ item.rentalPrice }}</span>
+                <span class="clothe-card__deposit">+ ₱{{ item.depositAmount }} deposit</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <a routerLink="/customer/browse" class="btn btn--primary featured__cta">See the Full Collection</a>
+    </div>
   </section>
 
   <!-- Closing CTA -->
-  <section class="cta-banner">
-    <h2 class="cta-banner__title">Ready to Reserve Your Look?</h2>
-    <p class="cta-banner__subtitle">Create an account and reserve in minutes.</p>
-    <a routerLink="/register" class="btn btn--primary">Get Started</a>
+  <section class="band">
+    <div class="container">
+      <div class="cta-card">
+        <h2 class="cta-card__title">Ready to Reserve Your Look?</h2>
+        <p class="cta-card__subtitle">Create an account and reserve in minutes.</p>
+        <a routerLink="/register" class="btn btn--primary">Get Started</a>
+      </div>
+    </div>
   </section>
 
 </main>

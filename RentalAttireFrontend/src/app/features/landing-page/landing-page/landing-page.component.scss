@@ -1,324 +1,619 @@
-// Design tokens — matches the rest of the app (see design system notes).
-// If these already live in a shared _variables.scss/_tokens.scss, import
-// that instead of redefining them here.
-$surface: #fff;
-$bg: #f9f7f5;
-$border: #e4ddd6;
-$gold: #a07840;
-$gold-dim: #8a6836;
-$text: #1a1917;
-$text-muted: #6b6560;
+// ─── Design Tokens ────────────────────────────────────────────────────────────
+$surface:     #ffffff;
+$bg:          #f9f7f5;
+$border:      #e4ddd6;
+$gold:        #a07840;
+$gold-dim:    #b8975a;
+$gold-border: #d4b896;
+$text:        #1a1917;
+$text-muted:  #6b6560;
+$text-soft:   #9c948e;
+$red:         #c0392b;
+$green:       #2e7d5e;
+$amber:       #92600a;
+$blue:        #1d5fa8;
 
-$font-heading: 'DM Serif Display', serif;
-$font-body: 'DM Sans', sans-serif;
+$content-width: clamp(320px, 92vw, 1400px);
+$band-padding: clamp(48px, 8vw, 96px);
+$gutter: clamp(20px, 5vw, 64px);
 
+// ─── Base ─────────────────────────────────────────────────────────────────────
 .landing {
-  background: $bg;
-  color: $text;
-  font-family: $font-body;
+  display: flex;
+  flex-direction: column;
+}
+
+.band {
+  width: 100%;
+  padding: $band-padding 0;
+  background: $surface;
+
+  &--muted {
+    background: $bg;
+  }
+
+  &--hero {
+    padding-top: clamp(32px, 6vw, 56px);
+    padding-bottom: 0;
+  }
+}
+
+.container {
+  max-width: $content-width;
+  margin: 0 auto;
+  padding: 0 $gutter;
 }
 
 .section-title {
-  font-family: $font-heading;
-  font-size: 2rem;
-  font-style: italic;
+  font-family: 'DM Serif Display', serif;
+  font-size: 30px;
+  font-weight: 400;
+  color: $text;
+  margin: 0 0 32px;
   text-align: center;
-  margin-bottom: 2.5rem;
-}
 
-// Shared hover-lift interaction — same idiom as the app's Card Grid
-// hover lift+border. Used by .category-card and .clothe-card below;
-// extracted here after the audit found it duplicated verbatim in both.
-%card-hover-lift {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-
-  &:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+  &--left {
+    text-align: left;
+    margin-bottom: 16px;
   }
 }
 
-// Buttons
 .btn {
-  display: inline-block;
-  padding: 0.85rem 1.75rem;
-  border-radius: 8px;
-  font-family: $font-body;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
   font-weight: 500;
+  border-radius: 8px;
+  padding: 12px 24px;
+  cursor: pointer;
+  border: 1px solid transparent;
   text-decoration: none;
-  text-align: center;
-  transition: transform 0.15s ease, background 0.15s ease;
+  transition: background 0.15s, border-color 0.15s, color 0.15s, transform 0.15s;
+  white-space: nowrap;
+
+  &:focus-visible {
+    outline: 2px solid $gold;
+    outline-offset: 2px;
+  }
 
   &--primary {
     background: $gold;
-    color: $surface;
+    color: #fff;
+    border-color: $gold;
 
-    &:hover {
-      background: $gold-dim;
-      transform: translateY(-1px);
-    }
+    &:hover { background: $gold-dim; border-color: $gold-dim; }
   }
 
   &--secondary {
-    background: transparent;
+    background: $surface;
     color: $text;
-    border: 1px solid $border;
+    border-color: $border;
 
-    &:hover {
-      border-color: $gold;
-      color: $gold;
-    }
+    &:hover { border-color: $gold-border; color: $gold; }
   }
 
   &--overlay {
-    background: $surface;
+    background: rgba(255, 255, 255, 0.95);
     color: $text;
-    font-size: 0.9rem;
-    padding: 0.6rem 1.25rem;
+    border-color: transparent;
+    font-size: 13px;
+    padding: 9px 18px;
+
+    &:hover { background: #fff; }
   }
 }
 
-// Hero
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+// ─── Hero ─────────────────────────────────────────────────────────────────────
 .hero {
   display: grid;
   grid-template-columns: 1fr 1fr;
   align-items: center;
-  gap: 2rem;
-  padding: 4rem 3rem;
+  gap: 48px;
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 18px;
+
+    > * { animation: fadeUp 0.5s ease both; }
+  }
 
   &__eyebrow {
-    display: block;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
-    font-size: 0.85rem;
     color: $gold;
-    margin-bottom: 0.75rem;
+    animation-delay: 0s;
   }
 
   &__title {
-    font-family: $font-heading;
-    font-size: 2.75rem;
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(32px, 4vw, 46px);
+    font-weight: 400;
     line-height: 1.15;
-    margin-bottom: 1rem;
+    color: $text;
+    margin: 0;
+    animation-delay: 0.1s;
   }
 
   &__subtitle {
-    color: $text-muted;
-    font-size: 1.05rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
     line-height: 1.6;
-    margin-bottom: 2rem;
+    color: $text-muted;
+    margin: 0;
     max-width: 480px;
+    animation-delay: 0.2s;
   }
 
   &__actions {
     display: flex;
-    gap: 1rem;
+    gap: 12px;
+    margin-top: 8px;
+    animation-delay: 0.3s;
   }
-
-  &__image img {
-    width: 100%;
-    border-radius: 16px;
-    object-fit: cover;
-  }
-}
-
-// Category shortcuts
-.categories {
-  padding: 3rem;
-
-  &__grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 1.5rem;
-  }
-}
-
-.category-card {
-  @extend %card-hover-lift;
-  position: relative;
-  display: block;
-  border-radius: 16px;
-  overflow: hidden;
-  aspect-ratio: 3 / 4;
-  text-decoration: none;
-  border: 1px solid $border;
 
   &__image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+    border-radius: 16px;
+    overflow: hidden;
+    aspect-ratio: 4 / 5;
+    max-width: 300px;
+    margin: 3rem auto;
+    animation: fadeUp 0.5s ease both;
+    animation-delay: 0.15s;
+
+    img { width: 100%; height: 100%; object-fit: cover; }
+  }
+}
+
+// ─── Stats ────────────────────────────────────────────────────────────────────
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+
+  @media (max-width: 640px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  &__item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 24px 12px;
+    border: 1px solid $border;
+    border-radius: 14px;
+    background: $surface;
+    animation: fadeUp 0.4s ease both;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+
+    &:hover { transform: translateY(-2px); border-color: $gold-border; }
+
+    @for $i from 1 through 4 {
+      &:nth-child(#{$i}) { animation-delay: #{($i - 1) * 0.1}s; }
+    }
+  }
+
+  &__value {
+    font-family: 'DM Serif Display', serif;
+    font-size: 28px;
+    font-weight: 400;
+    color: $gold;
   }
 
   &__label {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 1rem;
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.55), transparent);
-    color: $surface;
-    font-family: $font-heading;
-    font-style: italic;
-    font-size: 1.15rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    color: $text-muted;
+    text-align: center;
   }
 }
 
-// Brand story
+// ─── Category shortcuts ─────────────────────────────────────────────────────────
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+
+  @media (max-width: 860px) { grid-template-columns: repeat(2, 1fr); }
+  @media (max-width: 480px) { grid-template-columns: 1fr; }
+}
+
+.category-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 32px 16px;
+  border: 1px solid $border;
+  border-radius: 14px;
+  background: $surface;
+  text-decoration: none;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  animation: fadeUp 0.4s ease both;
+
+  @for $i from 1 through 4 {
+    &:nth-child(#{$i}) { animation-delay: #{($i - 1) * 0.1}s; }
+  }
+
+  &:hover {
+    transform: translateY(-4px);
+    border-color: $gold-border;
+    box-shadow: 0 8px 24px rgba(26, 25, 23, 0.08);
+
+    .category-tile__icon { background: $gold; color: #fff; }
+  }
+
+  &:focus-visible { outline: 2px solid $gold; outline-offset: 2px; }
+
+  &__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: $bg;
+    color: $gold;
+    transition: background 0.2s ease, color 0.2s ease;
+
+    svg { width: 26px; height: 26px; }
+  }
+
+  &__label {
+    font-family: 'DM Serif Display', serif;
+    font-size: 16px;
+    font-weight: 400;
+    color: $text;
+    text-align: center;
+  }
+}
+
+// ─── Brand story ──────────────────────────────────────────────────────────────
 .story {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 3rem;
-  padding: 4rem 3rem;
-  background: $surface;
+  gap: 56px;
+  align-items: start;
 
-  &__text {
-    p {
-      color: $text-muted;
-      line-height: 1.7;
-      font-size: 1.05rem;
-    }
+  &__text p {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    color: $text-muted;
+    margin: 0;
   }
 
   &__values {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 20px;
   }
 }
 
 .value-card {
-  padding: 1.5rem;
+  padding: 20px;
   border: 1px solid $border;
   border-radius: 12px;
+  background: $surface;
+  transition: border-color 0.2s ease;
+
+  &:hover { border-color: $gold-border; }
 
   &__title {
-    font-family: $font-heading;
-    font-size: 1.25rem;
-    margin-bottom: 0.5rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    color: $text;
+    margin: 0 0 6px;
   }
 
   &__description {
-    color: $text-muted;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
     line-height: 1.6;
-    font-size: 0.95rem;
+    color: $text-muted;
+    margin: 0;
   }
 }
 
-// Featured — Card Grid pattern (§8a), simplified for landing page
-// (no stock badge, no add-to-cart — guests browse only from here)
+// ─── Featured ─────────────────────────────────────────────────────────────────
 .featured {
-  padding: 4rem 3rem;
-  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  &__cta { margin-top: 32px; }
+
+  &__filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    margin-bottom: 28px;
+    width: 100%;
+  }
 }
 
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  &__label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: $text-soft;
+  }
+}
+
+.filter-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.filter-pill {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: $text-muted;
+  background: $surface;
+  border: 1px solid $border;
+  border-radius: 999px;
+  padding: 7px 16px;
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s, color 0.12s;
+
+  &:hover { border-color: $gold-border; color: $text; }
+  &:focus-visible { outline: 2px solid $gold; outline-offset: 2px; }
+
+  &--active {
+    background: $gold;
+    border-color: $gold;
+    color: #fff;
+
+    &:hover { background: $gold-dim; border-color: $gold-dim; color: #fff; }
+  }
+}
+
+// ─── Card Grid pattern (§8a) ────────────────────────────────────────────────────
 .card-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-  gap: 1.75rem;
-  margin-bottom: 2.5rem;
-  text-align: left;
+  gap: 20px;
+  width: 100%;
 }
 
 .clothe-card {
-  @extend %card-hover-lift;
   background: $surface;
   border: 1px solid $border;
-  border-radius: 16px;
+  border-radius: 14px;
   overflow: hidden;
+  animation: fadeUp 0.3s ease both;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 
   &:hover {
-    .clothe-card__overlay {
-      opacity: 1;
-    }
+    transform: translateY(-4px);
+    border-color: $gold-border;
+    box-shadow: 0 8px 24px rgba(26, 25, 23, 0.08);
+
+    .clothe-card__overlay { opacity: 1; }
   }
 
   &__image-wrapper {
     position: relative;
     aspect-ratio: 3 / 4;
+    background: $bg;
   }
 
-  &__image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
+  &__image { width: 100%; height: 100%; object-fit: cover; }
 
   &__overlay {
     position: absolute;
     inset: 0;
     display: flex;
-    align-items: center;
+    align-items: flex-end;
     justify-content: center;
-    background: rgba(26, 25, 23, 0.45);
+    padding-bottom: 16px;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.35), transparent 60%);
     opacity: 0;
     transition: opacity 0.2s ease;
   }
 
   &__body {
-    padding: 1.1rem;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
   }
 
   &__category {
-    display: block;
-    font-size: 0.75rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: $gold;
-    margin-bottom: 0.35rem;
+    color: $text-soft;
   }
 
   &__name {
-    font-family: $font-heading;
-    font-size: 1.1rem;
-    margin-bottom: 0.6rem;
+    font-family: 'DM Serif Display', serif;
+    font-size: 17px;
+    font-weight: 400;
+    color: $text;
+    margin: 0;
   }
 
   &__pricing {
     display: flex;
-    flex-direction: column;
-    gap: 0.1rem;
+    align-items: baseline;
+    gap: 8px;
+    margin-top: 4px;
   }
 
   &__price {
-    font-weight: 500;
-    font-size: 1.05rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: $gold;
   }
 
   &__deposit {
-    font-size: 0.8rem;
-    color: $text-muted;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    color: $text-soft;
   }
 }
 
-// Closing CTA
-.cta-banner {
+// ─── Marquee ──────────────────────────────────────────────────────────────────
+.marquee {
+  overflow: hidden;
+  width: 100%;
+  mask-image: linear-gradient(to right, transparent 0, #000 24px, #000 calc(100% - 24px), transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 24px, #000 calc(100% - 24px), transparent 100%);
+}
+
+.marquee__track {
+  display: flex;
+  gap: 20px;
+  width: max-content;
+
+  &--animated {
+    animation-name: marquee-scroll-right;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+  }
+
+  &--paused { animation-play-state: paused; }
+
+  .clothe-card { flex: 0 0 240px; }
+}
+
+@keyframes marquee-scroll-right {
+  from { transform: translateX(-50%); }
+  to   { transform: translateX(0%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee__track--animated,
+  .hero__content > *,
+  .hero__image,
+  .stats__item,
+  .category-tile {
+    animation: none;
+  }
+}
+
+// ─── Skeleton loading state ────────────────────────────────────────────────────
+.clothe-card--skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+}
+
+.skeleton-block {
+  border-radius: 8px;
+  background: linear-gradient(90deg, $bg 25%, $border 37%, $bg 63%);
+  background-size: 400% 100%;
+  animation: skeleton-shimmer 1.4s ease infinite;
+
+  &--image { aspect-ratio: 3 / 4; width: 100%; }
+  &--line { height: 12px; width: 100%; }
+  &--short { width: 60%; }
+}
+
+@keyframes skeleton-shimmer {
+  0%   { background-position: 100% 50%; }
+  100% { background-position: 0 50%; }
+}
+
+// ─── Empty state ────────────────────────────────────────────────────────────
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   text-align: center;
-  padding: 4rem 3rem 5rem;
+  padding: 48px 24px;
+  gap: 4px;
+  width: 100%;
 
   &__title {
-    font-family: $font-heading;
-    font-size: 2rem;
-    font-style: italic;
-    margin-bottom: 0.75rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: $text;
+    margin: 0;
   }
 
   &__subtitle {
-    color: $text-muted;
-    margin-bottom: 1.75rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: $text-soft;
+    margin: 0;
   }
 }
 
-// Responsive
-@media (max-width: 900px) {
-  .hero,
-  .story {
-    grid-template-columns: 1fr;
-    padding: 2.5rem 1.5rem;
+// ─── Image fallback ──────────────────────────────────────────────────────────
+.clothe-card__image--fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: $bg;
+  font-family: 'DM Serif Display', serif;
+  font-size: 28px;
+  color: $text-soft;
+  text-transform: uppercase;
+  width: 100%;
+  height: 100%;
+}
+
+// ─── Closing CTA ──────────────────────────────────────────────────────────────
+.cta-card {
+  text-align: center;
+  background: $bg;
+  border-radius: 20px;
+  padding: 64px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+
+  &__title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 28px;
+    font-weight: 400;
+    color: $text;
+    margin: 0;
   }
 
-  .categories,
-  .featured {
-    padding: 2.5rem 1.5rem;
+  &__subtitle {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: $text-muted;
+    margin: 0 0 8px;
+  }
+}
+
+@media (max-width: 860px) {
+  .hero, .story {
+    grid-template-columns: 1fr;
   }
 
   .hero__image {
