@@ -143,6 +143,17 @@ namespace RentalAttireBackend.Application.Mapping
                 .ForMember(dest => dest.EntityName,
                 opt => opt.MapFrom(src => src.CategoryName));
 
+            CreateMap<Supplier, ArchivedEntityDto>()
+                .ForMember(dest => dest.EntityType,
+                opt => opt.MapFrom(src => src.EntityType))
+                .ForMember(dest => dest.EntityId,
+                opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.ArchivedAt,
+                opt => opt.MapFrom(src => src.ArchivedAt))
+                .ForMember(dest => dest.ArchivedBy,
+                opt => opt.MapFrom(src => src.ArchivedBy))
+                .ForMember(dest => dest.EntityName,
+                opt => opt.MapFrom(src => src.SupplierName));
             #endregion
 
             #region CreateEmployeeCommand->Employee

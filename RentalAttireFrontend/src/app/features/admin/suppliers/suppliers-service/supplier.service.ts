@@ -10,6 +10,7 @@ import { CreateSupplierCommand } from '../dtos/create-supplier-command';
 import { UpdateSupplierCommand } from '../dtos/update-supplier-command';
 import { ClotheDTO } from '../../../../data/models/DTOs/Clothes/clothes';
 import { AssignSupplierClothesModalResponse } from '../dtos/assign-supplier-clothes-reponse';
+import { animateChild } from '@angular/animations';
 
 @Injectable({
   providedIn: 'root'
@@ -151,4 +152,17 @@ export class SupplierService {
     }
   }
 
+  async archiveSupplierByIdAsync(
+    id : number
+  ) : Promise<Result<boolean>> {
+    try {
+      const result = await firstValueFrom(
+        this.httpClient.patch<Result<boolean>>(`${this.baseUrl}/${id}`, {})
+      );
+
+      return result;
+    }catch(err : any) {
+      return Result.failure(extractErrorMessage(err.error));
+    }
+  }
 }

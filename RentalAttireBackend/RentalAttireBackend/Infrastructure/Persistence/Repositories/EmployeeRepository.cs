@@ -30,7 +30,7 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
                 .AsNoTracking()
                 .Include(e => e.User)
                 .ThenInclude(u => u.Person)
-                .Where(e => !e.IsActive && !e.IsDeleted)
+                .Where(e => e.IsActive == false && e.IsDeleted == false)
                 .ToListAsync(cancellationToken);
         }
 

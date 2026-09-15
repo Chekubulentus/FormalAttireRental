@@ -59,6 +59,7 @@ namespace RentalAttireBackend.Application.Suppliers.Commands.CreateSupplier
 
                 var newSupplier = _mapper.Map<Supplier>(request);
                 newSupplier.EmployeeId = userWithEmployee.Employee.Id;
+                newSupplier.EntityType = "Supplier";
 
                 var requestedClothes = await _clotheRepo.GetClothesByIdsAsync(request.ClotheIds, cancellationToken);
 

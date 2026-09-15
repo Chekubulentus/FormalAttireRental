@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RentalAttireBackend.Application.Common.Extensions;
+using RentalAttireBackend.Application.Suppliers.Commands.ArchiveSupplier;
 using RentalAttireBackend.Application.Suppliers.Commands.CreateSupplier;
 using RentalAttireBackend.Application.Suppliers.Commands.UpdateSupplier;
 using RentalAttireBackend.Application.Suppliers.Queries.AssignClothesModal;
@@ -111,6 +112,17 @@ namespace RentalAttireBackend.Controllers.AdminController
                 Gender = gender,
                 CurrentPage = currentPage,
                 ItemsPerPage = itemsPerPage
+            });
+
+            return result.ToActionResult(this, _httpContextAccessor);
+        }
+
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> ArchiveSupplierByIdAsync(int id)
+        {
+            var result = await _mediator.Send(new ArchiveSupplierByIdCommand
+            {
+                Id = id
             });
 
             return result.ToActionResult(this, _httpContextAccessor);

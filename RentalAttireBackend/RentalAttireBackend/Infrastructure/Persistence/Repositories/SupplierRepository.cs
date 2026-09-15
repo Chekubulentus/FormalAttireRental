@@ -90,10 +90,13 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
                         .ThenInclude(u => u.Person)
                 .OrderByDescending(s => s.Id)
                 .Where(s =>
-                searchQueryValidator ||
-                s.SupplierName.ToLower().Contains(searchQuery.ToLower()) ||
-                s.PhoneNumber.ToLower().Contains(searchQuery.ToLower()) ||
-                s.SupplierCode.ToLower().Contains(searchQuery.ToLower())
+                    (
+                       searchQueryValidator ||
+                       s.SupplierName.ToLower().Contains(searchQuery.ToLower()) ||
+                       s.PhoneNumber.ToLower().Contains(searchQuery.ToLower()) ||
+                       s.SupplierCode.ToLower().Contains(searchQuery.ToLower())
+                    ) &&
+                    s.IsActive && s.IsDeleted == false
                 );
 
             var totalCount = await baseQuery.CountAsync();
@@ -110,6 +113,14 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
                 PageNumber = currentPage,
                 PageSize = itemsPerPage,
             };
+        }
+
+        public async Task<List<Supplier>> GetAllArchivedSuppliersAsync(CancellationToken cancellationToken)
+        {
+            return await _context.Suppliers
+                .Where(s => s.IsActive == false && s.IsDeleted == false)
+                .AsNoTracking()
+                .ToListAsync(cancellationToken);
         }
 
         public async Task<int> GetAllUnassignedClothesAsync(CancellationToken cancellationToken)
