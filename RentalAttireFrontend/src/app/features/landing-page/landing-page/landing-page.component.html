@@ -15,23 +15,84 @@
       </div>
     </div>
     <div class="hero__image">
-      <img src="assets/images/landing/hero-formalwear.jpg" alt="Model wearing a formal tuxedo and evening gown" />
+      <img src="public/landing image.jpg" alt="Model wearing a formal tuxedo and evening gown" />
     </div>
   </section>
 
-  <!-- Category shortcuts -->
-  <section class="categories">
+  <!-- Clothes — single section: category filter chips + auto-scrolling carousel -->
+  <section class="showcase">
     <h2 class="section-title">Find Your Next Look</h2>
-    <div class="categories__grid">
-      <a
-        *ngFor="let category of categoryShortcuts"
-        [routerLink]="category.routerLink"
-        class="category-card"
+
+    <!-- Filter chips -->
+    <div class="filter-chips" *ngIf="!isLoadingCategories">
+      <button
+        class="filter-chip"
+        [class.filter-chip--active]="selectedCategory === ''"
+        (click)="selectCategory('')"
       >
-        <img [src]="category.imageUrl" [alt]="category.label" class="category-card__image" />
-        <span class="category-card__label">{{ category.label }}</span>
-      </a>
+        All
+      </button>
+      <button
+        class="filter-chip"
+        *ngFor="let category of categories"
+        [class.filter-chip--active]="selectedCategory === category.categoryName"
+        (click)="selectCategory(category.categoryName)"
+      >
+        {{ category.categoryName }}
+      </button>
     </div>
+
+    <!-- Filter chips skeleton -->
+    <div class="filter-chips" *ngIf="isLoadingCategories">
+      <div class="filter-chip filter-chip--skeleton" *ngFor="let i of [1, 2, 3, 4, 5]"></div>
+    </div>
+
+    <!-- Carousel skeleton -->
+    <div class="carousel" *ngIf="isLoadingClothes">
+      <div class="carousel__track carousel__track--static">
+        <div class="clothe-card clothe-card--skeleton" *ngFor="let i of [1, 2, 3, 4]">
+          <div class="clothe-card__image-wrapper"></div>
+          <div class="clothe-card__body">
+            <div class="skeleton-line skeleton-line--category"></div>
+            <div class="skeleton-line skeleton-line--name"></div>
+            <div class="skeleton-line skeleton-line--price"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Empty state -->
+    <p class="showcase__empty" *ngIf="!isLoadingClothes && clothes.length === 0">
+      No items found for this category yet.
+    </p>
+
+    <!-- Auto-scrolling carousel -->
+    <div class="carousel" *ngIf="!isLoadingClothes && clothes.length > 0">
+      <div class="carousel__track" [class.carousel__track--static]="!shouldLoop">
+        <div class="clothe-card" *ngFor="let item of carouselClothes">
+          <div class="clothe-card__image-wrapper">
+            <img
+              [src]="item.profileImagePath || 'assets/images/landing/featured-placeholder.jpg'"
+              [alt]="item.clotheName"
+              class="clothe-card__image"
+            />
+            <div class="clothe-card__overlay">
+              <a routerLink="/customer/browse" class="btn btn--overlay">View Details</a>
+            </div>
+          </div>
+          <div class="clothe-card__body">
+            <span class="clothe-card__category">{{ item.categoryName }}</span>
+            <h3 class="clothe-card__name">{{ item.clotheName }}</h3>
+            <div class="clothe-card__pricing">
+              <span class="clothe-card__price">₱{{ item.rentalPrice }}</span>
+              <span class="clothe-card__deposit">+ ₱{{ item.depositAmount }} deposit</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <a routerLink="/customer/browse" class="btn btn--primary showcase__cta">See the Full Collection</a>
   </section>
 
   <!-- Brand story -->
@@ -47,36 +108,10 @@
     </div>
     <div class="story__values">
       <div class="value-card" *ngFor="let value of brandValues">
-        <h3 class="value-card__title">{{ value.title }}</h3>
+        <h3 class="value-card__title">{{ value.title}}</h3>
         <p class="value-card__description">{{ value.description }}</p>
       </div>
     </div>
-  </section>
-
-  <!-- Featured items (Card Grid pattern) -->
-  <section class="featured">
-    <h2 class="section-title">Popular Right Now</h2>
-
-    <div class="card-grid">
-      <div class="clothe-card" *ngFor="let item of featuredClothes">
-        <div class="clothe-card__image-wrapper">
-          <img [src]="item.imageUrl" [alt]="item.name" class="clothe-card__image" />
-          <div class="clothe-card__overlay">
-            <a routerLink="/customer/browse" class="btn btn--overlay">View Details</a>
-          </div>
-        </div>
-        <div class="clothe-card__body">
-          <span class="clothe-card__category">{{ item.category }}</span>
-          <h3 class="clothe-card__name">{{ item.name }}</h3>
-          <div class="clothe-card__pricing">
-            <span class="clothe-card__price">₱{{ item.rentalPrice }}</span>
-            <span class="clothe-card__deposit">+ ₱{{ item.depositAmount }} deposit</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <a routerLink="/customer/browse" class="btn btn--primary featured__cta">See the Full Collection</a>
   </section>
 
   <!-- Closing CTA -->

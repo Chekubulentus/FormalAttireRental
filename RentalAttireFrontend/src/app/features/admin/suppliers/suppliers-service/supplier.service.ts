@@ -151,5 +151,5 @@ export class SupplierService {
       return Result.failure(extractErrorMessage(err.error));
     }
   }
-
+  
 }

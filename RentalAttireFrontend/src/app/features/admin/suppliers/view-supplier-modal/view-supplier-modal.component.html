@@ -104,7 +104,7 @@
 <!-- Clothes Modal (second layer) -->
 <app-view-supplier-clothes-modal
   *ngIf="isClothesModalOpen && supplier"
-  [clothes]="clothes"
+  [supplierId]="this.supplierId"
   [supplierName]="supplier.supplierName"
   (closeModal)="closeClothesModal()"
 ></app-view-supplier-clothes-modal>

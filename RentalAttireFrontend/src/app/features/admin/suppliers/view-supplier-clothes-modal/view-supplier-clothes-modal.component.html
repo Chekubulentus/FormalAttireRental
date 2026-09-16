@@ -7,8 +7,7 @@
         <span class="modal__eyebrow">{{ supplierName }}</span>
         <h2 class="modal__title" id="clothes-modal-title">Clothes Available</h2>
         <p class="modal__subtitle">
-          {{ filteredClothes.length }} of {{ clothes.length }}
-          {{ clothes.length === 1 ? 'item' : 'items' }}
+          {{ totalCount }} {{ totalCount === 1 ? 'item' : 'items' }}
         </p>
       </div>
       <button class="modal__close" (click)="close()" aria-label="Close">
@@ -55,7 +54,7 @@
     <div class="modal__body">
 
       <!-- Empty State -->
-      <div class="empty-state" *ngIf="filteredClothes.length === 0">
+      <div class="empty-state" *ngIf="clothes.length === 0">
         <svg width="32" height="32" viewBox="0 0 24 24" fill="none"
           stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
           <path d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.57a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.57a2 2 0 0 0-1.34-2.23z"/>
@@ -67,7 +66,7 @@
       </div>
 
       <!-- Table -->
-      <div class="table-wrapper" *ngIf="filteredClothes.length > 0">
+      <div class="table-wrapper" *ngIf="clothes.length > 0">
         <table class="clothes-table">
           <thead>
             <tr>
@@ -83,7 +82,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let clothe of paginatedClothes">
+            <tr *ngFor="let clothe of clothes">
               <td>
                 <span class="code-badge">{{ clothe.clotheCode }}</span>
               </td>
@@ -159,7 +158,7 @@
             <polyline points="9 18 15 12 9 6"/>
           </svg>
         </button>
-        <span class="pagination__meta">{{ rangeStart }}–{{ rangeEnd }} of {{ filteredClothes.length }}</span>
+        <span class="pagination__meta">{{ rangeStart }}–{{ rangeEnd }} of {{ totalCount }}</span>
       </div>
 
       <button class="btn btn--outline" (click)="close()">Close</button>

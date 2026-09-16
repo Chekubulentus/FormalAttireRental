@@ -1,5 +1,6 @@
 ﻿using RentalAttireBackend.Application.Common.Models;
 using RentalAttireBackend.Domain.Entities;
+using System.Globalization;
 using System.Security.Cryptography.X509Certificates;
 
 namespace RentalAttireBackend.Domain.Interfaces
@@ -38,6 +39,10 @@ namespace RentalAttireBackend.Domain.Interfaces
 
         public Task<PagedResult<Clothe>> GetSupplierClothesByIdAsync(
             int id,
+            string searchQuery,
+            string gender,
+            string availability,
+            string category,
             int currentPage,
             int itemsPerPage,
             CancellationToken cancellationToken
@@ -69,6 +74,8 @@ namespace RentalAttireBackend.Domain.Interfaces
             );
 
         public Task<int> GetAllUnassignedClothesAsync(CancellationToken cancellationToken);
+
+        public Task<>
         #endregion
     }
 }
