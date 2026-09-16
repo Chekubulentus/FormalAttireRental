@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using Google.Apis.Upload;
 using MediatR;
+using RentalAttireBackend.Application.Common.Interfaces;
 using RentalAttireBackend.Application.Common.Models;
 using RentalAttireBackend.Application.Rentals.DTOs;
 using RentalAttireBackend.Domain.Interfaces;
@@ -11,57 +11,64 @@ namespace RentalAttireBackend.Application.Rentals.Queries.FilterRentals
     {
         private readonly IMapper _mapper;
         private readonly IRentalRepository _rentalRepo;
+        private readonly IFileUploadService _fileUploadService;
 
         public FilterRentalsQueryHandler(
             IMapper mapper,
-            IRentalRepository rentalRepo
+            IRentalRepository rentalRepo,
+            IFileUploadService fileUploadService
             )
         {
             _mapper = mapper;
             _rentalRepo = rentalRepo;
+            _fileUploadService = fileUploadService;
         }
 
         public async Task<Result<RentalPageResponse>> Handle(FilterRentalsQuery request, CancellationToken cancellationToken)
         {
             if (request is null)
-                return Result<RentalPageResponse>.Failure("Invalid request.");
+                return Result<RentalPageResponse>.FailureWithErrorType("Invalid request.", ErrorType.BadRequest);
 
-            if (request.CurrentPage == 0 || request.ItemsPerPage == 0)
-                return Result<RentalPageResponse>.Failure("Current & Items Per Page is invalid.");
-            try
+            var rentals = await _rentalRepo.FilterRentalItemsAsync(
+                request.Status,
+                request.SearchQuery,
+                request.StartingDate,
+                request.EndingDate,
+                request.CurrentPage,
+                request.ItemsPerPage,
+                cancellationToken
+                );
+
+            var totalRevenue = await _rentalRepo.GetAllRentalsTotalRevenue(cancellationToken);
+            var analytics = await _rentalRepo.GetRentalAnalyticsAsync(cancellationToken);
+
+            if (rentals.Items.Count() == 0)
+                return Result<RentalPageResponse>.FailureWithErrorType("No rentals currently registered.", ErrorType.NotFound);
+
+
+            var rentalsDto = _mapper.Map<PagedResult<RentalDTO>>(rentals);
+
+            foreach(var rentalItem in rentalsDto.Items.SelectMany(x => x.RentalItems).ToList())
             {
-                var rentals = await _rentalRepo.FilterRentalItemsAsync(
-                    request.CategoryType,
-                    request.SearchQuery,
-                    request.StartingDate,
-                    request.EndingDate,
-                    request.CurrentPage,
-                    request.ItemsPerPage,
-                    cancellationToken
-                    );
+                var clothe = rentalItem.Clothe;
 
-                if (rentals.TotalCount == 0)
-                    return Result<RentalPageResponse>.Failure("No rentals currently registered.");
+                if (string.IsNullOrEmpty(clothe.ProfileImagePath))
+                    continue;
 
-                var totalRevenue = rentals.Items.SelectMany(r => r.RentalItems)
-                    .Sum(ri => ri.TotalAmount);
-
-                var totalCount = rentals.TotalCount;
-
-                var rentalsDto = _mapper.Map<PagedResult<RentalDTO>>(rentals);
-
-                return Result<RentalPageResponse>.Success(new RentalPageResponse
-                { 
-                    Items = rentalsDto.Items,
-                    CurrentPage = request.CurrentPage,
-                    ItemsPerPage = request.ItemsPerPage,
-                    TotalCount = totalCount,
-                    TotalRevenue = totalRevenue
-                });
-            }catch(Exception e)
-            {
-                return Result<RentalPageResponse>.Failure(e.Message);
+                clothe.ProfileImagePath = _fileUploadService.GetFileUrl(clothe.ProfileImagePath);
             }
+
+            return Result<RentalPageResponse>.Success(new RentalPageResponse
+            {
+                Items = rentalsDto.Items,
+                CurrentPage = request.CurrentPage,
+                ItemsPerPage = request.ItemsPerPage,
+                TotalCount = rentals.TotalCount,
+                TotalRevenue = totalRevenue,
+                StatusCounts = analytics.StatusCounts,
+                OverdueCount = analytics.OverdueCount,
+                DueSoonCout = analytics.DueSoonCount
+            });
         }
     }
 }

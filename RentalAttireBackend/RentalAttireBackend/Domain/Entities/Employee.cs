@@ -18,5 +18,11 @@ namespace RentalAttireBackend.Domain.Entities
         public Role Role { get; set; } = null!;
         [JsonIgnore]
         public User User { get; set; } = null!;
+        [JsonIgnore]
+        public List<PurchaseOrder> PurchaseOrders { get; set; } = new();
+        [JsonIgnore]
+        public List<ReceivingBatch> ReceivingBatches { get; set; } = new();
+        [JsonIgnore]
+        public List<Supplier> Suppliers { get; set; } = new();
     }
 }

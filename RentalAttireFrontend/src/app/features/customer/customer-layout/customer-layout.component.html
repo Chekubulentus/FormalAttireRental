@@ -28,6 +28,7 @@
           [class.nav-link--active]="isActive(link.path)"
           [routerLink]="link.path">
           {{ link.label }}
+        >
         </a>
       </ng-container>
     </nav>
@@ -67,7 +68,7 @@
           </div>
         </div>
         <div class="user-dropdown__divider"></div>
-        <a class="dropdown-item" routerLink="/customer/profile" (click)="menuOpen = false">
+        <a class="dropdown-item" routerLink="/customer/customer-profile" (click)="menuOpen = false">
           <svg viewBox="0 0 16 16" fill="none">
             <circle cx="8" cy="6" r="3" stroke="currentColor" stroke-width="1.3"/>
             <path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6"
@@ -101,29 +102,30 @@
     </div>
 
     <!-- Mobile hamburger -->
-    <button class="hamburger" (click)="toggleMenu()" [class.hamburger--open]="menuOpen">
+    <button class="hamburger" (click)="toggleMobileMenu()" [class.hamburger--open]="mobileMenuOpen">
       <span></span><span></span><span></span>
     </button>
 
   </header>
 
   <!-- Mobile nav drawer -->
-  <div class="mobile-drawer" [class.mobile-drawer--open]="menuOpen">
+  <div class="mobile-drawer" [class.mobile-drawer--open]="mobileMenuOpen">
     <nav class="mobile-nav">
       <ng-container *ngFor="let link of navLinks">
         <a
           class="mobile-nav__link"
           [class.mobile-nav__link--active]="isActive(link.path)"
           [routerLink]="link.path"
-          (click)="menuOpen = false">
+          (click)="mobileMenuOpen = false">
           {{ link.label }}
+          >
         </a>
       </ng-container>
       <div class="mobile-nav__divider"></div>
       <button class="mobile-nav__logout" (click)="logout()">Sign Out</button>
     </nav>
   </div>
-  <div class="mobile-overlay" *ngIf="menuOpen" (click)="menuOpen = false"></div>
+  <div class="mobile-overlay" *ngIf="mobileMenuOpen" (click)="mobileMenuOpen = false"></div>
 
   <!-- ══════════════════════════════════════════════════════════
        PAGE CONTENT
@@ -150,5 +152,5 @@
 <!-- Cart drawer -->
 <app-cart [isOpen]="cartOpen" (closed)="cartOpen = false"></app-cart>
 
-<!-- Click outside to close dropdown -->
+<!-- Click outside to close user dropdown -->
 <div class="backdrop" *ngIf="menuOpen" (click)="menuOpen = false"></div>

@@ -24,7 +24,7 @@ export class ReservationService {
 
       return result;
     }catch(err: any) {
-      return Result.failure(err.error);
+      return Result.failure(err.error.detail);
     }
   }
 }

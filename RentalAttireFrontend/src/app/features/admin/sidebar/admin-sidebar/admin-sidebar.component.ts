@@ -7,11 +7,6 @@ import { UserViewModel } from '../../../../data/models/DTOs/Users/user-view-mode
 import { ToastrService } from 'ngx-toastr';
 import { SocialAuthService } from '@abacritt/angularx-social-login';
 
-// TODO: replace with your actual imports
-// import { UserService } from '../../../core/services/user-service/user.service';
-// import { UserViewModel } from '../../../data/models/DTOs/Users/user-view-model';
-// import { AuthService } from '../../../core/services/auth-service/auth.service';
-
 @Component({
   selector: 'app-admin-sidebar',
   standalone: true,

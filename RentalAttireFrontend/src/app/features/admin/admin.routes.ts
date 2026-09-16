@@ -57,6 +57,48 @@ export const ADMIN_ROUTES: Routes = [
           return import('./disposables/disposables/disposables.component')
           .then(m => m.DisposablesComponent)
         }
+      },
+      {
+        path: 'rentals',
+        loadComponent: () => {
+          return import('./rentals/rentals/rentals.component')
+          .then(m => m.RentalsComponent);
+        }
+      },
+      {
+        path: 'view-rental',
+        loadComponent: () => {
+          return import('./rentals/view-rental/view-rental.component')
+          .then(m => m.ViewRentalComponent);
+        }
+      },
+      {
+        path: 'suppliers',
+        loadComponent: () => {
+          return import('./suppliers/suppliers/suppliers.component')
+          .then(m => m.SuppliersComponent)
+        }
+      },
+      {
+        path: 'create-supplier',
+        loadComponent: () => {
+          return import('./suppliers/create-supplier-modal/create-supplier-modal.component')
+          .then(m => m.CreateSupplierModalComponent)
+        }
+      }, 
+      {
+        path: 'view-supplier',
+        loadComponent: () => {
+          return import('./suppliers/view-supplier-modal/view-supplier-modal.component')
+          .then(m => m.ViewSupplierModalComponent)
+        }
+      },
+      {
+        path: 'edit-supplier',
+        loadComponent: () => {
+          return import('./suppliers/edit-supplier-modal/edit-supplier-modal.component')
+          .then(m => m.EditSupplierModalComponent)
+        }
       }
     ],
   },

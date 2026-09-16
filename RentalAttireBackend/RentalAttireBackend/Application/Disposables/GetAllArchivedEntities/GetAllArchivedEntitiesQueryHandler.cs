@@ -16,6 +16,7 @@ namespace RentalAttireBackend.Application.Disposables.GetAllArchivedEntities
         private readonly ICustomerRepository _customerRepo;
         private readonly IClotheRepository _clotheRepo;
         private readonly ICategoryRepository _categoryRepo;
+        private readonly ISupplierRepository _supplierRepo;
 
         public GetAllArchivedEntitiesQueryHandler
             (
@@ -23,7 +24,8 @@ namespace RentalAttireBackend.Application.Disposables.GetAllArchivedEntities
             IMapper mapper,
             ICustomerRepository customerRepo,
             IClotheRepository clotheRepo,
-            ICategoryRepository categoryRepo
+            ICategoryRepository categoryRepo,
+            ISupplierRepository supplierRepo
             )
         {
             _employeeRepo = employeeRepo;
@@ -31,7 +33,7 @@ namespace RentalAttireBackend.Application.Disposables.GetAllArchivedEntities
             _customerRepo = customerRepo;
             _clotheRepo = clotheRepo;
             _categoryRepo = categoryRepo;
-            
+            _supplierRepo = supplierRepo;
         }
         public async Task<Result<PagedResult<ArchivedEntityDto>>> Handle(GetAllArchivedEntitiesQuery request, 
             CancellationToken cancellationToken)
@@ -55,6 +57,10 @@ namespace RentalAttireBackend.Application.Disposables.GetAllArchivedEntities
 
             archivedEntities.Items.AddRange(
                 _mapper.Map<List<ArchivedEntityDto>>(await _categoryRepo.GetAllArchivedCategoriesAsync(cancellationToken))
+                );
+
+            archivedEntities.Items.AddRange(
+                _mapper.Map<List<ArchivedEntityDto>>(await _supplierRepo.GetAllArchivedSuppliersAsync(cancellationToken))
                 );
 
             archivedEntities.Items.OrderByDescending(r => r.ArchivedAt);

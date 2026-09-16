@@ -44,6 +44,27 @@ export const CUSTOMER_ROUTES: Routes = [
                     return import ('./browse/reservation/reservation.component')
                     .then(m => m.ReservationComponent)
                 }
+            },
+            {
+                path: 'my-rentals',
+                loadComponent: () => {
+                    return import('./my-rental/my-rental/my-rental.component')
+                    .then(m => m.MyRentalsComponent)
+                }
+            },
+            {
+                path: 'customer-profile',
+                loadComponent: () => {
+                    return import('./my-profile/customer-profile/customer-profile.component')
+                    .then(m => m.CustomerProfileComponent)
+                }
+            },
+            {
+                path: 'view-rental',
+                loadComponent: () => {
+                    return import('./my-rental/view-rental/view-rental.component')
+                    .then(m => m.ViewRentalComponent)
+                }
             }
         ]
     }

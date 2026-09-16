@@ -10,6 +10,7 @@ namespace RentalAttireBackend.Application.Customers.DTOs
         public double TotalSpent { get; set; }
         public string Email { get; set; } = string.Empty;
         public bool IsGoogleAccount { get; set; }
+        public bool HasPassword { get; set; } = false;
         public PersonDTO Person { get; set; } = null!;
     }
 }

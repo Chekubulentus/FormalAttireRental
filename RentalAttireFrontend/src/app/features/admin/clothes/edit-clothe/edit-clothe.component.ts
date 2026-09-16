@@ -95,12 +95,9 @@ export class EditClotheComponent implements OnInit {
   getAllCategories() {
     this.categoryService.getAllCategories()
     .then(res => {
-      if(!res.isSuccess)
-        console.log(`${res.errorMessage}`);
       this.categories = res.data ?? [];
-      console.log(`${JSON.stringify(this.currentUser)}`);
     }).catch(err => {
-      console.log(err.error);
+      this.toastrService.error(err.error);
     })
   }
 
@@ -122,7 +119,6 @@ export class EditClotheComponent implements OnInit {
     const f = this.form;
     const e: Record<string, string> = {};
 
-    if (!f.clotheCode?.trim())  e['clotheCode']   = 'Item code is required.';
     if (!f.clotheName?.trim())  e['clotheName']   = 'Item name is required.';
     if (!f.categoryName)        e['categoryName'] = 'Select a category.';
     if (!f.clotheGender)        e['clotheGender'] = 'Select a gender.';
@@ -212,7 +208,6 @@ export class EditClotheComponent implements OnInit {
     // Build FormData — same pattern as CreateClotheComponent
     const formData = new FormData();
     formData.append('id',                  this.form.id.toString());
-    formData.append('clotheCode',          this.form.clotheCode);
     formData.append('clotheName',          this.form.clotheName);
     formData.append('categoryName',        this.form.categoryName);
     formData.append('color',               this.form.color);
@@ -236,16 +231,18 @@ export class EditClotheComponent implements OnInit {
 
     this.clotheService.updateClotheAsync(formData)
     .then(res => {
-      if(!res.isSuccess)
+      if(!res.isSuccess){
         this.toastrService.error(res.errorMessage ?? 'Failed to update the record.');
-      this.toastrService.success(res.successMessage ?? 'Clothe updated successfully.');
+        console.log(`RESULT ERROR: ${res.errorMessage}`);
+      }else {
+        this.toastrService.success(res.successMessage ?? 'Clothe updated successfully.');
+      }
     }).catch(err => {
       this.toastrService.error(err.error ?? 'Something Wrong');
     }).finally(() => {
       this.updated.emit(this.form as ClotheDTO);
       this.isSubmitting = false;
       this.close();
-      console.log(`${JSON.stringify(this.form)}`);
     });
   }
 }

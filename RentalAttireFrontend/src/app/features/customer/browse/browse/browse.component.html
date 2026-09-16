@@ -80,7 +80,9 @@
             type="text"
             placeholder="Search by name, brand, or code..."
             [(ngModel)]="searchQuery"
-            (keyup.enter)="onSearch()"/>
+            (keyup.enter)="onSearch()"
+            (ngModelChange)="onSearch()"
+            />
         </div>
         <button class="btn-search" (click)="onSearch()">Search</button>
       </div>

@@ -238,6 +238,11 @@ $navbar-height: 60px;
   box-shadow: 0 8px 24px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.04);
   overflow: hidden;
   animation: dropIn 0.18s ease;
+  // High z-index relative to its own stacking context (.navbar__right
+  // is position:relative, .navbar is position:sticky+z-index — this
+  // value only matters among elements INSIDE that context now that
+  // the mobile drawer/overlay are gated by their own separate flag
+  // and no longer compete with this element for clicks.
   z-index: 200;
 }
 
@@ -333,6 +338,14 @@ $navbar-height: 60px;
 
 // ============================================================
 // Mobile Drawer
+// FIX: gated by mobileMenuOpen now, not the shared menuOpen —
+// previously this element (and .mobile-overlay below) became
+// interactive any time the DESKTOP dropdown opened too, since
+// nothing here is restricted to mobile widths by CSS — only the
+// hamburger *button* that triggers it was display:none on desktop.
+// That meant clicking the avatar on desktop silently also opened
+// a full-width, pointer-events:all drawer sitting in the same
+// screen region as the dropdown, competing for the click.
 // ============================================================
 .mobile-drawer {
   position: fixed;
@@ -454,7 +467,9 @@ $navbar-height: 60px;
 
 
 // ============================================================
-// Backdrop (close dropdown on outside click)
+// Backdrop (close user dropdown on outside click)
+// FIX: only tied to menuOpen (desktop dropdown) now — no longer
+// shares meaning with the mobile drawer's own overlay.
 // ============================================================
 .backdrop {
   position: fixed;

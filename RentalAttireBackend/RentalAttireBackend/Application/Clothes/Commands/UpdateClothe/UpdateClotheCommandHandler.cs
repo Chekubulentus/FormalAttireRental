@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MediatR;
+using RentalAttireBackend.Application.Clothes.Helper;
 using RentalAttireBackend.Application.Common.Interfaces;
 using RentalAttireBackend.Application.Common.Models;
 using RentalAttireBackend.Domain.Entities;
@@ -15,13 +16,15 @@ namespace RentalAttireBackend.Application.Clothes.Commands.UpdateClothe
         private readonly ITransactionManager _transaction;
         private readonly IAuditLogService _auditService;
         private readonly IFileUploadService _fileUploadService;
+        private readonly ICategoryRepository _categoryRepo;
 
         public UpdateClotheCommandHandler(
             IMapper mapper,
             IClotheRepository clotheRepo,
             ITransactionManager transaction,
             IAuditLogService auditService,
-            IFileUploadService fileUploadService
+            IFileUploadService fileUploadService,
+            ICategoryRepository categoryRepo
             )
         {
             _clotheRepo = clotheRepo;
@@ -29,6 +32,7 @@ namespace RentalAttireBackend.Application.Clothes.Commands.UpdateClothe
             _transaction = transaction;
             _auditService = auditService;
             _fileUploadService = fileUploadService;
+            _categoryRepo = categoryRepo;
         }
 
         public async Task<Result<bool>> Handle(UpdateClotheCommand request, CancellationToken cancellationToken)
@@ -42,19 +46,23 @@ namespace RentalAttireBackend.Application.Clothes.Commands.UpdateClothe
 
             try
             {
-                await _transaction.BeginTransactionAsync(cancellationToken);
+                var category = await _categoryRepo.GetCategoryByNameAsync(request.CategoryName, cancellationToken);
+
+                if (category is null)
+                    return Result<bool>.FailureWithErrorType($"Category is required.", ErrorType.NotFound);
 
                 var clotheToUpdate = await _clotheRepo.GetClotheByIdAsync(request.Id, cancellationToken);
 
                 if (clotheToUpdate is null)
-                {
-                    await _transaction.RollbackTransactionAsync(cancellationToken);
-                    return Result<bool>.Failure("Clothe does not exist.");
-                }
+                    return Result<bool>.FailureWithErrorType("Clothe does not exist.", ErrorType.NotFound);
 
                 var oldClotheDetails = await _clotheRepo.GetClotheByIdNoTrackingAsync(request.Id, cancellationToken);
 
-                if(request.Image is not null)
+                clotheToUpdate.CategoryId = category.Id;
+
+                await _transaction.BeginTransactionAsync(cancellationToken);
+
+                if (request.Image is not null)
                 {
                     await _fileUploadService.DeleteFileAsync(clotheToUpdate.ProfileImagePath);
 
@@ -70,6 +78,7 @@ namespace RentalAttireBackend.Application.Clothes.Commands.UpdateClothe
                 }
 
                 _mapper.Map(request, clotheToUpdate);
+                clotheToUpdate.ClotheCode = ClotheCodeGenerator.Generate(category.CategoryName, clotheToUpdate.Id);
 
                 var updateClothe = await _clotheRepo.UpdateClotheAsync(clotheToUpdate, cancellationToken);
 
@@ -98,7 +107,7 @@ namespace RentalAttireBackend.Application.Clothes.Commands.UpdateClothe
             }
             catch(Exception e) {
                 await _transaction.RollbackTransactionAsync(cancellationToken);
-                return Result<bool>.Failure(e.Message);
+                throw;
             }
         }
     }

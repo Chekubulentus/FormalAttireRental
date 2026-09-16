@@ -2,6 +2,10 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AuthService } from '../../../core/services/auth-service/auth.service';
+import { AppToastrService } from '../../../core/services/toastr-service/app-toastr.service';
+import { CurrentUser } from '../../../../environments/current-user';
+import { ProfileCompletionRequest } from '../../../data/models/DTOs/Authentication/profile-completion';
 // import { ProfileService } from '../../../core/services/profile-service/profile.service';
 // import { AppToastrService } from '../../../core/services/toastr-service/app-toastr.service';
 // import { AuthService } from '../../../core/services/auth-service/auth.service';
@@ -55,22 +59,22 @@ export class ProfileCompletionComponent implements OnInit {
 
   constructor(
     private router: Router,
-    // private profileService: ProfileService,
-    // private toastr: AppToastrService,
-    // private authService: AuthService,
+    private toastr : AppToastrService,
+    private authService : AuthService
   ) {}
 
   ngOnInit(): void {
     // TODO: pre-fill name from stored Google user data
     // const storedUser = localStorage.getItem(CurrentUser);
-    // if (storedUser) {
-    //   const user = JSON.parse(storedUser);
-    //   this.googleName  = user.fullName ?? '';
-    //   this.googleEmail = user.email ?? '';
-    //   // Pre-fill first/last from Google if available
-    //   this.form.firstName = user.firstName ?? '';
-    //   this.form.lastName  = user.lastName  ?? '';
-    // }
+    const storedUser = localStorage.getItem(CurrentUser);
+
+    if(storedUser) {
+      const user = JSON.parse(storedUser);
+      this.googleName = user.fullName;
+      this.googleEmail = user.email;
+      this.form.firstName = user.firstName;
+      this.form.lastName = user.lastName;
+    }
   }
 
 
@@ -150,21 +154,30 @@ export class ProfileCompletionComponent implements OnInit {
 
     this.isSubmitting = true;
 
-    // TODO: wire to ProfileService
-    // this.profileService.completeProfileAsync(this.form)
-    //   .then(res => {
-    //     if (!res.isSuccess) {
-    //       this.toastr.error(res.errorMessage ?? 'Failed to complete profile.');
-    //       return;
-    //     }
-    //     this.toastr.success('Profile completed successfully!');
-    //     this.router.navigateByUrl('/customer/customer-dashboard');
-    //   })
-    //   .catch(err => console.error(err))
-    //   .finally(() => this.isSubmitting = false);
+    const payload : ProfileCompletionRequest = {
+      age : this.form.age,
+      gender : this.form.gender,
+      maritalStatus : this.form.maritalStatus,
+      phoneNumber : this.form.phoneNumber,
+      street : this.form.street,
+      barangay : this.form.barangay,
+      city : this.form.city,
+      province : this.form.province,
+      postalCode : this.form.postalCode
+    };
 
-    console.log('Complete profile payload:', this.form);
-    this.isSubmitting = false;
-    this.router.navigateByUrl('/customer/customer-dashboard');
+    this.authService.profileCompletionAsync(
+      payload
+    ).then(res => {
+      if(!res.isSuccess) {
+        this.toastr.error(res.errorMessage ?? "Profile could not be completed. Please try again");
+      }
+
+      this.router.navigateByUrl('/customer/customer-dashboard');
+    }).catch(err => {
+      this.toastr.error(err.error);
+    }).finally(() => {
+      this.isSubmitting = false;
+    });
   }
 }

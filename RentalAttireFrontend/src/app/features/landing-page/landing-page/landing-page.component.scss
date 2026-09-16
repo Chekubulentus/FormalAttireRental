@@ -1,0 +1,622 @@
+// ─── Design Tokens ────────────────────────────────────────────────────────────
+$surface:     #ffffff;
+$bg:          #f9f7f5;
+$border:      #e4ddd6;
+$gold:        #a07840;
+$gold-dim:    #b8975a;
+$gold-border: #d4b896;
+$text:        #1a1917;
+$text-muted:  #6b6560;
+$text-soft:   #9c948e;
+$red:         #c0392b;
+$green:       #2e7d5e;
+$amber:       #92600a;
+$blue:        #1d5fa8;
+
+$content-width: clamp(320px, 92vw, 1400px);
+$band-padding: clamp(48px, 8vw, 96px);
+$gutter: clamp(20px, 5vw, 64px);
+
+// ─── Base ─────────────────────────────────────────────────────────────────────
+.landing {
+  display: flex;
+  flex-direction: column;
+}
+
+.band {
+  width: 100%;
+  padding: $band-padding 0;
+  background: $surface;
+
+  &--muted {
+    background: $bg;
+  }
+
+  &--hero {
+    padding-top: clamp(32px, 6vw, 56px);
+    padding-bottom: 0;
+  }
+}
+
+.container {
+  max-width: $content-width;
+  margin: 0 auto;
+  padding: 0 $gutter;
+}
+
+.section-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 30px;
+  font-weight: 400;
+  color: $text;
+  margin: 0 0 32px;
+  text-align: center;
+
+  &--left {
+    text-align: left;
+    margin-bottom: 16px;
+  }
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 8px;
+  padding: 12px 24px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  text-decoration: none;
+  transition: background 0.15s, border-color 0.15s, color 0.15s, transform 0.15s;
+  white-space: nowrap;
+
+  &:focus-visible {
+    outline: 2px solid $gold;
+    outline-offset: 2px;
+  }
+
+  &--primary {
+    background: $gold;
+    color: #fff;
+    border-color: $gold;
+
+    &:hover { background: $gold-dim; border-color: $gold-dim; }
+  }
+
+  &--secondary {
+    background: $surface;
+    color: $text;
+    border-color: $border;
+
+    &:hover { border-color: $gold-border; color: $gold; }
+  }
+
+  &--overlay {
+    background: rgba(255, 255, 255, 0.95);
+    color: $text;
+    border-color: transparent;
+    font-size: 13px;
+    padding: 9px 18px;
+
+    &:hover { background: #fff; }
+  }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+// ─── Hero ─────────────────────────────────────────────────────────────────────
+.hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 48px;
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 18px;
+
+    > * { animation: fadeUp 0.5s ease both; }
+  }
+
+  &__eyebrow {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: $gold;
+    animation-delay: 0s;
+  }
+
+  &__title {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(32px, 4vw, 46px);
+    font-weight: 400;
+    line-height: 1.15;
+    color: $text;
+    margin: 0;
+    animation-delay: 0.1s;
+  }
+
+  &__subtitle {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    color: $text-muted;
+    margin: 0;
+    max-width: 480px;
+    animation-delay: 0.2s;
+  }
+
+  &__actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 8px;
+    animation-delay: 0.3s;
+  }
+
+  &__image {
+    border-radius: 16px;
+    overflow: hidden;
+    aspect-ratio: 4 / 5;
+    max-width: 300px;
+    margin: 3rem auto;
+    animation: fadeUp 0.5s ease both;
+    animation-delay: 0.15s;
+
+    img { width: 100%; height: 100%; object-fit: cover; }
+  }
+}
+
+// ─── Stats ────────────────────────────────────────────────────────────────────
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+
+  @media (max-width: 640px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  &__item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 24px 12px;
+    border: 1px solid $border;
+    border-radius: 14px;
+    background: $surface;
+    animation: fadeUp 0.4s ease both;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+
+    &:hover { transform: translateY(-2px); border-color: $gold-border; }
+
+    @for $i from 1 through 4 {
+      &:nth-child(#{$i}) { animation-delay: #{($i - 1) * 0.1}s; }
+    }
+  }
+
+  &__value {
+    font-family: 'DM Serif Display', serif;
+    font-size: 28px;
+    font-weight: 400;
+    color: $gold;
+  }
+
+  &__label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    color: $text-muted;
+    text-align: center;
+  }
+}
+
+// ─── Category shortcuts ─────────────────────────────────────────────────────────
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+
+  @media (max-width: 860px) { grid-template-columns: repeat(2, 1fr); }
+  @media (max-width: 480px) { grid-template-columns: 1fr; }
+}
+
+.category-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 32px 16px;
+  border: 1px solid $border;
+  border-radius: 14px;
+  background: $surface;
+  text-decoration: none;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  animation: fadeUp 0.4s ease both;
+
+  @for $i from 1 through 4 {
+    &:nth-child(#{$i}) { animation-delay: #{($i - 1) * 0.1}s; }
+  }
+
+  &:hover {
+    transform: translateY(-4px);
+    border-color: $gold-border;
+    box-shadow: 0 8px 24px rgba(26, 25, 23, 0.08);
+
+    .category-tile__icon { background: $gold; color: #fff; }
+  }
+
+  &:focus-visible { outline: 2px solid $gold; outline-offset: 2px; }
+
+  &__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: $bg;
+    color: $gold;
+    transition: background 0.2s ease, color 0.2s ease;
+
+    svg { width: 26px; height: 26px; }
+  }
+
+  &__label {
+    font-family: 'DM Serif Display', serif;
+    font-size: 16px;
+    font-weight: 400;
+    color: $text;
+    text-align: center;
+  }
+}
+
+// ─── Brand story ──────────────────────────────────────────────────────────────
+.story {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 56px;
+  align-items: start;
+
+  &__text p {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    color: $text-muted;
+    margin: 0;
+  }
+
+  &__values {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+}
+
+.value-card {
+  padding: 20px;
+  border: 1px solid $border;
+  border-radius: 12px;
+  background: $surface;
+  transition: border-color 0.2s ease;
+
+  &:hover { border-color: $gold-border; }
+
+  &__title {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    color: $text;
+    margin: 0 0 6px;
+  }
+
+  &__description {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    line-height: 1.6;
+    color: $text-muted;
+    margin: 0;
+  }
+}
+
+// ─── Featured ─────────────────────────────────────────────────────────────────
+.featured {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  &__cta { margin-top: 32px; }
+
+  &__filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    margin-bottom: 28px;
+    width: 100%;
+  }
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  &__label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: $text-soft;
+  }
+}
+
+.filter-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.filter-pill {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: $text-muted;
+  background: $surface;
+  border: 1px solid $border;
+  border-radius: 999px;
+  padding: 7px 16px;
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s, color 0.12s;
+
+  &:hover { border-color: $gold-border; color: $text; }
+  &:focus-visible { outline: 2px solid $gold; outline-offset: 2px; }
+
+  &--active {
+    background: $gold;
+    border-color: $gold;
+    color: #fff;
+
+    &:hover { background: $gold-dim; border-color: $gold-dim; color: #fff; }
+  }
+}
+
+// ─── Card Grid pattern (§8a) ────────────────────────────────────────────────────
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 20px;
+  width: 100%;
+}
+
+.clothe-card {
+  background: $surface;
+  border: 1px solid $border;
+  border-radius: 14px;
+  overflow: hidden;
+  animation: fadeUp 0.3s ease both;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-4px);
+    border-color: $gold-border;
+    box-shadow: 0 8px 24px rgba(26, 25, 23, 0.08);
+
+    .clothe-card__overlay { opacity: 1; }
+  }
+
+  &__image-wrapper {
+    position: relative;
+    aspect-ratio: 3 / 4;
+    background: $bg;
+  }
+
+  &__image { width: 100%; height: 100%; object-fit: cover; }
+
+  &__overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 16px;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.35), transparent 60%);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+
+  &__body {
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  &__category {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: $text-soft;
+  }
+
+  &__name {
+    font-family: 'DM Serif Display', serif;
+    font-size: 17px;
+    font-weight: 400;
+    color: $text;
+    margin: 0;
+  }
+
+  &__pricing {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-top: 4px;
+  }
+
+  &__price {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    color: $gold;
+  }
+
+  &__deposit {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    color: $text-soft;
+  }
+}
+
+// ─── Marquee ──────────────────────────────────────────────────────────────────
+.marquee {
+  overflow: hidden;
+  width: 100%;
+  mask-image: linear-gradient(to right, transparent 0, #000 24px, #000 calc(100% - 24px), transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0, #000 24px, #000 calc(100% - 24px), transparent 100%);
+}
+
+.marquee__track {
+  display: flex;
+  gap: 20px;
+  width: max-content;
+
+  &--animated {
+    animation-name: marquee-scroll-right;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+  }
+
+  &--paused { animation-play-state: paused; }
+
+  .clothe-card { flex: 0 0 240px; }
+}
+
+@keyframes marquee-scroll-right {
+  from { transform: translateX(-50%); }
+  to   { transform: translateX(0%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee__track--animated,
+  .hero__content > *,
+  .hero__image,
+  .stats__item,
+  .category-tile {
+    animation: none;
+  }
+}
+
+// ─── Skeleton loading state ────────────────────────────────────────────────────
+.clothe-card--skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+}
+
+.skeleton-block {
+  border-radius: 8px;
+  background: linear-gradient(90deg, $bg 25%, $border 37%, $bg 63%);
+  background-size: 400% 100%;
+  animation: skeleton-shimmer 1.4s ease infinite;
+
+  &--image { aspect-ratio: 3 / 4; width: 100%; }
+  &--line { height: 12px; width: 100%; }
+  &--short { width: 60%; }
+}
+
+@keyframes skeleton-shimmer {
+  0%   { background-position: 100% 50%; }
+  100% { background-position: 0 50%; }
+}
+
+// ─── Empty state ────────────────────────────────────────────────────────────
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 48px 24px;
+  gap: 4px;
+  width: 100%;
+
+  &__title {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: $text;
+    margin: 0;
+  }
+
+  &__subtitle {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: $text-soft;
+    margin: 0;
+  }
+}
+
+// ─── Image fallback ──────────────────────────────────────────────────────────
+.clothe-card__image--fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: $bg;
+  font-family: 'DM Serif Display', serif;
+  font-size: 28px;
+  color: $text-soft;
+  text-transform: uppercase;
+  width: 100%;
+  height: 100%;
+}
+
+// ─── Closing CTA ──────────────────────────────────────────────────────────────
+.cta-card {
+  text-align: center;
+  background: $bg;
+  border-radius: 20px;
+  padding: 64px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+
+  &__title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 28px;
+    font-weight: 400;
+    color: $text;
+    margin: 0;
+  }
+
+  &__subtitle {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: $text-muted;
+    margin: 0 0 8px;
+  }
+}
+
+@media (max-width: 860px) {
+  .hero, .story {
+    grid-template-columns: 1fr;
+  }
+
+  .hero__image {
+    order: -1;
+  }
+}

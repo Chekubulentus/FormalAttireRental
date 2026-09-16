@@ -1,0 +1,490 @@
+// ─── Design Tokens ────────────────────────────────────────────────────────────
+$surface:     #ffffff;
+$bg:          #f9f7f5;
+$border:      #e4ddd6;
+$gold:        #a07840;
+$gold-dim:    #b8975a;
+$gold-border: #d4b896;
+$text:        #1a1917;
+$text-muted:  #6b6560;
+$text-soft:   #9c948e;
+$red:         #c0392b;
+$red-bg:      #fdf2f1;
+$red-border:  #f0c4c0;
+$green:       #2e7d5e;
+$green-bg:    #f0f7f4;
+$green-border:#b2d8cb;
+$amber:       #92600a;
+$amber-bg:    #fdf6ec;
+$amber-border:#e8c98a;
+
+// ─── Overlay ──────────────────────────────────────────────────────────────────
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(26, 25, 23, 0.45);
+  backdrop-filter: blur(3px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100;
+  padding: 24px;
+  animation: fadeIn 0.18s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+// ─── Modal Card ───────────────────────────────────────────────────────────────
+.modal {
+  background: $surface;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 600px;
+  max-height: 84vh;
+  box-shadow: 0 8px 40px rgba(26, 25, 23, 0.14);
+  display: flex;
+  flex-direction: column;
+  animation: slideUp 0.2s ease;
+  overflow: hidden;
+}
+
+// ─── Header ───────────────────────────────────────────────────────────────────
+.modal__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 24px 24px 20px;
+  border-bottom: 1px solid $border;
+  flex-shrink: 0;
+
+  &-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+}
+
+.modal__eyebrow {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: $gold;
+}
+
+.modal__title {
+  font-family: 'DM Serif Display', serif;
+  font-size: 22px;
+  font-weight: 400;
+  color: $text;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.modal__subtitle {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  color: $text-muted;
+  margin: 0;
+}
+
+.modal__close {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid $border;
+  border-radius: 8px;
+  background: transparent;
+  color: $text-soft;
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s;
+
+  &:hover {
+    background: $bg;
+    color: $text;
+  }
+}
+
+// ─── Toolbar Row 1: Search + Selection Summary ────────────────────────────────
+.modal__toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 24px 10px;
+  flex-shrink: 0;
+}
+
+.search {
+  position: relative;
+  flex: 1;
+
+  &__icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: $text-soft;
+    pointer-events: none;
+  }
+
+  &__input {
+    width: 100%;
+    box-sizing: border-box;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: $text;
+    background: $bg;
+    border: 1px solid $border;
+    border-radius: 8px;
+    padding: 9px 12px 9px 34px;
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+
+    &::placeholder { color: $text-soft; }
+
+    &:focus {
+      border-color: $gold-border;
+      box-shadow: 0 0 0 3px rgba($gold, 0.08);
+      background: $surface;
+    }
+  }
+}
+
+.selected-count {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: $gold;
+  white-space: nowrap;
+  flex-shrink: 0;
+
+  &__clear {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    color: $text-soft;
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-decoration: underline;
+    padding: 0;
+
+    &:hover { color: $text-muted; }
+  }
+}
+
+// ─── Toolbar Row 2: Filters ───────────────────────────────────────────────────
+.modal__filters {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 24px 14px;
+  flex-shrink: 0;
+  border-bottom: 1px solid $border;
+  flex-wrap: wrap;
+}
+
+.filter-select {
+  padding: 7px 28px 7px 10px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12.5px;
+  color: $text;
+  background: $surface;
+  border: 1px solid $border;
+  border-radius: 8px;
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239c948e' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  transition: border-color 0.15s;
+
+  &:focus { border-color: $gold-border; }
+}
+
+.btn-clear {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 7px 12px;
+  border: 1px solid $red-border;
+  border-radius: 8px;
+  background: $red-bg;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  color: $red;
+  cursor: pointer;
+  transition: background 0.12s;
+  white-space: nowrap;
+
+  &:hover { background: darken($red-bg, 3%); }
+}
+
+// ─── Body ─────────────────────────────────────────────────────────────────────
+.modal__body {
+  padding: 8px 16px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+// ─── Empty State ──────────────────────────────────────────────────────────────
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 48px 24px;
+  gap: 4px;
+
+  &__title {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: $text;
+    margin: 0;
+  }
+
+  &__subtitle {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: $text-soft;
+    margin: 0;
+  }
+}
+
+// ─── Picker List ──────────────────────────────────────────────────────────────
+.picker-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.picker-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.12s;
+
+  &:hover { background: $bg; }
+
+  &--selected {
+    background: rgba($gold, 0.06);
+    &:hover { background: rgba($gold, 0.09); }
+  }
+
+  &__checkbox {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    accent-color: $gold;
+    cursor: pointer;
+  }
+
+  &__thumb {
+    flex-shrink: 0;
+    width: 38px;
+    height: 38px;
+    border-radius: 6px;
+    overflow: hidden;
+    background: $bg;
+    border: 1px solid $border;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    &-fallback {
+      font-family: 'DM Serif Display', serif;
+      font-size: 15px;
+      color: $text-soft;
+      text-transform: uppercase;
+    }
+  }
+
+  &__info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  &__name {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: $text;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  &__assigned-badge {
+    flex-shrink: 0;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    color: $gold;
+    background: rgba($gold, 0.08);
+    border: 1px solid $gold-border;
+    border-radius: 4px;
+    padding: 1px 6px;
+    white-space: nowrap;
+  }
+
+  &__meta {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    color: $text-soft;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__code { color: $text-muted; }
+
+  &__dot { margin: 0 2px; }
+
+  &__condition {
+    display: inline-block;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-radius: 4px;
+    padding: 1px 6px;
+    width: fit-content;
+
+    &.condition--new  { background: $green-bg;  color: $green;  border: 1px solid $green-border; }
+    &.condition--good { background: rgba($gold, 0.08); color: $gold; border: 1px solid $gold-border; }
+    &.condition--fair { background: $amber-bg;  color: $amber;  border: 1px solid $amber-border; }
+    &.condition--poor { background: $red-bg;    color: $red;    border: 1px solid $red-border; }
+  }
+
+  &__price {
+    flex-shrink: 0;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: $text-muted;
+  }
+}
+
+// ─── Footer ───────────────────────────────────────────────────────────────────
+.modal__footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 16px 24px;
+  border-top: 1px solid $border;
+  background: $bg;
+  flex-shrink: 0;
+}
+
+// ─── Buttons ──────────────────────────────────────────────────────────────────
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: 8px;
+  padding: 9px 18px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background 0.12s, border-color 0.12s, color 0.12s;
+  white-space: nowrap;
+
+  &--primary {
+    background: $gold;
+    color: #fff;
+    border-color: $gold;
+    &:hover { background: $gold-dim; border-color: $gold-dim; }
+  }
+
+  &--outline {
+    background: transparent;
+    color: $text-muted;
+    border-color: $border;
+    &:hover { background: darken($bg, 2%); color: $text; }
+  }
+}
+
+// ─── Footer Summary ───────────────────────────────────────────────────────────
+.modal__footer {
+  // Override to space summary + actions apart
+  justify-content: space-between;
+}
+
+.footer-summary {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  &__item {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    border-radius: 5px;
+    padding: 3px 8px;
+
+    &--assign {
+      color: $green;
+      background: $green-bg;
+      border: 1px solid $green-border;
+    }
+
+    &--unassign {
+      color: $red;
+      background: $red-bg;
+      border: 1px solid $red-border;
+    }
+  }
+
+  &__sep {
+    color: $text-soft;
+    font-size: 12px;
+  }
+}
+
+.footer-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}

@@ -7,6 +7,7 @@ using RentalAttireBackend.Application.Common.Extensions;
 using RentalAttireBackend.Application.Rentals.Commands.RentalTransaction;
 using RentalAttireBackend.Application.Rentals.Commands.UpdateRentalStatusCommand;
 using RentalAttireBackend.Application.Rentals.Queries;
+using RentalAttireBackend.Application.Rentals.Queries.CustomerRentals;
 using RentalAttireBackend.Application.Rentals.Queries.FilterRentals;
 using RentalAttireBackend.Application.Rentals.Queries.GetAllRentals;
 
@@ -14,9 +15,10 @@ namespace RentalAttireBackend.Controllers.AdminController
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class RentalController : ControllerBase
     {
-        private readonly IMediator _meaditor;
+        private readonly IMediator _meaditor; //Mediator
         private readonly IHttpContextAccessor _httpContextAccessor;
 
         public RentalController(IMediator mediator, IHttpContextAccessor httpContextAccessor)
@@ -26,7 +28,7 @@ namespace RentalAttireBackend.Controllers.AdminController
         }
         [HttpGet]
         public async Task<IActionResult> FilterRentalsAsync(
-            string? categoryType,
+            string? status,
             string? searchQuery,
             int currentPage,
             int itemsPerPage,
@@ -36,7 +38,7 @@ namespace RentalAttireBackend.Controllers.AdminController
         {
             var result = await _meaditor.Send(new FilterRentalsQuery
             {
-                CategoryType = categoryType,
+                Status = status,
                 SearchQuery = searchQuery,
                 CurrentPage = currentPage,
                 ItemsPerPage = itemsPerPage,
@@ -44,7 +46,7 @@ namespace RentalAttireBackend.Controllers.AdminController
                 EndingDate = endingDate
             });
 
-            return result.IsSuccess ? Ok(result) : BadRequest(result.ErrorMessage);
+            return result.ToActionResult(this, _httpContextAccessor);
         }
 
         [HttpGet("all-rentals")]
@@ -55,7 +57,6 @@ namespace RentalAttireBackend.Controllers.AdminController
             return result.IsSuccess ? Ok(result) : BadRequest(result.ErrorMessage);
         }
 
-        [Authorize]
         [HttpPost]
         public async Task<IActionResult> RentalReservationAsync(RentalTransactionCommand command)
         {
@@ -70,6 +71,29 @@ namespace RentalAttireBackend.Controllers.AdminController
             var result = await _meaditor.Send(command);
 
             return result.ToActionResult(this, _httpContextAccessor); 
+        }
+
+        [HttpGet("my-rentals")]
+        public async Task<IActionResult> GetCustomersRentalsAsync(
+            string? searchQuery,
+            string? rentalStatus,
+            DateTime? startingDate,
+            DateTime? endingDate,
+            int currentPage,
+            int itemsPerPage
+            )
+        {
+            var result = await _meaditor.Send(new CustomerRentalsQuery
+            {
+                SearchQuery =  searchQuery,
+                RentalStatus = rentalStatus,
+                StartingDate = startingDate,
+                EndingDate = endingDate,
+                CurrentPage = currentPage,
+                ItemsPerPage = itemsPerPage
+            });
+
+            return result.ToActionResult(this, _httpContextAccessor);
         }
     }
 }

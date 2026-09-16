@@ -17,6 +17,7 @@ using RentalAttireBackend.Application.Disposables.EntityDeleters;
 using RentalAttireBackend.Application.Disposables.EntityRestorers.ClotheRestorer;
 using RentalAttireBackend.Application.Disposables.EntityRestorers.CustomerRestorer;
 using RentalAttireBackend.Application.Disposables.EntityRestorers.EmployeeRestorer;
+using RentalAttireBackend.Application.Disposables.EntityRestorers.SupplierRestorer;
 using RentalAttireBackend.Application.Disposables.ViewArchivedRecords.ViewCategoryRecord;
 using RentalAttireBackend.Application.Disposables.ViewArchivedRecords.ViewClotheRecord;
 using RentalAttireBackend.Application.Disposables.ViewArchivedRecords.ViewCustomerRecord;
@@ -135,6 +136,7 @@ builder.Services.AddScoped<IClotheRepository, ClotheRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<IRentalRepository, RentalRepository>();
+builder.Services.AddScoped<ISupplierRepository, SupplierRepository>();
 
 // Services
 builder.Services.AddScoped<ITransactionManager, TransactionManager>();
@@ -147,6 +149,7 @@ builder.Services.AddScoped<IAuditLogService, AuditLogService>();
 builder.Services.AddScoped<IEntityRestorer, CustomerRestorer>();
 builder.Services.AddScoped<IEntityRestorer, ClotheRestorer>();
 builder.Services.AddScoped<IEntityRestorer, EmployeeRestorer>();
+builder.Services.AddScoped<IEntityRestorer, SupplierRestorer>();
 
 // Archived Record Viewers
 builder.Services.AddScoped<IViewArchivedEntity, ViewCategoryRecord>();

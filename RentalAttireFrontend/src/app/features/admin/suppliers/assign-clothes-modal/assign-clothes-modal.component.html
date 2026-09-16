@@ -1,0 +1,159 @@
+<div class="modal-overlay" (click)="onOverlayClick($event)">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+
+    <!-- Header -->
+    <div class="modal__header">
+      <div class="modal__header-meta">
+        <span class="modal__eyebrow">Procurement</span>
+        <h2 class="modal__title" id="modal-title">{{ title }}</h2>
+        <p class="modal__subtitle">{{ subtitle }}</p>
+      </div>
+      <button class="modal__close" (click)="close()" aria-label="Close">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- Toolbar: Row 1 — search + selection summary -->
+    <div class="modal__toolbar">
+      <div class="search">
+        <svg class="search__icon" width="15" height="15" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input
+          type="text"
+          class="search__input"
+          placeholder="Search by name or code…"
+          [(ngModel)]="searchQuery"
+          (ngModelChange)="onFiltersChanged()"
+        />
+      </div>
+
+      <div class="selected-count" *ngIf="selectedCount > 0">
+        <ng-container *ngIf="newlyUnassignedCount === 0">
+          {{ selectedCount }} selected
+        </ng-container>
+        <ng-container *ngIf="newlyUnassignedCount > 0">
+          +{{ newlyAssignedCount }} assign &middot; &minus;{{ newlyUnassignedCount }} unassign
+        </ng-container>
+        <button class="selected-count__clear" (click)="clearSelection()" type="button">Clear</button>
+      </div>
+    </div>
+
+    <!-- Toolbar: Row 2 — filters -->
+    <div class="modal__filters">
+      <select class="filter-select" [(ngModel)]="filterCategory" (ngModelChange)="onFiltersChanged()">
+        <option value="">All Categories</option>
+        <option *ngFor="let cat of categories" [value]="cat.categoryName">{{ cat.categoryName }}</option>
+      </select>
+
+      <select class="filter-select" [(ngModel)]="filterGender" (ngModelChange)="onFiltersChanged()">
+        <option value="">All Genders</option>
+        <option *ngFor="let g of genders" [value]="g">{{ g }}</option>
+      </select>
+
+      <button class="btn-clear" *ngIf="hasActiveFilters" (click)="clearFilters()" type="button">
+        <svg width="11" height="11" viewBox="0 0 16 16" fill="none">
+          <line x1="4" y1="4" x2="12" y2="12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+          <line x1="12" y1="4" x2="4"  y2="12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>
+        </svg>
+        Clear
+      </button>
+    </div>
+
+    <!-- Body -->
+    <div class="modal__body">
+
+      <!-- Empty: no clothes in the pool at all -->
+      <div class="empty-state" *ngIf="isPoolEmpty">
+        <p class="empty-state__title">No clothes available</p>
+        <p class="empty-state__subtitle">There are no clothes to assign right now.</p>
+      </div>
+
+      <!-- Empty: filters/search returned nothing -->
+      <div class="empty-state" *ngIf="!isPoolEmpty && isNoResults">
+        <p class="empty-state__title">No matches</p>
+        <p class="empty-state__subtitle">Try adjusting your search or filters.</p>
+      </div>
+
+      <!-- Picker list -->
+      <div class="picker-list" *ngIf="!isNoResults">
+        <label
+          class="picker-row"
+          *ngFor="let clothe of clothes"
+          [class.picker-row--selected]="isSelected(clothe.id)"
+        >
+          <input
+            type="checkbox"
+            class="picker-row__checkbox"
+            [checked]="isSelected(clothe.id)"
+            (change)="toggleClothe(clothe.id)"
+          />
+
+          <div class="picker-row__thumb">
+            <img *ngIf="clothe.profileImagePath" [src]="clothe.profileImagePath" [alt]="clothe.clotheName" />
+            <span *ngIf="!clothe.profileImagePath" class="picker-row__thumb-fallback">{{ clothe.clotheName.charAt(0) }}</span>
+          </div>
+
+          <div class="picker-row__info">
+            <span class="picker-row__name">
+              {{ clothe.clotheName }}
+              <span class="picker-row__assigned-badge" *ngIf="wasOriginallyAssigned(clothe.id)">Currently assigned</span>
+            </span>
+            <span class="picker-row__meta">
+              <span class="picker-row__code">{{ clothe.clotheCode }}</span>
+              <span class="picker-row__dot">&middot;</span>
+              <span>{{ clothe.categoryName }}</span>
+              <span class="picker-row__dot">&middot;</span>
+              <span>{{ clothe.clotheGender }}</span>
+              <span class="picker-row__dot">&middot;</span>
+              <span>{{ clothe.size }}</span>
+            </span>
+            <span class="picker-row__condition" [class]="'condition--' + clothe.condition.toLowerCase()">
+              {{ clothe.condition }}
+            </span>
+          </div>
+
+          <div class="picker-row__price">₱{{ clothe.rentalPrice }}</div>
+        </label>
+      </div>
+
+    </div>
+
+    <!-- Footer -->
+    <div class="modal__footer">
+
+      <!-- Pending changes summary — only shown when something has changed -->
+      <div class="footer-summary" *ngIf="hasPendingChanges">
+        <span class="footer-summary__item footer-summary__item--assign" *ngIf="newlyAssignedCount > 0">
+          <svg width="11" height="11" viewBox="0 0 16 16" fill="none">
+            <line x1="8" y1="3" x2="8" y2="13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+            <line x1="3" y1="8" x2="13" y2="8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          </svg>
+          {{ newlyAssignedCount }} to assign
+        </span>
+        <span class="footer-summary__sep" *ngIf="newlyAssignedCount > 0 && newlyUnassignedCount > 0">&middot;</span>
+        <span class="footer-summary__item footer-summary__item--unassign" *ngIf="newlyUnassignedCount > 0">
+          <svg width="11" height="11" viewBox="0 0 16 16" fill="none">
+            <line x1="3" y1="8" x2="13" y2="8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          </svg>
+          {{ newlyUnassignedCount }} to unassign
+        </span>
+      </div>
+
+      <div class="footer-actions">
+        <button class="btn btn--outline" (click)="close()" type="button">
+          Cancel
+        </button>
+        <button class="btn btn--primary" (click)="confirm()" type="button">
+          Confirm Selection
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+</div>

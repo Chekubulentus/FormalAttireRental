@@ -210,8 +210,10 @@ export class DisposablesComponent implements OnInit {
       this.disposablesService.restoreRecordAsync(
         payload
       ).then(res => {
-        if(!res.isSuccess)
+        if(!res.isSuccess) {
           this.toastrService.error(res.errorMessage ?? 'Record could not be restored.');
+          return;
+        }
         this.toastrService.success(res.successMessage ?? 'Record successfully restored.');
       }).catch(err => {
         this.toastrService.error(err.error);

@@ -126,3 +126,14 @@
   </div>
 
 </div>
+
+<app-message-modal
+[variant]="'success'"
+[isOpen]="true"
+[type]="'info'"
+[title]="this.messageModalTitle"
+[message]="this.messageModalMessage"
+(confirmed)="messageModalConfirmation()"
+(closed)="messageModalConfirmation()"
+*ngIf="this.showMessageModal"
+></app-message-modal>

@@ -171,14 +171,15 @@ export class BrowseComponent implements OnInit {
   // ============================================================
   onAddToCart(c: ClotheDTO): void {
     if (this.getStockStatus(c) === 'out') return;
+    // CartService now owns the stock-limit check and the
+    // success/warning toast for it — don't duplicate the message here.
     this.cartService.addToCart(c, 1);
-    this.toastr.success(`${c.clotheName} added to cart.`);
   }
 
   onAddToCartFromModal(payload: { clothe: ClotheDTO; quantity: number }): void {
-  this.cartService.addToCart(payload.clothe, payload.quantity);
-  this.closeViewModal();
-}
+    this.cartService.addToCart(payload.clothe, payload.quantity);
+    this.closeViewModal();
+  }
 
   isInCart(clotheId: number): boolean {
     return this.cartService.isInCart(clotheId);

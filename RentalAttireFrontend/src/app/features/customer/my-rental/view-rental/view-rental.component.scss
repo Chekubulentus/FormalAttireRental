@@ -1,0 +1,389 @@
+// ============================================================
+// Design Tokens — same values as message-modal.component.scss
+// ============================================================
+$surface:      #ffffff;
+$bg:           #f9f7f5;
+$border:       #e4ddd6;
+$gold:         #a07840;
+$gold-dim:     rgba(160, 120, 64, 0.08);
+$gold-border:  rgba(160, 120, 64, 0.25);
+$text:         #1a1917;
+$text-muted:   #9e9590;
+$text-soft:    #6b6560;
+$red:          #c0392b;
+$red-bg:       rgba(192, 57, 43, 0.08);
+$green:        #27ae60;
+$green-bg:     rgba(39, 174, 96, 0.09);
+$amber:        #d4820a;
+$amber-bg:     rgba(212, 130, 10, 0.09);
+$blue:         #2980b9;
+$blue-bg:      rgba(41, 128, 185, 0.09);
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(26, 25, 23, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2147483647;
+  animation: fadeIn 0.18s ease-out;
+  padding: 1.5rem;
+  box-sizing: border-box;
+}
+
+.modal-card {
+  background: $surface;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 560px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.18);
+  animation: slideUp 0.22s ease-out;
+  font-family: 'DM Sans', sans-serif;
+  overflow: hidden;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+// ============================================================
+// Header
+// ============================================================
+.modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 1.5rem 1.75rem 1.1rem;
+  border-bottom: 1px solid $border;
+  flex-shrink: 0;
+}
+
+.modal-header__titles {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.eyebrow {
+  font-size: 0.6rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: $gold;
+}
+
+.rental-code {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.35rem;
+  font-weight: 400;
+  color: $text;
+  margin: 0;
+}
+
+.modal-header__right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.btn-close {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 1px solid $border;
+  background: $surface;
+  color: $text-soft;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  svg { width: 12px; height: 12px; }
+
+  &:hover { background: $bg; border-color: $text-muted; color: $text; }
+}
+
+// ============================================================
+// Status badge + progress tracker + declined banner
+// — copied verbatim from my-rental.component.scss for
+// cross-component consistency
+// ============================================================
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+
+  &--pending    { background: $amber-bg; color: $amber; }
+  &--confirmed  { background: $blue-bg;  color: $blue; }
+  &--ready      { background: $green-bg; color: $green; }
+  &--returned   { background: $bg;       color: $text-muted; }
+  &--declined   { background: $red-bg;   color: $red; }
+}
+
+.status-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: $amber;
+  animation: pulseDot 1.3s ease-in-out infinite;
+}
+
+@keyframes pulseDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: 0.5; transform: scale(1.3); }
+}
+
+.modal-body {
+  padding: 1.5rem 1.75rem;
+  overflow-y: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.progress-track {
+  display: flex;
+  align-items: flex-start;
+}
+
+.progress-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  flex: 0 0 auto;
+
+  &__dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: $border;
+    transition: background 0.2s ease;
+  }
+
+  &__label {
+    font-size: 0.58rem;
+    font-weight: 500;
+    color: $text-muted;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  &--done .progress-step__dot   { background: $gold; }
+  &--active .progress-step__dot {
+    background: $gold;
+    box-shadow: 0 0 0 3px $gold-dim;
+  }
+  &--active .progress-step__label { color: $gold; font-weight: 600; }
+  &--done .progress-step__label   { color: $text-soft; }
+}
+
+.progress-line {
+  flex: 1;
+  height: 1.5px;
+  background: $border;
+  margin: 4px 2px 0;
+  transition: background 0.2s ease;
+
+  &--done { background: $gold; }
+}
+
+.declined-banner {
+  padding: 8px 12px;
+  background: $red-bg;
+  border: 1px solid rgba(192, 57, 43, 0.2);
+  border-radius: 8px;
+  font-size: 0.75rem;
+  color: $red;
+}
+
+// ============================================================
+// Dates + payment grid
+// ============================================================
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1rem;
+  padding: 1rem;
+  background: $bg;
+  border: 1px solid $border;
+  border-radius: 10px;
+}
+
+.detail-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.detail-label {
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: $text-muted;
+}
+
+.detail-value {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: $text;
+
+  &--mono {
+    font-family: monospace;
+    letter-spacing: 0.03em;
+  }
+}
+
+// ============================================================
+// Items list
+// ============================================================
+.items-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.section-label {
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: $text-muted;
+}
+
+.item-row {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.75rem;
+  border: 1px solid $border;
+  border-radius: 10px;
+
+  &__image {
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    object-fit: cover;
+    flex-shrink: 0;
+    background: $bg;
+
+    &--placeholder {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: $text-muted;
+
+      svg { width: 22px; height: 22px; opacity: 0.6; }
+    }
+  }
+
+  &__info {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  &__name {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: $text;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__meta {
+    font-size: 0.72rem;
+    color: $text-muted;
+  }
+
+  &__pricing {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-shrink: 0;
+  }
+
+  &__qty {
+    font-size: 0.75rem;
+    color: $text-soft;
+  }
+
+  &__price {
+    font-size: 0.75rem;
+    color: $text-muted;
+  }
+
+  &__total {
+    font-family: 'DM Serif Display', serif;
+    font-size: 0.95rem;
+    color: $text;
+    min-width: 60px;
+    text-align: right;
+  }
+}
+
+// ============================================================
+// Footer totals
+// ============================================================
+.modal-footer {
+  padding: 1.1rem 1.75rem 1.5rem;
+  border-top: 1px solid $border;
+  flex-shrink: 0;
+}
+
+.totals-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  color: $text-soft;
+  padding: 2px 0;
+
+  &--main {
+    margin-top: 4px;
+
+    .totals-label {
+      font-weight: 500;
+      color: $text;
+    }
+
+    .totals-value {
+      font-family: 'DM Serif Display', serif;
+      font-size: 1.3rem;
+      color: $text;
+    }
+  }
+}
+
+// ============================================================
+// Reduced Motion
+// ============================================================
+@media (prefers-reduced-motion: reduce) {
+  .modal-overlay, .modal-card, .status-dot, .progress-step__dot, .progress-line {
+    animation: none !important;
+    transition: none !important;
+  }
+}

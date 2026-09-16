@@ -23,9 +23,7 @@ namespace RentalAttireBackend.Domain.Entities
             !string.IsNullOrEmpty(FirstName) &&
             !string.IsNullOrEmpty(PhoneNumber) &&
             !string.IsNullOrEmpty(Street) &&
-            Age == 0 &&
-            Gender == 0 &&
-            MaritalStatus == 0 &&
+            Age > 0 &&
             !string.IsNullOrEmpty(Barangay) &&
             !string.IsNullOrEmpty(City) &&
             !string.IsNullOrEmpty(Province) &&

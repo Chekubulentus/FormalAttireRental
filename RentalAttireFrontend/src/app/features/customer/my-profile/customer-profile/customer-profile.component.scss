@@ -1,0 +1,266 @@
+// customer-profile.component.scss
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap');
+
+$surface:     #ffffff;
+$bg:          #f9f7f5;
+$border:      #e4ddd6;
+$gold:        #a07840;
+$gold-dim:    rgba(160, 120, 64, 0.10);
+$gold-border: rgba(160, 120, 64, 0.25);
+$text:        #1a1917;
+$text-muted:  #9e9590;
+$text-soft:   #6b6560;
+$red:         #c0392b;
+$red-dim:     rgba(192, 57, 43, 0.08);
+
+.profile-page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 4rem;
+  font-family: 'DM Sans', sans-serif;
+  color: $text;
+}
+
+.page-header {
+  margin-bottom: 2rem;
+
+  .eyebrow {
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: $gold;
+    margin-bottom: 0.4rem;
+  }
+
+  h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2rem;
+    font-weight: 400;
+    color: $text;
+    margin-bottom: 0.4rem;
+  }
+
+  .subtitle {
+    font-size: 0.88rem;
+    color: $text-soft;
+    font-weight: 300;
+  }
+}
+
+// ── Skeleton ──────────────────────────────────────────────
+.profile-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.skeleton-card {
+  height: 140px;
+  border-radius: 14px;
+  background: linear-gradient(90deg, $bg 25%, $border 37%, $bg 63%);
+  background-size: 400% 100%;
+  animation: shimmer 1.4s ease infinite;
+}
+
+@keyframes shimmer {
+  0%   { background-position: 100% 50%; }
+  100% { background-position: 0 50%; }
+}
+
+// ── Form layout ───────────────────────────────────────────
+.profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.form-card {
+  background: $surface;
+  border: 1px solid $border;
+  border-radius: 14px;
+  padding: 1.75rem;
+}
+
+.section-title {
+  font-family: 'DM Serif Display', serif;
+  font-weight: 400;
+  font-size: 1.1rem;
+  margin-bottom: 1.25rem;
+  color: $text;
+}
+
+.section-hint {
+  font-size: 0.8rem;
+  color: $text-soft;
+  background: $gold-dim;
+  border: 1px solid $gold-border;
+  border-radius: 8px;
+  padding: 0.7rem 0.9rem;
+  margin-bottom: 1.25rem;
+}
+
+// ── Photo card ────────────────────────────────────────────
+.photo-card {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.avatar-upload {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  flex-shrink: 0;
+}
+
+.avatar-preview {
+  width: 84px;
+  height: 84px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: $gold;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.6rem;
+  border: 3px solid $gold-border;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.avatar-edit-btn {
+  font-size: 0.72rem;
+  color: $gold;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0.3rem 0.7rem;
+  border: 1px solid $gold-border;
+  border-radius: 20px;
+  transition: background 0.15s;
+
+  &:hover { background: $gold-dim; }
+}
+
+.identity-meta {
+  h2 {
+    font-family: 'DM Serif Display', serif;
+    font-weight: 400;
+    font-size: 1.3rem;
+    margin-bottom: 0.2rem;
+  }
+
+  .customer-code {
+    font-size: 0.75rem;
+    color: $text-muted;
+    margin-bottom: 0.4rem;
+  }
+
+  .email-readonly {
+    font-size: 0.82rem;
+    color: $text-soft;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .badge {
+    font-size: 0.65rem;
+    font-weight: 500;
+    color: $gold;
+    background: $gold-dim;
+    border: 1px solid $gold-border;
+    border-radius: 20px;
+    padding: 0.15rem 0.55rem;
+  }
+}
+
+// ── Field grid ────────────────────────────────────────────
+.field-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.1rem 1.25rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+
+  &--wide { grid-column: 1 / -1; }
+
+  label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: $text-soft;
+  }
+
+  input, select {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.85rem;
+    padding: 0.6rem 0.8rem;
+    border: 1px solid $border;
+    border-radius: 8px;
+    background: $bg;
+    color: $text;
+    transition: border-color 0.15s, background 0.15s;
+
+    &:focus {
+      outline: none;
+      border-color: $gold;
+      background: $surface;
+    }
+
+    &.invalid {
+      border-color: $red;
+      background: $red-dim;
+    }
+  }
+}
+
+.field-error {
+  font-size: 0.72rem;
+  color: $red;
+}
+
+// ── Actions ───────────────────────────────────────────────
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-primary {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #fff;
+  background: $gold;
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 1.75rem;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.15s;
+
+  &:hover:not(:disabled) {
+    background: darken($gold, 6%);
+    transform: translateY(-1px);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+// ── Responsive ────────────────────────────────────────────
+@media (max-width: 640px) {
+  .field-grid { grid-template-columns: 1fr; }
+  .photo-card { flex-direction: column; text-align: center; }
+}

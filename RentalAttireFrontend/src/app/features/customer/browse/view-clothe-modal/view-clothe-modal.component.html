@@ -62,7 +62,16 @@
 
           <div class="stepper">
             <button (click)="decreaseQuantity()" [disabled]="quantity <= 1">−</button>
-            <span class="stepper-value">{{ quantity }}</span>
+            <input
+              type="number"
+              class="stepper-input"
+              [(ngModel)]="quantity"
+              (input)="onQuantityInput()"
+              (blur)="onQuantityBlur()"
+              (keydown.enter)="onQuantityBlur()"
+              min="1"
+              [max]="remainingStock"
+            />
             <button (click)="increaseQuantity()" [disabled]="quantity >= remainingStock">+</button>
           </div>
 

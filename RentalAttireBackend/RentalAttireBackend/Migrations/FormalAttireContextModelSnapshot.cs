@@ -276,6 +276,12 @@ namespace RentalAttireBackend.Migrations
                     b.Property<int>("StockQuantity")
                         .HasColumnType("integer");
 
+                    b.Property<int?>("SupplierId")
+                        .HasColumnType("integer");
+
+                    b.Property<double>("UnitCost")
+                        .HasColumnType("double precision");
+
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -292,6 +298,8 @@ namespace RentalAttireBackend.Migrations
 
                     b.HasIndex("ClotheName")
                         .IsUnique();
+
+                    b.HasIndex("SupplierId");
 
                     b.ToTable("Clothes");
                 });
@@ -583,6 +591,289 @@ namespace RentalAttireBackend.Migrations
                         });
                 });
 
+            modelBuilder.Entity("RentalAttireBackend.Domain.Entities.PurchaseOrder", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("ArchivedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ArchivedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("EntityType")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("ExpectedDeliveryDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime>("OrderDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("OrderStatus")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("PurchaseOrderCode")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("RestoredAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("RestoredBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("SupplierId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("UpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmployeeId");
+
+                    b.HasIndex("PurchaseOrderCode");
+
+                    b.HasIndex("SupplierId");
+
+                    b.ToTable("PurchaseOrders");
+                });
+
+            modelBuilder.Entity("RentalAttireBackend.Domain.Entities.PurchaseOrderItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("ArchivedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ArchivedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("ClotheId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("EntityType")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("OrderedQuantity")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("OriginalSupplierId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("PurchaseOrderId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ReceivedQuantity")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("RestoredAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("RestoredBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<double>("UnitCost")
+                        .HasColumnType("double precision");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("UpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClotheId");
+
+                    b.HasIndex("PurchaseOrderId");
+
+                    b.ToTable("PurchaseOrderItems");
+                });
+
+            modelBuilder.Entity("RentalAttireBackend.Domain.Entities.ReceivingBatch", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("ArchivedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ArchivedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("EntityType")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("PurchaseOrderId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ReceiptImageFilePath")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("ReceivedDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ReceivingBatchCode")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("RestoredAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("RestoredBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("UpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmployeeId");
+
+                    b.HasIndex("PurchaseOrderId");
+
+                    b.HasIndex("ReceivingBatchCode");
+
+                    b.ToTable("ReceivingBatches");
+                });
+
+            modelBuilder.Entity("RentalAttireBackend.Domain.Entities.ReceivingBatchItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime?>("ArchivedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ArchivedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("EntityType")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("PurchaseOrderItemId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("QuantityReceived")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("ReceivingBatchId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("RestoredAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("RestoredBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("UpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PurchaseOrderItemId");
+
+                    b.HasIndex("ReceivingBatchId");
+
+                    b.ToTable("ReceivingBatchItems");
+                });
+
             modelBuilder.Entity("RentalAttireBackend.Domain.Entities.Rental", b =>
                 {
                     b.Property<int>("Id")
@@ -612,6 +903,14 @@ namespace RentalAttireBackend.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("EntityType")
+                        .HasColumnType("text");
+
+                    b.Property<string>("GcashReferenceName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("GcashReferenceNumber")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<bool>("IsActive")
@@ -789,6 +1088,81 @@ namespace RentalAttireBackend.Migrations
                         });
                 });
 
+            modelBuilder.Entity("RentalAttireBackend.Domain.Entities.Supplier", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("ArchivedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("ArchivedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("CreatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("text");
+
+                    b.Property<int>("EmployeeId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("EntityType")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("RestoredAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("RestoredBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("SupplierCode")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("SupplierName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("UpdatedBy")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmployeeId");
+
+                    b.HasIndex("SupplierCode");
+
+                    b.ToTable("Suppliers");
+                });
+
             modelBuilder.Entity("RentalAttireBackend.Domain.Entities.User", b =>
                 {
                     b.Property<int>("Id")
@@ -892,7 +1266,14 @@ namespace RentalAttireBackend.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("RentalAttireBackend.Domain.Entities.Supplier", "Supplier")
+                        .WithMany("ClothesAvailable")
+                        .HasForeignKey("SupplierId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.Navigation("Category");
+
+                    b.Navigation("Supplier");
                 });
 
             modelBuilder.Entity("RentalAttireBackend.Domain.Entities.Customer", b =>
@@ -925,6 +1306,80 @@ namespace RentalAttireBackend.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("RentalAttireBackend.Domain.Entities.PurchaseOrder", b =>
+                {
+                    b.HasOne("RentalAttireBackend.Domain.Entities.Employee", "Employee")
+                        .WithMany("PurchaseOrders")
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("RentalAttireBackend.Domain.Entities.Supplier", "Supplier")
+                        .WithMany("PurchaseOrders")
+                        .HasForeignKey("SupplierId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Employee");
+
+                    b.Navigation("Supplier");
+                });
+
+            modelBuilder.Entity("RentalAttireBackend.Domain.Entities.PurchaseOrderItem", b =>
+                {
+                    b.HasOne("RentalAttireBackend.Domain.Entities.Clothe", "Clothe")
+                        .WithMany("PurchaseOrderItems")
+                        .HasForeignKey("ClotheId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("RentalAttireBackend.Domain.Entities.PurchaseOrder", "PurchaseOrder")
+                        .WithMany("PurchaseOrderItems")
+                        .HasForeignKey("PurchaseOrderId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Clothe");
+
+                    b.Navigation("PurchaseOrder");
+                });
+
+            modelBuilder.Entity("RentalAttireBackend.Domain.Entities.ReceivingBatch", b =>
+                {
+                    b.HasOne("RentalAttireBackend.Domain.Entities.Employee", "Employee")
+                        .WithMany("ReceivingBatches")
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("RentalAttireBackend.Domain.Entities.PurchaseOrder", "PurchaseOrder")
+                        .WithMany()
+                        .HasForeignKey("PurchaseOrderId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Employee");
+
+                    b.Navigation("PurchaseOrder");
+                });
+
+            modelBuilder.Entity("RentalAttireBackend.Domain.Entities.ReceivingBatchItem", b =>
+                {
+                    b.HasOne("RentalAttireBackend.Domain.Entities.PurchaseOrderItem", "PurchaseOrderItem")
+                        .WithMany("ReceivingBatchItems")
+                        .HasForeignKey("PurchaseOrderItemId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("RentalAttireBackend.Domain.Entities.ReceivingBatch", null)
+                        .WithMany("ReceivingBatchItems")
+                        .HasForeignKey("ReceivingBatchId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("PurchaseOrderItem");
+                });
+
             modelBuilder.Entity("RentalAttireBackend.Domain.Entities.Rental", b =>
                 {
                     b.HasOne("RentalAttireBackend.Domain.Entities.Customer", "Customer")
@@ -955,6 +1410,17 @@ namespace RentalAttireBackend.Migrations
                     b.Navigation("Rental");
                 });
 
+            modelBuilder.Entity("RentalAttireBackend.Domain.Entities.Supplier", b =>
+                {
+                    b.HasOne("RentalAttireBackend.Domain.Entities.Employee", "Employee")
+                        .WithMany("Suppliers")
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Employee");
+                });
+
             modelBuilder.Entity("RentalAttireBackend.Domain.Entities.User", b =>
                 {
                     b.HasOne("RentalAttireBackend.Domain.Entities.Person", "Person")
@@ -973,6 +1439,8 @@ namespace RentalAttireBackend.Migrations
 
             modelBuilder.Entity("RentalAttireBackend.Domain.Entities.Clothe", b =>
                 {
+                    b.Navigation("PurchaseOrderItems");
+
                     b.Navigation("RentalItems");
                 });
 
@@ -981,9 +1449,33 @@ namespace RentalAttireBackend.Migrations
                     b.Navigation("Rentals");
                 });
 
+            modelBuilder.Entity("RentalAttireBackend.Domain.Entities.Employee", b =>
+                {
+                    b.Navigation("PurchaseOrders");
+
+                    b.Navigation("ReceivingBatches");
+
+                    b.Navigation("Suppliers");
+                });
+
             modelBuilder.Entity("RentalAttireBackend.Domain.Entities.Person", b =>
                 {
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("RentalAttireBackend.Domain.Entities.PurchaseOrder", b =>
+                {
+                    b.Navigation("PurchaseOrderItems");
+                });
+
+            modelBuilder.Entity("RentalAttireBackend.Domain.Entities.PurchaseOrderItem", b =>
+                {
+                    b.Navigation("ReceivingBatchItems");
+                });
+
+            modelBuilder.Entity("RentalAttireBackend.Domain.Entities.ReceivingBatch", b =>
+                {
+                    b.Navigation("ReceivingBatchItems");
                 });
 
             modelBuilder.Entity("RentalAttireBackend.Domain.Entities.Rental", b =>
@@ -994,6 +1486,13 @@ namespace RentalAttireBackend.Migrations
             modelBuilder.Entity("RentalAttireBackend.Domain.Entities.Role", b =>
                 {
                     b.Navigation("Employees");
+                });
+
+            modelBuilder.Entity("RentalAttireBackend.Domain.Entities.Supplier", b =>
+                {
+                    b.Navigation("ClothesAvailable");
+
+                    b.Navigation("PurchaseOrders");
                 });
 
             modelBuilder.Entity("RentalAttireBackend.Domain.Entities.User", b =>

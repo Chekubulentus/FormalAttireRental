@@ -1,0 +1,1 @@
+export type RentalStatus = 'Pending' | 'Confirmed' | 'Ready for pickup' | 'Returned' | 'Declined' | 'Overdue';

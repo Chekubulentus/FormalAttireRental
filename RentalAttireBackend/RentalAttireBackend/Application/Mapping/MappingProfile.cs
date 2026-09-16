@@ -12,6 +12,7 @@ using RentalAttireBackend.Application.Clothes.DTOs;
 using RentalAttireBackend.Application.Common.Interfaces;
 using RentalAttireBackend.Application.Common.Models;
 using RentalAttireBackend.Application.Customers.Commands.CustomerRegistration;
+using RentalAttireBackend.Application.Customers.Commands.UpdateCustomerProfile;
 using RentalAttireBackend.Application.Customers.DTOs;
 using RentalAttireBackend.Application.Employees.Commands.CreateEmployee;
 using RentalAttireBackend.Application.Employees.Commands.UpdateEmployee;
@@ -20,6 +21,9 @@ using RentalAttireBackend.Application.Persons.Commands.UpdatePerson;
 using RentalAttireBackend.Application.Persons.DTO;
 using RentalAttireBackend.Application.Rentals.Commands.RentalTransaction;
 using RentalAttireBackend.Application.Rentals.DTOs;
+using RentalAttireBackend.Application.Suppliers.Commands.CreateSupplier;
+using RentalAttireBackend.Application.Suppliers.Commands.UpdateSupplier;
+using RentalAttireBackend.Application.Suppliers.DTOs;
 using RentalAttireBackend.Application.Users.DTO;
 using RentalAttireBackend.Domain.Entities;
 using System.CodeDom;
@@ -139,6 +143,17 @@ namespace RentalAttireBackend.Application.Mapping
                 .ForMember(dest => dest.EntityName,
                 opt => opt.MapFrom(src => src.CategoryName));
 
+            CreateMap<Supplier, ArchivedEntityDto>()
+                .ForMember(dest => dest.EntityType,
+                opt => opt.MapFrom(src => src.EntityType))
+                .ForMember(dest => dest.EntityId,
+                opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.ArchivedAt,
+                opt => opt.MapFrom(src => src.ArchivedAt))
+                .ForMember(dest => dest.ArchivedBy,
+                opt => opt.MapFrom(src => src.ArchivedBy))
+                .ForMember(dest => dest.EntityName,
+                opt => opt.MapFrom(src => src.SupplierName));
             #endregion
 
             #region CreateEmployeeCommand->Employee
@@ -213,7 +228,7 @@ namespace RentalAttireBackend.Application.Mapping
             CreateMap<Employee, Employee>();
             #endregion
 
-            #region Clothe -> ClotheDTO
+            #region Clothe ->   
             CreateMap<Clothe, ClotheDTO>()
                 .ForMember(dest => dest.CategoryName,
                 opt => opt.MapFrom(src => src.Category.CategoryName))
@@ -223,6 +238,14 @@ namespace RentalAttireBackend.Application.Mapping
                 opt => opt.MapFrom(src => src.Condition.ToString()))
                 .ForMember(dest => dest.ProfileImagePath,
                 opt => opt.MapFrom(src => src.ProfileImagePath));
+            #endregion
+
+            #region ClotheDTO -> Clothe
+            CreateMap<ClotheDTO, Clothe>()
+                .ForMember(dest => dest.Gender,
+                opt => opt.MapFrom(src => Enum.Parse<ClotheGender>(src.ClotheGender, true)))
+                .ForMember(dest => dest.Condition,
+                opt => opt.MapFrom(src => Enum.Parse<Condition>(src.Condition, true)));
             #endregion
 
             #region CreateClotheCommand -> Clothe
@@ -240,7 +263,13 @@ namespace RentalAttireBackend.Application.Mapping
                 .ForMember(dest => dest.EntityType,
                 opt => opt.MapFrom(src => "Clothe"))
                 .ForMember(dest => dest.CreatedBy,
-                opt => opt.MapFrom(src => src.PerformedBy));
+                opt => opt.MapFrom(src => src.PerformedBy))
+                .ForMember(dest => dest.SupplierId,
+                opt => opt.Ignore())
+                .ForMember(dest => dest.Supplier,
+                opt => opt.Ignore())
+                .ForMember(dest => dest.ClotheCode,
+                opt => opt.Ignore());
             #endregion
 
             #region UpdateClotheCommand -> Clothe
@@ -252,6 +281,12 @@ namespace RentalAttireBackend.Application.Mapping
                 .ForMember(dest => dest.ProfileImagePath,
                 opt => opt.Ignore())
                 .ForMember(dest => dest.IsAvailable,
+                opt => opt.Ignore())
+                .ForMember(dest => dest.ClotheCode,
+                opt => opt.Ignore())
+                .ForMember(dest => dest.Supplier,
+                opt => opt.Ignore())
+                .ForMember(dest => dest.SupplierId,
                 opt => opt.Ignore());
             #endregion
 
@@ -290,7 +325,9 @@ namespace RentalAttireBackend.Application.Mapping
                 .ForMember(dest => dest.IsGoogleAccount,
                 opt => opt.MapFrom(src => src.User.IsGoogleAccount))
                 .ForMember(dest => dest.Person,
-                opt => opt.MapFrom(src => src.User.Person));
+                opt => opt.MapFrom(src => src.User.Person))
+                .ForPath(dest => dest.HasPassword,
+                opt => opt.MapFrom(src => !string.IsNullOrEmpty(src.User.HashedPassword) ? true : false));
             #endregion
 
             #region RegistrationCustomerCommnad -> Customer
@@ -329,6 +366,8 @@ namespace RentalAttireBackend.Application.Mapping
 
             #region Rental -> RentalDTO
             CreateMap<Rental, RentalDTO>()
+                .ForMember(dest => dest.Id,
+                opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.RentalCode,
                 opt => opt.MapFrom(src => src.RentalCode))
                 .ForMember(dest => dest.Customer,
@@ -344,7 +383,9 @@ namespace RentalAttireBackend.Application.Mapping
                 .ForMember(dest => dest.PaymentMethod,
                 opt => opt.MapFrom(src => src.PaymentMethod.ToString()))
                 .ForPath(dest => dest.RentalItems,
-                opt => opt.MapFrom(src => src.RentalItems));
+                opt => opt.MapFrom(src => src.RentalItems))
+                .ForMember(dest => dest.Status,
+                opt => opt.MapFrom(src => src.Status));
             #endregion
 
             #region RentalItemRequest -> RentalItem 
@@ -369,7 +410,7 @@ namespace RentalAttireBackend.Application.Mapping
                 opt => opt.Ignore())
                 .ForMember(dest => dest.RentalDate,
                 opt => opt.MapFrom(src => src.PickupDate))
-                .ForMember(dest => dest.RentalDate,
+                .ForMember(dest => dest.ReturnDate,
                 opt => opt.MapFrom(src => src.ReturnDate))
                 .ForMember(dest => dest.TotalAmount,
                 opt => opt.Ignore())
@@ -378,7 +419,11 @@ namespace RentalAttireBackend.Application.Mapping
                 .ForMember(dest => dest.Status,
                 opt => opt.Ignore())
                 .ForMember(dest => dest.PaymentMethod,
-                opt => opt.MapFrom(src => Enum.Parse<PaymentMethod>(src.PaymentMethod, true)));
+                opt => opt.MapFrom(src => Enum.Parse<PaymentMethod>(src.PaymentMethod, true)))
+                .ForMember(dest => dest.GcashReferenceNumber,
+                opt => opt.MapFrom(src => src.GcashRefNum))
+                .ForMember(dest => dest.GcashReferenceName,
+                opt => opt.MapFrom(src => src.GcashRefName));
             #endregion
 
             #region ProfileCompletionComamnd -> Person
@@ -401,6 +446,53 @@ namespace RentalAttireBackend.Application.Mapping
                 opt => opt.MapFrom(src => src.Province))
                 .ForMember(dest => dest.PostalCode,
                 opt => opt.MapFrom(src => src.PostalCode));
+            #endregion
+
+            #region UpdateCustomerProfileCommand -> Person
+            CreateMap<UpdateCustomerProfileCommand, Person>()
+                .ForMember(dest => dest.ProfileImagePath,
+                opt => opt.Ignore())
+                .ForMember(dest => dest.Id,
+                opt => opt.Ignore());
+
+            CreateMap<UpdateCustomerProfileCommand, User>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore())
+                .ForMember(dest => dest.RefreshToken, opt => opt.Ignore())
+                .ForMember(dest => dest.RefreshTokenExpiryTime, opt => opt.Ignore())
+                .ForMember(dest => dest.HashedPassword,
+                opt => opt.Ignore())
+                .ForMember(dest => dest.PersonId,
+                opt => opt.Ignore());
+            #endregion
+
+            #region Supplier -> SupplierDTO 
+            CreateMap<Supplier, SupplierDTO>()
+                .ForMember(dest => dest.CreatedByEmployee,
+                opt => opt.MapFrom(src => src.Employee.User.Person.FullName));
+            #endregion
+
+            #region CreateSupplierCommand -> Supplier
+            CreateMap<CreateSupplierCommand, Supplier>()
+                .ForMember(dest => dest.ClothesAvailable,
+                opt => opt.Ignore())
+                .ForMember(dest => dest.EmployeeId,
+                opt => opt.Ignore())
+                .ForMember(dest => dest.SupplierCode,
+                opt => opt.Ignore());
+            #endregion
+
+            #region UpdateSupplierCommand -> Supplier
+            CreateMap<UpdateSupplierCommand, Supplier>()
+                .ForMember(dest => dest.ClothesAvailable,
+                opt => opt.Ignore())
+                .ForMember(dest => dest.EmployeeId,
+                opt => opt.Ignore())
+                .ForMember(dest => dest.SupplierCode,
+                opt => opt.Ignore());
+            #endregion
+
+            #region Supplier -> SupplierSummaryDTO
+            CreateMap<Supplier, SupplierSummaryDTO>();
             #endregion
         }
     }

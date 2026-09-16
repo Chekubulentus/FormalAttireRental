@@ -5,7 +5,10 @@ export const routes: Routes = [
     {
         path: '',
         loadComponent: () => {
-            return import('./features/log-in/log-in/log-in.component').then(m => m.LogInComponent);
+            return import('./features/landing-page/landing-page/landing-page.component')
+            .then(
+                m => m.LandingPageComponent
+            );
         }
     },
     {
@@ -42,8 +45,18 @@ export const routes: Routes = [
         }
     },
     {
+      path: 'landing-page',
+      canActivate: [authGuard],
+      loadComponent: () => {
+        return import('./features/landing-page/landing-page/landing-page.component')
+        .then(
+            m => m.LandingPageComponent
+        );
+      }  
+    },
+    {
         path: '',
-        redirectTo: 'log-in',
+        redirectTo: 'landing-page',
         pathMatch: 'full'
     }
 ];

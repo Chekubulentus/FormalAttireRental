@@ -131,6 +131,13 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
                 .FirstOrDefaultAsync(c => c.Id == id, cancellationToken);
         }
 
+        public async Task<List<Clothe>> GetClothesByIdsAsync(List<int> clotheIds, CancellationToken cancellationToken)
+        {
+            return await _context.Clothes
+                .Where(c => clotheIds.Contains(c.Id))
+                .ToListAsync(cancellationToken);
+        }
+
         public async Task<bool> UpdateClotheAsync(Clothe clothe, CancellationToken cancellationToken)
         {
             _context.Clothes.Update(clothe);
