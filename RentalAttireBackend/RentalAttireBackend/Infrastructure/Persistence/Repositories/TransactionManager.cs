@@ -19,12 +19,12 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
 
         public async Task CommitTransacionAsync(CancellationToken cancellationToken)
         {
-            await _context.Database.CommitTransactionAsync();
+            await _context.Database.CommitTransactionAsync(cancellationToken);
         }
 
         public async Task RollbackTransactionAsync(CancellationToken cancellationToken)
         {
-            await _context.Database.RollbackTransactionAsync();
+            await _context.Database.RollbackTransactionAsync(cancellationToken);
         }
     }
 }

@@ -46,6 +46,7 @@ export const routes: Routes = [
     },
     {
       path: 'landing-page',
+      canActivate: [authGuard],
       loadComponent: () => {
         return import('./features/landing-page/landing-page/landing-page.component')
         .then(

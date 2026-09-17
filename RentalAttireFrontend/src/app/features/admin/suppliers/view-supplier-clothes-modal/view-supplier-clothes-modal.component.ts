@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ClotheDTO } from '../../../../data/models/DTOs/Clothes/clothes';
 import { SupplierService } from '../suppliers-service/supplier.service';
+import { CategoryService } from '../../categories/category-service/category.service';
+import { Category } from '../../../../data/models/DTOs/Category/category';
 import { AppToastrService } from '../../../../core/services/toastr-service/app-toastr.service';
 
 @Component({
@@ -18,22 +20,26 @@ export class ViewSupplierClothesModalComponent implements OnInit {
   @Input() supplierName = '';
   @Output() closeModal = new EventEmitter<void>();
 
-  // ── Filters ────────────────────────────────────────────────────────────────
+  // ── Filters — all now sent to the backend ───────────────────────────────
   searchQuery = '';
-  genderFilter = '';
-  conditionFilter = '';
+  genderFilter = '';       // '', 'Male', 'Female', 'Unisex'
+  availabilityFilter = ''; // '', 'Available', 'Out of stock'
+  categoryFilter = '';     // '', or a categoryName
 
-  // ── Server-filtered, server-paginated result — single source of truth ──────
+  categories: Category[] = [];
+
+  // ── Server-filtered, server-paginated result — single source of truth ──
   clothes: ClotheDTO[] = [];
   totalCount = 0;
   totalPages = 0;
 
-  // ── Pagination ───────────────────────────────────────────────────────────
+  // ── Pagination ───────────────────────────────────────────────────────
   currentPage = 1;
   itemsPerPage = 8;
 
   constructor(
     private supplierService : SupplierService,
+    private categoryService : CategoryService,
     private toastrService : AppToastrService
   ) {}
 
@@ -69,6 +75,43 @@ export class ViewSupplierClothesModalComponent implements OnInit {
 
   ngOnInit(): void {
     this.fetchClothes();
+    this.loadCategories();
+  }
+
+  private loadCategories(): void {
+    this.categoryService.getAllCategories().then(res => {
+      if (res.isSuccess && res.data) {
+        this.categories = res.data;
+      }
+    }).catch(err => {
+      this.toastrService.error(err.error);
+    });
+  }
+
+  fetchClothes(): void {
+    this.supplierService.getSupplierClothesByIdAsync(
+      this.supplierId ?? 0,
+      this.currentPage,
+      this.itemsPerPage,
+      this.searchQuery,
+      this.categoryFilter,
+      this.availabilityFilter,
+      this.genderFilter
+    ).then(res => {
+      if (!res.isSuccess || !res.data) {
+        this.clothes = [];
+        this.totalCount = 0;
+        this.totalPages = 0;
+        console.log(`ERROR MESSAGE: ${res.errorMessage}`);
+        return;
+      }
+
+      this.clothes = res.data.items;
+      this.totalCount = res.data.totalCount;
+      this.totalPages = res.data.totalPages;
+    }).catch(err => {
+      this.toastrService.error(err.error);
+    });
   }
 
   onSearchChange(): void {
@@ -81,34 +124,13 @@ export class ViewSupplierClothesModalComponent implements OnInit {
     this.fetchClothes();
   }
 
-  fetchClothes(): void {
-    this.supplierService.getSupplierClothesByIdAsync(
-      this.supplierId ?? 0,
-      this.currentPage,
-      this.itemsPerPage,
-    ).then(res => {
-      if (!res.isSuccess || !res.data) {
-        this.clothes = [];
-        this.totalCount = 0;
-        this.totalPages = 0;
-        return;
-      }
-
-      this.clothes = res.data.items;
-      this.totalCount = res.data.totalCount;
-      this.totalPages = res.data.totalPages;
-    }).catch(err => {
-      this.toastrService.error(err.error);
-    });
-  }
-
   goToPage(page: number): void {
     if (page < 1 || page > this.totalPages) return;
     this.currentPage = page;
     this.fetchClothes();
   }
 
-  // ── Modal ──────────────────────────────────────────────────────────────────
+  // ── Modal ──────────────────────────────────────────────────────────────
   close(): void {
     this.closeModal.emit();
   }

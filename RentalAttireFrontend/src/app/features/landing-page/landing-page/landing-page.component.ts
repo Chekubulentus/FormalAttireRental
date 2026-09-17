@@ -2,9 +2,28 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { ClotheService } from '../../admin/clothes/clothe-service/clothe.service';
-import { ClotheDTO } from '../../../data/models/DTOs/Clothes/clothes';
+// Path assumed to mirror ClotheService's folder convention — adjust if CategoryService lives elsewhere.
 import { CategoryService } from '../../admin/categories/category-service/category.service';
+import { ClotheDTO } from '../../../data/models/DTOs/Clothes/clothes';
 import { Category } from '../../../data/models/DTOs/Category/category';
+
+type CategoryIcon = 'barong' | 'gown' | 'suit' | 'accessories';
+
+interface CategoryShortcut {
+  label: string;
+  icon: CategoryIcon;
+  routerLink: string;
+}
+
+interface StatItem {
+  label: string;
+  value: string;
+}
+
+interface GenderFilterOption {
+  label: string;
+  value: string; // '' = All
+}
 
 @Component({
   selector: 'app-landing-page',
@@ -20,15 +39,12 @@ export class LandingPageComponent implements OnInit {
     private categoryService: CategoryService
   ) {}
 
-  // ── Category filter chips ────────────────────────────────────────────────
-  categories: Category[] = [];
-  isLoadingCategories = true;
-  /** Empty string = "All" (no category filter applied). */
-  selectedCategory = '';
-
-  // ── Clothes grid (single section, filtered by selectedCategory) ─────────
-  clothes: ClotheDTO[] = [];
-  isLoadingClothes = true;
+  readonly categoryShortcuts: CategoryShortcut[] = [
+    { label: 'Barongs', icon: 'barong', routerLink: '/customer/browse' },
+    { label: 'Gowns', icon: 'gown', routerLink: '/customer/browse' },
+    { label: 'Suits & Tuxedos', icon: 'suit', routerLink: '/customer/browse' },
+    { label: 'Accessories', icon: 'accessories', routerLink: '/customer/browse' }
+  ];
 
   readonly brandValues = [
     {
@@ -45,69 +61,103 @@ export class LandingPageComponent implements OnInit {
     }
   ];
 
-  async ngOnInit(): Promise<void> {
-    await Promise.all([
-      this.loadCategories(),
-      this.loadClothes()
-    ]);
+  // PLACEHOLDER VALUES. Once GET /api/Stats/landing exists, replace this static
+  // array with a fetched StatsDTO mapped into the same { label, value } shape.
+  readonly stats: StatItem[] = [
+    { label: 'Happy Customers', value: '500+' },
+    { label: 'Rentals Completed', value: '1,200+' },
+    { label: 'Curated Pieces', value: '300+' },
+    { label: 'Categories', value: '4' }
+  ];
+
+  readonly genderOptions: GenderFilterOption[] = [
+    { label: 'All', value: '' },
+    { label: 'Male', value: 'Male' },
+    { label: 'Female', value: 'Female' },
+    { label: 'Unisex', value: 'Unisex' },
+  ];
+
+  categories: Category[] = [];
+  selectedGender = '';
+  selectedCategory = ''; // category name, '' = All
+
+  popularClothes: ClotheDTO[] = [];
+  isLoadingPopular = false;
+  loadFailed = false;
+
+  private readonly popularItemsToFetch = 12;
+  // Below this many results, a looping scroll looks broken — show a static row instead.
+  private readonly minItemsToAnimate = 3;
+
+  /** True while the marquee is hovered — pauses the auto-scroll. */
+  isPaused = false;
+
+  ngOnInit(): void {
+    this.loadCategories();
+    this.loadPopularClothes();
   }
 
-  private async loadCategories(): Promise<void> {
-    this.isLoadingCategories = true;
-
+  async loadCategories(): Promise<void> {
     const result = await this.categoryService.getAllCategories();
-
     if (result.isSuccess && result.data) {
       this.categories = result.data;
     }
-
-    this.isLoadingCategories = false;
+    // Silent fail here is fine — worst case the Category pill row just stays at "All".
   }
 
-  private async loadClothes(): Promise<void> {
-    this.isLoadingClothes = true;
+  async loadPopularClothes(): Promise<void> {
+    this.isLoadingPopular = true;
+    this.loadFailed = false;
 
-    // ASSUMPTION: fetching 10 items so the auto-scroll carousel has enough
-    // content to loop without looking sparse. Adjust if your typical
-    // per-category catalog size is smaller or larger than this.
+    // Condition param intentionally left as '' — no condition filtering on this public section.
     const result = await this.clotheService.filterClothesAsync(
-      '', '', '', this.selectedCategory, 1, 10
+      '',
+      '',
+      this.selectedGender,
+      this.selectedCategory,
+      1,
+      this.popularItemsToFetch
     );
 
     if (result.isSuccess && result.data) {
-      this.clothes = result.data.items;
+      this.popularClothes = result.data.items ?? [];
     } else {
-      this.clothes = [];
+      this.popularClothes = [];
+      this.loadFailed = true;
     }
 
-    this.isLoadingClothes = false;
+    this.isLoadingPopular = false;
   }
 
-  selectCategory(categoryName: string): void {
-    if (this.selectedCategory === categoryName) return;
-    this.selectedCategory = categoryName;
-    this.loadClothes();
+  onGenderFilterChange(value: string): void {
+    if (this.selectedGender === value) return;
+    this.selectedGender = value;
+    this.loadPopularClothes();
   }
 
-  /**
-   * Duplicating a very small result set (1–2 items) doesn't produce a real
-   * loop — it just looks like the same card shown twice, which is exactly
-   * the bug this guards against. Below this threshold, the track renders
-   * once and holds still (see carousel__track--static in the SCSS) instead
-   * of faking a loop with too little content.
-   */
-  get shouldLoop(): boolean {
-    return this.clothes.length >= 4;
+  onCategoryFilterChange(value: string): void {
+    if (this.selectedCategory === value) return;
+    this.selectedCategory = value;
+    this.loadPopularClothes();
   }
 
-  /**
-   * The carousel renders this list, not `clothes` directly. When there's
-   * enough content, it's the same items duplicated once so the CSS marquee
-   * animation can loop seamlessly (see the SCSS carousel keyframes for how
-   * the 0%/-50% duplication lines up). When there isn't enough content
-   * (see shouldLoop), it's just the plain list, shown once.
-   */
-  get carouselClothes(): ClotheDTO[] {
-    return this.shouldLoop ? [...this.clothes, ...this.clothes] : this.clothes;
+  get shouldAnimate(): boolean {
+    return this.popularClothes.length >= this.minItemsToAnimate;
+  }
+
+  /** Duplicated so the CSS marquee loop is seamless — only when actually animating. */
+  get marqueeClothes(): ClotheDTO[] {
+    return this.shouldAnimate
+      ? [...this.popularClothes, ...this.popularClothes]
+      : this.popularClothes;
+  }
+
+  /** Slower scroll for larger sets so the pace feels consistent regardless of item count. */
+  get marqueeDurationSeconds(): number {
+    return this.popularClothes.length * 4;
+  }
+
+  onImageError(event: Event): void {
+    (event.target as HTMLImageElement).style.display = 'none';
   }
 }

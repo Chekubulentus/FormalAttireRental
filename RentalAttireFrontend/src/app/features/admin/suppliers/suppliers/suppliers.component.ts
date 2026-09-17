@@ -188,7 +188,30 @@ export class SuppliersComponent implements OnInit {
   }
 
   onArchiveConfirmed() {
+    if (!this.supplierToArchive?.id) {
+      this.toastrService.error('No supplier selected to archive.');
+      return;
+    }
 
+    this.isLoading = true;
+
+    this.supplierService.archiveSupplierByIdAsync(
+      this.supplierToArchive?.id ?? 0
+    ).then(res => {
+
+      if(!res.isSuccess) {
+        this.toastrService.error(`${res.errorMessage ?? 'Supplier could not be archived'}`);
+        return;
+      }
+
+      this.toastrService.success(`${res.successMessage}`);
+      this.supplierToArchive = null;
+      this.filterSuppliers();
+    }).catch(err => {
+      this.toastrService.error(err.error);
+    }).finally(() => {
+      this.isLoading = false;
+    })
   }
 
 }

@@ -10,6 +10,7 @@ import { CreateSupplierCommand } from '../dtos/create-supplier-command';
 import { UpdateSupplierCommand } from '../dtos/update-supplier-command';
 import { ClotheDTO } from '../../../../data/models/DTOs/Clothes/clothes';
 import { AssignSupplierClothesModalResponse } from '../dtos/assign-supplier-clothes-reponse';
+import { animateChild } from '@angular/animations';
 
 @Injectable({
   providedIn: 'root'
@@ -96,26 +97,25 @@ export class SupplierService {
   }
 
   async getSupplierClothesByIdAsync(
-    id : number,
-    currentPage : number,
-    itemsPerPage : number
-  ) : Promise<Result<PagedResult<ClotheDTO>>> {
-    try {
-      const filters = {
-        id,
-        currentPage,
-        itemsPerPage
-      }
+  id: number,
+  currentPage: number,
+  itemsPerPage: number,
+  searchQuery: string = '',
+  category: string = '',
+  availability: string = '',
+  gender: string = ''
+): Promise<Result<PagedResult<ClotheDTO>>> {
+  try {
+      const params = { id, searchQuery, category, availability, gender, currentPage, itemsPerPage };
 
-      const result = await firstValueFrom(
+      var result = await firstValueFrom(
         this.httpClient.get<Result<PagedResult<ClotheDTO>>>(
-          `${this.baseUrl}/supplier-clothes`,
-          { params : filters }
+          `${this.baseUrl}/supplier-clothes`, { params }
         )
       );
 
       return result;
-    }catch(err : any) {
+    } catch (err: any) {
       return Result.failure(extractErrorMessage(err.error));
     }
   }
@@ -151,5 +151,18 @@ export class SupplierService {
       return Result.failure(extractErrorMessage(err.error));
     }
   }
-  
+
+  async archiveSupplierByIdAsync(
+    id : number
+  ) : Promise<Result<boolean>> {
+    try {
+      const result = await firstValueFrom(
+        this.httpClient.patch<Result<boolean>>(`${this.baseUrl}/${id}`, {})
+      );
+
+      return result;
+    }catch(err : any) {
+      return Result.failure(extractErrorMessage(err.error));
+    }
+  }
 }
