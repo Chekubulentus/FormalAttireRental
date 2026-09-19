@@ -12,7 +12,10 @@ namespace RentalAttireBackend.Domain.Interfaces
             List<string> statuses,
             string? dateTypeToggle,
             DateTime? startingDate,
-            DateTime? endingdate
+            DateTime? endingdate,
+            int currentPage,
+            int itemsPerPage,
+            CancellationToken cancellationToken
             );
         public Task<PurchaseOrder?> GetPurchaeOrderByIdNoTrackingAsync(int id, CancellationToken cancellationToken);
     }

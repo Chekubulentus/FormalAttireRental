@@ -19,6 +19,7 @@ using RentalAttireBackend.Application.Employees.Commands.UpdateEmployee;
 using RentalAttireBackend.Application.Employees.DTOs;
 using RentalAttireBackend.Application.Persons.Commands.UpdatePerson;
 using RentalAttireBackend.Application.Persons.DTO;
+using RentalAttireBackend.Application.PurchaseOrders.DTOs;
 using RentalAttireBackend.Application.Rentals.Commands.RentalTransaction;
 using RentalAttireBackend.Application.Rentals.DTOs;
 using RentalAttireBackend.Application.Suppliers.Commands.CreateSupplier;
@@ -493,6 +494,16 @@ namespace RentalAttireBackend.Application.Mapping
 
             #region Supplier -> SupplierSummaryDTO
             CreateMap<Supplier, SupplierSummaryDTO>();
+            #endregion
+
+            #region PurchaseOrder -> PurchaseOrderDTO
+            CreateMap<PurchaseOrder, PurchaseOrderDTO>()
+                .ForMember(dest => dest.SupplierName,
+                opt => opt.MapFrom(src => src.Supplier.SupplierName))
+                .ForMember(dest => dest.OrderStatus,
+                opt => opt.MapFrom(src => src.OrderStatus.ToString()))
+                .ForMember(dest => dest.EmployeeName,
+                opt => opt.Ignore());
             #endregion
         }
     }

@@ -29,7 +29,10 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
             List<string> statuses,
             string? dateTypeToggle,
             DateTime? startingDate,
-            DateTime? endingdate)
+            DateTime? endingdate,
+            int currentPage,
+            int itemsPerPage,
+            CancellationToken cancellationToken)
         {
             var enumStatuses = statuses
                 .Select(x => Enum.Parse<OrderStatus>(x))
@@ -47,6 +50,7 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
 
             var query = _context.PurchaseOrders
                 .AsNoTracking()
+                .Include(po => po.Supplier)
                 .OrderByDescending(p => p.Id)
                 .Where(p =>
                     (
@@ -78,8 +82,20 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
                     )
                 );
 
+            var totalCount = await query.CountAsync(cancellationToken);
 
-            throw new NotImplementedException();
+            var paginatedItems = await query
+                .Skip((currentPage - 1) * itemsPerPage)
+                .Take(itemsPerPage)
+                .ToListAsync(cancellationToken);
+
+            return new PagedResult<PurchaseOrder>
+            {
+                Items = paginatedItems,
+                TotalCount = totalCount,
+                PageNumber = currentPage,
+                PageSize = itemsPerPage
+            };
         }
 
         public async Task<PurchaseOrder?> GetPurchaeOrderByIdNoTrackingAsync(int id, CancellationToken cancellationToken)
