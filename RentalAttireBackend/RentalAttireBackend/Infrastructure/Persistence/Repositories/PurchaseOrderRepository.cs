@@ -52,6 +52,8 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
             var query = _context.PurchaseOrders
                 .AsNoTracking()
                 .Include(po => po.Supplier)
+                .Include(po => po.PurchaseOrderItems)
+                    .ThenInclude(poi => poi.Clothe)
                 .OrderByDescending(p => p.Id)
                 .Where(p =>
                     (

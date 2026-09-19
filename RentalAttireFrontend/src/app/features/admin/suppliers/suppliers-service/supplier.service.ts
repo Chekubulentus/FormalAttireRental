@@ -11,6 +11,7 @@ import { UpdateSupplierCommand } from '../dtos/update-supplier-command';
 import { ClotheDTO } from '../../../../data/models/DTOs/Clothes/clothes';
 import { AssignSupplierClothesModalResponse } from '../dtos/assign-supplier-clothes-reponse';
 import { animateChild } from '@angular/animations';
+import { SupplierSummaryDTO } from '../dtos/supplier-summary';
 
 @Injectable({
   providedIn: 'root'
@@ -161,6 +162,29 @@ export class SupplierService {
       );
 
       return result;
+    }catch(err : any) {
+      return Result.failure(extractErrorMessage(err.error));
+    }
+  }
+
+  async getAllSuppliersAsync(
+  ) : Promise<Result<SupplierSummaryDTO[]>> {
+    try {
+      return await firstValueFrom(
+        this.httpClient.get<Result<SupplierSummaryDTO[]>>(`${this.baseUrl}/all-suppliers`)
+      );
+    }catch(err : any) {
+      return Result.failure(extractErrorMessage(err.error));
+    }
+  }
+
+  async getAllSupplierClothesByIdAsync(
+    supplierId : number
+  ) : Promise<Result<ClotheDTO[]>> {
+    try {
+      return await firstValueFrom(
+        this.httpClient.get<Result<ClotheDTO[]>>(`${this.baseUrl}/all-supplier-clothes?supplierId=${supplierId}`)
+      );
     }catch(err : any) {
       return Result.failure(extractErrorMessage(err.error));
     }

@@ -8,6 +8,8 @@ using RentalAttireBackend.Application.Suppliers.Commands.CreateSupplier;
 using RentalAttireBackend.Application.Suppliers.Commands.UpdateSupplier;
 using RentalAttireBackend.Application.Suppliers.Queries.AssignClothesModal;
 using RentalAttireBackend.Application.Suppliers.Queries.FilterSuppliers;
+using RentalAttireBackend.Application.Suppliers.Queries.GetAllSupplierClothes;
+using RentalAttireBackend.Application.Suppliers.Queries.GetAllSuppliers;
 using RentalAttireBackend.Application.Suppliers.Queries.GetSupplierById;
 using RentalAttireBackend.Application.Suppliers.Queries.GetSupplierClothesById;
 
@@ -123,6 +125,24 @@ namespace RentalAttireBackend.Controllers.AdminController
             var result = await _mediator.Send(new ArchiveSupplierByIdCommand
             {
                 Id = id
+            });
+
+            return result.ToActionResult(this, _httpContextAccessor);
+        }
+
+        [HttpGet("all-suppliers")]
+        public async Task<IActionResult> GetAllSuppliersAsync()
+        {
+            var result = await _mediator.Send(new GetAllSuppliersQuery());
+
+            return result.ToActionResult(this, _httpContextAccessor);
+        }
+        [HttpGet("all-supplier-clothes")]
+        public async Task<IActionResult> GetAllSupplierClothesByIdAsync(int supplierId)
+        {
+            var result = await _mediator.Send(new GetAllSupplierClothesQuery
+            {
+                SupplierId = supplierId
             });
 
             return result.ToActionResult(this, _httpContextAccessor);

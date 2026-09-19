@@ -1,4 +1,6 @@
-﻿namespace RentalAttireBackend.Application.PurchaseOrders.DTOs
+﻿using RentalAttireBackend.Application.PurchaseOrderItems.DTOs;
+
+namespace RentalAttireBackend.Application.PurchaseOrders.DTOs
 {
     public class PurchaseOrderDTO
     {
@@ -9,6 +11,7 @@
         public string SupplierName { get; set; } = string.Empty;
         public string OrderStatus { get; set; } = string.Empty;
         public string EmployeeName { get; set; } = string.Empty;
-        public double TotalAmount { get; set; } 
+        public double TotalAmount { get; set; }
+        public List<PurchaseOrderItemDTO> PurchaseOrderItems { get; set; } = new();
     }
 }

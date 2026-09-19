@@ -78,6 +78,12 @@ namespace RentalAttireBackend.Domain.Interfaces
         public Task<Supplier?> GetSupplierWithNoRelationshipsByIdAsync(int id, CancellationToken cancellationToken);
 
         public Task<List<Supplier>> GetAllArchivedSuppliersAsync(CancellationToken cancellationToken);
+
+        public Task<List<Supplier>> GetAllActiveSuppliersASync(CancellationToken cancellationToken);
+
+        public Task<Dictionary<int?, int>> GetAllSuppliersAssignedClothesCount(List<int> supplierIds, CancellationToken cancellationToken);
+
+        public Task<List<Clothe>> GetAllSupplierClothesByIdAsync(int supplierId, CancellationToken cancellationToken);
         #endregion
     }
 }

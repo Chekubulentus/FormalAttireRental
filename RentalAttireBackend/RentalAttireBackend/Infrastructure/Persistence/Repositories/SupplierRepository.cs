@@ -115,12 +115,39 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
             };
         }
 
+        public async Task<List<Supplier>> GetAllActiveSuppliersASync(CancellationToken cancellationToken)
+        {
+            return await _context.Suppliers
+                .AsNoTracking()
+                .Where(s => s.IsActive == true && s.IsDeleted == false)
+                .ToListAsync(cancellationToken);
+        }
+
         public async Task<List<Supplier>> GetAllArchivedSuppliersAsync(CancellationToken cancellationToken)
         {
             return await _context.Suppliers
                 .Where(s => s.IsActive == false && s.IsDeleted == false)
                 .AsNoTracking()
                 .ToListAsync(cancellationToken);
+        }
+
+        public async Task<List<Clothe>> GetAllSupplierClothesByIdAsync(int supplierId, CancellationToken cancellationToken)
+        {
+            return await _context.Clothes
+                .Include(c => c.Category)
+                .Where(c => c.SupplierId == supplierId)
+                .AsNoTracking()
+                .ToListAsync(cancellationToken);
+        }
+
+        public async Task<Dictionary<int?, int>> GetAllSuppliersAssignedClothesCount(List<int> supplierIds, CancellationToken cancellationToken)
+        {
+            return await _context.Clothes
+                .AsNoTracking()
+                .Where(c => supplierIds.Contains(c.SupplierId ?? 0))
+                .GroupBy(g => g.SupplierId)
+                .Select(g => new { Id = g.Key, AssignedClothesCount = g.Count() })
+                .ToDictionaryAsync(x => x.Id, x => x.AssignedClothesCount, cancellationToken);
         }
 
         public async Task<int> GetAllUnassignedClothesAsync(CancellationToken cancellationToken)

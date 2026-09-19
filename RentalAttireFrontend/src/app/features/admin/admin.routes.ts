@@ -100,6 +100,20 @@ export const ADMIN_ROUTES: Routes = [
           .then(m => m.EditSupplierModalComponent)
         }
       },
+      {
+        path: 'purchase-orders',
+        loadComponent: () => {
+          return import('./purchase-orders/purchase-orders/purchase-orders.component')
+          .then(m => m.PurchaseOrdersComponent)
+        }
+      },
+      {
+        path: 'create-purchase-order',
+        loadComponent: () => {
+          return import('./purchase-orders/create-purchase-order/create-purchase-order.component')
+          .then(m => m.CreatePurchaseOrderComponent)
+        }
+      }
     ],
   },
 ];

@@ -1,1 +1,345 @@
-<p>create-purchase-order works!</p>
+<div class="cpo-page">
+
+  <!-- ── Page Header ────────────────────────────────────────────────── -->
+  <div class="cpo-header">
+    <button class="back-btn" (click)="cancel()">
+      <svg viewBox="0 0 20 20" fill="none">
+        <path d="M12 4L6 10L12 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Purchase Orders
+    </button>
+    <div class="cpo-header__text">
+      <p class="cpo-header__eyebrow">Procurement</p>
+      <h1 class="cpo-header__title">New Purchase Order</h1>
+    </div>
+  </div>
+
+  <!-- ── Step indicator ─────────────────────────────────────────────── -->
+  <div class="step-track">
+    <div class="step-track__item" [class.step-track__item--active]="currentStep === 1" [class.step-track__item--done]="currentStep === 2">
+      <div class="step-track__dot">
+        <svg *ngIf="currentStep === 2" viewBox="0 0 16 16" fill="none">
+          <path d="M3 8L6.5 11.5L13 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span *ngIf="currentStep === 1">1</span>
+      </div>
+      <span class="step-track__label">Select Supplier</span>
+    </div>
+    <div class="step-track__line" [class.step-track__line--done]="currentStep === 2"></div>
+    <div class="step-track__item" [class.step-track__item--active]="currentStep === 2">
+      <div class="step-track__dot">
+        <span>2</span>
+      </div>
+      <span class="step-track__label">Order Details</span>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════════════ -->
+  <!-- STEP 1 — Supplier Selection                                      -->
+  <!-- ════════════════════════════════════════════════════════════════ -->
+  <div class="cpo-step" *ngIf="currentStep === 1">
+
+    <div class="supplier-panel">
+      <div class="supplier-panel__header">
+        <h2 class="supplier-panel__title">Choose a supplier</h2>
+        <p class="supplier-panel__sub">All clothes on this order must come from the selected supplier.</p>
+      </div>
+
+      <!-- Search -->
+      <div class="search-field">
+        <svg class="search-field__icon" viewBox="0 0 20 20" fill="none">
+          <circle cx="8.5" cy="8.5" r="5.5" stroke="currentColor" stroke-width="1.5"/>
+          <path d="M13.5 13.5L17 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <input
+          type="text"
+          class="search-field__input"
+          placeholder="Search by name or code…"
+          [(ngModel)]="supplierSearch"
+        />
+      </div>
+
+      <!-- Skeleton -->
+      <div class="supplier-list" *ngIf="isSuppliersLoading">
+        <div class="supplier-card supplier-card--skeleton" *ngFor="let i of [1,2,3,4,5]">
+          <div class="skeleton skeleton--title"></div>
+          <div class="skeleton skeleton--sub"></div>
+        </div>
+      </div>
+
+      <!-- Empty -->
+      <div class="supplier-empty" *ngIf="!isSuppliersLoading && filteredSuppliers.length === 0">
+        <p>No suppliers match your search.</p>
+      </div>
+
+      <!-- Supplier list -->
+      <div class="supplier-list" *ngIf="!isSuppliersLoading && filteredSuppliers.length > 0">
+        <button
+          class="supplier-card"
+          *ngFor="let s of filteredSuppliers; let i = index"
+          [class.supplier-card--selected]="selectedSupplier?.id === s.id"
+          [style.animation-delay.ms]="i * 35"
+          (click)="selectSupplier(s)"
+        >
+          <div class="supplier-card__check">
+            <svg viewBox="0 0 16 16" fill="none">
+              <path d="M3 8L6.5 11.5L13 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="supplier-card__body">
+            <p class="supplier-card__name">{{ s.supplierName }}</p>
+            <p class="supplier-card__meta">{{ s.supplierCode }}</p>
+          </div>
+          <div class="supplier-card__clothes-count">
+            <span>{{ s.assignedClothesCount }}</span>
+            <p>items</p>
+          </div>
+        </button>
+      </div>
+
+      <!-- Step 1 footer -->
+      <div class="step-footer">
+        <button class="btn-ghost" (click)="cancel()">Cancel</button>
+        <button
+          class="btn-primary"
+          [disabled]="!selectedSupplier"
+          (click)="confirmSupplier()"
+        >
+          Continue with {{ selectedSupplier?.supplierName ?? 'supplier' }}
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════════════ -->
+  <!-- STEP 2 — Order Details + Item Selection                          -->
+  <!-- ════════════════════════════════════════════════════════════════ -->
+  <div class="cpo-step cpo-step--two" *ngIf="currentStep === 2">
+
+    <div class="cpo-layout">
+
+      <!-- ── Left: item picker ──────────────────────────────────────── -->
+      <div class="cpo-picker">
+
+        <div class="cpo-picker__header">
+          <div>
+            <h2 class="cpo-picker__title">Add items</h2>
+            <p class="cpo-picker__sub">
+              Showing clothes from
+              <strong>{{ selectedSupplier?.supplierName }}</strong>.
+              <button class="inline-link" (click)="changeSupplier()">Change supplier</button>
+            </p>
+          </div>
+          <div class="search-field search-field--sm">
+            <svg class="search-field__icon" viewBox="0 0 20 20" fill="none">
+              <circle cx="8.5" cy="8.5" r="5.5" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M13.5 13.5L17 17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <input
+              type="text"
+              class="search-field__input"
+              placeholder="Filter by name, code, or category…"
+              [(ngModel)]="clotheSearch"
+            />
+          </div>
+        </div>
+
+        <!-- Clothes skeleton -->
+        <div class="clothes-table-wrap" *ngIf="isClothesLoading">
+          <table class="clothes-table">
+            <thead>
+              <tr>
+                <th class="col-check"></th>
+                <th>Item</th>
+                <th>Category</th>
+                <th>Size</th>
+                <th class="col-num">Stock</th>
+                <th class="col-num">Unit Cost</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let i of [1,2,3,4,5,6]" class="skeleton-row">
+                <td><div class="skeleton skeleton--check"></div></td>
+                <td><div class="skeleton skeleton--title"></div></td>
+                <td><div class="skeleton skeleton--sm"></div></td>
+                <td><div class="skeleton skeleton--xs"></div></td>
+                <td><div class="skeleton skeleton--xs"></div></td>
+                <td><div class="skeleton skeleton--sm"></div></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Clothes table -->
+        <div class="clothes-table-wrap" *ngIf="!isClothesLoading">
+          <table class="clothes-table" *ngIf="filteredClothes.length > 0">
+            <thead>
+              <tr>
+                <th class="col-check"></th>
+                <th>Item</th>
+                <th>Category</th>
+                <th>Size</th>
+                <th class="col-num">Stock</th>
+                <th class="col-num">Unit Cost</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                *ngFor="let c of filteredClothes; let i = index"
+                class="clothe-row"
+                [class.clothe-row--selected]="isSelected(c.id)"
+                [style.animation-delay.ms]="i * 30"
+                (click)="toggleClothe(c)"
+              >
+                <td class="col-check">
+                  <div class="row-checkbox" [class.row-checkbox--checked]="isSelected(c.id)">
+                    <svg viewBox="0 0 16 16" fill="none">
+                      <path d="M3 8L6.5 11.5L13 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </div>
+                </td>
+                <td>
+                  <p class="clothe-name">{{ c.clotheName }}</p>
+                  <p class="clothe-code">{{ c.clotheCode }}</p>
+                </td>
+                <td class="clothe-meta">{{ c.categoryName }}</td>
+                <td class="clothe-meta">{{ c.size }}</td>
+                <td class="col-num">
+                  <span class="stock-badge" [class.stock-badge--low]="c.availableQuantity <= 5 && c.availableQuantity > 0" [class.stock-badge--out]="c.availableQuantity === 0">
+                    {{ c.availableQuantity }}
+                  </span>
+                </td>
+                <td class="col-num clothe-cost">{{ formatCurrency(c.unitCost) }}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="clothes-empty" *ngIf="filteredClothes.length === 0">
+            <p>No clothes match your search.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ── Right: order summary ───────────────────────────────────── -->
+      <div class="cpo-summary">
+
+        <!-- Delivery date -->
+        <div class="summary-section">
+          <h3 class="summary-section__title">Order Details</h3>
+          <div class="form-field" [class.form-field--error]="hasError('expectedDeliveryDate')">
+            <label class="form-label">Expected Delivery Date</label>
+            <input
+              type="date"
+              class="form-input"
+              [(ngModel)]="expectedDeliveryDate"
+            />
+            <p class="form-error" *ngIf="hasError('expectedDeliveryDate')">
+              {{ errorMsg('expectedDeliveryDate') }}
+            </p>
+          </div>
+        </div>
+
+        <!-- Line items -->
+        <div class="summary-section">
+          <h3 class="summary-section__title">
+            Selected Items
+            <span class="item-count" *ngIf="lineItems.length > 0">{{ lineItems.length }}</span>
+          </h3>
+
+          <div class="line-items-empty" *ngIf="lineItems.length === 0">
+            <p>No items selected yet.</p>
+            <p class="line-items-empty__hint">Click a row on the left to add it.</p>
+          </div>
+          <p class="form-error form-error--block" *ngIf="hasError('lineItems')">
+            {{ errorMsg('lineItems') }}
+          </p>
+
+          <div class="line-items" *ngIf="lineItems.length > 0">
+            <div
+              class="line-item"
+              *ngFor="let li of lineItems; let i = index"
+            >
+              <div class="line-item__info">
+                <p class="line-item__name">{{ li.clothe.clotheName }}</p>
+                <p class="line-item__code">{{ li.clothe.clotheCode }}</p>
+              </div>
+
+              <div class="line-item__inputs">
+                <div class="qty-field">
+                  <label class="qty-label">Qty</label>
+                  <input
+                    type="number"
+                    class="qty-input"
+                    [class.qty-input--error]="hasError('qty_' + i)"
+                    [(ngModel)]="li.orderedQuantity"
+                    min="1"
+                    (click)="$event.stopPropagation()"
+                  />
+                </div>
+                <div class="cost-field">
+                  <label class="qty-label">Unit Cost</label>
+                  <input
+                    type="number"
+                    class="qty-input"
+                    [class.qty-input--error]="hasError('cost_' + i)"
+                    [(ngModel)]="li.unitCost"
+                    min="0.01"
+                    step="0.01"
+                    (click)="$event.stopPropagation()"
+                  />
+                </div>
+                <button
+                  class="remove-btn"
+                  (click)="removeLineItem(li.clothe.id)"
+                  title="Remove"
+                >
+                  ✕
+                </button>
+              </div>
+
+              <div class="line-item__total">
+                {{ formatCurrency(li.orderedQuantity * li.unitCost) }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Running total -->
+        <div class="summary-total" *ngIf="lineItems.length > 0">
+          <span class="summary-total__label">Total</span>
+          <span class="summary-total__amount">{{ formatCurrency(runningTotal) }}</span>
+        </div>
+
+        <!-- Actions -->
+        <div class="summary-actions">
+          <button class="btn-ghost" (click)="cancel()" [disabled]="isSubmitting">
+            Cancel
+          </button>
+          <div class="summary-actions__submit">
+            <button
+              class="btn-secondary"
+              [disabled]="isSubmitting"
+              (click)="submit('draft')"
+            >
+              <span *ngIf="!isSubmitting">Save as Draft</span>
+              <span *ngIf="isSubmitting">Saving…</span>
+            </button>
+            <button
+              class="btn-primary"
+              [disabled]="isSubmitting"
+              (click)="submit('order')"
+            >
+              <span *ngIf="!isSubmitting">Place Order</span>
+              <span *ngIf="isSubmitting">Placing…</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+</div>

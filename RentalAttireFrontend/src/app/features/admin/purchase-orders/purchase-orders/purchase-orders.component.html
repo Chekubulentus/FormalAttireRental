@@ -1,1 +1,123 @@
-<p>purchase-orders works!</p>
+<div class="po-page">
+
+  <div class="page-header">
+    <div class="page-header__text">
+      <p class="eyebrow">Procurement</p>
+      <h1>Purchase Orders</h1>
+      <p class="subtitle">Track stock orders from suppliers through to receipt.</p>
+    </div>
+    <button class="btn-primary" (click)="navigateToCreate()">New Purchase Order</button>
+  </div>
+
+  <!-- ── Stock Alerts — low / out of stock clothes ─────────────────── -->
+  <!-- PLACEHOLDER DATA — see loadStockAlerts() in the .ts file -->
+  <div class="stock-alerts" *ngIf="!isLoadingStockAlerts && stockAlertClothes.length > 0">
+    <div class="stock-alerts-header">
+      <span class="alert-icon">!</span>
+      <h2>Needs restocking</h2>
+      <span class="alert-count">{{ stockAlertClothes.length }}</span>
+    </div>
+    <div class="stock-alerts-scroll">
+      <div
+        class="stock-card"
+        *ngFor="let clothe of stockAlertClothes; let i = index"
+        [style.animation-delay.ms]="i * 40">
+        <div class="stock-card-top">
+          <span class="stock-code">{{ clothe.clotheCode }}</span>
+          <span class="stock-badge" [class.out]="isOutOfStock(clothe)" [class.low]="isLowStock(clothe)">
+            {{ isOutOfStock(clothe) ? 'Out of stock' : 'Low stock' }}
+          </span>
+        </div>
+        <p class="stock-name">{{ clothe.clotheName }}</p>
+        <p class="stock-qty">{{ clothe.availableQuantity }} available</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="toolbar">
+    <input
+      type="text"
+      class="search-input"
+      placeholder="Search purchase orders..."
+      [(ngModel)]="searchQuery"
+      (ngModelChange)="onSearchChange()" />
+
+    <div class="date-filter">
+      <select [(ngModel)]="dateTypeToggle" (ngModelChange)="onDateFilterChange()">
+        <option value="OrderDate">Order Date</option>
+        <option value="ExpectedDeliveryDate">Expected Delivery</option>
+      </select>
+      <input type="date" [(ngModel)]="startingDate" (ngModelChange)="onDateFilterChange()" />
+      <span class="date-sep">to</span>
+      <input type="date" [(ngModel)]="endingDate" (ngModelChange)="onDateFilterChange()" />
+    </div>
+  </div>
+
+  <div class="filter-pills">
+    <button
+      *ngFor="let status of availableStatuses"
+      class="pill"
+      [class.active]="isStatusSelected(status)"
+      (click)="toggleStatus(status)">
+      {{ status }}
+    </button>
+  </div>
+
+  <div class="po-table skeleton" *ngIf="isLoading">
+    <div class="skeleton-row" *ngFor="let i of [1,2,3,4,5]"></div>
+  </div>
+
+  <div class="empty-state" *ngIf="!isLoading && purchaseOrders.length === 0">
+    <p>No purchase orders found.</p>
+  </div>
+
+  <table class="po-table" *ngIf="!isLoading && purchaseOrders.length > 0">
+    <thead>
+      <tr>
+        <th>PO Code</th>
+        <th>Supplier</th>
+        <th>Order Date</th>
+        <th>Expected Delivery</th>
+        <th>Issued By</th>
+        <th>Status</th>
+        <th>Total</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let po of purchaseOrders; let i = index" [style.animation-delay.ms]="i * 35">
+        <td class="po-code">{{ po.purchaseOrderCode }}</td>
+        <td>{{ po.supplierName }}</td>
+        <td>{{ po.orderDate | date:'MMM d, y' }}</td>
+        <td>{{ po.expectedDeliveryDate | date:'MMM d, y' }}</td>
+        <td>{{ po.employeeName }}</td>
+        <td>
+          <span class="status-badge" [ngClass]="statusClass(po.orderStatus)">
+            {{ po.orderStatus }}
+          </span>
+        </td>
+        <td class="amount">₱{{ po.totalAmount | number:'1.2-2' }}</td>
+        <td class="actions">
+          <button class="action-btn view" (click)="viewPurchaseOrder(po)">View</button>
+          <button class="action-btn edit" *ngIf="canEdit(po)" (click)="editPurchaseOrder(po)">Edit</button>
+          <button class="action-btn receive" *ngIf="canReceive(po)" (click)="receivePurchaseOrder(po)">Receive</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="pagination" *ngIf="!isLoading && totalPages > 1">
+    <span class="range-label">{{ rangeStart }}–{{ rangeEnd }} of {{ totalCount }}</span>
+    <div class="page-buttons">
+      <button (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1">‹</button>
+      <ng-container *ngFor="let page of pageNumbers">
+        <span *ngIf="page === -1" class="ellipsis">…</span>
+        <button *ngIf="page !== -1" [class.active]="page === currentPage" (click)="goToPage(page)">
+          {{ page }}
+        </button>
+      </ng-container>
+      <button (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages">›</button>
+    </div>
+  </div>
+
+</div>
