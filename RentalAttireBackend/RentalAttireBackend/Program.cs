@@ -137,6 +137,8 @@ builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<IRentalRepository, RentalRepository>();
 builder.Services.AddScoped<ISupplierRepository, SupplierRepository>();
+builder.Services.AddScoped<IPurchaseOrderRepository, PurchaseOrderRepository>();
+builder.Services.AddScoped<IPurchaseOrderItemRepository, PurchaseOrderItemRepository>();
 
 // Services
 builder.Services.AddScoped<ITransactionManager, TransactionManager>();
@@ -165,7 +167,6 @@ builder.Services.AddScoped<IDeleteArchivedEntity, CustomerDeleter>();
 
 //Current User Service
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
-
 
 // ============================================================
 // HTTP / Web Services

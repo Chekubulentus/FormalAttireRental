@@ -18,5 +18,7 @@ namespace RentalAttireBackend.Domain.Interfaces
             CancellationToken cancellationToken
             );
         public Task<PurchaseOrder?> GetPurchaeOrderByIdNoTrackingAsync(int id, CancellationToken cancellationToken);
+        public Task<Dictionary<int, string>> GetAllPurchaseOrderEmployeeNames(List<int> poIds, CancellationToken cancellationToken);
     }
+
 }

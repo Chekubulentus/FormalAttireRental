@@ -99,7 +99,7 @@ export const ADMIN_ROUTES: Routes = [
           return import('./suppliers/edit-supplier-modal/edit-supplier-modal.component')
           .then(m => m.EditSupplierModalComponent)
         }
-      }
+      },
     ],
   },
 ];

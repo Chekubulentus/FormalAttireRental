@@ -35,6 +35,7 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
             CancellationToken cancellationToken)
         {
             var enumStatuses = statuses
+                .Where(x => !string.IsNullOrEmpty(x))
                 .Select(x => Enum.Parse<OrderStatus>(x))
                 .ToList();
 
@@ -96,6 +97,17 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
                 PageNumber = currentPage,
                 PageSize = itemsPerPage
             };
+        }
+
+        public async Task<Dictionary<int, string>> GetAllPurchaseOrderEmployeeNames(List<int> poIds, CancellationToken cancellationToken)
+        {
+            return await _context.PurchaseOrders
+                .Include(po => po.Employee)
+                    .ThenInclude(e => e.User)
+                        .ThenInclude(u => u.Person)
+                .Where(po => poIds.Contains(po.Id))
+                .AsNoTracking()
+                .ToDictionaryAsync(x => x.Id, x => x.Employee.User.Person.FullName, cancellationToken);
         }
 
         public async Task<PurchaseOrder?> GetPurchaeOrderByIdNoTrackingAsync(int id, CancellationToken cancellationToken)

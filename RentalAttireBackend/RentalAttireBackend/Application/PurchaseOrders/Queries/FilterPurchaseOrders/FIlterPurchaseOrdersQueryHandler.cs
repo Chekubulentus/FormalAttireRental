@@ -23,6 +23,9 @@ namespace RentalAttireBackend.Application.PurchaseOrders.Queries.FilterPurchaseO
 
         public async Task<Result<PagedResult<PurchaseOrderDTO>>> Handle(FilterPurchaseOrdersQuery request, CancellationToken cancellationToken)
         {
+            if (request is null)
+                return Result<PagedResult<PurchaseOrderDTO>>.FailureWithErrorType("Invalid request", ErrorType.BadRequest);
+
             var pageResult = await _purchaseOrderRepository.FilterPurchaseOrdersAsync(
                 request.SearchQuery,
                 request.Statuses,
@@ -34,9 +37,16 @@ namespace RentalAttireBackend.Application.PurchaseOrders.Queries.FilterPurchaseO
                 cancellationToken
                 );
 
-            //TODO: get all purchase order id then fetch employee name.
-
             var pageResultDto = _mapper.Map<PagedResult<PurchaseOrderDTO>>(pageResult);
+
+            var poIds = pageResultDto.Items.Select(x => x.Id).ToList();
+
+            var getPurchaseOrderEmployees = await _purchaseOrderRepository.GetAllPurchaseOrderEmployeeNames(poIds, cancellationToken);
+
+            foreach(var po in pageResultDto.Items)
+            {
+                po.EmployeeName = getPurchaseOrderEmployees.GetValueOrDefault(po.Id, "N/A");
+            }
 
             return Result<PagedResult<PurchaseOrderDTO>>.Success(pageResultDto);
         }
