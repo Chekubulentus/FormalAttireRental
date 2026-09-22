@@ -523,7 +523,7 @@ namespace RentalAttireBackend.Application.Mapping
                 .ForMember(dest => dest.PurchaseOrderId,
                 opt => opt.Ignore())
                 .ForMember(dest => dest.OriginalSupplierId,
-                opt => opt.MapFrom(src => src.SupplierId));
+                opt => opt.Ignore());
             #endregion
 
             #region CreatePurchaseOrderCommand -> PurchaseOrder
@@ -535,7 +535,7 @@ namespace RentalAttireBackend.Application.Mapping
                 .ForMember(dest => dest.SupplierId,
                 opt => opt.MapFrom(src => src.SupplierId))
                 .ForMember(dest => dest.OrderStatus,
-                opt => opt.MapFrom(src => Enum.Parse<OrderStatus>(src.OrderStatus)))
+                opt => opt.MapFrom(src => Enum.Parse<OrderStatus>(src.OrderStatus, true)))
                 .ForMember(dest => dest.OrderDate,
                 opt => opt.MapFrom(src => DateTime.UtcNow));
 

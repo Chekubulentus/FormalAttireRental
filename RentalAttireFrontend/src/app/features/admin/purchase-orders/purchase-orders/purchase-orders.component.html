@@ -71,40 +71,45 @@
     <p>No purchase orders found.</p>
   </div>
 
-  <table class="po-table" *ngIf="!isLoading && purchaseOrders.length > 0">
-    <thead>
-      <tr>
-        <th>PO Code</th>
-        <th>Supplier</th>
-        <th>Order Date</th>
-        <th>Expected Delivery</th>
-        <th>Issued By</th>
-        <th>Status</th>
-        <th>Total</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let po of purchaseOrders; let i = index" [style.animation-delay.ms]="i * 35">
-        <td class="po-code">{{ po.purchaseOrderCode }}</td>
-        <td>{{ po.supplierName }}</td>
-        <td>{{ po.orderDate | date:'MMM d, y' }}</td>
-        <td>{{ po.expectedDeliveryDate | date:'MMM d, y' }}</td>
-        <td>{{ po.employeeName }}</td>
-        <td>
-          <span class="status-badge" [ngClass]="statusClass(po.orderStatus)">
-            {{ po.orderStatus }}
-          </span>
-        </td>
-        <td class="amount">₱{{ po.totalAmount | number:'1.2-2' }}</td>
-        <td class="actions">
-          <button class="action-btn view" (click)="viewPurchaseOrder(po)">View</button>
-          <button class="action-btn edit" *ngIf="canEdit(po)" (click)="editPurchaseOrder(po)">Edit</button>
-          <button class="action-btn receive" *ngIf="canReceive(po)" (click)="receivePurchaseOrder(po)">Receive</button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <!-- Scroll container: on narrow screens the table scrolls horizontally
+       instead of crushing columns or overflowing the page — same
+       overflow-x approach already used for .stock-alerts-scroll. -->
+  <div class="po-table-wrapper" *ngIf="!isLoading && purchaseOrders.length > 0">
+    <table class="po-table">
+      <thead>
+        <tr>
+          <th>PO Code</th>
+          <th>Supplier</th>
+          <th>Order Date</th>
+          <th>Expected Delivery</th>
+          <th>Issued By</th>
+          <th>Status</th>
+          <th>Total</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let po of purchaseOrders; let i = index" [style.animation-delay.ms]="i * 35">
+          <td class="po-code">{{ po.purchaseOrderCode }}</td>
+          <td>{{ po.supplierName }}</td>
+          <td>{{ po.orderDate | date:'MMM d, y' }}</td>
+          <td>{{ po.expectedDeliveryDate | date:'MMM d, y' }}</td>
+          <td>{{ po.employeeName }}</td>
+          <td>
+            <span class="status-badge" [ngClass]="statusClass(po.orderStatus)">
+              {{ po.orderStatus }}
+            </span>
+          </td>
+          <td class="amount">₱{{ po.totalAmount | number:'1.2-2' }}</td>
+          <td class="actions">
+            <button class="action-btn view" (click)="viewPurchaseOrder(po)">View</button>
+            <button class="action-btn edit" *ngIf="canEdit(po)" (click)="editPurchaseOrder(po)">Edit</button>
+            <button class="action-btn receive" *ngIf="canReceive(po)" (click)="receivePurchaseOrder(po)">Receive</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
   <div class="pagination" *ngIf="!isLoading && totalPages > 1">
     <span class="range-label">{{ rangeStart }}–{{ rangeEnd }} of {{ totalCount }}</span>

@@ -18,6 +18,10 @@ $blue:         #3d6fb4;
 // ── Interaction language ─────────────────────────────────────────────────────
 $spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 
+// ── Breakpoints ───────────────────────────────────────────────────────────────
+$bp-tablet: 900px;
+$bp-mobile: 600px;
+
 // ── Animations ───────────────────────────────────────────────────────────────
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(8px); }
@@ -45,11 +49,16 @@ $spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   margin: 0 auto;
   font-family: 'DM Sans', sans-serif;
   color: $text;
+
+  @media (max-width: $bp-tablet) { padding: 1.5rem; }
+  @media (max-width: $bp-mobile) { padding: 1rem; }
 }
 
 // ── Header ────────────────────────────────────────────────────────────────────
 .cpo-header {
   margin-bottom: 2rem;
+
+  @media (max-width: $bp-mobile) { margin-bottom: 1.25rem; }
 }
 
 .back-btn {
@@ -92,14 +101,17 @@ $spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   font-weight: 400;
   margin: 0;
   color: $text;
+
+  @media (max-width: $bp-mobile) { font-size: 1.4rem; }
 }
 
 // ── Step track ────────────────────────────────────────────────────────────────
 .step-track {
   display: flex;
   align-items: center;
-  gap: 0;
   margin-bottom: 2rem;
+
+  @media (max-width: $bp-mobile) { margin-bottom: 1.25rem; }
 }
 
 .step-track__item {
@@ -119,6 +131,7 @@ $spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   font-size: 0.75rem;
   font-weight: 500;
   color: $text-soft;
+  flex-shrink: 0;
   transition: all 0.3s ease;
   background: $surface;
 
@@ -145,6 +158,9 @@ $spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   font-weight: 500;
   color: $text-soft;
   transition: color 0.3s ease;
+  white-space: nowrap;
+
+  @media (max-width: $bp-mobile) { font-size: 0.75rem; }
 
   .step-track__item--active & { color: $text; }
   .step-track__item--done & { color: $green; }
@@ -156,6 +172,8 @@ $spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   background: $border;
   margin: 0 1rem;
   transition: background 0.4s ease;
+
+  @media (max-width: $bp-mobile) { margin: 0 0.5rem; }
 
   &--done { background: $green; }
 }
@@ -172,6 +190,11 @@ $spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   border-radius: 14px;
   padding: 1.75rem;
   max-width: 720px;
+
+  @media (max-width: $bp-mobile) {
+    padding: 1.25rem;
+    border-radius: 12px;
+  }
 }
 
 .supplier-panel__header {
@@ -196,7 +219,13 @@ $spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   position: relative;
   margin-bottom: 1rem;
 
-  &--sm { margin-bottom: 0; width: 260px; }
+  // On mobile the fixed-width small search becomes full width
+  &--sm {
+    margin-bottom: 0;
+    width: 260px;
+
+    @media (max-width: $bp-mobile) { width: 100%; }
+  }
 
   &__icon {
     position: absolute;
@@ -240,6 +269,8 @@ $spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   max-height: 420px;
   overflow-y: auto;
   padding-right: 2px;
+
+  @media (max-width: $bp-mobile) { max-height: 320px; }
 }
 
 .supplier-card {
@@ -351,12 +382,18 @@ $spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   font-size: 0.85rem;
 }
 
-// ── Step 2 layout ──────────────────────────────────────────────────────────────
+// ── Step 2 layout ─────────────────────────────────────────────────────────────
+// Desktop: side-by-side (picker left, summary right)
+// Tablet/mobile: stacked (summary moves below picker)
 .cpo-layout {
   display: grid;
   grid-template-columns: 1fr 380px;
   gap: 1.5rem;
   align-items: start;
+
+  @media (max-width: $bp-tablet) {
+    grid-template-columns: 1fr;
+  }
 }
 
 // ── Clothes picker (left) ─────────────────────────────────────────────────────
@@ -374,6 +411,13 @@ $spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   gap: 1rem;
   padding: 1.25rem 1.5rem;
   border-bottom: 1px solid $border;
+
+  // Stack title + search vertically on mobile
+  @media (max-width: $bp-mobile) {
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1rem;
+  }
 }
 
 .cpo-picker__title {
@@ -408,12 +452,17 @@ $spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   overflow-x: auto;
   max-height: 560px;
   overflow-y: auto;
+
+  @media (max-width: $bp-tablet) { max-height: 400px; }
 }
 
 .clothes-table {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.84rem;
+  // min-width prevents the table from collapsing into unreadable columns
+  // on small screens — the wrapper's overflow-x: auto handles scrolling
+  min-width: 480px;
 
   thead th {
     position: sticky;
@@ -542,7 +591,8 @@ $spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 
 .skeleton-row td { padding: 0.75rem 1rem; }
 
-// ── Summary panel (right) ──────────────────────────────────────────────────────
+// ── Summary panel (right) ─────────────────────────────────────────────────────
+// Sticky on desktop; flows normally when stacked on tablet/mobile
 .cpo-summary {
   background: $surface;
   border: 1px solid $border;
@@ -550,11 +600,17 @@ $spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   overflow: hidden;
   position: sticky;
   top: 1.5rem;
+
+  @media (max-width: $bp-tablet) {
+    position: static;
+  }
 }
 
 .summary-section {
   padding: 1.25rem 1.5rem;
   border-bottom: 1px solid $border;
+
+  @media (max-width: $bp-mobile) { padding: 1rem; }
 }
 
 .summary-section__title {
@@ -606,6 +662,8 @@ $spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   font-family: 'DM Sans', sans-serif;
   color: $text;
   background: $bg;
+  width: 100%;
+  box-sizing: border-box;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
 
   &:focus {
@@ -647,6 +705,12 @@ $spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   max-height: 340px;
   overflow-y: auto;
   padding-right: 2px;
+
+  @media (max-width: $bp-tablet) {
+    // When stacked, don't cap the summary panel height —
+    // let it expand so the user doesn't have to scroll inside a scroll
+    max-height: none;
+  }
 }
 
 .line-item {
@@ -715,7 +779,6 @@ $spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   background: $bg;
   border: 1px solid $border;
   border-radius: 7px;
-  // matches qty-input height so the row stays vertically aligned
 }
 
 .qty-input {
@@ -775,6 +838,8 @@ $spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   padding: 1rem 1.5rem;
   border-bottom: 1px solid $border;
 
+  @media (max-width: $bp-mobile) { padding: 0.875rem 1rem; }
+
   &__label {
     font-size: 0.82rem;
     font-weight: 500;
@@ -794,6 +859,14 @@ $spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
+
+  @media (max-width: $bp-mobile) {
+    flex-direction: column;
+    align-items: stretch;
+
+    .btn-ghost { order: 2; text-align: center; }
+    .btn-primary { order: 1; }
+  }
 }
 
 .summary-actions {
@@ -803,9 +876,20 @@ $spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   justify-content: space-between;
   gap: 0.75rem;
 
+  @media (max-width: $bp-mobile) {
+    padding: 1rem;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+
   &__submit {
     display: flex;
     gap: 0.5rem;
+
+    @media (max-width: $bp-mobile) {
+      flex-direction: column;
+    }
   }
 }
 
@@ -821,6 +905,8 @@ $spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   font-family: 'DM Sans', sans-serif;
   cursor: pointer;
   transition: transform 0.28s $spring, box-shadow 0.2s ease, background 0.2s ease;
+
+  @media (max-width: $bp-mobile) { width: 100%; }
 
   &:hover:not(:disabled) {
     transform: translateY(-2px) scale(1.03);
@@ -849,6 +935,8 @@ $spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   font-family: 'DM Sans', sans-serif;
   cursor: pointer;
   transition: transform 0.28s $spring, border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+
+  @media (max-width: $bp-mobile) { width: 100%; }
 
   &:hover:not(:disabled) {
     border-color: $gold-border;

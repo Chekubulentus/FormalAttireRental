@@ -138,6 +138,16 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
                 .ToListAsync(cancellationToken);
         }
 
+        public async Task<List<Clothe>> GetRangeOfClothesByIdsAsync(List<int> clotheIds, CancellationToken cancellationToken)
+        {
+            return await _context.Clothes
+                .Include(c => c.Category)
+                .Include(c => c.Supplier)
+                .AsNoTracking()
+                .Where(c => clotheIds.Contains(c.Id) && c.IsActive == true && c.IsDeleted == false)
+                .ToListAsync(cancellationToken);
+        }
+
         public async Task<bool> UpdateClotheAsync(Clothe clothe, CancellationToken cancellationToken)
         {
             _context.Clothes.Update(clothe);

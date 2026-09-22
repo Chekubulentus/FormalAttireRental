@@ -5,6 +5,5 @@
         public int ClotheId { get; set; }
         public int Quantity { get; set; }
         public double UnitCost { get; set; }
-        public int SupplierId { get; set; }
     }
 }
