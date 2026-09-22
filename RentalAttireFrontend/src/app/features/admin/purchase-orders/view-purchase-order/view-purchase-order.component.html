@@ -1,0 +1,124 @@
+<div class="vpo-overlay" *ngIf="isOpen" (click)="onBackdropClick($event)">
+  <div class="vpo-modal">
+
+    <!-- ── Header ─────────────────────────────────────────────────────── -->
+    <div class="vpo-header">
+      <div class="vpo-header__text">
+        <p class="vpo-header__eyebrow">Purchase Order</p>
+        <h2 class="vpo-header__title">
+          {{ isLoading ? 'Loading…' : (purchaseOrder?.purchaseOrderCode ?? 'Not found') }}
+        </h2>
+      </div>
+      <button class="vpo-close" (click)="close()" title="Close">
+        <svg viewBox="0 0 20 20" fill="none">
+          <path d="M5 5L15 15M15 5L5 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- ── Loading skeleton ───────────────────────────────────────────── -->
+    <div class="vpo-body vpo-loading" *ngIf="isLoading">
+      <div class="skeleton skeleton--title" style="width: 45%;"></div>
+      <div class="skeleton skeleton--sub" style="width: 65%; margin-top: 0.6rem;"></div>
+      <div class="skeleton skeleton--sub" style="width: 55%; margin-top: 0.4rem;"></div>
+    </div>
+
+    <!-- ── Error ──────────────────────────────────────────────────────── -->
+    <div class="vpo-body vpo-error" *ngIf="!isLoading && loadError">
+      <p>{{ loadError }}</p>
+    </div>
+
+    <!-- ── Loaded content ─────────────────────────────────────────────── -->
+    <div class="vpo-body" *ngIf="!isLoading && !loadError && purchaseOrder as po">
+
+      <!-- Status + key info -->
+      <div class="vpo-summary-row">
+        <span class="status-badge" [ngClass]="statusClass(po.orderStatus)">
+          {{ statusLabel(po.orderStatus) }}
+        </span>
+        <span class="vpo-summary-row__total">{{ formatCurrency(po.totalAmount) }}</span>
+      </div>
+
+      <div class="vpo-info-grid">
+        <div class="vpo-info-field">
+          <p class="vpo-info-field__label">Supplier</p>
+          <p class="vpo-info-field__value">{{ po.supplierName }}</p>
+        </div>
+        <div class="vpo-info-field">
+          <p class="vpo-info-field__label">Issued By</p>
+          <p class="vpo-info-field__value">{{ po.employeeName }}</p>
+        </div>
+        <div class="vpo-info-field">
+          <p class="vpo-info-field__label">Order Date</p>
+          <p class="vpo-info-field__value">{{ formatDate(po.orderDate) }}</p>
+        </div>
+        <div class="vpo-info-field">
+          <p class="vpo-info-field__label">Expected Delivery</p>
+          <p class="vpo-info-field__value">{{ formatDate(po.expectedDeliveryDate) }}</p>
+        </div>
+      </div>
+
+      <!-- Line items -->
+      <div class="vpo-section">
+        <h3 class="vpo-section__title">Items</h3>
+        <div class="vpo-table-wrap">
+          <table class="vpo-table">
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th class="col-num">Ordered</th>
+                <th class="col-num">Received</th>
+                <th class="col-num">Remaining</th>
+                <th class="col-num">Unit Cost</th>
+                <th class="col-num">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of po.purchaseOrderItems">
+                <td>
+                  <p class="item-name">{{ item.clothe.clotheName }}</p>
+                  <p class="item-code">{{ item.clothe.clotheCode }}</p>
+                </td>
+                <td class="col-num">{{ item.orderedQuantity }}</td>
+                <td class="col-num">{{ item.receivedQuantity }}</td>
+                <td class="col-num">{{ item.orderedQuantity - item.receivedQuantity }}</td>
+                <td class="col-num">{{ formatCurrency(item.unitCost) }}</td>
+                <td class="col-num item-total">{{ formatCurrency(item.totalAmount) }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Receiving history -->
+      <div class="vpo-section">
+        <h3 class="vpo-section__title">Receiving History</h3>
+
+        <div class="receiving-empty" *ngIf="receivingHistory.length === 0">
+          <p>No stock has been received against this order yet.</p>
+        </div>
+
+        <div class="receiving-list" *ngIf="receivingHistory.length > 0">
+          <div class="receiving-entry" *ngFor="let batch of receivingHistory">
+            <div class="receiving-entry__header">
+              <span class="receiving-entry__code">{{ batch.receivingBatchCode }}</span>
+              <span class="receiving-entry__meta">{{ formatDate(batch.receivedDate) }} · {{ batch.employeeName }}</span>
+            </div>
+            <ul class="receiving-entry__items">
+              <li *ngFor="let item of batch.items">
+                {{ item.clotheName }} — <strong>{{ item.quantityReceived }}</strong> received
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ── Footer ─────────────────────────────────────────────────────── -->
+    <div class="vpo-footer">
+      <button class="btn-ghost" (click)="close()">Close</button>
+    </div>
+
+  </div>
+</div>

@@ -280,6 +280,7 @@ $green:       #27ae60;
 
   &.cols-2 { grid-template-columns: 1fr 1fr; }
   &.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+  &.cols-4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
 }
 
 
@@ -298,6 +299,24 @@ $green:       #27ae60;
   font-weight: 500;
   color: $text-soft;
   transition: color 0.15s;
+}
+
+.field-hint {
+  display: block;
+  font-size: 0.64rem;
+  font-weight: 300;
+  color: $text-muted;
+  margin-top: 0.1rem;
+}
+ 
+// Ensures label areas in a field-row stay the same height
+// even when one label has a hint line and the other doesn't.
+// Add this to create-clothe.component.scss.
+.field-row .field-label {
+  min-height: 2.4rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
 }
 
 .required { color: $red;        font-size: 0.68rem; }

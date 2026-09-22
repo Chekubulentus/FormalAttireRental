@@ -113,6 +113,20 @@ export const ADMIN_ROUTES: Routes = [
           return import('./purchase-orders/create-purchase-order/create-purchase-order.component')
           .then(m => m.CreatePurchaseOrderComponent)
         }
+      },
+      {
+        path: 'edit-purchase-order',
+        loadComponent: () => {
+          return import('./purchase-orders/edit-purchase-order/edit-purchase-order.component')
+          .then(m => m.EditPurchaseOrderComponent)
+        }
+      },
+      {
+        path: 'view-purchase-order',
+        loadComponent: () => {
+          return import('./purchase-orders/view-purchase-order/view-purchase-order.component')
+          .then(m => m.ViewPurchaseOrderComponent)
+        }
       }
     ],
   },

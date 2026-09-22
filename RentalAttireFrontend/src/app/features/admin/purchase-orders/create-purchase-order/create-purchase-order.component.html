@@ -280,15 +280,7 @@
                 </div>
                 <div class="cost-field">
                   <label class="qty-label">Unit Cost</label>
-                  <input
-                    type="number"
-                    class="qty-input"
-                    [class.qty-input--error]="hasError('cost_' + i)"
-                    [(ngModel)]="li.unitCost"
-                    min="0.01"
-                    step="0.01"
-                    (click)="$event.stopPropagation()"
-                  />
+                  <p class="unit-cost-display">{{ formatCurrency(li.unitCost) }}</p>
                 </div>
                 <button
                   class="remove-btn"

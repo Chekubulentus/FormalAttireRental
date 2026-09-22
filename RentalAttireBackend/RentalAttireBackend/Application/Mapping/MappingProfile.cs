@@ -20,6 +20,7 @@ using RentalAttireBackend.Application.Employees.DTOs;
 using RentalAttireBackend.Application.Persons.Commands.UpdatePerson;
 using RentalAttireBackend.Application.Persons.DTO;
 using RentalAttireBackend.Application.PurchaseOrderItems.DTOs;
+using RentalAttireBackend.Application.PurchaseOrders.Commands.CreatePurchaseOrder;
 using RentalAttireBackend.Application.PurchaseOrders.DTOs;
 using RentalAttireBackend.Application.Rentals.Commands.RentalTransaction;
 using RentalAttireBackend.Application.Rentals.DTOs;
@@ -509,6 +510,35 @@ namespace RentalAttireBackend.Application.Mapping
 
             #region PurchaseOrderItem -> PurchaseOrderItemDTO
             CreateMap<PurchaseOrderItem, PurchaseOrderItemDTO>();
+            #endregion
+
+            #region LineItem -> PurchaseOrderItem
+            CreateMap<LineItem, PurchaseOrderItem>()
+                .ForMember(dest => dest.ClotheId,
+                opt => opt.MapFrom(src => src.ClotheId))
+                .ForMember(dest => dest.OrderedQuantity,
+                opt => opt.MapFrom(src => src.Quantity))
+                .ForMember(dest => dest.ReceivedQuantity,
+                opt => opt.Ignore())
+                .ForMember(dest => dest.PurchaseOrderId,
+                opt => opt.Ignore())
+                .ForMember(dest => dest.OriginalSupplierId,
+                opt => opt.MapFrom(src => src.SupplierId));
+            #endregion
+
+            #region CreatePurchaseOrderCommand -> PurchaseOrder
+            CreateMap<CreatePurchaseOrderCommand, PurchaseOrder>()
+                .ForMember(dest => dest.PurchaseOrderItems,
+                opt => opt.Ignore())
+                .ForMember(dest => dest.EmployeeId,
+                opt => opt.Ignore())
+                .ForMember(dest => dest.SupplierId,
+                opt => opt.MapFrom(src => src.SupplierId))
+                .ForMember(dest => dest.OrderStatus,
+                opt => opt.MapFrom(src => Enum.Parse<OrderStatus>(src.OrderStatus)))
+                .ForMember(dest => dest.OrderDate,
+                opt => opt.MapFrom(src => DateTime.UtcNow));
+
             #endregion
         }
     }

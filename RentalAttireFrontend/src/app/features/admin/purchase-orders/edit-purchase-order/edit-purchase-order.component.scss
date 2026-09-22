@@ -1,4 +1,4 @@
-// ── Design tokens ────────────────────────────────────────────────────────────
+// ── Design tokens (same as CreatePurchaseOrderComponent) ──────────────────────
 $surface:      #fff;
 $bg:           #f9f7f5;
 $border:       #e4ddd6;
@@ -10,10 +10,7 @@ $text-muted:   #6b6560;
 $text-soft:    #9c9490;
 $red:          #c0392b;
 $green:        #2e7d4f;
-$green-dim:    rgba(46, 125, 79, 0.08);
-$green-border: rgba(46, 125, 79, 0.3);
 $amber:        #b45309;
-$blue:         #3d6fb4;
 
 // ── Interaction language ─────────────────────────────────────────────────────
 $spring: cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -40,7 +37,7 @@ $spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 // ── Page shell ───────────────────────────────────────────────────────────────
-.cpo-page {
+.epo-page {
   padding: 2rem 2.5rem;
   margin: 0 auto;
   font-family: 'DM Sans', sans-serif;
@@ -48,7 +45,7 @@ $spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 // ── Header ────────────────────────────────────────────────────────────────────
-.cpo-header {
+.epo-header {
   margin-bottom: 2rem;
 }
 
@@ -77,7 +74,7 @@ $spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 }
 
-.cpo-header__eyebrow {
+.epo-header__eyebrow {
   font-size: 0.72rem;
   font-weight: 500;
   color: $gold;
@@ -86,7 +83,7 @@ $spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   margin: 0 0 0.25rem;
 }
 
-.cpo-header__title {
+.epo-header__title {
   font-family: 'DM Serif Display', serif;
   font-size: 1.75rem;
   font-weight: 400;
@@ -94,109 +91,77 @@ $spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   color: $text;
 }
 
-// ── Step track ────────────────────────────────────────────────────────────────
-.step-track {
-  display: flex;
-  align-items: center;
-  gap: 0;
-  margin-bottom: 2rem;
-}
-
-.step-track__item {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-}
-
-.step-track__dot {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  border: 2px solid $border;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.75rem;
-  font-weight: 500;
-  color: $text-soft;
-  transition: all 0.3s ease;
-  background: $surface;
-
-  svg {
-    width: 14px;
-    height: 14px;
-    color: $surface;
-  }
-
-  .step-track__item--active & {
-    border-color: $gold;
-    color: $gold;
-  }
-
-  .step-track__item--done & {
-    border-color: $green;
-    background: $green;
-    color: $surface;
-  }
-}
-
-.step-track__label {
-  font-size: 0.82rem;
-  font-weight: 500;
-  color: $text-soft;
-  transition: color 0.3s ease;
-
-  .step-track__item--active & { color: $text; }
-  .step-track__item--done & { color: $green; }
-}
-
-.step-track__line {
-  flex: 1;
-  height: 1px;
-  background: $border;
-  margin: 0 1rem;
-  transition: background 0.4s ease;
-
-  &--done { background: $green; }
-}
-
-// ── Steps wrapper ─────────────────────────────────────────────────────────────
-.cpo-step {
-  animation: fadeUp 0.35s ease both;
-}
-
-// ── Step 1 — Supplier panel ───────────────────────────────────────────────────
-.supplier-panel {
-  background: $surface;
-  border: 1px solid $border;
-  border-radius: 14px;
-  padding: 1.75rem;
+// ── Loading / error states ─────────────────────────────────────────────────────
+.epo-loading {
   max-width: 720px;
 }
 
-.supplier-panel__header {
-  margin-bottom: 1.25rem;
+.epo-error {
+  background: $surface;
+  border: 1px solid $border;
+  border-radius: 14px;
+  padding: 2rem;
+  max-width: 520px;
+  text-align: center;
+
+  p {
+    font-size: 0.88rem;
+    color: $text-muted;
+    margin: 0 0 1rem;
+  }
 }
 
-.supplier-panel__title {
+// ── Layout (item picker + summary, no step wizard) ─────────────────────────────
+.epo-layout {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 1.5rem;
+  align-items: start;
+  animation: fadeUp 0.35s ease both;
+}
+
+// ── Clothes picker (left) ─────────────────────────────────────────────────────
+.epo-picker {
+  background: $surface;
+  border: 1px solid $border;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.epo-picker__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid $border;
+}
+
+.epo-picker__title {
   font-family: 'DM Serif Display', serif;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   font-weight: 400;
-  margin: 0 0 0.25rem;
+  margin: 0 0 0.2rem;
 }
 
-.supplier-panel__sub {
-  font-size: 0.82rem;
+.epo-picker__sub {
+  font-size: 0.8rem;
   color: $text-muted;
   margin: 0;
+}
+
+.epo-picker__lock-note {
+  display: block;
+  font-size: 0.72rem;
+  color: $text-soft;
+  margin-top: 0.15rem;
 }
 
 // ── Search field ─────────────────────────────────────────────────────────────
 .search-field {
   position: relative;
-  margin-bottom: 1rem;
 
-  &--sm { margin-bottom: 0; width: 260px; }
+  &--sm { width: 260px; }
 
   &__icon {
     position: absolute;
@@ -229,178 +194,6 @@ $spring: cubic-bezier(0.34, 1.56, 0.64, 1);
       box-shadow: 0 0 0 3px $gold-dim;
     }
   }
-}
-
-// ── Supplier list ─────────────────────────────────────────────────────────────
-.supplier-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  margin-bottom: 1.5rem;
-  max-height: 420px;
-  overflow-y: auto;
-  padding-right: 2px;
-}
-
-.supplier-card {
-  display: flex;
-  align-items: center;
-  gap: 0.875rem;
-  padding: 0.875rem 1rem;
-  border: 1.5px solid $border;
-  border-radius: 10px;
-  background: $surface;
-  cursor: pointer;
-  text-align: left;
-  width: 100%;
-  animation: fadeUp 0.3s ease both;
-  transition: border-color 0.2s ease, background 0.2s ease, transform 0.28s $spring, box-shadow 0.2s ease;
-
-  &:hover {
-    border-color: $gold-border;
-    background: $gold-dim;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-  }
-
-  &:active {
-    transform: translateY(0) scale(0.98);
-    transition-duration: 0.1s;
-  }
-
-  &--selected {
-    border-color: $gold;
-    background: $gold-dim;
-
-    .supplier-card__check {
-      opacity: 1;
-      transform: scale(1);
-    }
-  }
-
-  &--skeleton {
-    pointer-events: none;
-    cursor: default;
-    &:hover { transform: none; box-shadow: none; }
-  }
-}
-
-.supplier-card__check {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: $gold;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  opacity: 0;
-  transform: scale(0);
-  transition: opacity 0.25s $spring, transform 0.25s $spring;
-
-  svg {
-    width: 11px;
-    height: 11px;
-    color: $surface;
-  }
-}
-
-.supplier-card__body {
-  flex: 1;
-  min-width: 0;
-}
-
-.supplier-card__name {
-  font-size: 0.88rem;
-  font-weight: 500;
-  margin: 0 0 0.15rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.supplier-card__meta {
-  font-size: 0.75rem;
-  color: $text-muted;
-  margin: 0;
-}
-
-.supplier-card__clothes-count {
-  text-align: right;
-  flex-shrink: 0;
-
-  span {
-    display: block;
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: $gold;
-    line-height: 1;
-  }
-
-  p {
-    font-size: 0.7rem;
-    color: $text-soft;
-    margin: 0.1rem 0 0;
-  }
-}
-
-.supplier-empty {
-  text-align: center;
-  padding: 2rem;
-  color: $text-muted;
-  font-size: 0.85rem;
-}
-
-// ── Step 2 layout ──────────────────────────────────────────────────────────────
-.cpo-layout {
-  display: grid;
-  grid-template-columns: 1fr 380px;
-  gap: 1.5rem;
-  align-items: start;
-}
-
-// ── Clothes picker (left) ─────────────────────────────────────────────────────
-.cpo-picker {
-  background: $surface;
-  border: 1px solid $border;
-  border-radius: 14px;
-  overflow: hidden;
-}
-
-.cpo-picker__header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 1rem;
-  padding: 1.25rem 1.5rem;
-  border-bottom: 1px solid $border;
-}
-
-.cpo-picker__title {
-  font-family: 'DM Serif Display', serif;
-  font-size: 1.1rem;
-  font-weight: 400;
-  margin: 0 0 0.2rem;
-}
-
-.cpo-picker__sub {
-  font-size: 0.8rem;
-  color: $text-muted;
-  margin: 0;
-}
-
-.inline-link {
-  background: none;
-  border: none;
-  color: $gold;
-  cursor: pointer;
-  font-size: 0.8rem;
-  padding: 0;
-  text-decoration: underline;
-  text-underline-offset: 2px;
-  transition: color 0.2s ease;
-
-  &:hover { color: darken($gold, 10%); }
 }
 
 // ── Clothes table ─────────────────────────────────────────────────────────────
@@ -543,7 +336,7 @@ $spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 .skeleton-row td { padding: 0.75rem 1rem; }
 
 // ── Summary panel (right) ──────────────────────────────────────────────────────
-.cpo-summary {
+.epo-summary {
   background: $surface;
   border: 1px solid $border;
   border-radius: 14px;
@@ -715,7 +508,6 @@ $spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   background: $bg;
   border: 1px solid $border;
   border-radius: 7px;
-  // matches qty-input height so the row stays vertically aligned
 }
 
 .qty-input {
@@ -789,13 +581,6 @@ $spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 // ── Action buttons ─────────────────────────────────────────────────────────────
-.step-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-}
-
 .summary-actions {
   padding: 1.25rem 1.5rem;
   display: flex;
@@ -809,7 +594,7 @@ $spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   }
 }
 
-// ── Shared button styles ──────────────────────────────────────────────────────
+// ── Shared button styles (same as CreatePurchaseOrderComponent) ────────────────
 .btn-primary {
   padding: 0.6rem 1.25rem;
   background: $gold;

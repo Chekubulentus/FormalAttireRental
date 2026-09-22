@@ -62,8 +62,6 @@ export class CreatePurchaseOrderComponent implements OnInit {
     this.lineItems.forEach((item, i) => {
       if (!item.orderedQuantity || item.orderedQuantity < 1)
         e[`qty_${i}`] = 'Quantity must be at least 1.';
-      if (!item.unitCost || item.unitCost <= 0)
-        e[`cost_${i}`] = 'Unit cost must be greater than 0.';
     });
     return e;
   }
@@ -96,17 +94,16 @@ export class CreatePurchaseOrderComponent implements OnInit {
   async loadSuppliers(): Promise<void> {
     this.isSuppliersLoading = true;
 
-    //FETCH ALL SUPPLIERS
     this.supplierService.getAllSuppliersAsync()
-    .then(res => {
-      this.suppliers = res.data ?? [];
-    }).catch(err => {
-      this.toastr.error(err.error);
-    }).finally(() => {
-      this.isSuppliersLoading = false;
-    })
-
-    this.isSuppliersLoading = false;
+      .then(res => {
+        this.suppliers = res.data ?? [];
+      })
+      .catch(err => {
+        this.toastr.error(err.error);
+      })
+      .finally(() => {
+        this.isSuppliersLoading = false;
+      });
   }
 
   get filteredSuppliers(): SupplierSummaryDTO[] {
@@ -141,17 +138,17 @@ export class CreatePurchaseOrderComponent implements OnInit {
   async loadClothesForSupplier(supplierId: number): Promise<void> {
     this.isClothesLoading = true;
 
-    this.supplierService.getAllSupplierClothesByIdAsync(
-      this.selectedSupplier?.id ?? 0
-    ).then(res => {
-      if(!res.isSuccess) {
-        this.availableClothes = [];
-        return;
-      }
-      this.availableClothes = res.data ?? [];
-    }).finally(() => {
-      this.isClothesLoading = false;
-    });
+    this.supplierService.getAllSupplierClothesByIdAsync(supplierId)
+      .then(res => {
+        if (!res.isSuccess) {
+          this.availableClothes = [];
+          return;
+        }
+        this.availableClothes = res.data ?? [];
+      })
+      .finally(() => {
+        this.isClothesLoading = false;
+      });
   }
 
   get filteredClothes(): ClotheDTO[] {
@@ -177,6 +174,8 @@ export class CreatePurchaseOrderComponent implements OnInit {
         {
           clothe,
           orderedQuantity: 1,
+          // unitCost is a snapshot of Clothe.UnitCost at line-item creation time.
+          // It is read-only in the UI — the user never edits it here.
           unitCost: clothe.unitCost,
         },
       ];

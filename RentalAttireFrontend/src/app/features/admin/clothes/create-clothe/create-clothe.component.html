@@ -206,9 +206,8 @@
     <section class="form-section">
       <div class="section-label"><span class="dot"></span>Pricing</div>
 
-      <div class="field-row cols-3">
+      <div class="field-row cols-4">
 
-        <!-- Rental Price -->
         <div class="field" [class.invalid]="hasError('rentalPrice')">
           <label class="field-label">Rental Price <span class="required">*</span></label>
           <div class="prefix-wrap">
@@ -219,7 +218,6 @@
           <span class="error-msg" *ngIf="hasError('rentalPrice')">{{ errorMsg('rentalPrice') }}</span>
         </div>
 
-        <!-- Deposit Amount -->
         <div class="field" [class.invalid]="hasError('depositAmount')">
           <label class="field-label">Deposit Amount <span class="required">*</span></label>
           <div class="prefix-wrap">
@@ -230,7 +228,16 @@
           <span class="error-msg" *ngIf="hasError('depositAmount')">{{ errorMsg('depositAmount') }}</span>
         </div>
 
-        <!-- Rental Duration -->
+        <div class="field" [class.invalid]="hasError('unitCost')">
+          <label class="field-label">Unit Cost <span class="required">*</span></label>
+          <div class="prefix-wrap">
+            <span class="prefix">₱</span>
+            <input class="field-input prefixed" type="number" placeholder="800" min="0"
+              [(ngModel)]="form.unitCost"/>
+          </div>
+          <span class="error-msg" *ngIf="hasError('unitCost')">{{ errorMsg('unitCost') }}</span>
+        </div>
+
         <div class="field" [class.invalid]="hasError('rentalDurationDays')">
           <label class="field-label">Duration (days) <span class="required">*</span></label>
           <div class="suffix-wrap">
