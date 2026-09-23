@@ -121,6 +121,13 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
                 .FirstOrDefaultAsync(po => po.Id == id, cancellationToken);
         }
 
+        public async Task<PurchaseOrder?> GetPurchaseOrderByIdAsync(int id, CancellationToken cancellationToken)
+        {
+            return await _context.PurchaseOrders
+                .Include(po => po.PurchaseOrderItems)
+                .FirstOrDefaultAsync(po => po.Id == id, cancellationToken);
+        }
+
         public async Task<bool> UpdatePurchaseOrderAsync(PurchaseOrder purchaseOrder, CancellationToken cancellationToken)
         {
             _context.PurchaseOrders.Update(purchaseOrder);

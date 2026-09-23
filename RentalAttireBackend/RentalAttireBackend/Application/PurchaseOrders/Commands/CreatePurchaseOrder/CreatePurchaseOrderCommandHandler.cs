@@ -108,6 +108,19 @@ namespace RentalAttireBackend.Application.PurchaseOrders.Commands.CreatePurchase
                         );
                 }
 
+                purchaseOrder.PurchaseOrderCode = GeneratePurchaseOrderCode(supplier.SupplierCode);
+
+                var purchaseOrderCode = await _purchaseOrderRepository.UpdatePurchaseOrderAsync(purchaseOrder, cancellationToken);
+
+                if(!purchaseOrderCode)
+                {
+                    await _transactionManager.RollbackTransactionAsync(cancellationToken);
+                    return Result<bool>.FailureWithErrorType(
+                        "Failed to generate purchase order code",
+                        ErrorType.BadRequest
+                        );
+                }
+
                 var auditLog = await _auditLogService.CreateAuditLogAsync(
                     purchaseOrder,
                     currentUser.Employee.Id,
@@ -125,12 +138,21 @@ namespace RentalAttireBackend.Application.PurchaseOrders.Commands.CreatePurchase
                 }
 
                 await _transactionManager.CommitTransacionAsync(cancellationToken);
-                return Result<bool>.SuccessWithMessage("Purchase Order successfully requested");
+                return Result<bool>.SuccessWithMessage("Order successfully placed");
             }catch(Exception)
             {
                 await _transactionManager.RollbackTransactionAsync(cancellationToken);
                 throw;
             }
+        }
+
+        private static string GeneratePurchaseOrderCode(string supplierCode)
+        {
+            var prefix = supplierCode
+                [..Math.Min(4, supplierCode.Length)]
+                .ToUpper();
+            var suffix = Guid.NewGuid().ToString("N")[..6].ToUpper();
+            return $"PO-{prefix}-{suffix}";
         }
     }
 }

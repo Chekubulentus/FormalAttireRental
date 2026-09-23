@@ -33,12 +33,12 @@ namespace RentalAttireBackend.Application.PurchaseOrders.Commands.CreatePurchase
             var allowedStatuses = new List<OrderStatus>() {
                 OrderStatus.Draft,
                 OrderStatus.Ordered
-             }.Select(x => x.ToString()).ToList();
+             }.Select(x => x.ToString().ToLower()).ToList();
 
             RuleFor(x => x.OrderStatus)
                 .NotEmpty()
                 .WithMessage("Order status is empty")
-                .Must(x => allowedStatuses.Contains(x));
+                .Must(x => allowedStatuses.Contains(x, StringComparer.OrdinalIgnoreCase));
         }
     }
 }

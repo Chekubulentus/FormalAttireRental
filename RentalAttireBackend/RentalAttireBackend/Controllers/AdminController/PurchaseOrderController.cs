@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RentalAttireBackend.Application.Common.Extensions;
+using RentalAttireBackend.Application.PurchaseOrders.Commands.CreatePurchaseOrder;
 using RentalAttireBackend.Application.PurchaseOrders.Queries.FilterPurchaseOrders;
+using RentalAttireBackend.Application.PurchaseOrders.Queries.GetPurchaseOrderById;
 
 namespace RentalAttireBackend.Controllers.AdminController
 {
@@ -44,6 +46,22 @@ namespace RentalAttireBackend.Controllers.AdminController
             });
 
             return result.ToActionResult(this, _httpContextAccessor);
-        } 
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreatePurchaseOrderAsync(CreatePurchaseOrderCommand command)
+        {
+            var result = await _mediator.Send(command);
+
+            return result.ToActionResult(this, _httpContextAccessor);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetPurchaseOrderByIdAsync(int id)
+        {
+            var result = await _mediator.Send(new GetPurchaseOrderByIdQuery { PurchaseOrderId = id });
+
+            return result.ToActionResult(this, _httpContextAccessor);
+        }
     }
 }
