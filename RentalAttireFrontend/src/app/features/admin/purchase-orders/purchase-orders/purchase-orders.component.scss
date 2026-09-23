@@ -556,10 +556,69 @@ $spring: cubic-bezier(0.34, 1.56, 0.64, 1);
     width: 100%;
   }
 
-  // Keep the table's own layout intact and let the wrapper scroll,
-  // rather than squeezing 8 columns into an unreadable width.
+  // Table → stacked cards. Horizontal scroll kept columns readable but
+  // still asked the user to scroll sideways to see Status/Total/Actions;
+  // this instead turns each row into its own card with a label next to
+  // each value, so every column is visible without scrolling at all.
+  .po-table-wrapper {
+    overflow-x: visible;
+  }
+
   .po-table {
-    min-width: 720px;
+    display: block;
+    width: 100%;
+    border: none;
+
+    thead {
+      display: none;
+    }
+
+    tbody {
+      display: block;
+    }
+
+    tr {
+      display: block;
+      border: 1px solid $border;
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+      margin-bottom: 0.75rem;
+
+      &:last-child {
+        border-bottom: 1px solid $border;
+        margin-bottom: 0;
+      }
+    }
+
+    td {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      padding: 0.4rem 0;
+      border-bottom: 1px solid $bg;
+      white-space: normal;
+      text-align: right;
+
+      &:last-child {
+        border-bottom: none;
+      }
+
+      &::before {
+        content: attr(data-label);
+        font-size: 0.68rem;
+        font-weight: 500;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: $text-muted;
+        text-align: left;
+      }
+
+      &.actions {
+        justify-content: flex-start;
+        padding-top: 0.6rem;
+      }
+    }
   }
 }
 

@@ -8,6 +8,7 @@ import { PurchaseOrderService } from '../purchase-order-service/purchase-order.s
 import { ClotheService } from '../../clothes/clothe-service/clothe.service';
 import { SupplierSummaryDTO } from '../../suppliers/dtos/supplier-summary';
 import { ClotheDTO } from '../../../../data/models/DTOs/Clothes/clothes';
+import { CreatePurchaseOrderCommand } from '../dtos/create-purchase-order';
 
 // ── Local working types (frontend-only, never sent as-is) ─────────────────────
 
@@ -17,7 +18,7 @@ interface LineItem {
   unitCost: number;
 }
 
-type SubmitMode = 'draft' | 'order';
+type SubmitMode = 'draft' | 'ordered';
 
 @Component({
   selector: 'app-create-purchase-order',
@@ -212,32 +213,32 @@ export class CreatePurchaseOrderComponent implements OnInit {
 
     this.isSubmitting = true;
 
-    const payload = {
-      supplierId: this.selectedSupplier.id,
-      expectedDeliveryDate: this.expectedDeliveryDate,
-      targetStatus: mode === 'draft' ? 0 : 1, // 0 = Draft, 1 = Ordered
-      items: this.lineItems.map((li) => ({
-        clotheId: li.clothe.id,
-        orderedQuantity: li.orderedQuantity,
-        unitCost: li.unitCost,
-      })),
-    };
+    const payload : CreatePurchaseOrderCommand = {
+      lineItems : this.lineItems.map((li) => ({
+        clotheId : li.clothe.id,
+        quantity : li.orderedQuantity,
+        unitCost : li.clothe.unitCost
+      })) ,
+      supplierId : this.selectedSupplier.id,
+      expectedDeliveryDate : new Date(this.expectedDeliveryDate),
+      orderStatus : mode,
+    }
 
-    // TODO: CREATE PURCHASE ORDER — wire up once the backend command exists
-    // const result = await this.purchaseOrderService.createPurchaseOrderAsync(payload);
-    // if (result.isSuccess) {
-    //   this.toastr.success(
-    //     mode === 'draft'
-    //       ? 'Purchase order saved as draft.'
-    //       : 'Purchase order placed successfully.',
-    //     mode === 'draft' ? 'Draft Saved' : 'Order Placed'
-    //   );
-    //   this.router.navigate(['admin', 'purchase-orders']);
-    // } else {
-    //   this.toastr.error(result.errorMessage ?? 'Something went wrong.', 'Error');
-    // }
+    this.purchaseOrderService.createPurchaseOrderAsync(
+      payload
+    ).then(res => {
+      if(!res.isSuccess) {
+        this.toastr.error(res.errorMessage ?? 'Order could not be placed');
+        return;
+      }
 
-    this.isSubmitting = false;
+      this.toastr.success(res.successMessage ?? 'Purchase order successfuly created');
+      this.router.navigateByUrl('/admin/purchase-orders');
+    }).catch(err => {
+      this.toastr.error(err.error);
+    }).finally(() => {
+      this.isSubmitting = false;
+    })
   }
 
   cancel(): void {

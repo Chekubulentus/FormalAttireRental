@@ -90,17 +90,17 @@
       </thead>
       <tbody>
         <tr *ngFor="let po of purchaseOrders; let i = index" [style.animation-delay.ms]="i * 35">
-          <td class="po-code">{{ po.purchaseOrderCode }}</td>
-          <td>{{ po.supplierName }}</td>
-          <td>{{ po.orderDate | date:'MMM d, y' }}</td>
-          <td>{{ po.expectedDeliveryDate | date:'MMM d, y' }}</td>
-          <td>{{ po.employeeName }}</td>
-          <td>
+          <td class="po-code" data-label="PO Code">{{ po.purchaseOrderCode }}</td>
+          <td data-label="Supplier">{{ po.supplierName }}</td>
+          <td data-label="Order Date">{{ po.orderDate | date:'MMM d, y' }}</td>
+          <td data-label="Expected Delivery">{{ po.expectedDeliveryDate | date:'MMM d, y' }}</td>
+          <td data-label="Issued By">{{ po.employeeName }}</td>
+          <td data-label="Status">
             <span class="status-badge" [ngClass]="statusClass(po.orderStatus)">
               {{ po.orderStatus }}
             </span>
           </td>
-          <td class="amount">₱{{ po.totalAmount | number:'1.2-2' }}</td>
+          <td class="amount" data-label="Total">₱{{ po.totalAmount | number:'1.2-2' }}</td>
           <td class="actions">
             <button class="action-btn view" (click)="viewPurchaseOrder(po)">View</button>
             <button class="action-btn edit" *ngIf="canEdit(po)" (click)="editPurchaseOrder(po)">Edit</button>

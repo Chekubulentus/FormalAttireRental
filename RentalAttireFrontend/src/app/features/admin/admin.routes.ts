@@ -115,7 +115,7 @@ export const ADMIN_ROUTES: Routes = [
         }
       },
       {
-        path: 'edit-purchase-order',
+        path: 'purchase-orders/:id/edit',
         loadComponent: () => {
           return import('./purchase-orders/edit-purchase-order/edit-purchase-order.component')
           .then(m => m.EditPurchaseOrderComponent)

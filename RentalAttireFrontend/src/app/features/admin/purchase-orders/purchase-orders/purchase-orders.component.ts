@@ -17,7 +17,7 @@ const LOW_STOCK_THRESHOLD = 5;
 // whole block + the branch in loadPurchaseOrders) once the real
 // filter-purchase-orders endpoint is confirmed working end-to-end.
 // ============================================================
-const USE_MOCK_DATA = true;
+const USE_MOCK_DATA = false;
 
 const MOCK_PURCHASE_ORDERS: PurchaseOrderDTO[] = [
   {

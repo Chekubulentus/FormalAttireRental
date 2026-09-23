@@ -5,6 +5,8 @@ import { Result } from '../../../../data/models/Results/result';
 import { PagedResult } from '../../../../data/models/Results/pagedResult';
 import { PurchaseOrderDTO } from '../dtos/purchase-order-dto';
 import { BaseApiUrl } from '../../../../../environments/base-api-url';
+import { CreatePurchaseOrderCommand } from '../dtos/create-purchase-order';
+import { extractErrorMessage } from '../../../../data/utils/error-response-util';
 
 @Injectable({
   providedIn: 'root'
@@ -43,6 +45,23 @@ export class PurchaseOrderService {
     } catch (err: any) {
       // ASSUMPTION: Result.failure(message) static factory exists, per project's stated Angular error pattern
       return Result.failure(err?.error?.errorMessage ?? 'Failed to load purchase orders.');
+    }
+  }
+
+  async createPurchaseOrderAsync(
+    command : CreatePurchaseOrderCommand
+  ) : Promise<Result<boolean>> {
+    try {
+      const result = await firstValueFrom (
+        this.http.post<Result<boolean>>(
+          `${this.baseUrl}`,
+          command
+        )
+      );
+
+      return result;
+    }catch(err : any) {
+      return Result.failure(extractErrorMessage(err.error));
     }
   }
 }
