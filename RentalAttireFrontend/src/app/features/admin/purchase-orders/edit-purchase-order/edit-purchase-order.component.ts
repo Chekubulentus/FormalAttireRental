@@ -9,6 +9,7 @@ import { PurchaseOrderService } from '../purchase-order-service/purchase-order.s
 import { ClotheService } from '../../clothes/clothe-service/clothe.service';
 import { PurchaseOrderDTO } from '../dtos/purchase-order-dto';
 import { ClotheDTO } from '../../../../data/models/DTOs/Clothes/clothes';
+import { EditPurchaseOrderCommand } from '../dtos/edit-purchase-order';
 
 // ── Local working types (frontend-only, never sent as-is) ─────────────────────
 
@@ -16,9 +17,6 @@ interface LineItem {
   clothe: ClotheDTO;
   orderedQuantity: number;
   unitCost: number;
-  // UI-only bookkeeping — not sent to the backend. Distinguishes a line that
-  // already existed on the PO from one added during this edit session, in
-  // case we ever want to style them differently.
   isExisting: boolean;
 }
 
@@ -39,6 +37,7 @@ export class EditPurchaseOrderComponent implements OnInit, OnDestroy {
   purchaseOrderCode = '';
   supplierId = 0;
   supplierName = '';
+  purchaseOrderToBeEdited: PurchaseOrderDTO | null = null;
 
   isLoading = true;
   loadError = '';
@@ -61,8 +60,10 @@ export class EditPurchaseOrderComponent implements OnInit, OnDestroy {
   // ── Validation errors ────────────────────────────────────────────────────
   get errors(): Record<string, string> {
     const e: Record<string, string> = {};
-    if (!this.expectedDeliveryDate) e['expectedDeliveryDate'] = 'Expected delivery date is required.';
-    if (this.lineItems.length === 0) e['lineItems'] = 'Add at least one item to the order.';
+    if (!this.expectedDeliveryDate)
+      e['expectedDeliveryDate'] = 'Expected delivery date is required.';
+    if (this.lineItems.length === 0)
+      e['lineItems'] = 'Add at least one item to the order.';
     this.lineItems.forEach((item, i) => {
       if (!item.orderedQuantity || item.orderedQuantity < 1)
         e[`qty_${i}`] = 'Quantity must be at least 1.';
@@ -88,7 +89,7 @@ export class EditPurchaseOrderComponent implements OnInit, OnDestroy {
     private supplierService: SupplierService,
     private purchaseOrderService: PurchaseOrderService,
     private clotheService: ClotheService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
   ) {}
 
   ngOnInit(): void {
@@ -131,89 +132,80 @@ export class EditPurchaseOrderComponent implements OnInit, OnDestroy {
   async loadPurchaseOrder(id: number): Promise<void> {
     this.isLoading = true;
 
-    // TODO: GET PURCHASE ORDER BY ID — wire up once the backend query exists
-    // const result = await this.purchaseOrderService.getPurchaseOrderByIdAsync(id);
-    // if (!result.isSuccess || !result.data) {
-    //   this.loadError = result.errorMessage ?? 'Purchase order not found.';
-    //   this.toastr.error(this.loadError, 'Error');
-    //   this.isLoading = false;
-    //   return;
-    // }
-    // const po = result.data;
+    let result;
+    try {
+      result = await this.purchaseOrderService.getPurchaseOrderByIdAsync(id);
+    } catch (err: any) {
+      this.toastr.error(err.error);
+      this.isLoading = false;
+      return;
+    }
 
-    // ASSUMPTION: mocked for now, the same way PurchaseOrdersComponent's
-    // stock-alert panel is currently mocked, so this page can be visually
-    // verified before the backend endpoint exists. Delete this block and
-    // uncomment the real call above once getPurchaseOrderByIdAsync exists.
-    const po = this.getMockPurchaseOrder(id);
+    if (!result.isSuccess || !result.data) {
+      this.toastr.error(
+        result.errorMessage ?? 'Purchase order record could not be found.',
+      );
+      this.isLoading = false;
+      return;
+    }
 
-    if (po.orderStatus !== 'Draft') {
-      this.toastr.error('Only Draft purchase orders can be edited.', 'Not Editable');
+    this.purchaseOrderToBeEdited = result.data;
+
+    if (this.purchaseOrderToBeEdited.orderStatus !== 'Draft') {
+      this.toastr.error(
+        'Only Draft purchase orders can be edited.',
+        'Not Editable',
+      );
+      this.isLoading = false;
       this.router.navigate(['admin', 'purchase-orders']);
       return;
     }
 
-    this.purchaseOrderCode = po.purchaseOrderCode;
-    this.supplierName = po.supplierName;
-    this.expectedDeliveryDate = new Date(po.expectedDeliveryDate).toISOString().split('T')[0];
+    this.purchaseOrderCode = this.purchaseOrderToBeEdited.purchaseOrderCode;
+    this.supplierName = this.purchaseOrderToBeEdited.supplierName;
+    this.expectedDeliveryDate = new Date(
+      this.purchaseOrderToBeEdited.expectedDeliveryDate,
+    )
+      .toISOString()
+      .split('T')[0];
 
-    // ASSUMPTION: PurchaseOrderDTO doesn't carry a supplierId field directly
-    // (only supplierName). Reading it off the first line item's
-    // originalSupplierId instead — every item on a PO shares one supplier by
-    // design. If this draft somehow has zero items, there's no way to know
-    // whose clothes to offer, so we stop and flag it rather than guess.
-    // Worth considering: adding SupplierId directly to PurchaseOrderDTO so
-    // this workaround isn't needed.
-    const firstItem = po.purchaseOrderItems[0];
+    const firstItem = this.purchaseOrderToBeEdited.purchaseOrderItems[0];
     if (!firstItem) {
-      this.loadError = "This draft has no items yet, so its supplier can't be determined.";
+      this.loadError =
+        "This draft has no items yet, so its supplier can't be determined.";
       this.toastr.error(this.loadError, 'Error');
       this.isLoading = false;
       return;
     }
     this.supplierId = firstItem.originalSupplierId;
+    console.log(`Supplier Identifier: ${firstItem.originalSupplierId}`);
 
-    this.lineItems = po.purchaseOrderItems.map((item) => ({
-      clothe: item.clothe,
-      orderedQuantity: item.orderedQuantity,
-      // Existing items keep their already-locked unitCost as-is — it is NOT
-      // re-derived from Clothe.UnitCost, same reasoning as Create: a locked
-      // snapshot must not silently drift if Clothe.UnitCost has changed since.
-      unitCost: item.unitCost,
-      isExisting: true,
-    }));
+    this.lineItems = this.purchaseOrderToBeEdited.purchaseOrderItems.map(
+      (item) => ({
+        clothe: item.clothe,
+        orderedQuantity: item.orderedQuantity,
+        unitCost: item.unitCost,
+        isExisting: true,
+      }),
+    );
 
     await this.loadClothesForSupplier(this.supplierId);
     this.isLoading = false;
-  }
-
-  // ASSUMPTION: placeholder only — delete once loadPurchaseOrder calls the
-  // real service method above.
-  private getMockPurchaseOrder(id: number): PurchaseOrderDTO {
-    return {
-      id,
-      purchaseOrderCode: `PO-${id.toString().padStart(4, '0')}`,
-      orderDate: new Date(),
-      expectedDeliveryDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-      supplierName: 'Mock Supplier',
-      orderStatus: 'Draft',
-      employeeName: 'Mock Employee',
-      totalAmount: 0,
-      purchaseOrderItems: [],
-    };
   }
 
   // ── Clothes for the fixed supplier ──────────────────────────────────────
   async loadClothesForSupplier(supplierId: number): Promise<void> {
     this.isClothesLoading = true;
 
-    this.supplierService.getAllSupplierClothesByIdAsync(supplierId)
+    this.supplierService
+      .getAllSupplierClothesByIdAsync(supplierId)
       .then((res) => {
         if (!res.isSuccess) {
           this.availableClothes = [];
           return;
         }
         this.availableClothes = res.data ?? [];
+        console.log(`Supplier Clothes: ${JSON.stringify(res.data)}`);
       })
       .catch((err) => {
         this.toastr.error(err.error);
@@ -230,7 +222,7 @@ export class EditPurchaseOrderComponent implements OnInit, OnDestroy {
       (c) =>
         c.clotheName.toLowerCase().includes(q) ||
         c.clotheCode.toLowerCase().includes(q) ||
-        c.categoryName.toLowerCase().includes(q)
+        c.categoryName.toLowerCase().includes(q),
     );
   }
 
@@ -246,14 +238,14 @@ export class EditPurchaseOrderComponent implements OnInit, OnDestroy {
         {
           clothe,
           orderedQuantity: 1,
-          // unitCost is a snapshot of Clothe.UnitCost at line-item creation
-          // time — read-only in the UI, same as Create.
           unitCost: clothe.unitCost,
           isExisting: false,
         },
       ];
     } else {
-      this.lineItems = this.lineItems.filter((li) => li.clothe.id !== clothe.id);
+      this.lineItems = this.lineItems.filter(
+        (li) => li.clothe.id !== clothe.id,
+      );
     }
   }
 
@@ -263,7 +255,10 @@ export class EditPurchaseOrderComponent implements OnInit, OnDestroy {
 
   // ── Totals ─────────────────────────────────────────────────────────────────
   get runningTotal(): number {
-    return this.lineItems.reduce((sum, li) => sum + li.orderedQuantity * li.unitCost, 0);
+    return this.lineItems.reduce(
+      (sum, li) => sum + li.orderedQuantity * li.unitCost,
+      0,
+    );
   }
 
   formatCurrency(amount: number): string {
@@ -281,30 +276,34 @@ export class EditPurchaseOrderComponent implements OnInit, OnDestroy {
 
     this.isSubmitting = true;
 
-    const payload = {
+    const command: EditPurchaseOrderCommand = {
       purchaseOrderId: this.purchaseOrderId,
       expectedDeliveryDate: this.expectedDeliveryDate,
-      targetStatus: mode === 'draft' ? 0 : 1, // 0 = Draft, 1 = Ordered
-      items: this.lineItems.map((li) => ({
+      orderStatus: mode === 'draft' ? 'Draft' : 'Ordered',
+      lineItems: this.lineItems.map((li) => ({
         clotheId: li.clothe.id,
-        orderedQuantity: li.orderedQuantity,
+        quantity: li.orderedQuantity,
         unitCost: li.unitCost,
       })),
     };
 
-    // TODO: UPDATE PURCHASE ORDER — wire up once the backend command exists
-    // const result = await this.purchaseOrderService.updatePurchaseOrderAsync(payload);
-    // if (result.isSuccess) {
-    //   this.toastr.success(
-    //     mode === 'draft'
-    //       ? 'Draft updated.'
-    //       : 'Purchase order placed successfully.',
-    //     mode === 'draft' ? 'Draft Updated' : 'Order Placed'
-    //   );
-    //   this.router.navigate(['admin', 'purchase-orders']);
-    // } else {
-    //   this.toastr.error(result.errorMessage ?? 'Something went wrong.', 'Error');
-    // }
+    const result =
+      await this.purchaseOrderService.updatePurchaseOrderAsync(command);
+
+    if (result.isSuccess) {
+      this.toastr.success(
+        mode === 'draft'
+          ? 'Draft updated.'
+          : 'Purchase order placed successfully.',
+        mode === 'draft' ? 'Draft Updated' : 'Order Placed',
+      );
+      this.router.navigate(['admin', 'purchase-orders']);
+    } else {
+      this.toastr.error(
+        result.errorMessage ?? 'Something went wrong.',
+        'Error',
+      );
+    }
 
     this.isSubmitting = false;
   }

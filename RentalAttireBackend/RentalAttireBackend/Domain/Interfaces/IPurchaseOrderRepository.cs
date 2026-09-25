@@ -30,6 +30,10 @@ namespace RentalAttireBackend.Domain.Interfaces
         public Task<PurchaseOrder?> GetPurchaseOrderByIdAsync(
             int id, 
             CancellationToken cancellationToken);
+        public Task<PurchaseOrder?> GetPurchaseOrderByIdNoTrackingAsync(
+            int id,
+            CancellationToken cancellationToken
+            );
     }
 
 }

@@ -126,3 +126,10 @@
   </div>
 
 </div>
+
+<!-- ── View Purchase Order modal ─────────────────────────────────────────── -->
+<app-view-purchase-order
+  [purchaseOrderId]="selectedPurchaseOrderId"
+  [isOpen]="this.isViewModalOpen"
+  (closed)="onViewModalClosed()">
+</app-view-purchase-order>

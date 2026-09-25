@@ -125,7 +125,17 @@ namespace RentalAttireBackend.Infrastructure.Persistence.Repositories
         {
             return await _context.PurchaseOrders
                 .Include(po => po.PurchaseOrderItems)
+                    .ThenInclude(poi => poi.Clothe)
                 .FirstOrDefaultAsync(po => po.Id == id, cancellationToken);
+        }
+
+        public async Task<PurchaseOrder?> GetPurchaseOrderByIdNoTrackingAsync(int id, CancellationToken cancellationToken)
+        {
+            return await _context.PurchaseOrders
+                .AsNoTracking()
+                .Include(p => p.PurchaseOrderItems)
+                    .ThenInclude(i => i.Clothe)
+                .FirstOrDefaultAsync(p => p.Id == id, cancellationToken);
         }
 
         public async Task<bool> UpdatePurchaseOrderAsync(PurchaseOrder purchaseOrder, CancellationToken cancellationToken)

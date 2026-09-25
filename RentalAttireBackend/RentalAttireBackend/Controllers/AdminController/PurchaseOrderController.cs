@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RentalAttireBackend.Application.Common.Extensions;
 using RentalAttireBackend.Application.PurchaseOrders.Commands.CreatePurchaseOrder;
+using RentalAttireBackend.Application.PurchaseOrders.Commands.EditPurchaseOrder;
 using RentalAttireBackend.Application.PurchaseOrders.Queries.FilterPurchaseOrders;
 using RentalAttireBackend.Application.PurchaseOrders.Queries.GetPurchaseOrderById;
 
@@ -60,6 +61,13 @@ namespace RentalAttireBackend.Controllers.AdminController
         public async Task<IActionResult> GetPurchaseOrderByIdAsync(int id)
         {
             var result = await _mediator.Send(new GetPurchaseOrderByIdQuery { PurchaseOrderId = id });
+
+            return result.ToActionResult(this, _httpContextAccessor);
+        }
+        [HttpPut]
+        public async Task<IActionResult> UpdatePurchaseOrderAsync(EditPurchaseOrderCommand command)
+        {
+            var result = await _mediator.Send(command);
 
             return result.ToActionResult(this, _httpContextAccessor);
         }

@@ -6,81 +6,17 @@ import { ToastrService } from 'ngx-toastr';
 import { PurchaseOrderService } from '../purchase-order-service/purchase-order.service';
 import { ClotheDTO } from '../../../../data/models/DTOs/Clothes/clothes';
 import { PurchaseOrderDTO } from '../dtos/purchase-order-dto';
+import { ViewPurchaseOrderComponent } from '../view-purchase-order/view-purchase-order.component';
 
 type StatusFilter = 'Draft' | 'Ordered' | 'PartiallyReceived' | 'Received' | 'Cancelled';
 
 // ASSUMPTION: low-stock threshold — not confirmed against any business rule, adjust freely
 const LOW_STOCK_THRESHOLD = 5;
 
-// ============================================================
-// TEMPORARY — UI testing only. Set to false (or delete this
-// whole block + the branch in loadPurchaseOrders) once the real
-// filter-purchase-orders endpoint is confirmed working end-to-end.
-// ============================================================
-const USE_MOCK_DATA = false;
-
-const MOCK_PURCHASE_ORDERS: PurchaseOrderDTO[] = [
-  {
-    id: 1,
-    purchaseOrderCode: 'PO-0031',
-    orderDate: new Date('2026-09-01'),
-    expectedDeliveryDate: new Date('2026-09-10'),
-    supplierName: 'Manila Textiles',
-    orderStatus: 'Draft',
-    employeeName: 'Jann Reyes',
-    totalAmount: 24500,
-    purchaseOrderItems: []
-  },
-  {
-    id: 2,
-    purchaseOrderCode: 'PO-0032',
-    orderDate: new Date('2026-09-05'),
-    expectedDeliveryDate: new Date('2026-09-18'),
-    supplierName: 'Cebu Fabric Co.',
-    orderStatus: 'Ordered',
-    employeeName: 'Jann Reyes',
-    totalAmount: 58200,
-    purchaseOrderItems: []
-  },
-  {
-    id: 3,
-    purchaseOrderCode: 'PO-0033',
-    orderDate: new Date('2026-08-22'),
-    expectedDeliveryDate: new Date('2026-09-02'),
-    supplierName: 'Manila Textiles',
-    orderStatus: 'PartiallyReceived',
-    employeeName: 'Carla Domingo',
-    totalAmount: 31000,
-    purchaseOrderItems: []
-  },
-  {
-    id: 4,
-    purchaseOrderCode: 'PO-0034',
-    orderDate: new Date('2026-08-10'),
-    expectedDeliveryDate: new Date('2026-08-20'),
-    supplierName: 'Davao Weavers',
-    orderStatus: 'Received',
-    employeeName: 'Carla Domingo',
-    totalAmount: 12750,
-    purchaseOrderItems: []
-  },
-  {
-    id: 5,
-    purchaseOrderCode: 'PO-0035',
-    orderDate: new Date('2026-09-12'),
-    expectedDeliveryDate: new Date('2026-09-25'),
-    supplierName: 'Cebu Fabric Co.',
-    orderStatus: 'Cancelled',
-    employeeName: 'Jann Reyes',
-    totalAmount: 8900,
-    purchaseOrderItems: []
-  }
-];
-
 @Component({
   selector: 'app-purchase-orders',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, FormsModule, RouterModule, ViewPurchaseOrderComponent],
   templateUrl: './purchase-orders.component.html',
   styleUrl: './purchase-orders.component.scss'
 })
@@ -119,6 +55,12 @@ export class PurchaseOrdersComponent implements OnInit {
   totalCount = 0;
   totalPages = 0;
 
+  // ============================================================
+  // View modal
+  // ============================================================
+  isViewModalOpen = false;
+  selectedPurchaseOrderId: number | null = null;
+
   get rangeStart(): number {
     return this.totalCount === 0 ? 0 : (this.currentPage - 1) * this.itemsPerPage + 1;
   }
@@ -155,16 +97,6 @@ export class PurchaseOrdersComponent implements OnInit {
   // ============================================================
   async loadPurchaseOrders(): Promise<void> {
     this.isLoading = true;
-
-    // TEMPORARY — see USE_MOCK_DATA at top of file
-    if (USE_MOCK_DATA) {
-      await new Promise(r => setTimeout(r, 250)); // fake latency so loading/skeleton state is visible
-      this.purchaseOrders = MOCK_PURCHASE_ORDERS;
-      this.totalCount = MOCK_PURCHASE_ORDERS.length;
-      this.totalPages = 1;
-      this.isLoading = false;
-      return;
-    }
 
     const res = await this.purchaseOrderService.filterPurchaseOrdersAsync(
       this.searchQuery,
@@ -248,10 +180,6 @@ export class PurchaseOrdersComponent implements OnInit {
   // ============================================================
   // Row actions
   // ============================================================
-  viewPurchaseOrder(po: PurchaseOrderDTO): void {
-    // PLACEHOLDER: ViewPurchaseOrderComponent (modal) not yet built.
-    console.log('view purchase order', po.id);
-  }
 
   editPurchaseOrder(po: PurchaseOrderDTO): void {
     this.router.navigate(['/admin/purchase-orders', po.id, 'edit']);
@@ -285,5 +213,15 @@ export class PurchaseOrdersComponent implements OnInit {
 
   navigateToCreate(): void {
     this.router.navigate(['/admin/create-purchase-order']);
+  }
+
+  viewPurchaseOrder(po: PurchaseOrderDTO): void {
+    this.selectedPurchaseOrderId = po.id;
+    this.isViewModalOpen = true;
+  }
+
+  onViewModalClosed(): void {
+    this.isViewModalOpen = false;
+    this.selectedPurchaseOrderId = null;
   }
 }

@@ -7,6 +7,8 @@ import { PurchaseOrderDTO } from '../dtos/purchase-order-dto';
 import { BaseApiUrl } from '../../../../../environments/base-api-url';
 import { CreatePurchaseOrderCommand } from '../dtos/create-purchase-order';
 import { extractErrorMessage } from '../../../../data/utils/error-response-util';
+import { identifierName } from '@angular/compiler';
+import { EditPurchaseOrderCommand } from '../dtos/edit-purchase-order';
 
 @Injectable({
   providedIn: 'root'
@@ -61,6 +63,35 @@ export class PurchaseOrderService {
 
       return result;
     }catch(err : any) {
+      return Result.failure(extractErrorMessage(err.error));
+    }
+  }
+
+  async getPurchaseOrderByIdAsync(
+    purchaseOrderId : number
+  ) : Promise<Result<PurchaseOrderDTO>> {
+    try {
+      return await firstValueFrom(
+        this.http.get<Result<PurchaseOrderDTO>>(
+          `${this.baseUrl}/${purchaseOrderId}`
+        )
+      );
+    }catch(err : any) {
+      return Result.failure(extractErrorMessage(err.error));
+    }
+  }
+
+  async updatePurchaseOrderAsync(
+    command: EditPurchaseOrderCommand
+  ): Promise<Result<boolean>> {
+    try {
+      return await firstValueFrom(
+        this.http.put<Result<boolean>>(
+          `${this.baseUrl}`,
+          command
+        )
+      );
+    } catch (err: any) {
       return Result.failure(extractErrorMessage(err.error));
     }
   }
